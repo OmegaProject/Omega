@@ -2,15 +2,20 @@ package edu.umassmed.omega.commons;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 
-public abstract class OmegaPlugin implements OmegaPluginInterface {
+public abstract class OmegaPlugin {
+	private final List<OmegaPluginListener> listeners = new ArrayList<OmegaPluginListener>();
+
 	private final int maximumNumberOfPanels;
 
 	private final List<GenericPluginPanel> panels;
@@ -66,5 +71,38 @@ public abstract class OmegaPlugin implements OmegaPluginInterface {
 
 	public Map<String, String> getPluginOptions() {
 		return new LinkedHashMap<String, String>(this.pluginOptions);
+	}
+
+	public abstract String getName();
+
+	// TODO capire se serve
+	public abstract void run();
+
+	public abstract GenericPluginPanel createNewPanel(RootPaneContainer parent,
+	        int index);
+
+	public synchronized void addOmegaPluginListener(
+	        final OmegaPluginListener listener) {
+		this.listeners.add(listener);
+	}
+
+	public synchronized void removeOmegaPluginEventListener(
+	        final OmegaPluginListener listener) {
+		this.listeners.remove(listener);
+	}
+
+	public synchronized void fireEvent() {
+		final OmegaPluginEvent event = new OmegaPluginEvent(null);
+		final Iterator<OmegaPluginListener> i = this.listeners.iterator();
+		while (i.hasNext()) {
+			i.next().handleOmegaPluginEvent(event);
+		}
+	}
+
+	public synchronized void fireEvent(final OmegaPluginEvent event) {
+		final Iterator<OmegaPluginListener> i = this.listeners.iterator();
+		while (i.hasNext()) {
+			i.next().handleOmegaPluginEvent(event);
+		}
 	}
 }

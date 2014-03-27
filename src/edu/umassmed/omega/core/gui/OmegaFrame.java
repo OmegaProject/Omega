@@ -70,9 +70,6 @@ public class OmegaFrame extends JFrame {
 		this.setJMenuBar(this.menu);
 
 		this.addListeners();
-
-		this.pack();
-		this.setVisible(true);
 	}
 
 	public void initialize() {

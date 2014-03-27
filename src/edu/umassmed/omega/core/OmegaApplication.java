@@ -3,13 +3,24 @@ package edu.umassmed.omega.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.umassmed.omega.commons.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginListener;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
 import edu.umassmed.omega.core.gui.OmegaFrame;
-import edu.umassmed.omega.omero.OmeroPlugin;
+import edu.umassmed.omega.dataNew.OmegaData;
+import edu.umassmed.omega.dataNew.connection.OmegaGateway;
+import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 
-public class OmegaApplication {
+public class OmegaApplication implements OmegaPluginListener,
+        OmegaLoaderPluginListener {
 
-	private OmegaFrame gui;
+	private final OmegaFrame gui;
+
+	private final OmegaData data;
+	private OmegaGateway gateway;
 
 	private short pluginIndex;
 	private final Map<String, Long> pluginIndexes;
@@ -25,10 +36,17 @@ public class OmegaApplication {
 		this.optionsFileManager = new OmegaOptionsFileManager();
 
 		this.registerCorePlugins();
+
+		this.gui = new OmegaFrame(this);
+		this.gui.initialize();
+		this.gui.setSize(1250, 750);
+
+		// TODO load data here
+		this.data = new OmegaData();
+		this.gateway = null;
 	}
 
 	private void registerCorePlugins() {
-		new OmeroPlugin();
 		this.registerPlugin(new OmeroPlugin());
 
 		for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
@@ -39,6 +57,7 @@ public class OmegaApplication {
 	}
 
 	private void registerPlugin(final OmegaPlugin plugin) {
+		plugin.addOmegaPluginListener(this);
 		final String name = plugin.getName();
 		final long index = this.pluginIndex;
 		this.pluginIndex++;
@@ -46,10 +65,8 @@ public class OmegaApplication {
 		this.pluginIndexes.put(name, index);
 	}
 
-	protected void initializeGUI() {
-		this.gui = new OmegaFrame(this);
-		this.gui.initialize();
-		this.gui.setSize(1250, 750);
+	protected void showGUI() {
+		this.gui.setVisible(true);
 	}
 
 	public OmegaPlugin getPlugin(final long pluginIndex) {
@@ -66,6 +83,24 @@ public class OmegaApplication {
 
 	public static void main(final String[] args) {
 		final OmegaApplication instance = new OmegaApplication();
-		instance.initializeGUI();
+		instance.showGUI();
+	}
+
+	@Override
+	public void handleOmegaPluginEvent(final OmegaPluginEvent event) {
+
+	}
+
+	@Override
+	public void handleOmegaLoaderPluginEvent(final OmegaLoaderPluginEvent event) {
+		if (!(event.getSource() instanceof OmegaLoaderPlugin))
+			return;
+
+		final OmegaLoaderPlugin plugin = (OmegaLoaderPlugin) event.getSource();
+		this.gateway = plugin.getGateway();
+
+		// TODO integrare dati caricati
+		final OmegaData loadedData = event.getLoadedData();
+		this.data.mergeData(loadedData);
 	}
 }

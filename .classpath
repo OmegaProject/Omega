@@ -29,11 +29,12 @@
 	<classpathentry kind="lib" path="lib/jfreechart/jfreechart-1.0.13-experimental.jar"/>
 	<classpathentry kind="lib" path="lib/jfreechart/jfreechart-1.0.13.jar"/>
 	<classpathentry kind="lib" path="lib/openbis_screening_api-batteries_included.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -249,7 +249,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		final GenericPluginPanel content = plugin.getNewPanel(intFrame,
 		        startingIndex);
 		if (content == null) {
-			// TODO inserire errore
+			// TODO inserire warning
 			System.out.println(name + " MAXIMUM REACHED");
 			return;
 		}
@@ -316,7 +316,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		final GenericPluginPanel content = plugin.getNewPanel(frame,
 		        startingIndex);
 		if (content == null) {
-			// TODO inserire errore
+			// TODO inserire warning
 			System.out.println(name + " MAXIMUM REACHED");
 			return;
 		}

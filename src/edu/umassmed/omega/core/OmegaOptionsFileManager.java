@@ -105,10 +105,8 @@ public class OmegaOptionsFileManager {
 			fw.close();
 			return 1;
 		} catch (final FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;
@@ -196,10 +194,8 @@ public class OmegaOptionsFileManager {
 			bw.close();
 			fw.close();
 		} catch (final FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
