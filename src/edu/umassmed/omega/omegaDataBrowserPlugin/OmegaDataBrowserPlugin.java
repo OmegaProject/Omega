@@ -1,25 +1,24 @@
-package edu.umassmed.omega.omeroPlugin;
+package edu.umassmed.omega.omegaDataBrowserPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaLoaderPlugin;
+import edu.umassmed.omega.commons.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.exceptions.MissingOmegaData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
+import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
-public class OmeroPlugin extends OmegaLoaderPlugin {
+public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin {
 
-	private OmeroPluginPanel panel;
+	private OmegaDataBrowserPluginPanel panel;
 
-	public OmeroPlugin() {
-		super(new OmeroGateway());
-		this.panel = null;
+	public OmegaDataBrowserPlugin() {
+		super();
 	}
 
 	@Override
 	public String getName() {
-		return "Omero Browser";
+		return "Omega Browser";
 	}
 
 	@Override
@@ -30,8 +29,8 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 		if (omegaData == null)
 			throw new MissingOmegaData(this);
 
-		this.panel = new OmeroPluginPanel(parent, this,
-		        (OmeroGateway) this.getGateway(), omegaData, index);
+		this.panel = new OmegaDataBrowserPluginPanel(parent, this, omegaData,
+		        index);
 
 		return this.panel;
 	}
@@ -39,5 +38,12 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 	@Override
 	public void run() {
 		//
+	}
+
+	@Override
+	public void fireUpdate() {
+		if (this.panel != null) {
+			this.panel.fireUpdate();
+		}
 	}
 }

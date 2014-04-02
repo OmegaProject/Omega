@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -31,16 +32,15 @@ import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.GroupData;
 import pojos.ImageData;
-import pojos.PixelsData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.OmegaEvents;
+import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenterGroup;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
@@ -51,7 +51,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
-	private OmeroPlugin plugin;
+	private final OmeroPlugin plugin;
 
 	private JSplitPane mainPanel;
 	private JMenu connectionMenu, loadableUserMenu;
@@ -77,6 +77,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 	        final OmegaData omegaData, final int index) {
 		super(parent, plugin, index);
 
+		this.plugin = plugin;
 		this.gateway = gateway;
 		this.omegaData = omegaData;
 		this.connectionDialog = new OmeroConnectionDialog(this, gateway);
@@ -287,9 +288,17 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		this.connectionDialog.setVisible(false);
 	}
 
-	private void loadGroups(final ExperimenterData experimenterData,
+	private boolean loadGroups(final ExperimenterData experimenterData,
 	        final OmegaExperimenter experimenter) {
-		final List<GroupData> groupsData = experimenterData.getGroups();
+		boolean dataChanged = false;
+		List<GroupData> groupsData;
+		try {
+			groupsData = this.gateway.getGroups();
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return dataChanged;
+		}// experimenterData.getGroups();
 
 		for (final GroupData groupData : groupsData) {
 			OmegaExperimenterGroup group = experimenter.getGroup(groupData
@@ -298,22 +307,32 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 			if (group != null) {
 				if (!experimenter.containsGroup(groupData.getId())) {
 					experimenter.addGroup(group);
+					dataChanged = true;
 				}
 				continue;
 			}
 
-			final ExperimenterData leaderData = groupData.getOwner();
-			final OmegaExperimenter leader = new OmegaExperimenter(
-			        leaderData.getId(), leaderData.getFirstName(),
-			        leaderData.getLastName());
+			dataChanged = true;
 
-			group = new OmegaExperimenterGroup(groupData.getId(), leader);
+			final Set<ExperimenterData> leadersData = groupData.getLeaders();
+			final List<OmegaExperimenter> leaders = new ArrayList<OmegaExperimenter>();
+			for (final ExperimenterData leaderData : leadersData) {
+				final OmegaExperimenter leader = new OmegaExperimenter(
+				        leaderData.getId(), leaderData.getFirstName(),
+				        leaderData.getLastName());
+				leaders.add(leader);
+			}
+
+			group = new OmegaExperimenterGroup(groupData.getId(), leaders);
 			this.omegaData.addExperimenterGroup(group);
 			experimenter.addGroup(group);
 
-			leader.addGroup(group);
-			this.omegaData.addExperimenter(leader);
+			for (final OmegaExperimenter leader : leaders) {
+				leader.addGroup(group);
+				this.omegaData.addExperimenter(leader);
+			}
 		}
+		return dataChanged;
 	}
 
 	private void loadExperimenterAndGroups(
@@ -321,21 +340,51 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		// Create all groups for the actual user
 		// Create leaders for the groups
 		// Add everything to the main data
-		final List<GroupData> groupsData = experimenterData.getGroups();
+		List<GroupData> groupsData;
+		try {
+			groupsData = this.gateway.getGroups();
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}// experimenterData.getGroups();
 		final List<OmegaExperimenterGroup> groups = new ArrayList<OmegaExperimenterGroup>();
 		for (final GroupData groupData : groupsData) {
-			final ExperimenterData leaderData = groupData.getOwner();
-			final OmegaExperimenter leader = new OmegaExperimenter(
-			        leaderData.getId(), leaderData.getFirstName(),
-			        leaderData.getLastName());
 
-			final OmegaExperimenterGroup group = new OmegaExperimenterGroup(
-			        groupData.getId(), leader);
+			OmegaExperimenterGroup group = this.omegaData
+			        .getExperimenterGroup(groupData.getId());
+
+			final Set<ExperimenterData> leadersData = groupData.getLeaders();
+
+			if (group != null) {
+				for (final ExperimenterData leaderData : leadersData) {
+					if (!group.containsLeader(leaderData.getId())) {
+						final OmegaExperimenter leader = new OmegaExperimenter(
+						        leaderData.getId(), leaderData.getFirstName(),
+						        leaderData.getLastName());
+						group.addLeader(leader);
+					}
+				}
+				groups.add(group);
+				continue;
+			}
+
+			final List<OmegaExperimenter> leaders = new ArrayList<OmegaExperimenter>();
+			for (final ExperimenterData leaderData : leadersData) {
+				final OmegaExperimenter leader = new OmegaExperimenter(
+				        leaderData.getId(), leaderData.getFirstName(),
+				        leaderData.getLastName());
+				leaders.add(leader);
+			}
+
+			group = new OmegaExperimenterGroup(groupData.getId(), leaders);
 			groups.add(group);
 			this.omegaData.addExperimenterGroup(group);
 
-			leader.addGroup(group);
-			this.omegaData.addExperimenter(leader);
+			for (final OmegaExperimenter leader : leaders) {
+				leader.addGroup(group);
+				this.omegaData.addExperimenter(leader);
+			}
 		}
 
 		// Create the actual user with his groups
@@ -347,6 +396,8 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 	}
 
 	private void loadDataAndFireEvent() throws ServerError {
+		boolean dataChanged = false;
+
 		// TODO add all checks and sub checks
 		final ExperimenterData experimenterData = this.gateway
 		        .getExperimenter();
@@ -354,9 +405,10 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		final OmegaExperimenter experimenter = this.omegaData
 		        .getExperimenter(experimenterData.getId());
 		if (experimenter != null) {
-			this.loadGroups(experimenterData, experimenter);
+			dataChanged = this.loadGroups(experimenterData, experimenter);
 		} else {
 			this.loadExperimenterAndGroups(experimenterData);
+			dataChanged = true;
 		}
 
 		// Create pixels, image, dataset and project for the actual images to
@@ -376,35 +428,46 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 			        .getId());
 			OmegaImage image = this.omegaData.getImage(imageData.getId());
 
-			// Create pixels
-			List<OmegaImagePixels> pixelsList;
-			if (image == null) {
-				pixelsList = new ArrayList<OmegaImagePixels>();
-			} else {
-				pixelsList = image.getPixels();
-			}
+			// final List<Long> ids = new ArrayList<Long>();
+			// ids.add(imageData.getId());
+			// final ImageData dlImage = this.gateway.getImages(datasetData,
+			// ids)
+			// .get(0);
 
-			for (final PixelsData pixelsData : imageData.getAllPixels()) {
-				if (image.containsPixels(pixelsData.getId())) {
-					continue;
-				}
-				final OmegaImagePixels pixels = new OmegaImagePixels(
-				        pixelsData.getId(), pixelsData.getSizeX(),
-				        pixelsData.getSizeY(), pixelsData.getSizeZ(),
-				        pixelsData.getSizeC(), pixelsData.getSizeT());
-				pixelsList.add(pixels);
-			}
+			// Create pixels
+			// List<OmegaImagePixels> pixelsList;
+			// if (image == null) {
+			// pixelsList = new ArrayList<OmegaImagePixels>();
+			// } else {
+			// pixelsList = image.getPixels();
+			// }
+
+			// final PixelsData pixelsData2 = imageData.getDefaultPixels();
+			// pixelsData2.getSizeX();
+
+			// for (final PixelsData pixelsData : imageData.getAllPixels()) {
+			// if (image.containsPixels(pixelsData.getId())) {
+			// continue;
+			// }
+			// final OmegaImagePixels pixels = new OmegaImagePixels(
+			// pixelsData.getId(), pixelsData.getPixelType(),
+			// pixelsData.getSizeX(), pixelsData.getSizeY(),
+			// pixelsData.getSizeZ(), pixelsData.getSizeC(),
+			// pixelsData.getSizeT());
+			// pixelsList.add(pixels);
+			// }
 
 			// Create image
 			if (image == null) {
 				image = new OmegaImage(imageData.getId(), imageData.getName(),
-				        pixelsList);
+				        experimenter);
+				dataChanged = true;
 			} else {
-				for (final OmegaImagePixels pixels : pixelsList) {
-					if (!image.containsPixels(pixels.getElementID())) {
-						image.addPixels(pixels);
-					}
-				}
+				// for (final OmegaImagePixels pixels : pixelsList) {
+				// if (!image.containsPixels(pixels.getElementID())) {
+				// image.addPixels(pixels);
+				// }
+				// }
 			}
 
 			// Create dataset
@@ -413,9 +476,11 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 				images.add(image);
 				dataset = new OmegaDataset(datasetData.getId(),
 				        datasetData.getName(), images);
+				dataChanged = true;
 			} else {
 				if (!dataset.containsImage(image.getElementID())) {
 					dataset.addImage(image);
+					dataChanged = true;
 				}
 			}
 
@@ -426,12 +491,17 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 				project = new OmegaProject(projectData.getId(),
 				        projectData.getName(), datasets);
 				this.omegaData.addProject(project);
+				dataChanged = true;
 			} else {
 				if (!project.containsDataset(dataset.getElementID())) {
 					project.addDataset(dataset);
+					dataChanged = true;
 				}
 			}
 		}
-		this.plugin.fireEvent(null);
+
+		final OmegaLoaderPluginEvent evt = new OmegaLoaderPluginEvent(
+		        this.plugin, dataChanged);
+		this.plugin.fireEvent(evt);
 	}
 }

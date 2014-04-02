@@ -3,8 +3,7 @@ package edu.umassmed.omega.commons.gui;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-public abstract class GenericPanel extends JPanel implements
-        GenericPanelInterface {
+public class GenericPanel extends JPanel implements GenericPanelInterface {
 
 	private static final long serialVersionUID = 7177189735018949022L;
 

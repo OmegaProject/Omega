@@ -10,9 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -26,6 +24,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.exceptions.MissingOmegaData;
 import edu.umassmed.omega.commons.gui.GenericDesktopPane;
 import edu.umassmed.omega.commons.gui.GenericPanelInterface;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -39,7 +38,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 	private int panelIndex;
 
 	private final Map<OmegaPlugin, Integer> startingIndex;
-	private final List<GenericPluginPanel> contents;
+	private final Map<Integer, GenericPluginPanel> contents;
 	private final Map<Integer, Boolean> visibilities;
 	private final Map<Integer, JMenuBar> menus;
 	private final Map<Integer, JInternalFrame> internalFrames;
@@ -62,7 +61,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		this.panelIndex = 0;
 
 		this.startingIndex = new HashMap<OmegaPlugin, Integer>();
-		this.contents = new ArrayList<GenericPluginPanel>();
+		this.contents = new HashMap<Integer, GenericPluginPanel>();
 		this.visibilities = new HashMap<Integer, Boolean>();
 		this.menus = new HashMap<Integer, JMenuBar>();
 		this.internalFrames = new HashMap<Integer, JInternalFrame>();
@@ -147,7 +146,10 @@ public class WorkspacePanel extends GenericDesktopPane implements
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				WorkspacePanel.this.hasAttachedFrame = false;
-				for (final GenericPluginPanel content : WorkspacePanel.this.contents) {
+				for (final Integer index : WorkspacePanel.this.contents
+				        .keySet()) {
+					final GenericPluginPanel content = WorkspacePanel.this.contents
+					        .get(index);
 					if (content.isAttached()) {
 						WorkspacePanel.this.detachFrame(content);
 					}
@@ -159,7 +161,10 @@ public class WorkspacePanel extends GenericDesktopPane implements
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				WorkspacePanel.this.hasAttachedFrame = true;
-				for (final GenericPluginPanel content : WorkspacePanel.this.contents) {
+				for (final Integer index : WorkspacePanel.this.contents
+				        .keySet()) {
+					final GenericPluginPanel content = WorkspacePanel.this.contents
+					        .get(index);
 					if (!content.isAttached()) {
 						WorkspacePanel.this.attachFrame(content);
 					}
@@ -170,7 +175,8 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(OmegaFrame.PROP_TOGGLEWINDOW)) {
+				if (evt.getPropertyName().equals(
+				        OmegaGUIFrame.PROP_TOGGLEWINDOW)) {
 					final GenericPluginPanel content = WorkspacePanel.this.contents
 					        .get(Integer.valueOf(evt.getNewValue().toString()));
 					evt.getNewValue();
@@ -246,8 +252,14 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		final JInternalFrame intFrame = new JInternalFrame(name, true, true,
 		        true, true);
 
-		final GenericPluginPanel content = plugin.getNewPanel(intFrame,
-		        startingIndex);
+		GenericPluginPanel content = null;
+		try {
+			content = plugin.getNewPanel(intFrame, startingIndex);
+		} catch (final MissingOmegaData e) {
+			e.printStackTrace();
+			// TODO inserire warning
+			return;
+		}
 		if (content == null) {
 			// TODO inserire warning
 			System.out.println(name + " MAXIMUM REACHED");
@@ -271,7 +283,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 
 		// this.desktopPane.add(aFrame);
 		this.add(intFrame);
-		this.contents.add(content);
+		this.contents.put(index, content);
 		this.visibilities.put(index, true);
 		this.internalFrames.put(index, intFrame);
 		this.menus.put(index, menuBar);
@@ -313,8 +325,14 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		final String name = "Workspace - " + plugin.getName();
 		final JFrame frame = new JFrame(name);
 
-		final GenericPluginPanel content = plugin.getNewPanel(frame,
-		        startingIndex);
+		GenericPluginPanel content = null;
+		try {
+			content = plugin.getNewPanel(frame, startingIndex);
+		} catch (final MissingOmegaData e) {
+			// TODO inserire warning
+			e.printStackTrace();
+			return;
+		}
 		if (content == null) {
 			// TODO inserire warning
 			System.out.println(name + " MAXIMUM REACHED");
@@ -338,7 +356,7 @@ public class WorkspacePanel extends GenericDesktopPane implements
 
 		// this.desktopPane.add(aFrame);
 		// this.add(frame);
-		this.contents.add(content);
+		this.contents.put(index, content);
 		this.visibilities.put(index, true);
 		this.frames.put(index, frame);
 		this.menus.put(index, menuBar);
@@ -403,9 +421,10 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		intFrame.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(OmegaFrame.PROP_TOGGLEWINDOW)) {
+				if (evt.getPropertyName().equals(
+				        OmegaGUIFrame.PROP_TOGGLEWINDOW)) {
 					WorkspacePanel.this.firePropertyChange(
-					        OmegaFrame.PROP_TOGGLEWINDOW, evt.getOldValue(),
+					        OmegaGUIFrame.PROP_TOGGLEWINDOW, evt.getOldValue(),
 					        evt.getNewValue());
 				}
 			}
@@ -424,9 +443,10 @@ public class WorkspacePanel extends GenericDesktopPane implements
 		frame.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(OmegaFrame.PROP_TOGGLEWINDOW)) {
+				if (evt.getPropertyName().equals(
+				        OmegaGUIFrame.PROP_TOGGLEWINDOW)) {
 					WorkspacePanel.this.firePropertyChange(
-					        OmegaFrame.PROP_TOGGLEWINDOW, evt.getOldValue(),
+					        OmegaGUIFrame.PROP_TOGGLEWINDOW, evt.getOldValue(),
 					        evt.getNewValue());
 				}
 			}

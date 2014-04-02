@@ -1,5 +1,6 @@
 package edu.umassmed.omega.dataNew.coreElements;
 
+
 public class OmegaPerson extends OmegaElement {
 
 	private final String firstName, lastName;

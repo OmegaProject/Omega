@@ -11,7 +11,9 @@ import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
+import edu.umassmed.omega.commons.exceptions.MissingOmegaData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.dataNew.OmegaData;
 
 public abstract class OmegaPlugin {
 	private final List<OmegaPluginListener> listeners = new ArrayList<OmegaPluginListener>();
@@ -22,6 +24,8 @@ public abstract class OmegaPlugin {
 	private final List<Integer> indexes;
 
 	private final Map<String, String> pluginOptions;
+
+	private OmegaData omegaData;
 
 	public OmegaPlugin() {
 		this(1);
@@ -35,8 +39,16 @@ public abstract class OmegaPlugin {
 		this.pluginOptions = new LinkedHashMap<String, String>();
 	}
 
+	public void setOmegaData(final OmegaData omegaData) {
+		this.omegaData = omegaData;
+	}
+
+	protected OmegaData getOmegaData() {
+		return this.omegaData;
+	}
+
 	public GenericPluginPanel getNewPanel(final RootPaneContainer parent,
-	        final int startingIndex) {
+	        final int startingIndex) throws MissingOmegaData {
 		if (this.panels.size() >= this.maximumNumberOfPanels)
 			return null;
 
@@ -75,11 +87,23 @@ public abstract class OmegaPlugin {
 
 	public abstract String getName();
 
+	public String getShortName() {
+		final String[] tokens = this.getName().split(" ");
+		String shortName = "<html> <center>" + tokens[0] + "</center>";
+		for (int i = 1; i < tokens.length; i++) {
+			final String s = tokens[i];
+			shortName += "<br /> <center>";
+			shortName += s + "</center>";
+		}
+		shortName += "</html>";
+		return shortName;
+	}
+
 	// TODO capire se serve
 	public abstract void run();
 
 	public abstract GenericPluginPanel createNewPanel(RootPaneContainer parent,
-	        int index);
+	        int index) throws MissingOmegaData;
 
 	public synchronized void addOmegaPluginListener(
 	        final OmegaPluginListener listener) {

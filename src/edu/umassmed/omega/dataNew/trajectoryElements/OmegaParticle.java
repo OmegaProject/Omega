@@ -2,8 +2,8 @@ package edu.umassmed.omega.dataNew.trajectoryElements;
 
 public class OmegaParticle extends OmegaROI {
 
-	private double intesity;
-	private double probability;
+	private final double intesity;
+	private final double probability;
 
 	public OmegaParticle(final Long elementID, final int frameIndex,
 	        final double x, final double y) {
@@ -16,7 +16,8 @@ public class OmegaParticle extends OmegaROI {
 	public OmegaParticle(final Long elementID, final int frameIndex,
 	        final double x, final double y, final double intesity,
 	        final double probability) {
-		this(elementID, frameIndex, x, probability);
+		super(elementID, frameIndex, x, y);
+
 		this.intesity = intesity;
 		this.probability = probability;
 	}

@@ -11,16 +11,16 @@ import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
 public class OmegaFrame extends OmegaElement implements
         OmegaAnalysisRunContainer {
 
-	private final String name;
+	private final Integer index;
 
 	private List<OmegaAnalysisRun> analysisRuns;
 
-	private int channel;
+	private Integer channel;
 	private final Date timeStamps;
 
-	public OmegaFrame(final Long elementID, final String name) {
+	public OmegaFrame(final Long elementID, final Integer index) {
 		super(elementID);
-		this.name = name;
+		this.index = index;
 
 		this.channel = -1;
 		this.timeStamps = Calendar.getInstance().getTime();
@@ -28,23 +28,24 @@ public class OmegaFrame extends OmegaElement implements
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
-	public OmegaFrame(final Long elementID, final String name, final int channel) {
-		this(elementID, name);
+	public OmegaFrame(final Long elementID, final Integer index,
+	        final Integer channel) {
+		this(elementID, index);
 
 		this.channel = channel;
 	}
 
-	public OmegaFrame(final Long elementID, final String name,
-	        final int channel, final List<OmegaAnalysisRun> analysisRuns) {
-		this(elementID, name, channel);
+	public OmegaFrame(final Long elementID, final Integer index,
+	        final Integer channel, final List<OmegaAnalysisRun> analysisRuns) {
+		this(elementID, index, channel);
 		this.analysisRuns = analysisRuns;
 	}
 
-	public String getName() {
-		return this.name;
+	public Integer getIndex() {
+		return this.index;
 	}
 
-	public int getChannel() {
+	public Integer getChannel() {
 		return this.channel;
 	}
 

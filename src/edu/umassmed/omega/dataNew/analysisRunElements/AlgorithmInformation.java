@@ -3,25 +3,24 @@ package edu.umassmed.omega.dataNew.analysisRunElements;
 import java.util.Calendar;
 import java.util.Date;
 
-import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
+import edu.umassmed.omega.dataNew.coreElements.OmegaNamedElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaPerson;
 
-public class AlgorithmInformation extends OmegaElement {
+public class AlgorithmInformation extends OmegaNamedElement {
 
-	private final String name, description;
 	private final double version;
-	private OmegaPerson author;
+	private final String description;
 	private final Date publicationDate;
+	private OmegaPerson author;
 
 	public AlgorithmInformation(final Long elementID, final String name,
 	        final double version, final String description) {
-		super(elementID);
+		super(elementID, name);
 
-		this.name = name;
 		this.author = null;
 		this.version = version;
-		this.publicationDate = Calendar.getInstance().getTime();
 		this.description = description;
+		this.publicationDate = Calendar.getInstance().getTime();
 	}
 
 	public AlgorithmInformation(final Long elementID, final String name,
@@ -30,5 +29,21 @@ public class AlgorithmInformation extends OmegaElement {
 		this(elementID, name, version, description);
 
 		this.author = author;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public double getVersion() {
+		return this.version;
+	}
+
+	public Date getPublicationData() {
+		return this.publicationDate;
+	}
+
+	public OmegaPerson getAuthor() {
+		return this.author;
 	}
 }

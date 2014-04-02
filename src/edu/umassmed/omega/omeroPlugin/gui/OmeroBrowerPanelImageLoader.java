@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import omero.ServerError;
 import pojos.DatasetData;
 import pojos.ImageData;
 import pojos.ProjectData;
@@ -21,7 +22,7 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 
 	private final OmeroBrowserPanel browserPanel;
 	private final OmeroGateway gateway;
-	private final List<ImageData> images;
+	private List<ImageData> images;
 	private final ProjectData projectData;
 	private final DatasetData datasetData;
 	private volatile ArrayList<OmeroThumbnailImageInfo> imageInfo;
@@ -35,7 +36,18 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 
 		this.projectData = omeDataset.getProject();
 		this.datasetData = omeDataset.getDatasetData();
-		this.images = new ArrayList<ImageData>(this.datasetData.getImages());
+		// this.images = new ArrayList<ImageData>(this.datasetData.getImages());
+		this.images = null;
+		try {
+			this.images = new ArrayList<ImageData>(gateway.getImages(
+			        this.datasetData, null));
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (this.images == null) {
+			this.images = new ArrayList<ImageData>();
+		}
 
 		this.imageInfo = new ArrayList<OmeroThumbnailImageInfo>();
 

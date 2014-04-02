@@ -6,42 +6,35 @@ import java.util.List;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
 
-public class OmegaProject extends OmegaElement implements
+public class OmegaProject extends OmegaNamedElement implements
         OmegaAnalysisRunContainer {
 
-	private final String name;
+	private final List<OmegaDataset> datasets;
 
-	private List<OmegaDataset> datasets;
-
-	private List<OmegaAnalysisRun> analysisRuns;
+	private final List<OmegaAnalysisRun> analysisRuns;
 
 	public OmegaProject(final Long elementID, final String name) {
-		super(elementID);
-		this.name = name;
+		super(elementID, name);
 
 		this.datasets = new ArrayList<OmegaDataset>();
-
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
 	public OmegaProject(final Long elementID, final String name,
 	        final List<OmegaDataset> datasets) {
-		this(elementID, name);
+		super(elementID, name);
 
 		this.datasets = datasets;
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
 	public OmegaProject(final Long elementID, final String name,
 	        final List<OmegaDataset> datasets,
 	        final List<OmegaAnalysisRun> analysisRuns) {
-		this(elementID, name);
+		super(elementID, name);
 
 		this.datasets = datasets;
 		this.analysisRuns = analysisRuns;
-	}
-
-	public String getName() {
-		return this.name;
 	}
 
 	public List<OmegaDataset> getDatasets() {

@@ -12,7 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.OmegaPlugin;
-import edu.umassmed.omega.core.gui.OmegaFrame;
+import edu.umassmed.omega.core.gui.OmegaGUIFrame;
 
 public abstract class GenericPluginPanel extends GenericPanel implements
         GenericPluginPanelInterface {
@@ -85,11 +85,11 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 				final long newValue = GenericPluginPanel.this.index;
 				if (parent instanceof JFrame) {
 					final JFrame frame = (JFrame) parent;
-					frame.firePropertyChange(OmegaFrame.PROP_TOGGLEWINDOW,
+					frame.firePropertyChange(OmegaGUIFrame.PROP_TOGGLEWINDOW,
 					        oldValue, newValue);
 				} else if (parent instanceof JInternalFrame) {
 					final JInternalFrame intFrame = (JInternalFrame) parent;
-					intFrame.firePropertyChange(OmegaFrame.PROP_TOGGLEWINDOW,
+					intFrame.firePropertyChange(OmegaGUIFrame.PROP_TOGGLEWINDOW,
 					        oldValue, newValue);
 				}
 			}

@@ -4,66 +4,66 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
+import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 
 public class TopPanel extends GenericPanel {
 	private static final long serialVersionUID = -2511349408103225400L;
 
-	private JButton omeroButt;
-	private JButton imageViewer, b3, b4, b5;
+	private final Map<Long, JButton> buttons;
 
 	public TopPanel(final JFrame parent) {
 		super(parent);
 
+		this.buttons = new LinkedHashMap<Long, JButton>();
 	}
 
-	protected void initializePanel() {
-		this.createAndAddWidgets();
+	protected void initializePanel(final Map<Long, OmegaPlugin> registeredPlugin) {
+		this.createAndAddWidgets(registeredPlugin);
 
 		this.addListeners();
 	}
 
-	private void createAndAddWidgets() {
+	private void createAndAddWidgets(
+	        final Map<Long, OmegaPlugin> registeredPlugin) {
 		this.setLayout(new FlowLayout());
 
-		this.omeroButt = new JButton("Omero");
-		this.omeroButt.setPreferredSize(new Dimension(120, 120));
-		this.imageViewer = new JButton("Image viewer");
-		this.imageViewer.setPreferredSize(new Dimension(120, 120));
-		this.b3 = new JButton("Button2");
-		this.b3.setPreferredSize(new Dimension(120, 120));
-		this.b4 = new JButton("Button2");
-		this.b4.setPreferredSize(new Dimension(120, 120));
-		this.b5 = new JButton("Button2");
-		this.b5.setPreferredSize(new Dimension(120, 120));
+		for (final Long id : registeredPlugin.keySet()) {
+			final OmegaPlugin plugin = registeredPlugin.get(id);
 
-		this.add(this.omeroButt);
-		this.add(this.imageViewer);
-		this.add(this.b3);
-		this.add(this.b4);
-		this.add(this.b5);
+			final JButton butt = new JButton(plugin.getShortName());
+
+			butt.setPreferredSize(new Dimension(120, 120));
+			this.buttons.put(id, butt);
+			this.add(butt);
+		}
 	}
 
 	private void addListeners() {
-		this.omeroButt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent evt) {
-				if (TopPanel.this.getParentContainer() instanceof JFrame) {
-					final JFrame frame = (JFrame) TopPanel.this
-					        .getParentContainer();
-					frame.firePropertyChange(OmegaFrame.PROP_PLUGIN, -1, 0);
-				} else {
-					final JInternalFrame intFrame = (JInternalFrame) TopPanel.this
-					        .getParentContainer();
-					intFrame.firePropertyChange(OmegaFrame.PROP_PLUGIN,
-					        (long) -1, (long) 0);
+		for (final Long id : this.buttons.keySet()) {
+			final JButton butt = this.buttons.get(id);
+			butt.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent evt) {
+					if (TopPanel.this.getParentContainer() instanceof JFrame) {
+						final JFrame frame = (JFrame) TopPanel.this
+						        .getParentContainer();
+						frame.firePropertyChange(OmegaGUIFrame.PROP_PLUGIN, -1, id);
+					} else {
+						final JInternalFrame intFrame = (JInternalFrame) TopPanel.this
+						        .getParentContainer();
+						intFrame.firePropertyChange(OmegaGUIFrame.PROP_PLUGIN, -1,
+						        id);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 }

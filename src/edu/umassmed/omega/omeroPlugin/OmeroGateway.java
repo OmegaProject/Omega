@@ -30,20 +30,22 @@ import omero.model.Dataset;
 import omero.model.Experimenter;
 import omero.model.ExperimenterGroup;
 import omero.model.IObject;
+import omero.model.Image;
 import omero.model.Project;
 import omero.sys.ParametersI;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.GroupData;
+import pojos.ImageData;
 import pojos.ProjectData;
 import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
 
 import com.galliva.gallibrary.GLogManager;
 
-import edu.umassmed.omega.dataNew.connection.OmegaGateway;
-import edu.umassmed.omega.dataNew.connection.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.connection.OmegaServerInformation;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
 
 /**
  * Entry point to access the services. Code should be provided to keep those
@@ -337,6 +339,36 @@ public class OmeroGateway extends OmegaGateway {
 	// }
 	// return images;
 	// }
+
+	public List<ImageData> getImages(final DatasetData dataset, List<Long> ids)
+	        throws ServerError {
+		final List<ImageData> images = new ArrayList<ImageData>();
+		final ParametersI po = new ParametersI();
+		// po.add(Project.class.getName(), omero.rtypes.rlong(project.getId()));
+		po.exp(omero.rtypes.rlong(dataset.getOwner().getId()));
+		po.noLeaves();
+
+		if (ids == null) {
+			ids = new ArrayList<Long>();
+			final Set<ImageData> set = dataset.getImages();
+			for (final ImageData obj : set) {
+				ids.add(obj.getId());
+			}
+		}
+
+		final IContainerPrx service = this.getContainerService();
+		final List<Image> objects = service.getImages(Image.class.getName(),
+		        ids, po);
+		if (objects == null)
+			return images;
+
+		final Iterator<Image> i = objects.iterator();
+		while (i.hasNext()) {
+			images.add(new ImageData(i.next()));
+		}
+
+		return images;
+	}
 
 	public List<DatasetData> getDatasets(final ProjectData project)
 	        throws ServerError {

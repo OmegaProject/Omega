@@ -13,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -26,7 +27,7 @@ import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.core.OmegaApplication;
 
-public class OmegaFrame extends JFrame {
+public class OmegaGUIFrame extends JFrame {
 
 	private static final long serialVersionUID = -4775204088456661307L;
 
@@ -55,7 +56,7 @@ public class OmegaFrame extends JFrame {
 	private long pluginSelected;
 	private boolean isAttached;
 
-	public OmegaFrame(final OmegaApplication omegaApp) {
+	public OmegaGUIFrame(final OmegaApplication omegaApp) {
 		this.omegaApp = omegaApp;
 
 		this.setTitle("OMEGA - Open Microscopy Environment inteGrated Analysis");
@@ -72,8 +73,8 @@ public class OmegaFrame extends JFrame {
 		this.addListeners();
 	}
 
-	public void initialize() {
-		this.topPanel.initializePanel();
+	public void initialize(final Map<Long, OmegaPlugin> registeredPlugin) {
+		this.topPanel.initializePanel(registeredPlugin);
 		this.workspacePanel.initializePanel();
 		this.sidePanel.initializePanel();
 	}
@@ -121,30 +122,30 @@ public class OmegaFrame extends JFrame {
 
 			@Override
 			public void componentResized(final ComponentEvent evt) {
-				OmegaFrame.this.mainSplitPane.setDividerLocation(0.75);
+				OmegaGUIFrame.this.mainSplitPane.setDividerLocation(0.75);
 			}
 		});
 		this.quitMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				OmegaFrame.this.quit();
+				OmegaGUIFrame.this.quit();
 			}
 		});
 
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent e) {
-				OmegaFrame.this.quit();
+				OmegaGUIFrame.this.quit();
 			}
 		});
 
 		this.attachEdetachAllWindows.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				if (OmegaFrame.this.isAttached) {
-					OmegaFrame.this.detachWindows();
+				if (OmegaGUIFrame.this.isAttached) {
+					OmegaGUIFrame.this.detachWindows();
 				} else {
-					OmegaFrame.this.attachWindows();
+					OmegaGUIFrame.this.attachWindows();
 				}
 			}
 		});
@@ -152,11 +153,11 @@ public class OmegaFrame extends JFrame {
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(OmegaFrame.PROP_PLUGIN)) {
-					final OmegaPlugin plugin = OmegaFrame.this.omegaApp
+				if (evt.getPropertyName().equals(OmegaGUIFrame.PROP_PLUGIN)) {
+					final OmegaPlugin plugin = OmegaGUIFrame.this.omegaApp
 					        .getPlugin((long) evt.getNewValue());
-					OmegaFrame.this.pluginSelected = (long) evt.getNewValue();
-					OmegaFrame.this.workspacePanel.showPlugin(plugin);
+					OmegaGUIFrame.this.pluginSelected = (long) evt.getNewValue();
+					OmegaGUIFrame.this.workspacePanel.showPlugin(plugin);
 				}
 			}
 		});

@@ -3,9 +3,10 @@ package edu.umassmed.omega.dataNew.coreElements;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class OmegaExperimenter extends OmegaPerson {
 
-	private List<OmegaExperimenterGroup> groups;
+	private final List<OmegaExperimenterGroup> groups;
 
 	public OmegaExperimenter(final Long elementID, final String firstName,
 	        final String lastName) {
@@ -16,7 +17,7 @@ public class OmegaExperimenter extends OmegaPerson {
 
 	public OmegaExperimenter(final Long elementID, final String firstName,
 	        final String lastName, final List<OmegaExperimenterGroup> groups) {
-		this(elementID, firstName, lastName);
+		super(elementID, firstName, lastName);
 
 		this.groups = groups;
 	}

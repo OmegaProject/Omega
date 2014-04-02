@@ -4,7 +4,7 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 
 public class OmegaLink extends OmegaElement {
 
-	private double speed, angle;
+	private final double speed, angle;
 	private final OmegaROI startingROI, endingROI;
 
 	public OmegaLink(final Long elementID, final OmegaROI startingROI,
@@ -13,11 +13,17 @@ public class OmegaLink extends OmegaElement {
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
+
+		this.speed = -1;
+		this.angle = -1;
 	}
 
 	public OmegaLink(final Long elementID, final OmegaROI startingROI,
 	        final OmegaROI endingROI, final double speed, final double angle) {
-		this(elementID, startingROI, endingROI);
+		super(elementID);
+
+		this.startingROI = startingROI;
+		this.endingROI = endingROI;
 
 		this.speed = speed;
 		this.angle = angle;

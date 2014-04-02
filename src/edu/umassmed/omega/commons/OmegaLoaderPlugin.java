@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginListener;
-import edu.umassmed.omega.dataNew.connection.OmegaGateway;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
 public abstract class OmegaLoaderPlugin extends OmegaPlugin {
 	private final List<OmegaLoaderPluginListener> listeners = new ArrayList<OmegaLoaderPluginListener>();
@@ -31,8 +31,7 @@ public abstract class OmegaLoaderPlugin extends OmegaPlugin {
 
 	@Override
 	public synchronized void fireEvent() {
-		final OmegaLoaderPluginEvent event = new OmegaLoaderPluginEvent(null,
-		        null);
+		final OmegaLoaderPluginEvent event = new OmegaLoaderPluginEvent();
 		final Iterator<OmegaLoaderPluginListener> i = this.listeners.iterator();
 		while (i.hasNext()) {
 			i.next().handleOmegaLoaderPluginEvent(event);

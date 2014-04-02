@@ -1,12 +1,13 @@
 package edu.umassmed.omega.dataNew.coreElements;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class OmegaImage extends OmegaElement {
-
-	private final String name;
+public class OmegaImage extends OmegaNamedElement {
 
 	private final List<OmegaImagePixels> pixelsList;
+
+	private final OmegaExperimenter experimenter;
 
 	// where
 	// sizeX and sizeY = micron per pixel on axis
@@ -15,15 +16,26 @@ public class OmegaImage extends OmegaElement {
 	// sizeT = seconds per frames
 
 	public OmegaImage(final Long elementID, final String name,
-	        final List<OmegaImagePixels> pixels) {
-		super(elementID);
-		this.name = name;
+	        final OmegaExperimenter experimenter) {
+		super(elementID, name);
 
-		this.pixelsList = pixels;
+		this.experimenter = experimenter;
+
+		this.pixelsList = new ArrayList<OmegaImagePixels>();
 	}
 
-	public String getName() {
-		return this.name;
+	public OmegaImage(final Long elementID, final String name,
+	        final OmegaExperimenter experimenter,
+	        final List<OmegaImagePixels> pixelsList) {
+		super(elementID, name);
+
+		this.experimenter = experimenter;
+
+		this.pixelsList = pixelsList;
+	}
+
+	public OmegaExperimenter getExperimenter() {
+		return this.experimenter;
 	}
 
 	public List<OmegaImagePixels> getPixels() {

@@ -27,8 +27,8 @@ import edu.umassmed.omega.commons.OmegaConstants;
 import edu.umassmed.omega.commons.OmegaDataEncryption;
 import edu.umassmed.omega.commons.OmegaEvents;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.dataNew.connection.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.connection.OmegaServerInformation;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 
 public class OmeroConnectionDialog extends JDialog {

@@ -1,4 +1,4 @@
-package edu.umassmed.omega.dataNew.connection;
+package edu.umassmed.omega.dataNew.imageDBConnectionElements;
 
 public abstract class OmegaGateway {
 

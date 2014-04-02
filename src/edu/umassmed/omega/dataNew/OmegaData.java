@@ -1,5 +1,6 @@
 package edu.umassmed.omega.dataNew;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
@@ -10,9 +11,19 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 
 public class OmegaData {
 
-	private List<OmegaProject> projects;
-	private List<OmegaExperimenter> experimenters;
-	private List<OmegaExperimenterGroup> groups;
+	private final List<OmegaProject> projects;
+	private final List<OmegaExperimenter> experimenters;
+	private final List<OmegaExperimenterGroup> groups;
+
+	public OmegaData() {
+		this.projects = new ArrayList<OmegaProject>();
+		this.experimenters = new ArrayList<OmegaExperimenter>();
+		this.groups = new ArrayList<OmegaExperimenterGroup>();
+	}
+
+	public List<OmegaProject> getProjects() {
+		return this.projects;
+	}
 
 	public void addProject(final OmegaProject project) {
 		this.projects.add(project);

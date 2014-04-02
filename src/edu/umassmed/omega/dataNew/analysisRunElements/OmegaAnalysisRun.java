@@ -13,7 +13,7 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 
 	private final Date timeStamps;
 
-	private OmegaExperimenter owner;
+	private OmegaExperimenter experimenter;
 
 	// TODO aggiungere OmegaExperimenterGroup permissions
 
@@ -26,7 +26,7 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 
 		this.timeStamps = Calendar.getInstance().getTime();
 
-		this.owner = null;
+		this.experimenter = null;
 
 		this.algorithmSpec = null;
 
@@ -36,7 +36,7 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 	public OmegaAnalysisRun(final Long elementID, final OmegaExperimenter owner) {
 		this(elementID);
 
-		this.owner = owner;
+		this.experimenter = owner;
 	}
 
 	public OmegaAnalysisRun(final Long elementID,
@@ -54,6 +54,18 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 		this(elementID, owner, algorithmSpec);
 
 		this.analysisRuns = analysisRuns;
+	}
+
+	public Date getTimeStamps() {
+		return this.timeStamps;
+	}
+
+	public OmegaExperimenter getExperimenter() {
+		return this.experimenter;
+	}
+
+	public OmegaAlgorithmSpecification AlgorithmSpec() {
+		return this.algorithmSpec;
 	}
 
 	@Override

@@ -5,29 +5,41 @@ import java.util.List;
 
 public class OmegaExperimenterGroup extends OmegaElement {
 
-	private final OmegaExperimenter leader;
+	private final List<OmegaExperimenter> leaders;
 
 	private List<OmegaExperimenter> associates;
 
 	public OmegaExperimenterGroup(final Long elementID,
-	        final OmegaExperimenter leader) {
+	        final List<OmegaExperimenter> leaders) {
 		super(elementID);
 
-		this.leader = leader;
+		this.leaders = leaders;
 
 		this.associates = new ArrayList<OmegaExperimenter>();
 	}
 
 	public OmegaExperimenterGroup(final Long elementID,
-	        final OmegaExperimenter leader,
+	        final List<OmegaExperimenter> leaders,
 	        final List<OmegaExperimenter> associates) {
-		this(elementID, leader);
+		this(elementID, leaders);
 
 		this.associates = associates;
 	}
 
-	public OmegaExperimenter getLeader() {
-		return this.leader;
+	public List<OmegaExperimenter> getLeaders() {
+		return this.leaders;
+	}
+
+	public boolean containsLeader(final long id) {
+		for (final OmegaExperimenter leader : this.leaders) {
+			if (leader.getElementID() == id)
+				return true;
+		}
+		return false;
+	}
+
+	public void addLeader(final OmegaExperimenter leader) {
+		this.leaders.add(leader);
 	}
 
 	public List<OmegaExperimenter> getAssociates() {
