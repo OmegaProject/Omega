@@ -9,12 +9,16 @@ import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
 public class OmegaDataset extends OmegaNamedElement implements
         OmegaAnalysisRunContainer {
 
+	private OmegaProject project;
+
 	private final List<OmegaImage> images;
 
 	private final List<OmegaAnalysisRun> analysisRuns;
 
 	public OmegaDataset(final Long elementID, final String name) {
 		super(elementID, name);
+
+		this.project = null;
 
 		this.images = new ArrayList<OmegaImage>();
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
@@ -24,17 +28,18 @@ public class OmegaDataset extends OmegaNamedElement implements
 	        final List<OmegaImage> images) {
 		super(elementID, name);
 
+		this.project = null;
+
 		this.images = images;
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
-	public OmegaDataset(final Long elementID, final String name,
-	        final List<OmegaImage> images,
-	        final List<OmegaAnalysisRun> analysisRuns) {
-		super(elementID, name);
+	public void setParentProject(final OmegaProject project) {
+		this.project = project;
+	}
 
-		this.images = images;
-		this.analysisRuns = analysisRuns;
+	public OmegaProject getParentProject() {
+		return this.project;
 	}
 
 	public List<OmegaImage> getImages() {

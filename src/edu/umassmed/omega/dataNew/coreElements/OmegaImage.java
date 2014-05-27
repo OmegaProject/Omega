@@ -3,11 +3,19 @@ package edu.umassmed.omega.dataNew.coreElements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OmegaImage extends OmegaNamedElement {
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
+
+public class OmegaImage extends OmegaNamedElement implements
+        OmegaAnalysisRunContainer {
+
+	private final List<OmegaDataset> datasets;
 
 	private final List<OmegaImagePixels> pixelsList;
 
 	private final OmegaExperimenter experimenter;
+
+	private final List<OmegaAnalysisRun> analysisRuns;
 
 	// where
 	// sizeX and sizeY = micron per pixel on axis
@@ -19,9 +27,13 @@ public class OmegaImage extends OmegaNamedElement {
 	        final OmegaExperimenter experimenter) {
 		super(elementID, name);
 
+		this.datasets = new ArrayList<OmegaDataset>();
+
 		this.experimenter = experimenter;
 
 		this.pixelsList = new ArrayList<OmegaImagePixels>();
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
 	public OmegaImage(final Long elementID, final String name,
@@ -29,9 +41,21 @@ public class OmegaImage extends OmegaNamedElement {
 	        final List<OmegaImagePixels> pixelsList) {
 		super(elementID, name);
 
+		this.datasets = new ArrayList<OmegaDataset>();
+
 		this.experimenter = experimenter;
 
 		this.pixelsList = pixelsList;
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
+	}
+
+	public void addParentDataset(final OmegaDataset dataset) {
+		this.datasets.add(dataset);
+	}
+
+	public List<OmegaDataset> getParentDatasets() {
+		return this.datasets;
 	}
 
 	public OmegaExperimenter getExperimenter() {
@@ -40,6 +64,14 @@ public class OmegaImage extends OmegaNamedElement {
 
 	public List<OmegaImagePixels> getPixels() {
 		return this.pixelsList;
+	}
+
+	public OmegaImagePixels getDefaultPixels() {
+		final OmegaImagePixels defaultPixels = this.getPixels(0);
+		if (defaultPixels == null) {
+			// TODO throw error
+		}
+		return this.getPixels(0);
 	}
 
 	public OmegaImagePixels getPixels(final int index) {
@@ -56,5 +88,15 @@ public class OmegaImage extends OmegaNamedElement {
 
 	public void addPixels(final OmegaImagePixels pixels) {
 		this.pixelsList.add(pixels);
+	}
+
+	@Override
+	public List<OmegaAnalysisRun> getAnalysisRuns() {
+		return this.analysisRuns;
+	}
+
+	@Override
+	public void addAnalysisRun(final OmegaAnalysisRun analysisRun) {
+		analysisRun.addAnalysisRun(analysisRun);
 	}
 }

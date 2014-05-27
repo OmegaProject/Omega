@@ -4,23 +4,28 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaNamedElement;
 
 public class OmegaParameter extends OmegaNamedElement {
 
-	private final Class<?> clazz;
 	private final Object value;
 
 	public OmegaParameter(final Long elementID, final String name,
-	        final Class<?> clazz, final Object value) {
+	        final Object value) {
 		super(elementID, name);
 
-		this.clazz = clazz;
 		this.value = value;
-	}
-
-	public Class<?> getClazz() {
-		return this.clazz;
 	}
 
 	public Object getValue() {
 		return this.value;
+	}
+
+	public String getStringValue() {
+		if (this.value instanceof Integer)
+			return Integer.toString((int) this.value);
+		else if (this.value instanceof Double)
+			return Double.toString((double) this.value);
+		else if (this.value instanceof String)
+			return (String) this.value;
+		else
+			return this.value.toString();
 	}
 
 }

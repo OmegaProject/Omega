@@ -32,15 +32,19 @@ import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.GroupData;
 import pojos.ImageData;
+import pojos.PixelsData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.OmegaEvents;
-import edu.umassmed.omega.commons.eventSystem.OmegaLoaderPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
+import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenterGroup;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
@@ -51,8 +55,6 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
-	private final OmeroPlugin plugin;
-
 	private JSplitPane mainPanel;
 	private JMenu connectionMenu, loadableUserMenu;
 	private JMenuItem connectMItem, notLoggedVisualMItem;
@@ -61,7 +63,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 	private OmeroBrowserPanel browserPanel;
 	private final OmeroConnectionDialog connectionDialog;
 
-	private JButton openSelectedImageButt, closeButt;
+	private JButton loadImages_butt, loadAndSelectImages_butt, close_butt;
 
 	private final OmeroGateway gateway;
 
@@ -77,7 +79,6 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 	        final OmegaData omegaData, final int index) {
 		super(parent, plugin, index);
 
-		this.plugin = plugin;
 		this.gateway = gateway;
 		this.omegaData = omegaData;
 		this.connectionDialog = new OmeroConnectionDialog(this, gateway);
@@ -191,25 +192,39 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		this.mainPanel.setRightComponent(scrollPaneBrowser);
 		this.add(this.mainPanel, BorderLayout.CENTER);
 
-		// TODO add button to open selected images
+		// TODO add button to open isSelected images
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 
-		this.openSelectedImageButt = new JButton("Open selected images");
-		buttonPanel.add(this.openSelectedImageButt);
+		this.loadImages_butt = new JButton("Load images");
+		buttonPanel.add(this.loadImages_butt);
 
-		this.closeButt = new JButton("Close");
-		buttonPanel.add(this.closeButt);
+		this.loadAndSelectImages_butt = new JButton("Load and select images");
+		buttonPanel.add(this.loadAndSelectImages_butt);
+
+		this.close_butt = new JButton("Close");
+		buttonPanel.add(this.close_butt);
 
 		this.add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 	private void addListeners() {
-		this.openSelectedImageButt.addActionListener(new ActionListener() {
+		this.loadImages_butt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				try {
-					OmeroPluginPanel.this.loadDataAndFireEvent();
+					OmeroPluginPanel.this.loadDataAndFireEvent(false);
+				} catch (final ServerError err) {
+					err.printStackTrace();
+					return;
+				}
+			}
+		});
+		this.loadAndSelectImages_butt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				try {
+					OmeroPluginPanel.this.loadDataAndFireEvent(true);
 				} catch (final ServerError err) {
 					err.printStackTrace();
 					return;
@@ -231,6 +246,30 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 						OmeroPluginPanel.this.updateVisualizationMenu();
 					} catch (final ServerError e) {
 						e.printStackTrace();
+					}
+					if (OmeroPluginPanel.this.gateway.isConnected()) {
+						OmegaExperimenter experimenter = null;
+						try {
+							final ExperimenterData experimenterData = OmeroPluginPanel.this.gateway
+							        .getExperimenter();
+							experimenter = new OmegaExperimenter(
+							        experimenterData.getId(), experimenterData
+							                .getFirstName(), experimenterData
+							                .getLastName());
+						} catch (final ServerError e) {
+							// TODO Gestire errore
+							e.printStackTrace();
+						}
+						OmeroPluginPanel.this.getPlugin().fireEvent(
+						        new OmegaGatewayEvent(OmeroPluginPanel.this
+						                .getPlugin(),
+						                OmegaGatewayEvent.STATUS_CONNECTED,
+						                experimenter));
+					} else {
+						OmeroPluginPanel.this.getPlugin().fireEvent(
+						        new OmegaGatewayEvent(OmeroPluginPanel.this
+						                .getPlugin(),
+						                OmegaGatewayEvent.STATUS_DISCONNECTED));
 					}
 				}
 			}
@@ -395,8 +434,10 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		this.omegaData.addExperimenter(experimenter);
 	}
 
-	private void loadDataAndFireEvent() throws ServerError {
+	private void loadDataAndFireEvent(final boolean hasToSelect)
+	        throws ServerError {
 		boolean dataChanged = false;
+		final List<OmegaElement> loadedElements = new ArrayList<OmegaElement>();
 
 		// TODO add all checks and sub checks
 		final ExperimenterData experimenterData = this.gateway
@@ -435,39 +476,50 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 			// .get(0);
 
 			// Create pixels
-			// List<OmegaImagePixels> pixelsList;
-			// if (image == null) {
-			// pixelsList = new ArrayList<OmegaImagePixels>();
-			// } else {
-			// pixelsList = image.getPixels();
-			// }
+			List<OmegaImagePixels> pixelsList;
+			if (image == null) {
+				pixelsList = new ArrayList<OmegaImagePixels>();
+			} else {
+				pixelsList = image.getPixels();
+			}
 
-			// final PixelsData pixelsData2 = imageData.getDefaultPixels();
-			// pixelsData2.getSizeX();
-
-			// for (final PixelsData pixelsData : imageData.getAllPixels()) {
-			// if (image.containsPixels(pixelsData.getId())) {
-			// continue;
-			// }
-			// final OmegaImagePixels pixels = new OmegaImagePixels(
-			// pixelsData.getId(), pixelsData.getPixelType(),
-			// pixelsData.getSizeX(), pixelsData.getSizeY(),
-			// pixelsData.getSizeZ(), pixelsData.getSizeC(),
-			// pixelsData.getSizeT());
-			// pixelsList.add(pixels);
-			// }
+			for (final PixelsData pixelsData : imageData.getAllPixels()) {
+				if ((image != null) && image.containsPixels(pixelsData.getId())) {
+					continue;
+				}
+				final OmegaImagePixels pixels = new OmegaImagePixels(
+				        pixelsData.getId(), pixelsData.getPixelType(),
+				        pixelsData.getSizeX(), pixelsData.getSizeY(),
+				        pixelsData.getSizeZ(), pixelsData.getSizeC(),
+				        pixelsData.getSizeT(), pixelsData.getPixelSizeX(),
+				        pixelsData.getPixelSizeY(), pixelsData.getPixelSizeZ());
+				final int defaultZ = this.gateway.getDefaultZ(pixelsData
+				        .getId());
+				pixels.setSelectedZ(defaultZ);
+				final int defaultC = pixelsData.getSizeC() - 1;
+				pixels.setSelectedC(defaultC);
+				pixelsList.add(pixels);
+			}
 
 			// Create image
 			if (image == null) {
 				image = new OmegaImage(imageData.getId(), imageData.getName(),
-				        experimenter);
+				        experimenter, pixelsList);
 				dataChanged = true;
 			} else {
-				// for (final OmegaImagePixels pixels : pixelsList) {
-				// if (!image.containsPixels(pixels.getElementID())) {
-				// image.addPixels(pixels);
-				// }
-				// }
+				for (final OmegaImagePixels pixels : pixelsList) {
+					if (!image.containsPixels(pixels.getElementID())) {
+						image.addPixels(pixels);
+					}
+				}
+			}
+
+			for (final OmegaImagePixels pixels : pixelsList) {
+				pixels.setParentImage(image);
+			}
+
+			if (hasToSelect && !loadedElements.contains(image)) {
+				loadedElements.add(image);
 			}
 
 			// Create dataset
@@ -476,12 +528,20 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 				images.add(image);
 				dataset = new OmegaDataset(datasetData.getId(),
 				        datasetData.getName(), images);
+				image.addParentDataset(dataset);
 				dataChanged = true;
 			} else {
+				if (!image.getParentDatasets().contains(dataset)) {
+					image.addParentDataset(dataset);
+				}
 				if (!dataset.containsImage(image.getElementID())) {
 					dataset.addImage(image);
 					dataChanged = true;
 				}
+			}
+
+			if (hasToSelect && !loadedElements.contains(dataset)) {
+				loadedElements.add(dataset);
 			}
 
 			if (project == null) {
@@ -498,10 +558,18 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 					dataChanged = true;
 				}
 			}
+			dataset.setParentProject(project);
+
+			if (hasToSelect && !loadedElements.contains(project)) {
+				loadedElements.add(project);
+			}
 		}
 
-		final OmegaLoaderPluginEvent evt = new OmegaLoaderPluginEvent(
-		        this.plugin, dataChanged);
-		this.plugin.fireEvent(evt);
+		if (dataChanged) {
+			this.getPlugin()
+			        .fireEvent(
+			                new OmegaDataChangedEvent(this.getPlugin(),
+			                        loadedElements));
+		}
 	}
 }

@@ -11,34 +11,67 @@ import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
 public class OmegaFrame extends OmegaElement implements
         OmegaAnalysisRunContainer {
 
+	private OmegaImagePixels pixels;
+
 	private final Integer index;
 
-	private List<OmegaAnalysisRun> analysisRuns;
+	private final List<OmegaAnalysisRun> analysisRuns;
 
-	private Integer channel;
+	private Integer zPlane, channel;
 	private final Date timeStamps;
 
 	public OmegaFrame(final Long elementID, final Integer index) {
 		super(elementID);
+
+		this.pixels = null;
+
 		this.index = index;
 
+		this.zPlane = -1;
 		this.channel = -1;
+
 		this.timeStamps = Calendar.getInstance().getTime();
 
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
 	public OmegaFrame(final Long elementID, final Integer index,
-	        final Integer channel) {
-		this(elementID, index);
+	        final Integer channel, final Integer zPlane) {
+		super(elementID);
 
+		this.pixels = null;
+
+		this.index = index;
+
+		this.zPlane = zPlane;
 		this.channel = channel;
+
+		this.timeStamps = Calendar.getInstance().getTime();
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
 	public OmegaFrame(final Long elementID, final Integer index,
 	        final Integer channel, final List<OmegaAnalysisRun> analysisRuns) {
-		this(elementID, index, channel);
-		this.analysisRuns = analysisRuns;
+		super(elementID);
+
+		this.pixels = null;
+
+		this.index = index;
+
+		this.channel = channel;
+
+		this.timeStamps = Calendar.getInstance().getTime();
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
+	}
+
+	public void setParentPixels(final OmegaImagePixels pixels) {
+		this.pixels = pixels;
+	}
+
+	public OmegaImagePixels getParentPixels() {
+		return this.pixels;
 	}
 
 	public Integer getIndex() {
@@ -47,6 +80,10 @@ public class OmegaFrame extends OmegaElement implements
 
 	public Integer getChannel() {
 		return this.channel;
+	}
+
+	public void setChannel(final Integer channel) {
+		this.channel = channel;
 	}
 
 	public Date getTimeStamps() {

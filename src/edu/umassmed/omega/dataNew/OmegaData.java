@@ -6,7 +6,9 @@ import java.util.List;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenterGroup;
+import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 
 public class OmegaData {
@@ -136,6 +138,66 @@ public class OmegaData {
 				for (final OmegaImage image : dataset.getImages()) {
 					if (image.getElementID() == id)
 						return image;
+				}
+			}
+		}
+		return null;
+	}
+
+	public boolean containsPixels(final long id) {
+		for (final OmegaProject project : this.projects) {
+			for (final OmegaDataset dataset : project.getDatasets()) {
+				for (final OmegaImage image : dataset.getImages()) {
+					for (final OmegaImagePixels pixels : image.getPixels()) {
+						if (pixels.getElementID() == id)
+							return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public OmegaImagePixels getPixels(final long id) {
+		for (final OmegaProject project : this.projects) {
+			for (final OmegaDataset dataset : project.getDatasets()) {
+				for (final OmegaImage image : dataset.getImages()) {
+					for (final OmegaImagePixels pixels : image.getPixels()) {
+						if (pixels.getElementID() == id)
+							return pixels;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public boolean containsFrame(final long id) {
+		for (final OmegaProject project : this.projects) {
+			for (final OmegaDataset dataset : project.getDatasets()) {
+				for (final OmegaImage image : dataset.getImages()) {
+					for (final OmegaImagePixels pixels : image.getPixels()) {
+						for (final OmegaFrame frame : pixels.getFrames()) {
+							if (frame.getElementID() == id)
+								return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public OmegaFrame getFrame(final long id) {
+		for (final OmegaProject project : this.projects) {
+			for (final OmegaDataset dataset : project.getDatasets()) {
+				for (final OmegaImage image : dataset.getImages()) {
+					for (final OmegaImagePixels pixels : image.getPixels()) {
+						for (final OmegaFrame frame : pixels.getFrames()) {
+							if (frame.getElementID() == id)
+								return frame;
+						}
+					}
 				}
 			}
 		}

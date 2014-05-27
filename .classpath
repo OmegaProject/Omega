@@ -9,19 +9,6 @@
 	<classpathentry kind="lib" path="lib/GalLibrary.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.22-bin.jar"/>
 	<classpathentry kind="lib" path="lib/omero_client.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-all-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-bench.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-core-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-cs-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-cs.optional-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-db4ounit-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-instrumentation-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-nqopt-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-optional-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-osgi-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-osgi-test-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-taj-java5.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-tools-java5.jar"/>
 	<classpathentry kind="lib" path="lib/jcommon/jcommon-1.0.16.jar"/>
 	<classpathentry kind="lib" path="lib/jfreechart/iText-2.1.5.jar"/>
 	<classpathentry kind="lib" path="lib/jfreechart/jcommon-1.0.16.jar"/>

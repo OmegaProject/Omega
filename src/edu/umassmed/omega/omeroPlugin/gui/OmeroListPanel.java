@@ -25,6 +25,7 @@ import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroTreeData;
+import edu.umassmed.omega.omeroPlugin.runnable.OmeroListPanelProjectAndDatasetLoader;
 
 public class OmeroListPanel extends GenericPanel {
 

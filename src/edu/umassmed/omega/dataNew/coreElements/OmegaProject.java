@@ -28,15 +28,6 @@ public class OmegaProject extends OmegaNamedElement implements
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 	}
 
-	public OmegaProject(final Long elementID, final String name,
-	        final List<OmegaDataset> datasets,
-	        final List<OmegaAnalysisRun> analysisRuns) {
-		super(elementID, name);
-
-		this.datasets = datasets;
-		this.analysisRuns = analysisRuns;
-	}
-
 	public List<OmegaDataset> getDatasets() {
 		return this.datasets;
 	}

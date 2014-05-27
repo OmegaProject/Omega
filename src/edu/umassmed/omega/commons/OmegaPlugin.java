@@ -11,9 +11,8 @@ import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
-import edu.umassmed.omega.commons.exceptions.MissingOmegaData;
+import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.dataNew.OmegaData;
 
 public abstract class OmegaPlugin {
 	private final List<OmegaPluginListener> listeners = new ArrayList<OmegaPluginListener>();
@@ -24,8 +23,6 @@ public abstract class OmegaPlugin {
 	private final List<Integer> indexes;
 
 	private final Map<String, String> pluginOptions;
-
-	private OmegaData omegaData;
 
 	public OmegaPlugin() {
 		this(1);
@@ -39,16 +36,8 @@ public abstract class OmegaPlugin {
 		this.pluginOptions = new LinkedHashMap<String, String>();
 	}
 
-	public void setOmegaData(final OmegaData omegaData) {
-		this.omegaData = omegaData;
-	}
-
-	protected OmegaData getOmegaData() {
-		return this.omegaData;
-	}
-
 	public GenericPluginPanel getNewPanel(final RootPaneContainer parent,
-	        final int startingIndex) throws MissingOmegaData {
+	        final int startingIndex) throws OmegaMissingData {
 		if (this.panels.size() >= this.maximumNumberOfPanels)
 			return null;
 
@@ -103,7 +92,7 @@ public abstract class OmegaPlugin {
 	public abstract void run();
 
 	public abstract GenericPluginPanel createNewPanel(RootPaneContainer parent,
-	        int index) throws MissingOmegaData;
+	        int index) throws OmegaMissingData;
 
 	public synchronized void addOmegaPluginListener(
 	        final OmegaPluginListener listener) {

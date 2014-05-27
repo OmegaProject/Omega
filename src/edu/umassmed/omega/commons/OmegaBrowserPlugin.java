@@ -1,51 +1,35 @@
 package edu.umassmed.omega.commons;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaBrowserPluginEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaBrowserPluginListener;
+import edu.umassmed.omega.dataNew.OmegaLoadedData;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 
-public abstract class OmegaBrowserPlugin extends OmegaPlugin {
-	private final List<OmegaBrowserPluginListener> listeners = new ArrayList<OmegaBrowserPluginListener>();
+public abstract class OmegaBrowserPlugin extends OmegaDataManagerPlugin {
 
 	// private final OmegaGateway gateway;
 	// TODO Loaded data
+	private OmegaLoadedData loadedData;
+	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
 	public OmegaBrowserPlugin() {
-		super(1);
+		super();
 	}
 
-	public synchronized void addOmegaBrowserPluginListener(
-	        final OmegaBrowserPluginListener listener) {
-		this.listeners.add(listener);
+	public void setLoadedData(final OmegaLoadedData loadedData) {
+		this.loadedData = loadedData;
 	}
 
-	public synchronized void removeOmegaBrowserPluginEventListener(
-	        final OmegaBrowserPluginListener listener) {
-		this.listeners.remove(listener);
+	public void setLoadedAnalysisRun(
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns) {
+		this.loadedAnalysisRuns = loadedAnalysisRuns;
 	}
 
-	@Override
-	public synchronized void fireEvent() {
-		final OmegaBrowserPluginEvent event = new OmegaBrowserPluginEvent(null,
-		        null);
-		final Iterator<OmegaBrowserPluginListener> i = this.listeners
-		        .iterator();
-		while (i.hasNext()) {
-			i.next().handleOmegaBrowserPluginEvent(event);
-		}
+	public OmegaLoadedData getLoadedData() {
+		return this.loadedData;
 	}
 
-	public synchronized void fireEvent(final OmegaBrowserPluginEvent event) {
-		final Iterator<OmegaBrowserPluginListener> i = this.listeners
-		        .iterator();
-		while (i.hasNext()) {
-			i.next().handleOmegaBrowserPluginEvent(event);
-		}
+	public List<OmegaAnalysisRun> getLoadedAnalysisRuns() {
+		return this.loadedAnalysisRuns;
 	}
-
-	// TODO getLoadedData
-	public abstract void fireUpdate();
 }

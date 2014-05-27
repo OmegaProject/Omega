@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 
+import omero.RDouble;
 import omero.ServerError;
 import omero.client;
 import omero.api.IAdminPrx;
@@ -30,13 +31,13 @@ import omero.model.Dataset;
 import omero.model.Experimenter;
 import omero.model.ExperimenterGroup;
 import omero.model.IObject;
-import omero.model.Image;
+import omero.model.PlaneInfoI;
 import omero.model.Project;
+import omero.romio.PlaneDef;
 import omero.sys.ParametersI;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.GroupData;
-import pojos.ImageData;
 import pojos.ProjectData;
 import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
@@ -208,7 +209,7 @@ public class OmeroGateway extends OmegaGateway {
 	 *             If an error occurred while trying to retrieve data from OMERO
 	 *             service.
 	 */
-	private RenderingEnginePrx getRenderingService() {
+	private RenderingEnginePrx createRenderingService() {
 		try {
 			final RenderingEnginePrx engine = this.entryEncrypted
 			        .createRenderingEngine();
@@ -340,35 +341,35 @@ public class OmeroGateway extends OmegaGateway {
 	// return images;
 	// }
 
-	public List<ImageData> getImages(final DatasetData dataset, List<Long> ids)
-	        throws ServerError {
-		final List<ImageData> images = new ArrayList<ImageData>();
-		final ParametersI po = new ParametersI();
-		// po.add(Project.class.getName(), omero.rtypes.rlong(project.getId()));
-		po.exp(omero.rtypes.rlong(dataset.getOwner().getId()));
-		po.noLeaves();
-
-		if (ids == null) {
-			ids = new ArrayList<Long>();
-			final Set<ImageData> set = dataset.getImages();
-			for (final ImageData obj : set) {
-				ids.add(obj.getId());
-			}
-		}
-
-		final IContainerPrx service = this.getContainerService();
-		final List<Image> objects = service.getImages(Image.class.getName(),
-		        ids, po);
-		if (objects == null)
-			return images;
-
-		final Iterator<Image> i = objects.iterator();
-		while (i.hasNext()) {
-			images.add(new ImageData(i.next()));
-		}
-
-		return images;
-	}
+	// public List<ImageData> getImages(final DatasetData dataset, List<Long>
+	// ids)
+	// throws ServerError {
+	// final List<ImageData> images = new ArrayList<ImageData>();
+	// final ParametersI po = new ParametersI();
+	// // po.add(Project.class.getName(), omero.rtypes.rlong(project.getId()));
+	// // po.leaves();
+	//
+	// if (ids == null) {
+	// ids = new ArrayList<Long>();
+	// final Set<ImageData> set = dataset.getImages();
+	// for (final ImageData obj : set) {
+	// ids.add(obj.getId());
+	// }
+	// }
+	//
+	// final IContainerPrx service = this.getContainerService();
+	// final List<Image> objects = service.getImages(Image.class.getName(),
+	// ids, po);
+	// if (objects == null)
+	// return images;
+	//
+	// final Iterator<Image> i = objects.iterator();
+	// while (i.hasNext()) {
+	// images.add(new ImageData(i.next()));
+	// }
+	//
+	// return images;
+	// }
 
 	public List<DatasetData> getDatasets(final ProjectData project)
 	        throws ServerError {
@@ -397,40 +398,6 @@ public class OmeroGateway extends OmegaGateway {
 
 		return datasets;
 	}
-
-	// TODO Check if needed
-	// /**
-	// * Returns the datasets owned by the user currently logged in. We use the
-	// * <code>Pojo</code> objects so we don't have to deal directly with the
-	// * rtypes.
-	// *
-	// * @param ids
-	// * @return See above.
-	// * @throws Exception
-	// */
-	// public List<DatasetData> getDatasets(final List<Long> ids)
-	// throws ServerError {
-	// final List<DatasetData> datasets = new ArrayList<DatasetData>();
-	// final ParametersI po = new ParametersI();
-	// po.exp(omero.rtypes
-	// .rlong(this.getAdminService().getEventContext().userId));
-	// if ((ids == null) || (ids.size() == 0)) {
-	// po.noLeaves();
-	// } else {
-	// po.leaves();
-	// }
-	// final IContainerPrx service = this.getContainerService();
-	// final List<IObject> objects = service.loadContainerHierarchy(
-	// Dataset.class.getName(), ids, po);
-	// if (objects == null)
-	// return datasets;
-	// final Iterator<IObject> i = objects.iterator();
-	//
-	// while (i.hasNext()) {
-	// datasets.add(new DatasetData((Dataset) i.next()));
-	// }
-	// return datasets;
-	// }
 
 	public List<ProjectData> getProjects(final ExperimenterData user)
 	        throws ServerError {
@@ -484,34 +451,35 @@ public class OmeroGateway extends OmegaGateway {
 		return dataExps;
 	}
 
+	public RenderingEnginePrx getRenderingService(final Long pixelsID)
+	        throws ServerError {
+		RenderingEnginePrx service = (RenderingEnginePrx) this.reServices
+		        .get(pixelsID);
+		if (service != null)
+			return service;
+		service = this.createRenderingService(pixelsID);
+		return service;
+	}
+
 	/**
 	 * Loads the rendering control corresponding to the specified set of pixels.
 	 * 
 	 * @param pixelsID
 	 *            The identifier of the pixels set.
 	 * @return See above.
+	 * @throws ServerError
 	 */
-	public RenderingEnginePrx loadRenderingControl(final long pixelsID)
-	        throws Exception {
-		try {
-			RenderingEnginePrx service = (RenderingEnginePrx) this.reServices
-			        .get(pixelsID);
-			if (service != null)
-				return service;
-			service = this.getRenderingService();
-			this.reServices.put(pixelsID, service);
-			service.lookupPixels(pixelsID);
-			if (!(service.lookupRenderingDef(pixelsID))) {
-				service.resetDefaults();
-				service.lookupRenderingDef(pixelsID);
-			}
-			service.load();
-			return service;
-		} catch (final Throwable t) {
-			// TODO Manage exception
-			new Exception("Cannot load rendering engine", t);
+	public RenderingEnginePrx createRenderingService(final long pixelsID)
+	        throws ServerError {
+		final RenderingEnginePrx service = this.createRenderingService();
+		this.reServices.put(pixelsID, service);
+		service.lookupPixels(pixelsID);
+		if (!(service.lookupRenderingDef(pixelsID))) {
+			service.resetDefaults();
+			service.lookupRenderingDef(pixelsID);
 		}
-		return null;
+		service.load();
+		return service;
 	}
 
 	/**
@@ -568,7 +536,7 @@ public class OmeroGateway extends OmegaGateway {
 	}
 
 	@Override
-	public synchronized byte[] getImageData(final long id, final int z,
+	public synchronized byte[] getImageData(final Long pixelsID, final int z,
 	        final int t, final int c) {
 		RawPixelsStorePrx service = null;
 		try {
@@ -578,16 +546,16 @@ public class OmeroGateway extends OmegaGateway {
 			return null;
 		}
 		try {
-			service.setPixelsId(id, false);
+			service.setPixelsId(pixelsID, false);
 
 			return service.getPlane(z, c, t);
 		} catch (final ServerError err) {
 			// TODO Manage exception
 			err.printStackTrace();
-			GLogManager.log(String.format("%s: %s",
-			        "cannot retrieve the plane (z=" + z + ", t=" + t + ", c="
-			                + c + ") for pixelsID: " + id, err.toString()),
-			        Level.SEVERE);
+			GLogManager.log(
+			        String.format("%s: %s", "cannot retrieve the plane (z=" + z
+			                + ", t=" + t + ", c=" + c + ") for pixelsID: "
+			                + pixelsID, err.toString()), Level.SEVERE);
 			return null;
 		} finally {
 			try {
@@ -600,7 +568,8 @@ public class OmeroGateway extends OmegaGateway {
 	}
 
 	// TODO check if used
-	public int getByteWidht(final long pixelsID) {
+	@Override
+	public int getByteWidth(final Long pixelsID) {
 		RawPixelsStorePrx service = null;
 		try {
 			service = this.entryEncrypted.createRawPixelsStore();
@@ -616,6 +585,33 @@ public class OmeroGateway extends OmegaGateway {
 				// TODO Manage exception
 			}
 		}
+	}
+
+	@Override
+	public double getTotalT(final Long pixelsID, final int z, final int t,
+	        final int channel) {
+		// GLogManager.log("maxT is: " + maxT);
+
+		double sizeT = 0.0;
+
+		try {
+			final List<IObject> planeInfoObjects = this.loadPlaneInfo(pixelsID,
+			        z, t - 1, channel);
+
+			if (planeInfoObjects.size() > 0) {
+				final PlaneInfoI pi = (PlaneInfoI) planeInfoObjects.get(0);
+
+				final RDouble tTemp = pi.getDeltaT();
+
+				if (tTemp != null) {
+					sizeT = tTemp.getValue();
+				}
+			}
+		} catch (final Exception e) {
+			GLogManager.log("exception in calculateSizeT: " + e.toString());
+		}
+
+		return sizeT;
 	}
 
 	// TODO check if used
@@ -651,6 +647,148 @@ public class OmeroGateway extends OmegaGateway {
 			// TODO Manage exception
 			throw new Exception("Cannot load the plane info for pixels: "
 			        + pixelsID, e);
+		}
+	}
+
+	@Override
+	public int[] renderAsPackedInt(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			final PlaneDef planeDef = new PlaneDef();
+			// time choice (sliding)
+			planeDef.t = engine.getDefaultT();
+			// Z-plan choice
+			planeDef.z = engine.getDefaultZ();
+			// display the XY plane
+			planeDef.slice = omero.romio.XY.value;
+
+			return engine.renderAsPackedInt(planeDef);
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public byte[] renderCompressed(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			final PlaneDef planeDef = new PlaneDef();
+			// time choice (sliding)
+			planeDef.t = engine.getDefaultT();
+			// Z-plan choice
+			planeDef.z = engine.getDefaultZ();
+			// display the XY plane
+			planeDef.slice = omero.romio.XY.value;
+
+			return engine.renderCompressed(planeDef);
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public Double computeSizeT(final Long pixelsID, final int pixelSizeT,
+	        final int currentMaxT) {
+		Double sizeT = null;
+		final int maxT = currentMaxT - 1;
+		try {
+			final List<IObject> planeInfoObjects = this.loadPlaneInfo(pixelsID,
+			        0, maxT, 0);
+			if ((planeInfoObjects == null) || (planeInfoObjects.size() == 0))
+				return sizeT;
+
+			final PlaneInfoI pi = (PlaneInfoI) planeInfoObjects.get(0);
+
+			final RDouble tTemp = pi.getDeltaT();
+
+			if (tTemp != null) {
+				sizeT = tTemp.getValue() / pixelSizeT;
+			}
+		} catch (final Exception e) {
+			// TODO Manage exception
+			e.printStackTrace();
+		}
+		return sizeT;
+	}
+
+	@Override
+	public void setActiveChannel(final Long pixelsID, final int channel,
+	        final boolean active) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			engine.setActive(channel, active);
+		} catch (final ServerError e) {
+			// TODO create and send OmegaServerError
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setDefaultZ(final Long pixelsID, final int z) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			engine.setDefaultZ(z);
+		} catch (final ServerError e) {
+			// TODO create and send OmegaServerError
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public int getDefaultZ(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			return engine.getDefaultZ();
+		} catch (final ServerError e) {
+			e.printStackTrace();
+			// TODO create and send OmegaServerError
+			return -1;
+		}
+	}
+
+	@Override
+	public void setDefaultT(final Long pixelsID, final int t) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			engine.setDefaultT(t);
+		} catch (final ServerError e) {
+			e.printStackTrace();
+			// TODO create and send OmegaServerError
+		}
+	}
+
+	@Override
+	public int getDefaultT(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			return engine.getDefaultT();
+		} catch (final ServerError e) {
+			e.printStackTrace();
+			// TODO create and send OmegaServerError
+			return -1;
+		}
+	}
+
+	@Override
+	public void setCompressionLevel(final Long pixelsID, final float compression) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			engine.setCompressionLevel(compression);
+		} catch (final ServerError e) {
+			e.printStackTrace();
+			// TODO create and send OmegaServerError
 		}
 	}
 }

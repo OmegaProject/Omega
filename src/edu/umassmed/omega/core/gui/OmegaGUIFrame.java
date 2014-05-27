@@ -26,11 +26,14 @@ import javax.swing.WindowConstants;
 import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.dataNew.OmegaLoadedData;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
 public class OmegaGUIFrame extends JFrame {
 
 	private static final long serialVersionUID = -4775204088456661307L;
 
+	public static double SPLIT_PERCENT = 0.75;
 	public static int SPLITPANEL_LEFT = 0;
 	public static int SPLITPANEL_RIGHT = 1;
 	public static String PROP_PLUGIN = "PluginSelected";
@@ -40,9 +43,9 @@ public class OmegaGUIFrame extends JFrame {
 
 	private final List<JFrame> separatedFrames;
 
-	private TopPanel topPanel;
-	private WorkspacePanel workspacePanel;
-	private SidePanel sidePanel;
+	private OmegaTopPanel topPanel;
+	private OmegaWorkspacePanel workspacePanel;
+	private OmegaSidePanel sidePanel;
 
 	private JMenuBar menu;
 	private JMenu fileMenu, windowsMenu;
@@ -80,21 +83,21 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	private void createAndAddWidgets() {
-		this.topPanel = new TopPanel(this);
+		this.topPanel = new OmegaTopPanel(this);
 		this.getContentPane().add(this.topPanel, BorderLayout.NORTH);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
 		this.getContentPane().add(this.mainSplitPane, BorderLayout.CENTER);
 
-		this.workspacePanel = new WorkspacePanel(this);
+		this.workspacePanel = new OmegaWorkspacePanel(this);
 		this.leftScrollPane = new JScrollPane(this.workspacePanel);
 		this.mainSplitPane.setLeftComponent(this.leftScrollPane);
 
-		this.sidePanel = new SidePanel(this);
+		this.sidePanel = new OmegaSidePanel(this);
 		this.rightScrollPane = new JScrollPane(this.sidePanel);
 		this.mainSplitPane.setRightComponent(this.rightScrollPane);
 
-		this.setSplitPanelDividerLocation(0.75);
+		this.setSplitPanelDividerLocation(OmegaGUIFrame.SPLIT_PERCENT);
 
 		// Display the window.
 	}
@@ -122,7 +125,8 @@ public class OmegaGUIFrame extends JFrame {
 
 			@Override
 			public void componentResized(final ComponentEvent evt) {
-				OmegaGUIFrame.this.mainSplitPane.setDividerLocation(0.75);
+				OmegaGUIFrame.this.mainSplitPane
+				        .setDividerLocation(OmegaGUIFrame.SPLIT_PERCENT);
 			}
 		});
 		this.quitMItem.addActionListener(new ActionListener() {
@@ -156,7 +160,8 @@ public class OmegaGUIFrame extends JFrame {
 				if (evt.getPropertyName().equals(OmegaGUIFrame.PROP_PLUGIN)) {
 					final OmegaPlugin plugin = OmegaGUIFrame.this.omegaApp
 					        .getPlugin((long) evt.getNewValue());
-					OmegaGUIFrame.this.pluginSelected = (long) evt.getNewValue();
+					OmegaGUIFrame.this.pluginSelected = (long) evt
+					        .getNewValue();
 					OmegaGUIFrame.this.workspacePanel.showPlugin(plugin);
 				}
 			}
@@ -164,7 +169,7 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	protected void setSplitPanelDividerLocation(final Double percentage) {
-		this.mainSplitPane.setDividerLocation(0.75);
+		this.mainSplitPane.setDividerLocation(OmegaGUIFrame.SPLIT_PERCENT);
 	}
 
 	protected Dimension getDimensionDifference() {
@@ -296,5 +301,10 @@ public class OmegaGUIFrame extends JFrame {
 		this.omegaApp.saveOptions();
 		this.dispose();
 		System.exit(0);
+	}
+
+	public void update(final OmegaLoadedData loadedData,
+	        final OmegaGateway gateway) {
+		this.sidePanel.update(loadedData, gateway);
 	}
 }

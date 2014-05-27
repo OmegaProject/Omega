@@ -7,12 +7,12 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 
 public class OmegaAlgorithmSpecification extends OmegaElement {
 
-	private final AlgorithmInformation algorithmInfo;
+	private final OmegaAlgorithmInformation algorithmInfo;
 
 	private List<OmegaParameter> parameters;
 
 	public OmegaAlgorithmSpecification(final Long elementID,
-	        final AlgorithmInformation algorithmInfo) {
+	        final OmegaAlgorithmInformation algorithmInfo) {
 		super(elementID);
 
 		this.algorithmInfo = algorithmInfo;
@@ -21,14 +21,14 @@ public class OmegaAlgorithmSpecification extends OmegaElement {
 	}
 
 	public OmegaAlgorithmSpecification(final Long elementID,
-	        final AlgorithmInformation algorithmInfo,
+	        final OmegaAlgorithmInformation algorithmInfo,
 	        final List<OmegaParameter> parameters) {
 		this(elementID, algorithmInfo);
 
 		this.parameters = parameters;
 	}
 
-	public AlgorithmInformation getAlgorithmInfo() {
+	public OmegaAlgorithmInformation getAlgorithmInfo() {
 		return this.algorithmInfo;
 	}
 

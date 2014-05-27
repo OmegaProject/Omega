@@ -11,6 +11,8 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 public abstract class OmegaAnalysisRun extends OmegaElement implements
         OmegaAnalysisRunContainer {
 
+	private String name;
+
 	private final Date timeStamps;
 
 	private OmegaExperimenter experimenter;
@@ -56,6 +58,10 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 		this.analysisRuns = analysisRuns;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
 	public Date getTimeStamps() {
 		return this.timeStamps;
 	}
@@ -64,7 +70,7 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 		return this.experimenter;
 	}
 
-	public OmegaAlgorithmSpecification AlgorithmSpec() {
+	public OmegaAlgorithmSpecification getAlgorithmSpec() {
 		return this.algorithmSpec;
 	}
 

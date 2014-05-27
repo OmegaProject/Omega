@@ -28,7 +28,7 @@ public class ImageCanvasListener extends MouseAdapter {
 
 				ImageCanvasListener.this.imageCanvas.callRevalidate();
 
-				// ImageCanvasListener.this.imageCanvas.scaleTrajectories();
+				// GenericImageCanvasListeners.this.imageCanvas.scaleTrajectories();
 				ImageCanvasListener.this.imageCanvas.repaint();
 			}
 		});
@@ -44,7 +44,7 @@ public class ImageCanvasListener extends MouseAdapter {
 
 				ImageCanvasListener.this.imageCanvas.callRevalidate();
 
-				// ImageCanvasListener.this.imageCanvas.scaleTrajectories();
+				// GenericImageCanvasListeners.this.imageCanvas.scaleTrajectories();
 				ImageCanvasListener.this.imageCanvas.repaint();
 			}
 		});
@@ -54,7 +54,7 @@ public class ImageCanvasListener extends MouseAdapter {
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				// ImageCanvasListener.this.imageCanvas.saveImage();
+				// GenericImageCanvasListeners.this.imageCanvas.saveImage();
 			}
 		});
 		this.menu.add(item);

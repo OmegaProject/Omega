@@ -3,7 +3,8 @@ package edu.umassmed.omega.omeroPlugin;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.OmegaLoaderPlugin;
-import edu.umassmed.omega.commons.exceptions.MissingOmegaData;
+import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
+import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
@@ -24,11 +25,14 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws MissingOmegaData {
+	        final int index) throws OmegaMissingData {
 
-		final OmegaData omegaData = this.getOmegaData();
+		this.fireEvent(new OmegaGatewayEvent(this,
+		        OmegaGatewayEvent.STATUS_CREATED));
+
+		final OmegaData omegaData = this.getMainData();
 		if (omegaData == null)
-			throw new MissingOmegaData(this);
+			throw new OmegaMissingData(this);
 
 		this.panel = new OmeroPluginPanel(parent, this,
 		        (OmeroGateway) this.getGateway(), omegaData, index);

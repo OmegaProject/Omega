@@ -29,6 +29,7 @@ import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroThumbnailImageInfo;
+import edu.umassmed.omega.omeroPlugin.runnable.OmeroBrowerPanelImageLoader;
 
 /**
  * JPanel to display the images in the OMERO datasets thumbnailed.
