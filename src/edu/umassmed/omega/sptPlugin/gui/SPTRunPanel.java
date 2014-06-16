@@ -310,7 +310,7 @@ public class SPTRunPanel extends GenericPanel {
 		displacement_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		displacementPanel.add(displacement_lbl);
 		this.displacement_txtField = new GenericTextFieldValidable(
-		        GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.displacement_txtField
 		        .setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		displacementPanel.add(this.displacement_txtField);

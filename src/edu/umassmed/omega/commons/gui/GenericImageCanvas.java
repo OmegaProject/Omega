@@ -1,12 +1,18 @@
 package edu.umassmed.omega.commons.gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.RootPaneContainer;
 
@@ -14,6 +20,8 @@ import edu.umassmed.omega.commons.OmegaConstants;
 import edu.umassmed.omega.commons.OmegaMathSymbols;
 import edu.umassmed.omega.commons.StringHelper;
 import edu.umassmed.omega.core.gui.OmegaElementImagePanel;
+import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
 
 /**
  * Paints the image.
@@ -31,19 +39,22 @@ public class GenericImageCanvas extends GenericPanel {
 	private BufferedImage scaledImage;
 	/** Image zoom factor. **/
 	private double scale;
+
 	/** Trajectories to be drawed (data exploration). **/
-	// private List<Trajectory> trajectories = null;
+	private List<OmegaROI> particles;
 	/** Trajectories to be drawed, scaled. **/
-	// private List<Trajectory> trajectoriesScaled = null;
+	private List<OmegaTrajectory> trajectories;
 	/** Color used to draw the trajectories. **/
-	// private Color trajectoryColor = null;
+	private final Color trajectoryColor;
 	/**
 	 * List of (random) Colors to be used when the user does not specify any
 	 * color.
 	 */
-	// private List<Color> trajectoryRandomColors = null;
+	private List<Color> trajectoryRandomColors;
 	/** Set to true when the random colors are generated. **/
-	// private boolean randomColorsGenerated = false;
+	private boolean randomColorsGenerated;
+	private final int trajectoryToDraw;
+
 	/** Graphics2D stroke used. **/
 	private final int currentStroke;
 	/** Current frame. **/
@@ -72,6 +83,13 @@ public class GenericImageCanvas extends GenericPanel {
 
 		// this.jPanelViewer = jPanelViewer;
 		this.parentPanel = parentPanel;
+
+		this.particles = null;
+		this.trajectories = null;
+		this.trajectoryColor = null;
+		this.trajectoryRandomColors = null;
+		this.randomColorsGenerated = false;
+		this.trajectoryToDraw = -1;
 
 		this.setDoubleBuffered(true);
 		this.addMouseListener(new GenericImageCanvasListener(this));
@@ -205,71 +223,65 @@ public class GenericImageCanvas extends GenericPanel {
 			}
 		}
 
+		if (this.particles != null) {
+			// set the point size
+			final int pointSize = (int) (this.radius * this.scale);
+			// set the stroke
+			g2D.setStroke(new BasicStroke(this.currentStroke));
+			for (final OmegaROI roi : this.particles) {
+				g2D.setColor(Color.WHITE);
+				// g2D.fill(new
+				// Ellipse2D.Double(one.getX()-pointSize/2,
+				// one.getY()-pointSize/2, pointSize, pointSize));
+				g2D.drawOval((int) (roi.getX() * this.scale) - (pointSize / 2),
+				        (int) (roi.getY() * this.scale) - (pointSize / 2),
+				        pointSize, pointSize);
+			}
+		}
+
 		// start drawing trajectories...
 
-		// if (this.trajectoriesScaled != null) {
-		// // set the point size
-		// final int pointSize = (int) (this.radius * this.scale);
-		//
-		// // set the stroke
-		// g2D.setStroke(new BasicStroke(this.currentStroke));
-		//
-		// // set the trajectory color (if we have one), or set random ones
-		// boolean colorWasChoosen = false;
-		//
-		// if (this.trajectoryColor != null) {
-		// colorWasChoosen = true;
-		// } else if (!this.randomColorsGenerated) {
-		// this.generateRandomColors();
-		// }
-		//
-		// // draw trajectories
-		// int currentTrajectoryIndex = 0;
-		//
-		// for (final Trajectory trajectory : this.trajectoriesScaled) {
-		// if ((this.trajectoryToDraw > -1)
-		// && (this.trajectoryToDraw != currentTrajectoryIndex)) {
-		// currentTrajectoryIndex++;
-		// continue;
-		// }
-		//
-		// final List<TPoint> points = trajectory.getPoints();
-		//
-		// for (int i = 0; i < (points.size() - 1); i++) {
-		// final TPoint one = points.get(i);
-		// final TPoint two = points.get(i + 1);
-		//
-		// for (int frame = 1; frame <= this.currentT; frame++) {
-		// // first point
-		// if (one.getFrame() == 1) {
-		// g2D.setColor(Color.YELLOW);
-		// // g2D.fill(new
-		// // Ellipse2D.Double(one.getX()-pointSize/2,
-		// // one.getY()-pointSize/2, pointSize, pointSize));
-		// g2D.drawOval((int) one.getX() - (pointSize / 2),
-		// (int) one.getY() - (pointSize / 2),
-		// pointSize, pointSize);
-		// }
-		//
-		// // lines
-		// else if (one.getFrame() == frame) {
-		// // set the correct color, the choosen or the random
-		// // one
-		// if (colorWasChoosen) {
-		// g2D.setColor(this.trajectoryColor);
-		// } else {
-		// g2D.setColor(this.trajectoryRandomColors
-		// .get(currentTrajectoryIndex));
-		// }
-		//
-		// g2D.draw(new Line2D.Double(one.getX(), one.getY(),
-		// two.getX(), two.getY()));
-		// }
-		// }
-		// }
-		// currentTrajectoryIndex++;
-		// }
-		// }
+		if (this.trajectories != null) {
+			// set the stroke
+			g2D.setStroke(new BasicStroke(this.currentStroke));
+			// set the trajectory color (if we have one), or set random ones
+			boolean colorWasChoosen = false;
+			if (this.trajectoryColor != null) {
+				colorWasChoosen = true;
+			} else if (!this.randomColorsGenerated) {
+				this.generateRandomColors();
+			}
+			// draw trajectories
+			int currentTrajectoryIndex = 0;
+			for (final OmegaTrajectory trajectory : this.trajectories) {
+				if ((this.trajectoryToDraw > -1)
+				        && (this.trajectoryToDraw != currentTrajectoryIndex)) {
+					currentTrajectoryIndex++;
+					continue;
+				}
+				final List<OmegaROI> points = trajectory.getROIs();
+				for (int i = 0; i < (points.size() - 1); i++) {
+					final OmegaROI one = points.get(i);
+					final OmegaROI two = points.get(i + 1);
+					// for (int frame = 1; frame <= this.currentT; frame++) {
+					// // first point
+					// if (one.getFrameIndex() == frame) {
+					// set the correct color, the choosen or the random
+					// one
+					if (colorWasChoosen) {
+						g2D.setColor(this.trajectoryColor);
+					} else {
+						g2D.setColor(this.trajectoryRandomColors
+						        .get(currentTrajectoryIndex));
+					}
+					g2D.draw(new Line2D.Double(one.getX(), one.getY(), two
+					        .getX(), two.getY()));
+					// }
+					// }
+				}
+				currentTrajectoryIndex++;
+			}
+		}
 	}
 
 	private void drawArrow(final Graphics2D g, final int x1, final int y1,
@@ -324,21 +336,21 @@ public class GenericImageCanvas extends GenericPanel {
 		return op.filter(image, null);
 	}
 
-	// private void generateRandomColors() {
-	// final Random random = new Random();
-	//
-	// this.trajectoryRandomColors = new ArrayList<Color>(
-	// this.trajectoriesScaled.size());
-	//
-	// for (int i = 0; i < this.trajectoriesScaled.size(); i++) {
-	// final float fr = (random.nextFloat() / 2.0f) + 0.5f;
-	// final float fg = (random.nextFloat() / 2.0f) + 0.5f;
-	// final float fb = (random.nextFloat() / 2.0f) + 0.5f;
-	// this.trajectoryRandomColors.add(new Color(fr, fg, fb));
-	// }
-	//
-	// this.randomColorsGenerated = true;
-	// }
+	private void generateRandomColors() {
+		final Random random = new Random();
+
+		this.trajectoryRandomColors = new ArrayList<Color>(
+		        this.trajectories.size());
+
+		for (int i = 0; i < this.trajectories.size(); i++) {
+			final float fr = (random.nextFloat() / 2.0f) + 0.5f;
+			final float fg = (random.nextFloat() / 2.0f) + 0.5f;
+			final float fb = (random.nextFloat() / 2.0f) + 0.5f;
+			this.trajectoryRandomColors.add(new Color(fr, fg, fb));
+		}
+
+		this.randomColorsGenerated = true;
+	}
 
 	// public void saveImage() {
 	// final FileHelper fileChooserHelper = new FileHelper();
@@ -387,30 +399,6 @@ public class GenericImageCanvas extends GenericPanel {
 	// }
 	// }
 
-	// public void scaleTrajectories() {
-	// if (this.trajectories != null) {
-	// this.trajectoriesScaled = new ArrayList<Trajectory>();
-	//
-	// for (final Trajectory trajectory : this.trajectories) {
-	// try {
-	// this.trajectoriesScaled
-	// .add((Trajectory) trajectory.clone());
-	// } catch (final CloneNotSupportedException e) {
-	// // nothing we can do...
-	// }
-	// }
-	//
-	// for (final Trajectory trajectory : this.trajectoriesScaled) {
-	// final List<TPoint> points = trajectory.getPoints();
-	//
-	// for (final TPoint point : points) {
-	// point.setX(point.getX() * this.scale);
-	// point.setY(point.getY() * this.scale);
-	// }
-	// }
-	// }
-	// }
-
 	public double getScale() {
 		return this.scale;
 	}
@@ -419,23 +407,15 @@ public class GenericImageCanvas extends GenericPanel {
 		this.scale = scale;
 	}
 
-	// public void setTrajectories(final List<Trajectory> trajectories) {
-	// this.trajectories = trajectories;
-	// this.randomColorsGenerated = false;
-	// }
+	public void setTrajectories(final List<OmegaTrajectory> trajectories) {
+		this.trajectories = trajectories;
+		this.repaint();
+	}
 
-	// public void setTrajectoriesScaled(final List<Trajectory>
-	// trajectoriesScaled) {
-	// this.trajectoriesScaled = trajectoriesScaled;
-	// }
-
-	// public Color getTrajectoryColor() {
-	// return this.trajectoryColor;
-	// }
-
-	// public void setTrajectoryColor(final Color trajectoryColor) {
-	// this.trajectoryColor = trajectoryColor;
-	// }
+	public void setParticles(final List<OmegaROI> particles) {
+		this.particles = particles;
+		this.repaint();
+	}
 
 	public int getCurrentT() {
 		return this.currentT;

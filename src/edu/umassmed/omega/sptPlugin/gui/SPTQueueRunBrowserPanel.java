@@ -31,7 +31,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 
 	private final SPTPluginPanel sptPanel;
 
-	private final Map<DefaultMutableTreeNode, OmegaElement> nodeMap;
+	private final Map<String, OmegaElement> nodeMap;
 	private final DefaultMutableTreeNode root;
 
 	private JTree dataTree;
@@ -46,7 +46,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject("Run queue");
-		this.nodeMap = new HashMap<DefaultMutableTreeNode, OmegaElement>();
+		this.nodeMap = new HashMap<String, OmegaElement>();
 		// this.updateTree(images);
 
 		this.setLayout(new BorderLayout());
@@ -89,8 +89,9 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 				}
 				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
 				        .getLastPathComponent();
+				final String s = node.toString();
 				final OmegaElement element = SPTQueueRunBrowserPanel.this.nodeMap
-				        .get(node);
+				        .get(s);
 				if (element instanceof OmegaImage) {
 					SPTQueueRunBrowserPanel.this.sptPanel
 					        .updateSelectedImage((OmegaImage) element);
@@ -137,34 +138,29 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 		super.updateParentContainer(parent);
 	}
 
-	private void updateTree(
+	public void updateTree(
 	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess) {
+		this.dataTree.setRootVisible(true);
 		String s = null;
 		final CheckBoxStatus status = CheckBoxStatus.DESELECTED;
 		this.root.removeAllChildren();
 		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
-		if (imagesToProcess == null)
-			return;
-		for (final OmegaImage image : imagesToProcess.keySet()) {
-			final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
-			this.nodeMap.put(imageNode, image);
-			s = "[" + image.getElementID() + "] " + image.getName();
-			// status = this.loadedData.containsImage(image) ?
-			// CheckBoxStatus.SELECTED
-			// : CheckBoxStatus.DESELECTED;
-			imageNode.setUserObject(new CheckBoxNode(s, status));
-			this.root.add(imageNode);
+		if (imagesToProcess != null) {
+			for (final OmegaImage image : imagesToProcess.keySet()) {
+				final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
+				s = "[" + image.getElementID() + "] " + image.getName();
+				this.nodeMap.put(s, image);
+				// status = this.loadedData.containsImage(image) ?
+				// CheckBoxStatus.SELECTED
+				// : CheckBoxStatus.DESELECTED;
+				imageNode.setUserObject(new CheckBoxNode(s, status));
+				this.root.add(imageNode);
+			}
 		}
-	}
-
-	public void update(
-	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess) {
-		this.dataTree.setRootVisible(true);
-		this.updateTree(imagesToProcess);
-		this.dataTree.repaint();
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
+		this.dataTree.repaint();
 	}
 
 	public void deselect() {

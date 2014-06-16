@@ -3,6 +3,7 @@ package edu.umassmed.omega.core.gui;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -11,6 +12,7 @@ import javax.swing.RootPaneContainer;
 import edu.umassmed.omega.commons.exceptions.OmegaLoadedElementNotFound;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
@@ -24,6 +26,7 @@ public class OmegaSidePanel extends GenericPanel {
 	private boolean isAttached;
 
 	private OmegaLoadedData loadedData;
+	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
 	private OmegaGateway gateway;
 
@@ -105,15 +108,18 @@ public class OmegaSidePanel extends GenericPanel {
 				ex.printStackTrace();
 				return;
 			}
-			this.splitPanel.update(element, OmegaSidePanel.this.gateway);
+			this.splitPanel.update(element, this.loadedAnalysisRuns,
+			        OmegaSidePanel.this.gateway);
 		} else {
-			this.splitPanel.update(null, this.gateway);
+			this.splitPanel.update(null, this.loadedAnalysisRuns, this.gateway);
 		}
 	}
 
-	public void update(final OmegaLoadedData loadedData,
+	public void updateGUI(final OmegaLoadedData loadedData,
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
 		this.loadedData = loadedData;
+		this.loadedAnalysisRuns = loadedAnalysisRuns;
 		this.gateway = gateway;
 		final int dataSize = loadedData.getLoadedDataSize();
 		if (dataSize > 0) {

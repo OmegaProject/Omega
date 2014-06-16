@@ -24,10 +24,6 @@ public abstract class OmegaPlugin {
 
 	private final Map<String, String> pluginOptions;
 
-	public OmegaPlugin() {
-		this(1);
-	}
-
 	public OmegaPlugin(final int maxNumOfPanels) {
 		this.maximumNumberOfPanels = maxNumOfPanels;
 		this.panels = new ArrayList<GenericPluginPanel>();

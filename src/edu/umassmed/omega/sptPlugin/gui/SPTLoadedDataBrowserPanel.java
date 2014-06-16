@@ -22,6 +22,7 @@ import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 
@@ -31,7 +32,7 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 
 	private final SPTPluginPanel sptPanel;
 
-	private final Map<DefaultMutableTreeNode, OmegaElement> nodeMap;
+	private final Map<String, OmegaElement> nodeMap;
 	private final DefaultMutableTreeNode root;
 
 	private JTree dataTree;
@@ -46,7 +47,7 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject("Loaded data");
-		this.nodeMap = new HashMap<DefaultMutableTreeNode, OmegaElement>();
+		this.nodeMap = new HashMap<String, OmegaElement>();
 		// this.updateTree(images);
 
 		this.setLayout(new BorderLayout());
@@ -89,16 +90,18 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 				}
 				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
 				        .getLastPathComponent();
+				final String s = node.toString();
 				final OmegaElement element = SPTLoadedDataBrowserPanel.this.nodeMap
-				        .get(node);
+				        .get(s);
 				if (element instanceof OmegaImage) {
 					SPTLoadedDataBrowserPanel.this.sptPanel
 					        .updateSelectedImage((OmegaImage) element);
 				} else if (element instanceof OmegaAnalysisRun) {
 					final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
 					        .getParent();
+					final String parentString = parentNode.toString();
 					final OmegaElement parentElement = SPTLoadedDataBrowserPanel.this.nodeMap
-					        .get(parentNode);
+					        .get(parentString);
 					SPTLoadedDataBrowserPanel.this.sptPanel
 					        .updateSelectedImage((OmegaImage) parentElement);
 					SPTLoadedDataBrowserPanel.this.sptPanel
@@ -146,32 +149,49 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 		super.updateParentContainer(parent);
 	}
 
-	private void updateTree(final List<OmegaImage> images) {
+	public void updateTree(final List<OmegaImage> images) {
+		this.dataTree.setRootVisible(true);
+
 		String s = null;
 		final CheckBoxStatus status = CheckBoxStatus.DESELECTED;
 		this.root.removeAllChildren();
 		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
-		if (images == null)
-			return;
-		for (final OmegaImage image : images) {
-			final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
-			this.nodeMap.put(imageNode, image);
-			s = "[" + image.getElementID() + "] " + image.getName();
-			// status = this.loadedData.containsImage(image) ?
-			// CheckBoxStatus.SELECTED
-			// : CheckBoxStatus.DESELECTED;
-			imageNode.setUserObject(new CheckBoxNode(s, status));
-			this.root.add(imageNode);
-		}
-	}
+		if (images != null) {
+			for (final OmegaImage image : images) {
+				final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
+				s = "[" + image.getElementID() + "] " + image.getName();
+				this.nodeMap.put(s, image);
+				// status = this.loadedData.containsImage(image) ?
+				// CheckBoxStatus.SELECTED
+				// : CheckBoxStatus.DESELECTED;
+				imageNode.setUserObject(new CheckBoxNode(s, status));
 
-	public void update(final List<OmegaImage> images) {
-		this.dataTree.setRootVisible(true);
-		this.updateTree(images);
-		this.dataTree.repaint();
+				for (final OmegaAnalysisRun analysisRun : image
+				        .getAnalysisRuns()) {
+					if (analysisRun instanceof OmegaParticleDetectionRun) {
+						final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
+						// TODO pensare se questo e' il sistema migliore per
+						// verificare il corretto funzionamento!
+						if (!this.sptPanel
+						        .checkIfThisAlgorithm(particleDetectionRun)) {
+							continue;
+						}
+						final DefaultMutableTreeNode analysisNode = new DefaultMutableTreeNode();
+						s = "[" + particleDetectionRun.getElementID() + "] "
+						        + particleDetectionRun.getName();
+						this.nodeMap.put(s, particleDetectionRun);
+						analysisNode.setUserObject(new CheckBoxNode(s, status));
+						imageNode.add(analysisNode);
+					}
+				}
+
+				this.root.add(imageNode);
+			}
+		}
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
+		this.dataTree.repaint();
 	}
 
 	public void deselect() {

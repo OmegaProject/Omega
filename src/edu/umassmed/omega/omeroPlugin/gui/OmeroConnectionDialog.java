@@ -218,6 +218,7 @@ public class OmeroConnectionDialog extends JDialog {
 						connected = OmeroConnectionDialog.this.gateway.connect(
 						        loginCred, serverInfo);
 					} catch (final Exception ext) {
+						// Aggiungere uno status per gli errori
 						OmeroConnectionDialog.this.connectionStatusLbl
 						        .setText(ext.getMessage());
 					}

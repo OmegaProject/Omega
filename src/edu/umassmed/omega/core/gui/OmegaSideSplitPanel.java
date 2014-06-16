@@ -2,11 +2,13 @@ package edu.umassmed.omega.core.gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
 
 import javax.swing.JSplitPane;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.gui.GenericSplitPane;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
@@ -55,8 +57,10 @@ public class OmegaSideSplitPanel extends GenericSplitPane {
 		});
 	}
 
-	public void update(final OmegaElement element, final OmegaGateway gateway) {
-		this.imagePanel.update(element, gateway);
+	public void update(final OmegaElement element,
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
+	        final OmegaGateway gateway) {
+		this.imagePanel.update(element, loadedAnalysisRuns, gateway);
 		this.infoPanel.update(element);
 	}
 }

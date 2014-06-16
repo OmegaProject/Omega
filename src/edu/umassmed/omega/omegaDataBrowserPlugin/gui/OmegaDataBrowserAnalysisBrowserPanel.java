@@ -11,6 +11,7 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
@@ -27,7 +28,7 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 
 	private final OmegaDataBrowserPluginPanel browserPanel;
 
-	private final Map<DefaultMutableTreeNode, OmegaElement> nodeMap;
+	private final Map<String, OmegaElement> nodeMap;
 	private final DefaultMutableTreeNode root;
 	private final List<OmegaAnalysisRun> loadedAnalysisRun;
 
@@ -49,13 +50,14 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject("Loaded data");
-		this.nodeMap = new HashMap<DefaultMutableTreeNode, OmegaElement>();
-		this.updateTree(selectedAnalysisContainer);
+		this.nodeMap = new HashMap<String, OmegaElement>();
 
 		this.setPreferredSize(new Dimension(200, 500));
 		this.setSize(new Dimension(200, 500));
 		this.setLayout(new BorderLayout());
 		this.createAndAddWidgets();
+
+		this.updateTree(selectedAnalysisContainer);
 	}
 
 	private void createAndAddWidgets() {
@@ -76,34 +78,35 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
-	private void updateTree(
+	public void updateTree(
 	        final OmegaAnalysisRunContainer selectedAnalysisContainer) {
-		if (selectedAnalysisContainer == null)
-			return;
+		this.dataTree.setRootVisible(true);
+
 		String s = null;
 		CheckBoxStatus status = null;
 		this.root.removeAllChildren();
+		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
-		for (final OmegaAnalysisRun analysisRun : selectedAnalysisContainer
-		        .getAnalysisRuns()) {
-			if (!this.clazz.isInstance(analysisRun)) {
-				continue;
+		if (selectedAnalysisContainer != null) {
+			for (final OmegaAnalysisRun analysisRun : selectedAnalysisContainer
+			        .getAnalysisRuns()) {
+				if (!this.clazz.isInstance(analysisRun)) {
+					continue;
+				}
+				final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+				s = "[" + analysisRun.getElementID() + "] "
+				        + analysisRun.getName();
+				this.nodeMap.put(s, analysisRun);
+				status = this.loadedAnalysisRun.contains(analysisRun) ? CheckBoxStatus.SELECTED
+				        : CheckBoxStatus.DESELECTED;
+				node.setUserObject(new CheckBoxNode(s, status));
+				this.root.add(node);
 			}
-			final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-			this.nodeMap.put(node, analysisRun);
-			s = "[" + analysisRun.getElementID() + "] " + analysisRun.getName();
-			status = this.loadedAnalysisRun.contains(analysisRun) ? CheckBoxStatus.SELECTED
-			        : CheckBoxStatus.DESELECTED;
-			node.setUserObject(new CheckBoxNode(s, status));
 		}
-	}
 
-	public void fireUpdate(
-	        final OmegaAnalysisRunContainer selectedAnalysisContainer) {
-		this.dataTree.setRootVisible(true);
-		this.updateTree(selectedAnalysisContainer);
-		this.dataTree.repaint();
+		// this.setPreferredSize(this.dataTree.getSize());
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
+		this.dataTree.repaint();
 	}
 }

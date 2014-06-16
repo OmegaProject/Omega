@@ -23,11 +23,13 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import edu.umassmed.omega.commons.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
@@ -80,7 +82,7 @@ public class SPTPluginPanel extends GenericPluginPanel {
 		this.setLayout(new BorderLayout());
 		// this.createMenu();
 		this.createAndAddWidgets();
-		this.loadedDataBrowserPanel.update(images);
+		this.loadedDataBrowserPanel.updateTree(images);
 		this.addListeners();
 	}
 
@@ -210,33 +212,38 @@ public class SPTPluginPanel extends GenericPluginPanel {
 	public void updateRunnerEnded() {
 		for (final Thread t : this.threadsAndRunnables.keySet()) {
 			final SPTRunner runner = this.threadsAndRunnables.get(t);
-			if (runner.isJobCompleted() && t.isAlive()) {
-				try {
-					final Map<OmegaImage, List<OmegaParameter>> processedImages = runner
-					        .getImageParameters();
-					final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = runner
-					        .getImageResultingParticles();
-					final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = runner
-					        .getImageResultingTrajectories();
+			if (runner.isJobCompleted()) {
+				final Map<OmegaImage, List<OmegaParameter>> processedImages = runner
+				        .getImageParameters();
+				final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = runner
+				        .getImageResultingParticles();
+				final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = runner
+				        .getImageResultingTrajectories();
 
-					for (final OmegaImage image : processedImages.keySet()) {
-						final List<OmegaParameter> params = processedImages
-						        .get(image);
+				for (final OmegaImage image : processedImages.keySet()) {
+					final List<OmegaParameter> params = processedImages
+					        .get(image);
 
-						final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
-						        .get(image);
-						final List<OmegaTrajectory> trajectories = resultingTrajectories
-						        .get(image);
-						final OmegaParticleTrackingResultsEvent particleTrackingEvt = new OmegaParticleTrackingResultsEvent(
-						        this.getPlugin(), image, params, particles,
-						        trajectories);
+					final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
+					        .get(image);
+					final List<OmegaTrajectory> trajectories = resultingTrajectories
+					        .get(image);
+					final OmegaParticleTrackingResultsEvent particleTrackingEvt = new OmegaParticleTrackingResultsEvent(
+					        this.getPlugin(), image, params, particles,
+					        trajectories);
 
-						this.getPlugin().fireEvent(particleTrackingEvt);
+					this.imagesToProcess.remove(image);
+					this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
+
+					this.getPlugin().fireEvent(particleTrackingEvt);
+				}
+				if (t.isAlive()) {
+					try {
+						t.join();
+					} catch (final InterruptedException e) {
+						// TODO gestire
+						e.printStackTrace();
 					}
-					t.join();
-				} catch (final InterruptedException e) {
-					// TODO gestire
-					e.printStackTrace();
 				}
 			}
 			this.setEnabled(true);
@@ -256,6 +263,9 @@ public class SPTPluginPanel extends GenericPluginPanel {
 				final StringBuffer exceptionError = new StringBuffer();
 				for (int index = 0; index < errors.length; index++) {
 					final String error = errors[index];
+					if (error == null) {
+						continue;
+					}
 					exceptionError.append(error);
 					if (index != (errors.length - 1)) {
 						exceptionError.append(" & ");
@@ -272,7 +282,7 @@ public class SPTPluginPanel extends GenericPluginPanel {
 			this.imagesToProcess.put(this.selectedImage, params);
 			break;
 		}
-		this.queueRunBrowserPanel.update(this.imagesToProcess);
+		this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
 		if (this.imagesToProcess.size() == 0) {
 			this.setProcessButtonsEnabled(false);
 		} else {
@@ -332,7 +342,16 @@ public class SPTPluginPanel extends GenericPluginPanel {
 		this.processBatch_butt.setEnabled(enabled);
 	}
 
-	public void update(final List<OmegaImage> images) {
-		this.loadedDataBrowserPanel.update(images);
+	public void updateTrees(final List<OmegaImage> images) {
+		this.loadedDataBrowserPanel.updateTree(images);
+		this.queueRunBrowserPanel.updateTree(null);
+	}
+
+	public boolean checkIfThisAlgorithm(
+	        final OmegaParticleDetectionRun particleDetectionRun) {
+		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
+		        .getPlugin();
+		return plugin.checkIfThisAlgorithm(particleDetectionRun);
+
 	}
 }

@@ -97,6 +97,6 @@ public class OmegaImage extends OmegaNamedElement implements
 
 	@Override
 	public void addAnalysisRun(final OmegaAnalysisRun analysisRun) {
-		analysisRun.addAnalysisRun(analysisRun);
+		this.analysisRuns.add(analysisRun);
 	}
 }

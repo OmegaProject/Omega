@@ -282,7 +282,7 @@ public class SPTRunner implements SPTRunnable {
 				final List<OmegaTrajectory> tracks = (List<OmegaTrajectory>) trackList;
 				for (final OmegaTrajectory track : tracks) {
 					for (final OmegaROI point : track.getROIs()) {
-						final int frameIndex = point.getFrameIndex();
+						final int frameIndex = point.getFrameIndex() - 1;
 						final OmegaFrame frame = defaultPixels.getFrames().get(
 						        frameIndex);
 						List<OmegaROI> framePoints;

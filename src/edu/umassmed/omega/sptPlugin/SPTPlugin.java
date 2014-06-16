@@ -22,7 +22,13 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	private final List<SPTPluginPanel> panels;
 
 	public SPTPlugin() {
-		super();
+		super(1);
+
+		this.panels = new ArrayList<SPTPluginPanel>();
+	}
+
+	public SPTPlugin(final int maxNumOfPanels) {
+		super(maxNumOfPanels);
 
 		this.panels = new ArrayList<SPTPluginPanel>();
 	}
@@ -84,7 +90,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	@Override
 	public void updateDisplayedData() {
 		for (final SPTPluginPanel panel : this.panels) {
-			panel.update(this.getLoadedImages());
+			panel.updateTrees(this.getLoadedImages());
 		}
 	}
 

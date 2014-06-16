@@ -37,7 +37,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 
 	private final OmegaDataBrowserPluginPanel browserPanel;
 
-	private final Map<DefaultMutableTreeNode, OmegaElement> nodeMap;
+	private final Map<String, OmegaElement> nodeMap;
 	private final DefaultMutableTreeNode root;
 	private final OmegaLoadedData loadedData;
 
@@ -59,13 +59,14 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject("Loaded data");
-		this.nodeMap = new HashMap<DefaultMutableTreeNode, OmegaElement>();
-		this.updateTree(data);
+		this.nodeMap = new HashMap<String, OmegaElement>();
 
 		this.setLayout(new BorderLayout());
 
 		this.createAndAddWidgets();
 		this.addListeners();
+
+		this.updateTree(data);
 	}
 
 	private void createAndAddWidgets() {
@@ -100,8 +101,9 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 					return;
 				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
 				        .getLastPathComponent();
+				final String s = node.toString();
 				final OmegaElement element = OmegaDataBrowserLoadedDataBrowserPanel.this.nodeMap
-				        .get(node);
+				        .get(s);
 				if (element instanceof OmegaAnalysisRunContainer) {
 					OmegaDataBrowserLoadedDataBrowserPanel.this.browserPanel
 					        .setSelectedAnalysisContainer((OmegaAnalysisRunContainer) element);
@@ -215,8 +217,9 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 
 	private void updateLoadedData(final DefaultMutableTreeNode node,
 	        final CheckBoxStatus status) {
+		final String s = node.toString();
 		final OmegaElement element = OmegaDataBrowserLoadedDataBrowserPanel.this.nodeMap
-		        .get(node);
+		        .get(s);
 		if (status == CheckBoxStatus.SELECTED) {
 			OmegaDataBrowserLoadedDataBrowserPanel.this.loadedData
 			        .addElement(element);
@@ -233,29 +236,34 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 		this.optionsPanel.updateParentContainer(this.getParentContainer());
 	}
 
-	private void updateTree(final OmegaData data) {
+	public void updateTree(final OmegaData data) {
+		this.dataTree.setRootVisible(true);
+
 		String s = null;
 		CheckBoxStatus status = null;
 		this.root.removeAllChildren();
+		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
 		for (final OmegaProject project : data.getProjects()) {
 			final DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode();
-			this.nodeMap.put(projectNode, project);
 			s = "[" + project.getElementID() + "] " + project.getName();
+			this.nodeMap.put(s, project);
 			status = this.loadedData.containsProject(project) ? CheckBoxStatus.SELECTED
 			        : CheckBoxStatus.DESELECTED;
 			projectNode.setUserObject(new CheckBoxNode(s, status));
 			for (final OmegaDataset dataset : project.getDatasets()) {
 				final DefaultMutableTreeNode datasetNode = new DefaultMutableTreeNode();
-				this.nodeMap.put(datasetNode, dataset);
+
 				s = "[" + dataset.getElementID() + "] " + dataset.getName();
+				this.nodeMap.put(s, dataset);
 				status = this.loadedData.containsDataset(dataset) ? CheckBoxStatus.SELECTED
 				        : CheckBoxStatus.DESELECTED;
 				datasetNode.setUserObject(new CheckBoxNode(s, status));
 				for (final OmegaImage image : dataset.getImages()) {
 					final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
-					this.nodeMap.put(imageNode, image);
+
 					s = "[" + image.getElementID() + "] " + image.getName();
+					this.nodeMap.put(s, image);
 					status = this.loadedData.containsImage(image) ? CheckBoxStatus.SELECTED
 					        : CheckBoxStatus.DESELECTED;
 					imageNode.setUserObject(new CheckBoxNode(s, status));
@@ -265,13 +273,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 			}
 			this.root.add(projectNode);
 		}
-	}
-
-	public void update(final OmegaData data) {
-		this.dataTree.setRootVisible(true);
-		this.updateTree(data);
-		this.dataTree.repaint();
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
+		this.dataTree.repaint();
 	}
 }

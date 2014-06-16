@@ -11,8 +11,8 @@ public abstract class OmegaParticleTrackingPlugin extends OmegaAlgorithmPlugin {
 
 	private List<OmegaImage> loadedImages;
 
-	public OmegaParticleTrackingPlugin() {
-		super();
+	public OmegaParticleTrackingPlugin(final int maxNumOfPanels) {
+		super(maxNumOfPanels);
 
 		this.gateway = null;
 		this.loadedImages = null;

@@ -1,5 +1,7 @@
 package edu.umassmed.omega.dataNew.analysisRunElements;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,42 +13,37 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 public abstract class OmegaAnalysisRun extends OmegaElement implements
         OmegaAnalysisRunContainer {
 
-	private String name;
+	private final String name;
 
 	private final Date timeStamps;
 
-	private OmegaExperimenter experimenter;
+	private final OmegaExperimenter experimenter;
 
 	// TODO aggiungere OmegaExperimenterGroup permissions
 
-	private OmegaAlgorithmSpecification algorithmSpec;
+	private final OmegaAlgorithmSpecification algorithmSpec;
 
 	private List<OmegaAnalysisRun> analysisRuns;
-
-	public OmegaAnalysisRun(final Long elementID) {
-		super(elementID);
-
-		this.timeStamps = Calendar.getInstance().getTime();
-
-		this.experimenter = null;
-
-		this.algorithmSpec = null;
-
-		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
-	}
-
-	public OmegaAnalysisRun(final Long elementID, final OmegaExperimenter owner) {
-		this(elementID);
-
-		this.experimenter = owner;
-	}
 
 	public OmegaAnalysisRun(final Long elementID,
 	        final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec) {
-		this(elementID, owner);
+		super(elementID);
+
+		this.timeStamps = Calendar.getInstance().getTime();
+
+		this.experimenter = owner;
 
 		this.algorithmSpec = algorithmSpec;
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
+
+		final StringBuffer nameBuf = new StringBuffer();
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-aa");
+		nameBuf.append(format.format(this.timeStamps));
+		nameBuf.append("_");
+		nameBuf.append(algorithmSpec.getAlgorithmInfo().getName());
+		this.name = nameBuf.toString();
 	}
 
 	public OmegaAnalysisRun(final Long elementID,

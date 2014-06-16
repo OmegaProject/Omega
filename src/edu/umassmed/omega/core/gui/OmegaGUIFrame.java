@@ -27,6 +27,7 @@ import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
 public class OmegaGUIFrame extends JFrame {
@@ -303,8 +304,9 @@ public class OmegaGUIFrame extends JFrame {
 		System.exit(0);
 	}
 
-	public void update(final OmegaLoadedData loadedData,
+	public void updateGUI(final OmegaLoadedData loadedData,
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
-		this.sidePanel.update(loadedData, gateway);
+		this.sidePanel.updateGUI(loadedData, loadedAnalysisRuns, gateway);
 	}
 }

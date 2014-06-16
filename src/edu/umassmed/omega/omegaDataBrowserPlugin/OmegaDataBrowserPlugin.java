@@ -55,7 +55,7 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 	@Override
 	public void updateDisplayedData() {
 		if (this.panel != null) {
-			this.panel.update();
+			this.panel.updateTrees();
 		}
 	}
 }

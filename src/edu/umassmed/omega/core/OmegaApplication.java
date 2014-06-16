@@ -79,6 +79,7 @@ public class OmegaApplication implements OmegaPluginListener {
 		this.gui = new OmegaGUIFrame(this);
 		this.gui.initialize(this.registeredPlugin);
 		this.gui.setSize(1200, 800);
+
 	}
 
 	private void registerCorePlugins() {
@@ -183,12 +184,11 @@ public class OmegaApplication implements OmegaPluginListener {
 		if (!(element instanceof OmegaAnalysisRunContainer))
 			// TODO gestire errore
 			return;
-		final OmegaAnalysisRunContainer container = (OmegaAnalysisRunContainer) element;
 
 		final OmegaAlgorithmInformation algoInfo = new OmegaAlgorithmInformation(
-		        UUID.randomUUID().getMostSignificantBits(), source.getName(),
-		        source.getAlgorithmVersion(), source.getAlgorithmDescription(),
-		        source.getAlgorithmAuthor(),
+		        UUID.randomUUID().getMostSignificantBits(),
+		        source.getAlgorithmName(), source.getAlgorithmVersion(),
+		        source.getAlgorithmDescription(), source.getAlgorithmAuthor(),
 		        source.getAlgorithmPublicationDate());
 		final OmegaAlgorithmSpecification algoSpec = new OmegaAlgorithmSpecification(
 		        UUID.randomUUID().getMostSignificantBits(), algoInfo);
@@ -202,13 +202,14 @@ public class OmegaApplication implements OmegaPluginListener {
 		if (event instanceof OmegaParticleTrackingResultsEvent) {
 			analysisRun = new OmegaParticleDetectionRun(UUID.randomUUID()
 			        .getMostSignificantBits(), this.experimenter, algoSpec,
-			        ((OmegaParticleDetectionResultsEvent) event)
+			        ((OmegaParticleTrackingResultsEvent) event)
 			                .getResultingParticles());
 			final OmegaAnalysisRun subAnalysisRun = new OmegaParticleLinkingRun(
 			        UUID.randomUUID().getMostSignificantBits(),
 			        this.experimenter, algoSpec,
-			        ((OmegaParticleLinkingResultsEvent) event)
+			        ((OmegaParticleTrackingResultsEvent) event)
 			                .getResultingTrajectories());
+			this.loadedAnalysisRuns.add(subAnalysisRun);
 			analysisRun.addAnalysisRun(subAnalysisRun);
 		} else if (event instanceof OmegaParticleDetectionResultsEvent) {
 			analysisRun = new OmegaParticleDetectionRun(UUID.randomUUID()
@@ -224,15 +225,10 @@ public class OmegaApplication implements OmegaPluginListener {
 			// TODO gestire errore
 			return;
 
-		container.addAnalysisRun(analysisRun);
+		((OmegaAnalysisRunContainer) element).addAnalysisRun(analysisRun);
+		this.loadedAnalysisRuns.add(analysisRun);
 
-		this.updateGUI();
-		for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
-			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
-				((OmegaDataDisplayerPluginInterface) plugin)
-				        .updateDisplayedData();
-			}
-		}
+		this.updateGUI(false);
 	}
 
 	private void handleOmegaLoaderPluginGatewayEvent(
@@ -280,31 +276,35 @@ public class OmegaApplication implements OmegaPluginListener {
 		// final OmegaData loadedData = event.getLoadedData();
 		// this.omegaData.mergeData(loadedData);
 		this.loadSelectedData(event.getSelectedData());
-		if (event.getSelectedData().size() > 0) {
-			this.updateGUI();
+		this.updateGUI(event.getSelectedData().size() > 0);
+	}
+
+	private void handleOmegaBrowserPluginDataChangedEvent(
+	        final OmegaDataChangedEvent event) {
+		this.updateGUI(true);
+	}
+
+	private void updateGUI(final boolean dataLoaded) {
+		if (dataLoaded) {
+			for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
+				if (plugin instanceof OmegaParticleTrackingPlugin) {
+					((OmegaParticleTrackingPlugin) plugin)
+					        .setLoadedImages(this.loadedData.getImages());
+				}
+			}
+			this.gui.updateGUI(this.loadedData, this.loadedAnalysisRuns,
+			        this.gateway);
 		}
 
 		for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
+			if (dataLoaded && (plugin instanceof OmegaBrowserPlugin)) {
+				continue;
+			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
 				        .updateDisplayedData();
 			}
 		}
-	}
-
-	private void handleOmegaBrowserPluginDataChangedEvent(
-	        final OmegaDataChangedEvent event) {
-		this.updateGUI();
-	}
-
-	private void updateGUI() {
-		for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
-			if (plugin instanceof OmegaParticleTrackingPlugin) {
-				((OmegaParticleTrackingPlugin) plugin)
-				        .setLoadedImages(this.loadedData.getImages());
-			}
-		}
-		this.gui.update(this.loadedData, this.gateway);
 	}
 
 	public static void main(final String[] args) {
