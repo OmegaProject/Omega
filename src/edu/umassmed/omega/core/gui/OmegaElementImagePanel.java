@@ -1,3 +1,30 @@
+/*******************************************************************************
+ * Copyright (C) 2014 University of Massachusetts Medical School
+ * Alessandro Rigano (Program in Molecular Medicine)
+ * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ *
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Ivo Sbalzarini and Mario Valle.
+ *
+ * Key contacts:
+ * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Alex Rigano: alex.rigano@umassmed.edu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
 package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
@@ -6,6 +33,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -27,12 +56,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -70,6 +102,9 @@ public class OmegaElementImagePanel extends GenericPanel {
 	private boolean isPopulatingOverlay;
 
 	private boolean particlesOverlay;
+
+	private JPopupMenu canvasMenu;
+	private JMenuItem canvasZoomIn, canvasZoomOut;
 
 	/** The compression level. */
 	private static final float COMPRESSION = 0.5f;
@@ -137,6 +172,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.setBackground(Color.white);
 
 		this.createAndAddWidgets();
+
+		this.createCanvasPopupMenu();
 
 		this.addListeners();
 	}
@@ -246,6 +283,14 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.add(this.tabPane, BorderLayout.SOUTH);
 	}
 
+	private void createCanvasPopupMenu() {
+		this.canvasMenu = new JPopupMenu();
+		this.canvasZoomIn = new JMenuItem("Zoom in");
+		this.canvasZoomOut = new JMenuItem("Zoom out");
+		this.canvasMenu.add(this.canvasZoomIn);
+		this.canvasMenu.add(this.canvasZoomOut);
+	}
+
 	private void addListeners() {
 		this.compressed.addActionListener(new ActionListener() {
 
@@ -293,9 +338,43 @@ public class OmegaElementImagePanel extends GenericPanel {
 			public void actionPerformed(final ActionEvent evt) {
 				if (OmegaElementImagePanel.this.isPopulatingOverlay)
 					return;
+				OmegaElementImagePanel.this.selectParticlesOverlay();
 				OmegaElementImagePanel.this.selectTrajectoriesOverlay();
 			}
 		});
+		this.canvas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(final MouseEvent evt) {
+				if (!SwingUtilities.isRightMouseButton(evt)) {
+					OmegaElementImagePanel.this.canvasMenu.setVisible(false);
+				} else {
+					OmegaElementImagePanel.this.canvasMenu.show(
+					        OmegaElementImagePanel.this.canvas,
+					        evt.getPoint().x, evt.getPoint().y);
+				}
+			}
+		});
+		this.canvasZoomOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaElementImagePanel.this.canvas
+				        .setScale(OmegaElementImagePanel.this.canvas.getScale() / 2.0);
+				OmegaElementImagePanel.this.rescaleCanvas();
+			}
+		});
+		this.canvasZoomIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaElementImagePanel.this.canvas
+				        .setScale(OmegaElementImagePanel.this.canvas.getScale() * 2.0);
+				OmegaElementImagePanel.this.rescaleCanvas();
+			}
+		});
+	}
+
+	private void rescaleCanvas() {
+		this.canvas.callRevalidate();
+		this.canvas.repaint();
 	}
 
 	private void selectTrajectoriesOverlay() {

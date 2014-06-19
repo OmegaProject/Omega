@@ -1,3 +1,30 @@
+/*******************************************************************************
+ * Copyright (C) 2014 University of Massachusetts Medical School
+ * Alessandro Rigano (Program in Molecular Medicine)
+ * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ *
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Ivo Sbalzarini and Mario Valle.
+ *
+ * Key contacts:
+ * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Alex Rigano: alex.rigano@umassmed.edu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
 package edu.umassmed.omega.commons.gui;
 
 import java.awt.BasicStroke;
@@ -10,6 +37,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -173,8 +203,8 @@ public class GenericImageCanvas extends GenericPanel {
 
 		final int width = this.scaledImage.getWidth();
 		final int height = this.scaledImage.getHeight();
-		final int scaledWidth = (int) (width * this.scale);
-		final int scaledHeight = (int) (height * this.scale);
+		final int scaledWidth = width;// (int) (width * this.scale);
+		final int scaledHeight = height;// (int) (height * this.scale);
 
 		g2D.clearRect(0, 0, this.getWidth(), this.getHeight());
 
@@ -187,6 +217,7 @@ public class GenericImageCanvas extends GenericPanel {
 		g2D.drawImage(this.scaledImage, null, startX, startY);
 
 		if (!this.isPlaceholderImage) {
+			g2D.setColor(Color.BLACK);
 			// X
 			this.drawArrow(g2D, 0, scaledHeight + GenericImageCanvas.AXISSPACE,
 			        scaledWidth, scaledHeight + GenericImageCanvas.AXISSPACE);
@@ -205,8 +236,8 @@ public class GenericImageCanvas extends GenericPanel {
 				                * width, 1), OmegaMathSymbols.MU);
 				g2D.drawString(xInformation, 0, scaledHeight + 15);
 			} else {
-				g2D.drawString(String.valueOf(scaledWidth) + " px", 0,
-				        scaledHeight + 15);
+				g2D.drawString(String.valueOf(this.image.getWidth()) + " px",
+				        0, scaledHeight + 15);
 			}
 
 			// information on Y pixels
@@ -223,19 +254,45 @@ public class GenericImageCanvas extends GenericPanel {
 			}
 		}
 
+		final MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
+
+		final double adjusterD = this.scale / 2;
+		final int adjuster = new BigDecimal(adjusterD, mc).intValue();
+
 		if (this.particles != null) {
 			// set the point size
-			final int pointSize = (int) (this.radius * this.scale);
+			// final BigDecimal pointSizeD = new BigDecimal(this.radius
+			// * this.scale, mc);
+			final double pointSizeD = this.radius * this.scale;
+			final int pointSize = new BigDecimal(pointSizeD, mc).intValue();
+			final double offsetD = pointSizeD / 2;
+			final int offset = new BigDecimal(offsetD, mc).intValue();
 			// set the stroke
 			g2D.setStroke(new BasicStroke(this.currentStroke));
 			for (final OmegaROI roi : this.particles) {
-				g2D.setColor(Color.WHITE);
+				g2D.setColor(Color.RED);
 				// g2D.fill(new
 				// Ellipse2D.Double(one.getX()-pointSize/2,
 				// one.getY()-pointSize/2, pointSize, pointSize));
-				g2D.drawOval((int) (roi.getX() * this.scale) - (pointSize / 2),
-				        (int) (roi.getY() * this.scale) - (pointSize / 2),
-				        pointSize, pointSize);
+
+				// final BigDecimal xD = new BigDecimal(roi.getX() * this.scale,
+				// mc);
+				// final BigDecimal yD = new BigDecimal(roi.getY() * this.scale,
+				// mc);
+				// final int pointSize = pointSizeD.divide(new BigDecimal(2),
+				// mc)
+				// .intValue();
+				// final int x = xD.intValue() - pointSize;
+				final double xD = roi.getX() * this.scale;
+				final double yD = roi.getY() * this.scale;
+				final int roiX = new BigDecimal(xD, mc).intValue();
+				final int roiY = new BigDecimal(yD, mc).intValue();
+				final int x = (roiX - offset) + adjuster;
+				final int y = (roiY - offset) + adjuster;
+				// final int y = yD.intValue() (- pointSize;
+				// final int x = (int) ((roi.getX() * this.scale) - offsetD);
+				// final int y = (int) ((roi.getY() * this.scale) - offsetD);
+				g2D.drawOval(x, y, pointSize, pointSize);
 			}
 		}
 
@@ -274,8 +331,21 @@ public class GenericImageCanvas extends GenericPanel {
 						g2D.setColor(this.trajectoryRandomColors
 						        .get(currentTrajectoryIndex));
 					}
-					g2D.draw(new Line2D.Double(one.getX(), one.getY(), two
-					        .getX(), two.getY()));
+
+					final double x1D = one.getX() * this.scale;
+					final double y1D = one.getY() * this.scale;
+					final double x2D = two.getX() * this.scale;
+					final double y2D = two.getY() * this.scale;
+					final int x1 = new BigDecimal(x1D, mc).intValue()
+					        + adjuster;
+					final int y1 = new BigDecimal(y1D, mc).intValue()
+					        + adjuster;
+					final int x2 = new BigDecimal(x2D, mc).intValue()
+					        + adjuster;
+					final int y2 = new BigDecimal(y2D, mc).intValue()
+					        + adjuster;
+
+					g2D.draw(new Line2D.Double(x1, y1, x2, y2));
 					// }
 					// }
 				}
