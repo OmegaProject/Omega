@@ -50,10 +50,10 @@ import javax.swing.border.TitledBorder;
 
 import org.jfree.ui.Align;
 
-import edu.umassmed.omega.commons.OmegaConstants;
-import edu.umassmed.omega.commons.OmegaDataEncryption;
-import edu.umassmed.omega.commons.OmegaEvents;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtility;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
@@ -198,7 +198,7 @@ public class OmeroConnectionDialog extends JDialog {
 			final String psw = this.pluginOptions
 			        .get(this.OPTION_LOGIN_PASSWORD);
 			try {
-				this.passwordPswFie.setText(OmegaDataEncryption.decrypt(psw));
+				this.passwordPswFie.setText(OmegaDataEncryptionUtility.decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
@@ -254,7 +254,7 @@ public class OmeroConnectionDialog extends JDialog {
 						OmeroConnectionDialog.this.connectionStatusLbl
 						        .setText("Status: not connected.");
 						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaEvents.PROPERTY_CONNECTION, 0, 1);
+						        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 					} else {
 						OmeroConnectionDialog.this.usernameTxtFie
 						        .setEditable(false);
@@ -269,7 +269,7 @@ public class OmeroConnectionDialog extends JDialog {
 						OmeroConnectionDialog.this.connectionStatusLbl
 						        .setText("Status: connected.");
 						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaEvents.PROPERTY_CONNECTION, 0, 1);
+						        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 					}
 
 					OmeroConnectionDialog.this.saveOptions(hostname, portS,
@@ -282,7 +282,7 @@ public class OmeroConnectionDialog extends JDialog {
 					OmeroConnectionDialog.this.portTxtFie.setEditable(true);
 					OmeroConnectionDialog.this.connectButt.setText("Connect");
 					OmeroConnectionDialog.this.parent.firePropertyChange(
-					        OmegaEvents.PROPERTY_CONNECTION, 0, 1);
+					        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 
 				}
 			}
@@ -310,7 +310,7 @@ public class OmeroConnectionDialog extends JDialog {
 				options.put(this.OPTION_LOGIN_USERNAME, username);
 				String loginPsw = null;
 				try {
-					loginPsw = OmegaDataEncryption.encrypt(password);
+					loginPsw = OmegaDataEncryptionUtility.encrypt(password);
 				} catch (final UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (final GeneralSecurityException e) {

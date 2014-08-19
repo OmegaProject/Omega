@@ -25,38 +25,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.dataNew.imageDBConnectionElements;
 
-import java.util.List;
+public class OmegaDBServerInformation extends OmegaServerInformation {
 
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+	private final String dbName;
 
-public abstract class OmegaBrowserPlugin extends OmegaDataManagerPlugin {
+	public OmegaDBServerInformation(final String hostName, final String dbName) {
+		this(hostName, OmegaServerInformation.DEFAULT_PORT, dbName);
 
-	// private final OmegaGateway gateway;
-	// TODO Loaded data
-	private OmegaLoadedData loadedData;
-	private List<OmegaAnalysisRun> loadedAnalysisRuns;
-
-	public OmegaBrowserPlugin() {
-		super();
 	}
 
-	public void setLoadedData(final OmegaLoadedData loadedData) {
-		this.loadedData = loadedData;
+	public OmegaDBServerInformation(final String hostName, final int port,
+	        final String dbName) {
+		super(hostName, port);
+		this.dbName = dbName;
 	}
 
-	public void setLoadedAnalysisRun(
-	        final List<OmegaAnalysisRun> loadedAnalysisRuns) {
-		this.loadedAnalysisRuns = loadedAnalysisRuns;
-	}
-
-	public OmegaLoadedData getLoadedData() {
-		return this.loadedData;
-	}
-
-	public List<OmegaAnalysisRun> getLoadedAnalysisRuns() {
-		return this.loadedAnalysisRuns;
+	public String getDBName() {
+		return this.dbName;
 	}
 }

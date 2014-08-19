@@ -27,6 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.dataNew.analysisRunElements;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +39,19 @@ public class OmegaParticleDetectionRun extends OmegaAnalysisRun {
 
 	private final Map<OmegaFrame, List<OmegaROI>> resultingParticles;
 
-	public OmegaParticleDetectionRun(final Long elementID,
-	        final OmegaExperimenter owner,
+	public OmegaParticleDetectionRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
 	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles) {
-		super(elementID, owner, algorithmSpec);
+		super(owner, algorithmSpec);
+
+		this.resultingParticles = resultingParticles;
+	}
+
+	public OmegaParticleDetectionRun(final OmegaExperimenter owner,
+	        final OmegaAlgorithmSpecification algorithmSpec,
+	        final Date timeStamps, final String name,
+	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles) {
+		super(owner, algorithmSpec, timeStamps, name);
 
 		this.resultingParticles = resultingParticles;
 	}

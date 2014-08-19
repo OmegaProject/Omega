@@ -64,6 +64,36 @@ public class OmegaLoadedData {
 		return sum;
 	}
 
+	public int getElementIndex(final OmegaElement element)
+	        throws OmegaLoadedElementNotFound {
+		int index = 1;
+		if (element instanceof OmegaProject) {
+			index += this.projects.indexOf(element);
+			return index;
+		}
+		index += this.projects.size();
+		if (element instanceof OmegaDataset) {
+			index += this.datasets.indexOf(element);
+			return index;
+		}
+		index += this.datasets.size();
+		if (element instanceof OmegaImage) {
+			index += this.images.indexOf(element);
+			return index;
+		}
+		index += this.images.size();
+		if (element instanceof OmegaImagePixels) {
+			index += this.pixels.indexOf(element);
+			return index;
+		}
+		index += this.pixels.size();
+		if (element instanceof OmegaFrame) {
+			index += this.frames.indexOf(element);
+			return index;
+		}
+		throw new OmegaLoadedElementNotFound("Element not found");
+	}
+
 	public OmegaElement getElement(final int index)
 	        throws OmegaLoadedElementNotFound {
 		int newIndex = index - 1;

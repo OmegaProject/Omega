@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
 
 import com.galliva.gallibrary.GLogManager;
 
-import edu.umassmed.omega.commons.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
@@ -170,28 +170,28 @@ public class SPTRunner implements SPTRunnable {
 			// TODO Update SPT panel with parameter of the image
 			// X Y T
 			// JPanelSPT.this.width.getF2().setText(
-			// totalWidth == 0.0 ? "-" : StringHelper.DoubleToString(
+			// totalWidth == 0.0 ? "-" : StringUtility.DoubleToString(
 			// totalWidth, 3));
 			// JPanelSPT.this.height.getF2().setText(
-			// totalHeight == 0.0 ? "-" : StringHelper.DoubleToString(
+			// totalHeight == 0.0 ? "-" : StringUtility.DoubleToString(
 			// totalHeight, 3));
 			// JPanelSPT.this.time.getF2().setText(
-			// totalTime == 0.0 ? "-" : StringHelper.DoubleToString(
+			// totalTime == 0.0 ? "-" : StringUtility.DoubleToString(
 			// totalTime, 3));
 			//
 			// JPanelSPT.this.width.getF3().setText(
-			// widthSize == 0.0 ? "-" : StringHelper.DoubleToString(
+			// widthSize == 0.0 ? "-" : StringUtility.DoubleToString(
 			// widthSize, 3));
 			// JPanelSPT.this.height.getF3().setText(
-			// heightSize == 0.0 ? "-" : StringHelper.DoubleToString(
+			// heightSize == 0.0 ? "-" : StringUtility.DoubleToString(
 			// heightSize, 3));
 			// JPanelSPT.this.time.getF3().setText(
-			// avgFrameSize == 0.0 ? "-" : StringHelper.DoubleToString(
+			// avgFrameSize == 0.0 ? "-" : StringUtility.DoubleToString(
 			// avgFrameSize, 3));
 
 			// final String outputDir = this.trajectoriesOut
 			// + System.getProperty("file.separator")
-			// + StringHelper.removeFileExtension(image.getName());
+			// + StringUtility.removeFileExtension(image.getName());
 			//
 			// // empty the output directory if requested
 			// if (FileUtilities.directoryExists(outputDir) &&

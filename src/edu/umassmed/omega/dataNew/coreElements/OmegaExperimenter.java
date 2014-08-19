@@ -30,22 +30,23 @@ package edu.umassmed.omega.dataNew.coreElements;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class OmegaExperimenter extends OmegaPerson {
 
 	private final List<OmegaExperimenterGroup> groups;
 
-	public OmegaExperimenter(final Long elementID, final String firstName,
-	        final String lastName) {
-		super(elementID, firstName, lastName);
+	private final Long omeroId;
 
+	public OmegaExperimenter(final long omeroId, final String firstName,
+	        final String lastName) {
+		super(firstName, lastName);
+		this.omeroId = omeroId;
 		this.groups = new ArrayList<OmegaExperimenterGroup>();
 	}
 
-	public OmegaExperimenter(final Long elementID, final String firstName,
+	public OmegaExperimenter(final long omegaId, final String firstName,
 	        final String lastName, final List<OmegaExperimenterGroup> groups) {
-		super(elementID, firstName, lastName);
-
+		super(firstName, lastName);
+		this.omeroId = omegaId;
 		this.groups = groups;
 	}
 
@@ -71,5 +72,9 @@ public class OmegaExperimenter extends OmegaPerson {
 				return group;
 		}
 		return null;
+	}
+
+	public Long getOmeroId() {
+		return this.omeroId;
 	}
 }

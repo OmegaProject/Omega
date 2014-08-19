@@ -31,13 +31,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.commons.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.genericInterfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.genericPlugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.coreElements.OmegaPerson;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
@@ -72,8 +71,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
-		return new OmegaPerson(UUID.randomUUID().getMostSignificantBits(),
-		        "Ivo", "Sbalzarini");
+		return new OmegaPerson("Ivo", "Sbalzarini");
 	}
 
 	@Override

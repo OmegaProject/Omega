@@ -32,7 +32,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
@@ -42,13 +47,17 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
-import edu.umassmed.omega.commons.OmegaConstants;
-import edu.umassmed.omega.commons.OmegaMathSymbols;
-import edu.umassmed.omega.commons.StringHelper;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaMathSymbolsConstants;
+import edu.umassmed.omega.commons.utilities.OmegaTrajectoryColorManagerUtility;
+import edu.umassmed.omega.commons.utilities.StringUtility;
 import edu.umassmed.omega.core.gui.OmegaElementImagePanel;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
@@ -74,16 +83,15 @@ public class GenericImageCanvas extends GenericPanel {
 	private List<OmegaROI> particles;
 	/** Trajectories to be drawed, scaled. **/
 	private List<OmegaTrajectory> trajectories;
-	/** Color used to draw the trajectories. **/
-	private final Color trajectoryColor;
+
+	private final List<OmegaTrajectory> selectedTrajectories;
 	/**
 	 * List of (random) Colors to be used when the user does not specify any
 	 * color.
 	 */
-	private List<Color> trajectoryRandomColors;
-	/** Set to true when the random colors are generated. **/
-	private boolean randomColorsGenerated;
 	private final int trajectoryToDraw;
+
+	private int selectedTrajectoryIndex;
 
 	/** Graphics2D stroke used. **/
 	private final int currentStroke;
@@ -93,6 +101,10 @@ public class GenericImageCanvas extends GenericPanel {
 	private int radius;
 
 	private boolean isPlaceholderImage;
+
+	private JPopupMenu canvasMenu;
+	private JMenuItem canvasZoomIn, canvasZoomOut;
+	private JMenuItem generateRandomColors, chooseColor;
 
 	/**
 	 * Creates a new instance.
@@ -116,13 +128,167 @@ public class GenericImageCanvas extends GenericPanel {
 
 		this.particles = null;
 		this.trajectories = null;
-		this.trajectoryColor = null;
-		this.trajectoryRandomColors = null;
-		this.randomColorsGenerated = false;
+		this.selectedTrajectories = new ArrayList<OmegaTrajectory>();
 		this.trajectoryToDraw = -1;
+		this.selectedTrajectoryIndex = -1;
 
 		this.setDoubleBuffered(true);
-		this.addMouseListener(new GenericImageCanvasListener(this));
+
+		this.createPopupMenu();
+
+		this.addListeners();
+	}
+
+	private void createPopupMenu() {
+		this.canvasMenu = new JPopupMenu();
+
+		this.generateRandomColors = new JMenuItem(
+		        "Generate random trajectories colors");
+		this.chooseColor = new JMenuItem("Choose trajectory color");
+
+		this.canvasZoomIn = new JMenuItem("Zoom in");
+		this.canvasZoomOut = new JMenuItem("Zoom out");
+
+		this.canvasMenu.add(this.generateRandomColors);
+		this.canvasMenu.add(new JSeparator());
+		this.canvasMenu.add(this.canvasZoomIn);
+		this.canvasMenu.add(this.canvasZoomOut);
+	}
+
+	private void addListeners() {
+		this.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(final MouseEvent evt) {
+				final Point clickP = evt.getPoint();
+				GenericImageCanvas.this.findTrajectoryIndex(clickP);
+				GenericImageCanvas.this.canvasMenu
+				        .remove(GenericImageCanvas.this.chooseColor);
+				final int index = GenericImageCanvas.this.selectedTrajectoryIndex;
+				OmegaTrajectory traj = null;
+				if (index > -1) {
+					traj = GenericImageCanvas.this.trajectories.get(index);
+				}
+				if (SwingUtilities.isRightMouseButton(evt)) {
+					if (traj != null) {
+						GenericImageCanvas.this.canvasMenu.add(
+						        GenericImageCanvas.this.chooseColor, 1);
+					}
+					GenericImageCanvas.this.canvasMenu.show(
+					        GenericImageCanvas.this, evt.getPoint().x,
+					        evt.getPoint().y);
+				} else {
+					if (!evt.isControlDown()) {
+						GenericImageCanvas.this.selectedTrajectories.clear();
+					}
+					GenericImageCanvas.this.canvasMenu.setVisible(false);
+				}
+
+				if (traj != null) {
+					GenericImageCanvas.this.selectedTrajectories.add(traj);
+					GenericImageCanvas.this.sendApplicationTrajectoriesEvent(
+					        GenericImageCanvas.this.selectedTrajectories, true);
+					GenericImageCanvas.this.repaint();
+				}
+			}
+		});
+		this.canvasZoomOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				GenericImageCanvas.this.setScale(GenericImageCanvas.this
+				        .getScale() / 2.0);
+				GenericImageCanvas.this.callRevalidate();
+				GenericImageCanvas.this.repaint();
+			}
+		});
+		this.canvasZoomIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				GenericImageCanvas.this.setScale(GenericImageCanvas.this
+				        .getScale() * 2.0);
+				GenericImageCanvas.this.callRevalidate();
+				GenericImageCanvas.this.repaint();
+			}
+		});
+		this.generateRandomColors.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
+				        GenericImageCanvas.this.getParentContainer(),
+				        "Random colors generation confirmation",
+				        "Do you want do generate new random colors for the trajectories?",
+				        true);
+				dialog.setVisible(true);
+				if (!dialog.getConfirmation())
+					return;
+				OmegaTrajectoryColorManagerUtility
+				        .generateRandomColors(GenericImageCanvas.this.trajectories);
+				GenericImageCanvas.this.repaint();
+				GenericImageCanvas.this.sendApplicationTrajectoriesEvent(
+				        GenericImageCanvas.this.trajectories, false);
+
+			}
+		});
+		this.chooseColor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				final Color c = OmegaTrajectoryColorManagerUtility
+				        .openPaletteColor(GenericImageCanvas.this.trajectories,
+				                GenericImageCanvas.this,
+				                GenericImageCanvas.this.selectedTrajectoryIndex);
+
+				final StringBuffer buf = new StringBuffer();
+				buf.append("Do you want to color trajectory ");
+				buf.append(GenericImageCanvas.this.selectedTrajectoryIndex + 1);
+				buf.append("?");
+
+				final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
+				        GenericImageCanvas.this.getParentContainer(),
+				        "Choose single color confirmation", buf.toString(),
+				        true);
+				dialog.setVisible(true);
+				if (!dialog.getConfirmation())
+					return;
+
+				final OmegaTrajectory traj = GenericImageCanvas.this.trajectories
+				        .get(GenericImageCanvas.this.selectedTrajectoryIndex);
+				traj.setColor(c);
+				GenericImageCanvas.this.repaint();
+				final List<OmegaTrajectory> trajectories = new ArrayList<OmegaTrajectory>();
+				trajectories.add(traj);
+				GenericImageCanvas.this.sendApplicationTrajectoriesEvent(
+				        trajectories, false);
+			}
+		});
+	}
+
+	private void sendApplicationTrajectoriesEvent(
+	        final List<OmegaTrajectory> trajectories, final boolean selection) {
+		this.parentPanel.sendApplicationTrajectoriesEvent(trajectories,
+		        selection);
+	}
+
+	private void findTrajectoryIndex(final Point clickP) {
+		final int x = (int) (clickP.x / this.scale);
+		final int y = (int) (clickP.y / this.scale);
+		int trajIndex = -1;
+		for (final OmegaTrajectory traj : GenericImageCanvas.this.trajectories) {
+			final List<OmegaROI> rois = traj.getROIs();
+			for (final OmegaROI roi : rois) {
+				final int roiX = (int) roi.getX();
+				final int roiY = (int) roi.getY();
+				if ((x < (roiX + 2)) && (x > (roiX - 2)) && (y < (roiY + 2))
+				        && (y > (roiY - 2))) {
+					trajIndex = GenericImageCanvas.this.trajectories
+					        .indexOf(traj);
+					break;
+				}
+			}
+			if (trajIndex != -1) {
+				break;
+			}
+		}
+
+		this.selectedTrajectoryIndex = trajIndex;
 	}
 
 	/** The trajectory to draw (-1 draws everything) **/
@@ -232,8 +398,9 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeX() > 0.0)) {
 				final String xInformation = String.format(
 				        "%s %sm",
-				        StringHelper.doubleToString(this.parentPanel.getSizeX()
-				                * width, 1), OmegaMathSymbols.MU);
+				        StringUtility.doubleToString(
+				                this.parentPanel.getSizeX() * width, 1),
+				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(xInformation, 0, scaledHeight + 15);
 			} else {
 				g2D.drawString(String.valueOf(this.image.getWidth()) + " px",
@@ -245,8 +412,9 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeY() > 0.0)) {
 				final String yInformation = String.format(
 				        "%s %sm",
-				        StringHelper.doubleToString(this.parentPanel.getSizeY()
-				                * height, 1), OmegaMathSymbols.MU);
+				        StringUtility.doubleToString(
+				                this.parentPanel.getSizeY() * height, 1),
+				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(yInformation, scaledWidth, 24);
 			} else {
 				g2D.drawString(String.valueOf(this.image.getHeight()) + " px",
@@ -302,20 +470,21 @@ public class GenericImageCanvas extends GenericPanel {
 			// set the stroke
 			g2D.setStroke(new BasicStroke(this.currentStroke));
 			// set the trajectory color (if we have one), or set random ones
-			boolean colorWasChoosen = false;
-			if (this.trajectoryColor != null) {
-				colorWasChoosen = true;
-			} else if (!this.randomColorsGenerated) {
-				this.generateRandomColors();
-			}
 			// draw trajectories
 			int currentTrajectoryIndex = 0;
 			for (final OmegaTrajectory trajectory : this.trajectories) {
+				if (!trajectory.isVisible()) {
+					continue;
+				}
 				if ((this.trajectoryToDraw > -1)
 				        && (this.trajectoryToDraw != currentTrajectoryIndex)) {
 					currentTrajectoryIndex++;
 					continue;
 				}
+				int minX = scaledWidth;
+				int maxX = 0;
+				int minY = scaledHeight;
+				int maxY = 0;
 				final List<OmegaROI> points = trajectory.getROIs();
 				for (int i = 0; i < (points.size() - 1); i++) {
 					final OmegaROI one = points.get(i);
@@ -325,12 +494,6 @@ public class GenericImageCanvas extends GenericPanel {
 					// if (one.getFrameIndex() == frame) {
 					// set the correct color, the choosen or the random
 					// one
-					if (colorWasChoosen) {
-						g2D.setColor(this.trajectoryColor);
-					} else {
-						g2D.setColor(this.trajectoryRandomColors
-						        .get(currentTrajectoryIndex));
-					}
 
 					final double x1D = one.getX() * this.scale;
 					final double y1D = one.getY() * this.scale;
@@ -345,10 +508,37 @@ public class GenericImageCanvas extends GenericPanel {
 					final int y2 = new BigDecimal(y2D, mc).intValue()
 					        + adjuster;
 
+					g2D.setColor(trajectory.getColor());
 					g2D.draw(new Line2D.Double(x1, y1, x2, y2));
-					// }
-					// }
+					if (minX > x1) {
+						minX = x1;
+					}
+					if (maxX < x1) {
+						maxX = x1;
+					}
+					if (minY > y1) {
+						minY = y1;
+					}
+					if (maxY < y1) {
+						maxY = y1;
+					}
 				}
+				if (this.selectedTrajectories.contains(trajectory)) {
+					g2D.setColor(OmegaConstants
+					        .getDefaultSelectionBackgroundColor());
+					minX -= 5;
+					maxX += 5;
+					minY -= 5;
+					maxY += 5;
+					final int ovalWidth = (maxX - minX);
+					final int ovalHeight = (maxY - minY);
+					g2D.drawRect(minX, minY, ovalWidth, ovalHeight);
+					// g2D.draw(new Line2D.Double(x1 + 1, y1 + 1, x2 + 1,
+					// y2 + 1));
+					// g2D.draw(new Line2D.Double(x1 + 1, y1 + 1, x2 + 1,
+					// y2 + 1));
+				}
+
 				currentTrajectoryIndex++;
 			}
 		}
@@ -406,22 +596,6 @@ public class GenericImageCanvas extends GenericPanel {
 		return op.filter(image, null);
 	}
 
-	private void generateRandomColors() {
-		final Random random = new Random();
-
-		this.trajectoryRandomColors = new ArrayList<Color>(
-		        this.trajectories.size());
-
-		for (int i = 0; i < this.trajectories.size(); i++) {
-			final float fr = (random.nextFloat() / 2.0f) + 0.5f;
-			final float fg = (random.nextFloat() / 2.0f) + 0.5f;
-			final float fb = (random.nextFloat() / 2.0f) + 0.5f;
-			this.trajectoryRandomColors.add(new Color(fr, fg, fb));
-		}
-
-		this.randomColorsGenerated = true;
-	}
-
 	// public void saveImage() {
 	// final FileHelper fileChooserHelper = new FileHelper();
 	//
@@ -454,8 +628,8 @@ public class GenericImageCanvas extends GenericPanel {
 
 	// private void saveSingleImage(final String imageDirectory) {
 	// try {
-	// final String imageName = StringHelper
-	// .removeFileExtension(StringHelper
+	// final String imageName = StringUtility
+	// .removeFileExtension(StringUtility
 	// .getImageName(this.jPanelViewer.getImage()
 	// .getName()));
 	// final String fileName = String.format("%s%s%s_frame_%d.png",
@@ -497,5 +671,14 @@ public class GenericImageCanvas extends GenericPanel {
 
 	public void setRadius(final int radius) {
 		this.radius = radius;
+	}
+
+	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
+	        final boolean selection) {
+		// TODO check if this can be done smarter, maybe just repainting
+		// trajectories instead of everything
+		this.selectedTrajectories.clear();
+		this.selectedTrajectories.addAll(trajectories);
+		this.repaint();
 	}
 }

@@ -45,10 +45,11 @@ public class OmegaFrame extends OmegaElement implements
 	private final List<OmegaAnalysisRun> analysisRuns;
 
 	private Integer zPlane, channel;
+	// TODO needed?
 	private final Date timeStamps;
 
-	public OmegaFrame(final Long elementID, final Integer index) {
-		super(elementID);
+	public OmegaFrame(final Integer index) {
+		super((long) -1);
 
 		this.pixels = null;
 
@@ -111,6 +112,14 @@ public class OmegaFrame extends OmegaElement implements
 
 	public void setChannel(final Integer channel) {
 		this.channel = channel;
+	}
+
+	public Integer getZPlane() {
+		return this.zPlane;
+	}
+
+	public void setZPlane(final Integer zPlane) {
+		this.zPlane = zPlane;
 	}
 
 	public Date getTimeStamps() {

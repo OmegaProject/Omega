@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.exceptions;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 
 public class OmegaAlgorithmParametersTypeException extends Exception {
 	private static final long serialVersionUID = -8169438237589027577L;

@@ -33,9 +33,8 @@ public class OmegaParameter extends OmegaNamedElement {
 
 	private final Object value;
 
-	public OmegaParameter(final Long elementID, final String name,
-	        final Object value) {
-		super(elementID, name);
+	public OmegaParameter(final String name, final Object value) {
+		super(-1, name);
 
 		this.value = value;
 	}

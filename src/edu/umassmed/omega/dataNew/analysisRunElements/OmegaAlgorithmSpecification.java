@@ -38,19 +38,19 @@ public class OmegaAlgorithmSpecification extends OmegaElement {
 
 	private List<OmegaParameter> parameters;
 
-	public OmegaAlgorithmSpecification(final Long elementID,
+	public OmegaAlgorithmSpecification(
 	        final OmegaAlgorithmInformation algorithmInfo) {
-		super(elementID);
+		super((long) -1);
 
 		this.algorithmInfo = algorithmInfo;
 
 		this.parameters = new ArrayList<OmegaParameter>();
 	}
 
-	public OmegaAlgorithmSpecification(final Long elementID,
+	public OmegaAlgorithmSpecification(
 	        final OmegaAlgorithmInformation algorithmInfo,
 	        final List<OmegaParameter> parameters) {
-		this(elementID, algorithmInfo);
+		this(algorithmInfo);
 
 		this.parameters = parameters;
 	}

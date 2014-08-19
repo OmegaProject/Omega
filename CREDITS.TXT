@@ -1,0 +1,52 @@
+=========================================================================
+============ Open Microscopy Environment inteGrated Analysis ============
+=========================================================================
+Copyright (C) 2014 University of Massachusetts Medical School 
+Alessandro Rigano (Program in Molecular Medicine)
+Caterina Strambio De Castillia (Program in Molecular Medicine)
+
+Created by the OMEGA team: Alex Rigano, Caterina Strambio De Castillia, 
+Jasmine Clark, Vanni Galli, Raffaello Giulietti, Loris Grossi, 
+Eric Hunter, Tiziano Leidi, Jeremy Luban, Ivo Sbalzarini and Mario Valle.
+
+OMEGA is licensed and distributed under the GPL License version 3.
+=========================================================================
+================================ License ================================
+=========================================================================
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+=========================================================================
+================================ Acknowledgments ========================
+=========================================================================
+The OMEGA team gratefully acknowledges Kevin Fogarty, Lawrence Lifshitz 
+and Karl Bellve of the Biomedical Imaging Group at the Program in 
+Molecular Medicine of the University of Massachusetts Medical School 
+for sharing their expertise and providing invaluable help for integrating 
+their software with OMEGA.
+
+This project was funded in part by Systemsx.ch as part of the
+Systemsx.ch Biology IT (SyBIT) project, by the European
+Commission 7th Framework Programme for Scientific Research
+(Project number: HEALTH-2007-2.3.2, GA number:
+HEALTH-F3-2008-201,032 to C. S.-D.-C.), by the Information
+Systems and Networking Institute (ISIN) of the Department of
+Innovative Technologies (DTI) of the University of Applied
+Science of Southern Switzerland (SUPSI), by the Emory Vaccine Center 
+of Emory University, and by the Program in Molecular Medicine at the 
+University of Massachusetts Medical School.
+=========================================================================
+========================== Key people contacts ==========================
+=========================================================================
+Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+Alex Rigano: alex.rigano@umassmed.edu

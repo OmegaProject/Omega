@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.eventSystem;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 
 public class OmegaPluginEvent {
 

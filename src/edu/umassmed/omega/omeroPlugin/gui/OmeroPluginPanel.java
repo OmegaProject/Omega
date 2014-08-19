@@ -61,7 +61,7 @@ import pojos.GroupData;
 import pojos.ImageData;
 import pojos.PixelsData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.OmegaEvents;
+import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -268,7 +268,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-				        OmegaEvents.PROPERTY_CONNECTION)) {
+				        OmegaEventConstants.PROPERTY_CONNECTION)) {
 					try {
 						OmeroPluginPanel.this.updateVisualizationMenu();
 					} catch (final ServerError e) {
@@ -401,7 +401,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		return dataChanged;
 	}
 
-	private void loadExperimenterAndGroups(
+	private OmegaExperimenter loadExperimenterAndGroups(
 	        final ExperimenterData experimenterData) {
 		// Create all groups for the actual user
 		// Create leaders for the groups
@@ -410,9 +410,9 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		try {
 			groupsData = this.gateway.getGroups();
 		} catch (final ServerError e) {
-			// TODO Auto-generated catch block
+			// TODO Manage this
 			e.printStackTrace();
-			return;
+			return null;
 		}// experimenterData.getGroups();
 		final List<OmegaExperimenterGroup> groups = new ArrayList<OmegaExperimenterGroup>();
 		for (final GroupData groupData : groupsData) {
@@ -459,6 +459,7 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		        experimenterData.getId(), experimenterData.getFirstName(),
 		        experimenterData.getLastName(), groups);
 		this.omegaData.addExperimenter(experimenter);
+		return experimenter;
 	}
 
 	private void loadDataAndFireEvent(final boolean hasToSelect)
@@ -470,12 +471,12 @@ public class OmeroPluginPanel extends GenericPluginPanel {
 		final ExperimenterData experimenterData = this.gateway
 		        .getExperimenter();
 
-		final OmegaExperimenter experimenter = this.omegaData
+		OmegaExperimenter experimenter = this.omegaData
 		        .getExperimenter(experimenterData.getId());
 		if (experimenter != null) {
 			dataChanged = this.loadGroups(experimenterData, experimenter);
 		} else {
-			this.loadExperimenterAndGroups(experimenterData);
+			experimenter = this.loadExperimenterAndGroups(experimenterData);
 			dataChanged = true;
 		}
 

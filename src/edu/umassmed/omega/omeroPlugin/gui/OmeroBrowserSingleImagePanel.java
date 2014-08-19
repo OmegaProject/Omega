@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import edu.umassmed.omega.commons.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 
 public class OmeroBrowserSingleImagePanel extends JPanel {
 

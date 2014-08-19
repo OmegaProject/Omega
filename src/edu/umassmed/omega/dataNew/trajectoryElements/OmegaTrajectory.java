@@ -27,6 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.dataNew.trajectoryElements;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,15 +35,18 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 
 public class OmegaTrajectory extends OmegaElement {
 
-	private final int length;
+	private int length;
 	private OmegaROI startingROI;
 	private OmegaROI endingROI;
 
 	private final List<OmegaROI> ROIs;
 	private final List<OmegaLink> links;
 
+	private Color color;
+	private boolean isVisible;
+
 	public OmegaTrajectory(final int length) {
-		super();
+		super((long) -1);
 
 		this.startingROI = null;
 		this.endingROI = null;
@@ -51,11 +55,14 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.ROIs = new ArrayList<OmegaROI>();
 		this.links = new ArrayList<OmegaLink>();
+
+		this.color = Color.yellow;
+		this.isVisible = true;
 	}
 
 	public OmegaTrajectory(final OmegaROI startingROI,
 	        final OmegaROI endingROI, final int length) {
-		super();
+		super((long) -1);
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
@@ -64,12 +71,15 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.ROIs = new ArrayList<OmegaROI>();
 		this.links = new ArrayList<OmegaLink>();
+
+		this.color = Color.yellow;
+		this.isVisible = true;
 	}
 
 	public OmegaTrajectory(final OmegaROI startingROI,
 	        final OmegaROI endingROI, final int length,
 	        final List<OmegaROI> ROIs, final List<OmegaLink> links) {
-		super();
+		super((long) -1);
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
@@ -78,45 +88,9 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.ROIs = ROIs;
 		this.links = links;
-	}
 
-	public OmegaTrajectory(final Long elementID, final int length) {
-		super(elementID);
-
-		this.startingROI = null;
-		this.endingROI = null;
-
-		this.length = length;
-
-		this.ROIs = new ArrayList<OmegaROI>();
-		this.links = new ArrayList<OmegaLink>();
-	}
-
-	public OmegaTrajectory(final Long elementID, final OmegaROI startingROI,
-	        final OmegaROI endingROI, final int length) {
-		super(elementID);
-
-		this.startingROI = startingROI;
-		this.endingROI = endingROI;
-
-		this.length = length;
-
-		this.ROIs = new ArrayList<OmegaROI>();
-		this.links = new ArrayList<OmegaLink>();
-	}
-
-	public OmegaTrajectory(final Long elementID, final OmegaROI startingROI,
-	        final OmegaROI endingROI, final int length,
-	        final List<OmegaROI> ROIs, final List<OmegaLink> links) {
-		super(elementID);
-
-		this.startingROI = startingROI;
-		this.endingROI = endingROI;
-
-		this.length = length;
-
-		this.ROIs = ROIs;
-		this.links = links;
+		this.color = Color.yellow;
+		this.isVisible = true;
 	}
 
 	public OmegaROI getStartingROI() {
@@ -139,6 +113,10 @@ public class OmegaTrajectory extends OmegaElement {
 		return this.length;
 	}
 
+	public void recalculateLength() {
+		this.length = this.ROIs.size();
+	}
+
 	public List<OmegaROI> getROIs() {
 		return this.ROIs;
 	}
@@ -153,5 +131,21 @@ public class OmegaTrajectory extends OmegaElement {
 
 	public void addLink(final OmegaLink link) {
 		this.links.add(link);
+	}
+
+	public void setColor(final Color color) {
+		this.color = color;
+	}
+
+	public Color getColor() {
+		return this.color;
+	}
+
+	public boolean isVisible() {
+		return this.isVisible;
+	}
+
+	public void setVisible(final boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 }

@@ -40,9 +40,9 @@ public class OmegaAlgorithmInformation extends OmegaNamedElement {
 	private final Date publicationDate;
 	private OmegaPerson author;
 
-	public OmegaAlgorithmInformation(final Long elementID, final String name,
-	        final double version, final String description) {
-		super(elementID, name);
+	public OmegaAlgorithmInformation(final String name, final double version,
+	        final String description) {
+		super(-1, name);
 
 		this.author = null;
 		this.version = version;
@@ -50,18 +50,17 @@ public class OmegaAlgorithmInformation extends OmegaNamedElement {
 		this.publicationDate = Calendar.getInstance().getTime();
 	}
 
-	public OmegaAlgorithmInformation(final Long elementID, final String name,
-	        final double version, final String description,
-	        final OmegaPerson author) {
-		this(elementID, name, version, description);
+	public OmegaAlgorithmInformation(final String name, final double version,
+	        final String description, final OmegaPerson author) {
+		this(name, version, description);
 
 		this.author = author;
 	}
 
-	public OmegaAlgorithmInformation(final Long elementID, final String name,
-	        final double version, final String description,
-	        final OmegaPerson author, final Date publicationDate) {
-		super(elementID, name);
+	public OmegaAlgorithmInformation(final String name, final double version,
+	        final String description, final OmegaPerson author,
+	        final Date publicationDate) {
+		super(-1, name);
 
 		this.version = version;
 		this.description = description;

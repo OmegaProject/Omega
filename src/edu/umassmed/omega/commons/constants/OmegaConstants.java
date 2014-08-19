@@ -25,9 +25,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.constants;
 
+import java.awt.Color;
 import java.awt.Dimension;
+
+import javax.swing.UIDefaults;
 
 public class OmegaConstants {
 
@@ -94,4 +97,15 @@ public class OmegaConstants {
 	public final static Dimension BUTTON_SIZE = new Dimension(120, 20);
 	public final static Dimension TEXT_SIZE = new Dimension(200, 20);
 
+	public final static String OMEGA_DATE_FORMAT = "yyyy-MM-dd_hh-mm-aa";
+
+	public final static Color getDefaultSelectionBackgroundColor() {
+		final UIDefaults defaults = javax.swing.UIManager.getDefaults();
+		return defaults.getColor("List.selectionBackground");
+	}
+
+	public final static Color getDefaultSelectionForegroundColor() {
+		final UIDefaults defaults = javax.swing.UIManager.getDefaults();
+		return defaults.getColor("List.selectionForeground");
+	}
 }

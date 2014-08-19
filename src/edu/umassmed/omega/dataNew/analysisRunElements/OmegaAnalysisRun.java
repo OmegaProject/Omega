@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 
@@ -52,10 +53,9 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 
 	private List<OmegaAnalysisRun> analysisRuns;
 
-	public OmegaAnalysisRun(final Long elementID,
-	        final OmegaExperimenter owner,
+	public OmegaAnalysisRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec) {
-		super(elementID);
+		super((long) -1);
 
 		this.timeStamps = Calendar.getInstance().getTime();
 
@@ -66,18 +66,34 @@ public abstract class OmegaAnalysisRun extends OmegaElement implements
 		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
 
 		final StringBuffer nameBuf = new StringBuffer();
-		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-aa");
+		final DateFormat format = new SimpleDateFormat(
+		        OmegaConstants.OMEGA_DATE_FORMAT);
 		nameBuf.append(format.format(this.timeStamps));
 		nameBuf.append("_");
 		nameBuf.append(algorithmSpec.getAlgorithmInfo().getName());
 		this.name = nameBuf.toString();
 	}
 
-	public OmegaAnalysisRun(final Long elementID,
-	        final OmegaExperimenter owner,
+	public OmegaAnalysisRun(final OmegaExperimenter owner,
+	        final OmegaAlgorithmSpecification algorithmSpec,
+	        final Date timeStamps, final String name) {
+		super((long) -1);
+
+		this.timeStamps = timeStamps;
+
+		this.experimenter = owner;
+
+		this.algorithmSpec = algorithmSpec;
+
+		this.analysisRuns = new ArrayList<OmegaAnalysisRun>();
+
+		this.name = name;
+	}
+
+	public OmegaAnalysisRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
 	        final List<OmegaAnalysisRun> analysisRuns) {
-		this(elementID, owner, algorithmSpec);
+		this(owner, algorithmSpec);
 
 		this.analysisRuns = analysisRuns;
 	}

@@ -287,6 +287,10 @@ public class OmegaImagePixels extends OmegaElement implements
 		return this.frames;
 	}
 
+	public void addFrames(final List<OmegaFrame> frames) {
+		this.frames.addAll(frames);
+	}
+
 	public void addFrame(final OmegaFrame frame) {
 		this.frames.add(frame);
 	}

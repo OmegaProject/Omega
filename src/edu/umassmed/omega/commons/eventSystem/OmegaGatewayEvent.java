@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.eventSystem;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 
 public class OmegaGatewayEvent extends OmegaPluginEvent {

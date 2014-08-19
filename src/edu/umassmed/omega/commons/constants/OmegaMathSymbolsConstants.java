@@ -25,9 +25,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.constants;
 
-public class OmegaMathSymbols {
+public class OmegaMathSymbolsConstants {
 	public static final String DELTA = "\u0394";
 	public static final String GAMMA = "\u03B3";
 	public static final String MU = "\u03BC";

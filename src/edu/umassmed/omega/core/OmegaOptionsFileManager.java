@@ -227,6 +227,21 @@ public class OmegaOptionsFileManager {
 		}
 	}
 
+	public Map<String, Map<String, String>> getGeneralOptions() {
+		final Map<String, Map<String, String>> generalOptions = new LinkedHashMap<String, Map<String, String>>();
+		for (final String category : this.optionsCat.keySet()) {
+			if (!category.contains("GENERAL")) {
+				continue;
+			}
+			final Map<String, String> options = new LinkedHashMap<String, String>();
+			for (final String option : this.optionsCat.get(category)) {
+				options.put(option, this.options.get(option));
+			}
+			generalOptions.put(category, options);
+		}
+		return generalOptions;
+	}
+
 	public Map<String, String> getOptions(final String category) {
 		final Map<String, String> options = new LinkedHashMap<String, String>();
 		if (!this.optionsCat.keySet().contains(category))

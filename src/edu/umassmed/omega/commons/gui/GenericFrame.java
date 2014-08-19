@@ -39,7 +39,7 @@ public class GenericFrame extends JFrame {
 
 	private static final long serialVersionUID = -3768293722803137824L;
 
-	public JFrame parent;
+	private final JFrame parent;
 
 	public GenericFrame(final JFrame parent, final JComponent content,
 	        final String title, final Point position, final Dimension dimension) {
@@ -71,6 +71,11 @@ public class GenericFrame extends JFrame {
 
 	public void disposeOnClose() {
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+	}
+
+	@Override
+	public JFrame getParent() {
+		return this.parent;
 	}
 
 	// TODO vedere se ne servono altri

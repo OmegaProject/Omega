@@ -50,9 +50,9 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import edu.umassmed.omega.commons.OmegaAlgorithmPlugin;
-import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
+import edu.umassmed.omega.commons.genericPlugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;

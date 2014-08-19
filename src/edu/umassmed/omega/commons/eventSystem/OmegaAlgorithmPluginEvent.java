@@ -29,7 +29,7 @@ package edu.umassmed.omega.commons.eventSystem;
 
 import java.util.List;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 

@@ -31,9 +31,8 @@ public class OmegaPerson extends OmegaElement {
 
 	private final String firstName, lastName;
 
-	public OmegaPerson(final Long elementID, final String firstName,
-	        final String lastName) {
-		super(elementID);
+	public OmegaPerson(final String firstName, final String lastName) {
+		super((long) -1);
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}

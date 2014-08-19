@@ -34,7 +34,7 @@ import javax.swing.JOptionPane;
 
 import com.galliva.gallibrary.GLogManager;
 
-import edu.umassmed.omega.commons.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;

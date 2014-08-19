@@ -34,9 +34,8 @@ public class OmegaLink extends OmegaElement {
 	private final double speed, angle;
 	private final OmegaROI startingROI, endingROI;
 
-	public OmegaLink(final Long elementID, final OmegaROI startingROI,
-	        final OmegaROI endingROI) {
-		super(elementID);
+	public OmegaLink(final OmegaROI startingROI, final OmegaROI endingROI) {
+		super((long) -1);
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
@@ -45,9 +44,9 @@ public class OmegaLink extends OmegaElement {
 		this.angle = -1;
 	}
 
-	public OmegaLink(final Long elementID, final OmegaROI startingROI,
-	        final OmegaROI endingROI, final double speed, final double angle) {
-		super(elementID);
+	public OmegaLink(final OmegaROI startingROI, final OmegaROI endingROI,
+	        final double speed, final double angle) {
+		super((long) -1);
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;

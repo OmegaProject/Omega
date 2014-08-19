@@ -148,8 +148,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 				final DefaultTreeModel model = (DefaultTreeModel) event
 				        .getSource();
 
-				DefaultMutableTreeNode node;
-				CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
+				DefaultMutableTreeNode node = null;
+				CheckBoxNode c = null; // = (CheckBoxNode)node.getUserObject();
 				if ((children != null) && (children.length == 1)) {
 					node = (DefaultMutableTreeNode) children[0];
 					c = (CheckBoxNode) node.getUserObject();
@@ -172,16 +172,20 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 					model.nodeChanged(n);
 				} else {
 					node = (DefaultMutableTreeNode) model.getRoot();
-					c = (CheckBoxNode) node.getUserObject();
+					// c = (CheckBoxNode) node.getUserObject();
 				}
-				if (OmegaDataBrowserLoadedDataBrowserPanel.this.optionsPanel
-				        .isAutoSelectRelatives()) {
+				if ((c != null)
+				        && OmegaDataBrowserLoadedDataBrowserPanel.this.optionsPanel
+				                .isAutoSelectRelatives()) {
 					OmegaDataBrowserLoadedDataBrowserPanel.this
 					        .updateAllChildrenUserObject(node, c.getStatus());
 				}
-				model.nodeChanged(node);
+				// model.nodeChanged(node);
 
 				OmegaDataBrowserLoadedDataBrowserPanel.this.adjusting = false;
+
+				if (c == null)
+					return;
 
 				OmegaDataBrowserLoadedDataBrowserPanel.this.updateLoadedData(
 				        node, c.getStatus());
@@ -245,14 +249,11 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 	private void updateLoadedData(final DefaultMutableTreeNode node,
 	        final CheckBoxStatus status) {
 		final String s = node.toString();
-		final OmegaElement element = OmegaDataBrowserLoadedDataBrowserPanel.this.nodeMap
-		        .get(s);
+		final OmegaElement element = this.nodeMap.get(s);
 		if (status == CheckBoxStatus.SELECTED) {
-			OmegaDataBrowserLoadedDataBrowserPanel.this.loadedData
-			        .addElement(element);
+			this.loadedData.addElement(element);
 		} else if (status == CheckBoxStatus.DESELECTED) {
-			OmegaDataBrowserLoadedDataBrowserPanel.this.loadedData
-			        .removeElement(element);
+			this.loadedData.removeElement(element);
 		}
 		this.browserPanel.fireDataChangedEvent();
 	}
@@ -263,8 +264,32 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 		this.optionsPanel.updateParentContainer(this.getParentContainer());
 	}
 
+	// private List<TreePath> getExpandedPaths(final TreePath currentPath) {
+	// final List<TreePath> expandedPaths = new ArrayList<TreePath>();
+	// final Enumeration<TreePath> paths = this.dataTree
+	// .getExpandedDescendants(currentPath);
+	// if (paths == null)
+	// return expandedPaths;
+	// TreePath path = null;
+	// while (paths.hasMoreElements()) {
+	// path = paths.nextElement();
+	// expandedPaths.add(path);
+	// // expandedPaths.addAll(this.getExpandedPaths(path));
+	// }
+	// return expandedPaths;
+	// }
+	//
+	// private void expandPathsIfExist(final List<TreePath> expandedPaths) {
+	// for (final TreePath path : expandedPaths) {
+	// final int row = this.dataTree.getRowForPath(path);
+	// this.dataTree.expandRow(row);
+	// }
+	// }
+
 	public void updateTree(final OmegaData data) {
 		this.dataTree.setRootVisible(true);
+		// final TreePath root = this.dataTree.getPathForRow(0);
+		// final List<TreePath> expandedPaths = this.getExpandedPaths(root);
 
 		String s = null;
 		CheckBoxStatus status = null;
@@ -301,6 +326,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 			this.root.add(projectNode);
 		}
 		this.dataTree.expandRow(0);
+		// this.expandPathsIfExist(expandedPaths);
 		this.dataTree.setRootVisible(false);
 		this.dataTree.repaint();
 	}

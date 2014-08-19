@@ -25,11 +25,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.utilities;
 
 import java.text.DecimalFormat;
 
-public class StringHelper {
+public class StringUtility {
 	public static String getImageName(final String imagePath) {
 		try {
 			if (imagePath.contains("/")) {

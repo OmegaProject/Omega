@@ -35,16 +35,7 @@ public class OmegaROI extends OmegaElement {
 	private final double x, y;
 
 	public OmegaROI(final int frameIndex, final double x, final double y) {
-		super();
-
-		this.frameIndex = frameIndex;
-		this.x = x;
-		this.y = y;
-	}
-
-	public OmegaROI(final Long elementID, final int frameIndex, final double x,
-	        final double y) {
-		super(elementID);
+		super((long) -1);
 
 		this.frameIndex = frameIndex;
 		this.x = x;

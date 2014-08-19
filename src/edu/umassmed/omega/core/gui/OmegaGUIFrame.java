@@ -50,12 +50,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationEvent;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaDBServerInformation;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
 
 public class OmegaGUIFrame extends JFrame {
 
@@ -75,10 +82,13 @@ public class OmegaGUIFrame extends JFrame {
 	private OmegaWorkspacePanel workspacePanel;
 	private OmegaSidePanel sidePanel;
 
+	private final OmegaDBPreferencesFrame omegaDbPrefFrame;
+
 	private JMenuBar menu;
-	private JMenu fileMenu, windowsMenu;
+	private JMenu fileMenu, windowsMenu, omegaDbMenu;
 	private JMenuItem quitMItem;
 	private JMenuItem attachEdetachAllWindows;
+	private JMenuItem omegaDbOptionsMItem, omegaDbSaveMItem, omegaDbLoadMItem;
 
 	private JSplitPane mainSplitPane;
 
@@ -96,6 +106,10 @@ public class OmegaGUIFrame extends JFrame {
 
 		this.separatedFrames = new ArrayList<JFrame>();
 		this.isAttached = true;
+
+		// this.omegaDbPrefFrame = new OmegaDBPreferencesFrame(this,
+		// omegaApp.getMySqlGateway());
+		this.omegaDbPrefFrame = new OmegaDBPreferencesFrame(this);
 
 		this.createAndAddWidgets();
 		this.createMenu();
@@ -141,11 +155,20 @@ public class OmegaGUIFrame extends JFrame {
 		this.attachEdetachAllWindows = new JMenuItem("Detach all windows");
 		this.windowsMenu.add(this.attachEdetachAllWindows);
 
+		this.omegaDbMenu = new JMenu("Omega DB Options");
+		this.omegaDbOptionsMItem = new JMenuItem("Preferences");
+		this.omegaDbLoadMItem = new JMenuItem("Load analysis");
+		this.omegaDbSaveMItem = new JMenuItem("Save analysis");
+		this.omegaDbMenu.add(this.omegaDbOptionsMItem);
+		this.omegaDbMenu.add(this.omegaDbLoadMItem);
+		this.omegaDbMenu.add(this.omegaDbSaveMItem);
+
 		final JMenu workspaceMenu = this.workspacePanel.getMenu();
 
 		this.menu.add(this.fileMenu);
 		this.menu.add(workspaceMenu);
 		this.menu.add(this.windowsMenu);
+		this.menu.add(this.omegaDbMenu);
 	}
 
 	private void addListeners() {
@@ -194,6 +217,43 @@ public class OmegaGUIFrame extends JFrame {
 				}
 			}
 		});
+
+		this.omegaDbOptionsMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.showOmegaDBPreferencesPanel();
+			}
+		});
+		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.loadAnalysis();
+			}
+		});
+		this.omegaDbSaveMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.saveAnalysis();
+			}
+		});
+	}
+
+	public void showOmegaDBPreferencesPanel() {
+		Point parentLocOnScren = null;
+		Dimension parentSize = null;
+		parentLocOnScren = this.getLocationOnScreen();
+		parentSize = this.getSize();
+		final int x = parentLocOnScren.x;
+		final int y = parentLocOnScren.y;
+		final int xOffset = (parentSize.width / 2)
+		        - (this.omegaDbPrefFrame.getSize().width / 2);
+		final int yOffset = (parentSize.height / 2)
+		        - (this.omegaDbPrefFrame.getSize().height / 2);
+		final Point dialogPos = new Point(x + xOffset, y + yOffset);
+		this.omegaDbPrefFrame.setLocation(dialogPos);
+		this.omegaDbPrefFrame.validate();
+		this.omegaDbPrefFrame.repaint();
+		this.omegaDbPrefFrame.setVisible(true);
 	}
 
 	protected void setSplitPanelDividerLocation(final Double percentage) {
@@ -317,6 +377,15 @@ public class OmegaGUIFrame extends JFrame {
 		this.repaint();
 	}
 
+	public Map<String, String> getGeneralOptions(final String category) {
+		return this.omegaApp.getGeneralOptions(category);
+	}
+
+	public void addGeneralOptions(final String category,
+	        final Map<String, String> options) {
+		this.omegaApp.addGeneralOptions(category, options);
+	}
+
 	public boolean isAttached() {
 		return this.isAttached;
 	}
@@ -326,6 +395,7 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void quit() {
+		this.omegaDbPrefFrame.setVisible(false);
 		this.omegaApp.saveOptions();
 		this.dispose();
 		System.exit(0);
@@ -335,5 +405,36 @@ public class OmegaGUIFrame extends JFrame {
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
 		this.sidePanel.updateGUI(loadedData, loadedAnalysisRuns, gateway);
+	}
+
+	public OmegaDBServerInformation getOmegaDBServerInformation() {
+		return this.omegaDbPrefFrame.getOmegaDBServerInformation();
+	}
+
+	public OmegaLoginCredentials getOmegaLoginCredentials() {
+		return this.omegaDbPrefFrame.getOmegaDBLoginCredentials();
+	}
+
+	public void sendApplicationEvent(final OmegaApplicationEvent event) {
+		this.omegaApp.handleOmegaApplicationEvent(event);
+	}
+
+	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
+	        final boolean selection) {
+		this.sidePanel.updateTrajectories(trajectories, selection);
+	}
+
+	public void selectImage(final OmegaImage image) {
+		this.sidePanel.selectImage(image);
+	}
+
+	public void selectParticleDetectionRun(
+	        final OmegaParticleDetectionRun analysisRun) {
+		this.sidePanel.selectParticleDetectionRun(analysisRun);
+	}
+
+	public void selectParticleLinkingRun(
+	        final OmegaParticleLinkingRun analysisRun) {
+		this.sidePanel.selectParticleLinkingRun(analysisRun);
 	}
 }

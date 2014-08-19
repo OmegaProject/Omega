@@ -33,7 +33,7 @@ import javax.swing.JOptionPane;
 
 import com.galliva.gallibrary.GLogManager;
 
-import edu.umassmed.omega.commons.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 
 public class SPTWriterRunner implements SPTRunnable {
 

@@ -32,7 +32,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -502,31 +501,22 @@ public class SPTRunPanel extends GenericPanel {
 			return null;
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		final int radius = Integer.valueOf(this.radius_txtField.getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_RADIUS, radius));
+		params.add(new OmegaParameter(SPTConstants.PARAM_RADIUS, radius));
 		final double cutoff = Double.valueOf(this.cutoff_txtField.getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_CUTOFF, cutoff));
+		params.add(new OmegaParameter(SPTConstants.PARAM_CUTOFF, cutoff));
 		final double percentile = Double.valueOf(this.percentile_txtField
 		        .getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_PERCENTILE,
-		        percentile));
+		params.add(new OmegaParameter(SPTConstants.PARAM_PERCENTILE, percentile));
 		final int linkrange = Integer
 		        .valueOf(this.linkrange_txtField.getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_LINKRANGE,
-		        linkrange));
+		params.add(new OmegaParameter(SPTConstants.PARAM_LINKRANGE, linkrange));
 		final double displacement = Double.valueOf(this.displacement_txtField
 		        .getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_DISPLACEMENT,
+		params.add(new OmegaParameter(SPTConstants.PARAM_DISPLACEMENT,
 		        displacement));
 		final int minPoints = Integer
 		        .valueOf(this.minPoints_txtField.getText());
-		params.add(new OmegaParameter(UUID.randomUUID()
-		        .getMostSignificantBits(), SPTConstants.PARAM_MINPOINTS,
-		        minPoints));
+		params.add(new OmegaParameter(SPTConstants.PARAM_MINPOINTS, minPoints));
 		return params;
 	}
 }

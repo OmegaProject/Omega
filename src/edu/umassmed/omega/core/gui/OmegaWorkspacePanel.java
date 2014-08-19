@@ -50,8 +50,8 @@ import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericDesktopPane;
 import edu.umassmed.omega.commons.gui.GenericPanelInterface;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;

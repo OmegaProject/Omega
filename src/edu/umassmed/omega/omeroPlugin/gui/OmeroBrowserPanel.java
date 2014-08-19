@@ -49,9 +49,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaConstants;
-import edu.umassmed.omega.commons.StringHelper;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.utilities.StringUtility;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
@@ -150,7 +150,7 @@ public class OmeroBrowserPanel extends GenericPanel {
 
 		while (iterator.hasNext()) {
 			final OmeroThumbnailImageInfo temp = iterator.next();
-			final String imageName = StringHelper.getImageName(temp
+			final String imageName = StringUtility.getImageName(temp
 			        .getImageName());
 
 			final JPanel imageInfoPanel = new JPanel();

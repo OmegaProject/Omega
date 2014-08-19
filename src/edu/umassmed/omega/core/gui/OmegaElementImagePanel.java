@@ -33,8 +33,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -56,20 +54,23 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import sun.awt.image.IntegerInterleavedRaster;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationBufferedImageEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleDetectionRunSelectionEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleLinkingRunSelectionEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationTrajectoriesEvent;
+import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericImageCanvas;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
@@ -87,6 +88,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 	private static final long serialVersionUID = 7327403424923046398L;
 
+	private OmegaElementInformationsPanel infoPanel;
+
 	private OmegaImagePixels pixels;
 	private OmegaGateway gateway;
 	/** The image canvas. */
@@ -98,13 +101,9 @@ public class OmegaElementImagePanel extends GenericPanel {
 	private final Map<OmegaParticleDetectionRun, List<OmegaParticleLinkingRun>> displayableElements;
 
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
+	private OmegaParticleLinkingRun selectedParticleLinkingRun;
 
-	private boolean isPopulatingOverlay;
-
-	private boolean particlesOverlay;
-
-	private JPopupMenu canvasMenu;
-	private JMenuItem canvasZoomIn, canvasZoomOut;
+	private boolean isPopulatingOverlay, particlesOverlay, isHandlingEvent;
 
 	/** The compression level. */
 	private static final float COMPRESSION = 0.5f;
@@ -159,11 +158,13 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		this.isPopulatingOverlay = false;
 		this.particlesOverlay = false;
+		this.isHandlingEvent = false;
 
 		this.pixels = null;
 		this.gateway = null;
 
 		this.selectedParticleDetectionRun = null;
+		this.selectedParticleLinkingRun = null;
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -172,8 +173,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.setBackground(Color.white);
 
 		this.createAndAddWidgets();
-
-		this.createCanvasPopupMenu();
 
 		this.addListeners();
 	}
@@ -186,6 +185,11 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		this.tabPane = new JTabbedPane(SwingConstants.TOP,
 		        JTabbedPane.SCROLL_TAB_LAYOUT);
+
+		this.infoPanel = new OmegaElementInformationsPanel(
+		        this.getParentContainer());
+
+		this.tabPane.add("Element information", this.infoPanel);
 
 		this.imageControlsPanel = new JPanel();
 		// this.imageControlsPanel.setBorder(new
@@ -283,14 +287,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.add(this.tabPane, BorderLayout.SOUTH);
 	}
 
-	private void createCanvasPopupMenu() {
-		this.canvasMenu = new JPopupMenu();
-		this.canvasZoomIn = new JMenuItem("Zoom in");
-		this.canvasZoomOut = new JMenuItem("Zoom out");
-		this.canvasMenu.add(this.canvasZoomIn);
-		this.canvasMenu.add(this.canvasZoomOut);
-	}
-
 	private void addListeners() {
 		this.compressed.addActionListener(new ActionListener() {
 
@@ -306,6 +302,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.overlayKind_combo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
+				if (OmegaElementImagePanel.this.isHandlingEvent)
+					return;
 				if (OmegaElementImagePanel.this.overlayKind_combo
 				        .getSelectedItem().equals("Particles")) {
 					OmegaElementImagePanel.this.activateParticlesOverlay();
@@ -319,7 +317,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 			}
 		});
 		this.overlayParticle_combo.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				if (OmegaElementImagePanel.this.isPopulatingOverlay)
@@ -327,54 +324,28 @@ public class OmegaElementImagePanel extends GenericPanel {
 				if (OmegaElementImagePanel.this.overlayKind_combo
 				        .getSelectedItem().equals("Particles")) {
 					OmegaElementImagePanel.this.selectParticlesOverlay();
+					if (!OmegaElementImagePanel.this.isHandlingEvent) {
+						OmegaElementImagePanel.this
+						        .sendApplicationParticleDetectionRunSelectionEvent();
+					}
 				} else {
 					OmegaElementImagePanel.this.populateTrajectoriesOverlay();
 				}
 			}
 		});
 		this.overlayTraj_combo.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				if (OmegaElementImagePanel.this.isPopulatingOverlay)
 					return;
 				OmegaElementImagePanel.this.selectParticlesOverlay();
 				OmegaElementImagePanel.this.selectTrajectoriesOverlay();
-			}
-		});
-		this.canvas.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(final MouseEvent evt) {
-				if (!SwingUtilities.isRightMouseButton(evt)) {
-					OmegaElementImagePanel.this.canvasMenu.setVisible(false);
-				} else {
-					OmegaElementImagePanel.this.canvasMenu.show(
-					        OmegaElementImagePanel.this.canvas,
-					        evt.getPoint().x, evt.getPoint().y);
+				if (!OmegaElementImagePanel.this.isHandlingEvent) {
+					OmegaElementImagePanel.this
+					        .sendApplicationParticleLinkingRunSelectionEvent();
 				}
 			}
 		});
-		this.canvasZoomOut.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaElementImagePanel.this.canvas
-				        .setScale(OmegaElementImagePanel.this.canvas.getScale() / 2.0);
-				OmegaElementImagePanel.this.rescaleCanvas();
-			}
-		});
-		this.canvasZoomIn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaElementImagePanel.this.canvas
-				        .setScale(OmegaElementImagePanel.this.canvas.getScale() * 2.0);
-				OmegaElementImagePanel.this.rescaleCanvas();
-			}
-		});
-	}
-
-	private void rescaleCanvas() {
-		this.canvas.callRevalidate();
-		this.canvas.repaint();
 	}
 
 	private void selectTrajectoriesOverlay() {
@@ -390,6 +361,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 				        .get(particleDetectionRun);
 				for (final OmegaParticleLinkingRun particleLinkingRun : trajectoriesRuns) {
 					if (particleLinkingRun.getName().equals(s2)) {
+						this.selectedParticleLinkingRun = particleLinkingRun;
 						trajectories = particleLinkingRun
 						        .getResultingTrajectory();
 						break;
@@ -716,6 +688,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 			return;
 		}
 		this.canvas.setImage(img, true);
+		this.sendApplicationBufferedImageEvent(null);
 	}
 
 	/** Renders a plane. */
@@ -738,6 +711,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 				img.setAccelerationPriority(1f);
 			}
 			this.canvas.setImage(img, false);
+			// this.sendApplicationBufferedImageEvent(img);
 		} catch (final IOException e) {
 			// TODO manage exception
 			e.printStackTrace();
@@ -801,33 +775,42 @@ public class OmegaElementImagePanel extends GenericPanel {
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		for (final OmegaAnalysisRun particleDetectionRun : image
 		        .getAnalysisRuns()) {
-			if ((particleDetectionRun instanceof OmegaParticleDetectionRun)
-			        && loadedAnalysisRuns.contains(particleDetectionRun)) {
-				List<OmegaParticleLinkingRun> particleLinkingRuns;
-				if (this.displayableElements.containsKey(particleDetectionRun)) {
-					particleLinkingRuns = this.displayableElements
-					        .get(particleDetectionRun);
-				} else {
-					particleLinkingRuns = new ArrayList<OmegaParticleLinkingRun>();
-				}
-				for (final OmegaAnalysisRun particleLinkingRun : particleDetectionRun
-				        .getAnalysisRuns()) {
-					if ((particleLinkingRun instanceof OmegaParticleLinkingRun)
-					        && loadedAnalysisRuns.contains(particleLinkingRun)) {
-						particleLinkingRuns
-						        .add((OmegaParticleLinkingRun) particleLinkingRun);
-					}
-				}
-				this.displayableElements.put(
-				        (OmegaParticleDetectionRun) particleDetectionRun,
-				        particleLinkingRuns);
+			if (particleDetectionRun instanceof OmegaParticleDetectionRun) {
+				this.updateDisplayableElements(loadedAnalysisRuns,
+				        (OmegaParticleDetectionRun) particleDetectionRun);
 			}
+		}
+	}
+
+	private void updateDisplayableElements(
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
+	        final OmegaParticleDetectionRun particleDetectionRun) {
+		if ((particleDetectionRun instanceof OmegaParticleDetectionRun)
+		        && loadedAnalysisRuns.contains(particleDetectionRun)) {
+			List<OmegaParticleLinkingRun> particleLinkingRuns;
+			if (this.displayableElements.containsKey(particleDetectionRun)) {
+				particleLinkingRuns = this.displayableElements
+				        .get(particleDetectionRun);
+			} else {
+				particleLinkingRuns = new ArrayList<OmegaParticleLinkingRun>();
+			}
+			for (final OmegaAnalysisRun particleLinkingRun : particleDetectionRun
+			        .getAnalysisRuns()) {
+				if ((particleLinkingRun instanceof OmegaParticleLinkingRun)
+				        && loadedAnalysisRuns.contains(particleLinkingRun)) {
+					particleLinkingRuns
+					        .add((OmegaParticleLinkingRun) particleLinkingRun);
+				}
+			}
+			this.displayableElements.put(particleDetectionRun,
+			        particleLinkingRuns);
 		}
 	}
 
 	public void update(final OmegaElement element,
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
+		this.infoPanel.update(element);
 		this.displayableElements.clear();
 		// this.loadedAnalysisRuns = loadedAnalysisRuns;
 		this.gateway = gateway;
@@ -858,5 +841,95 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 	public Double getSizeY() {
 		return this.sizeY;
+	}
+
+	@Override
+	public void updateParentContainer(final RootPaneContainer parent) {
+		super.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
+	}
+
+	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
+	        final boolean selection) {
+		this.canvas.updateTrajectories(trajectories, selection);
+	}
+
+	private OmegaGUIFrame getOmegaGUIFrame() {
+		final RootPaneContainer parent = this.getParentContainer();
+		OmegaGUIFrame frame = null;
+		if (parent instanceof GenericFrame) {
+			final GenericFrame genericFrame = (GenericFrame) parent;
+			frame = (OmegaGUIFrame) genericFrame.getParent();
+		} else {
+			frame = (OmegaGUIFrame) parent;
+		}
+
+		return frame;
+	}
+
+	private void sendApplicationBufferedImageEvent(final BufferedImage buffImage) {
+		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+		final OmegaApplicationEvent event = new OmegaApplicationBufferedImageEvent(
+		        OmegaApplicationEvent.SOURCE_SIDE_BAR, buffImage);
+		frame.sendApplicationEvent(event);
+	}
+
+	private void sendApplicationParticleDetectionRunSelectionEvent() {
+		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+		final OmegaApplicationEvent event = new OmegaApplicationParticleDetectionRunSelectionEvent(
+		        OmegaApplicationEvent.SOURCE_SIDE_BAR,
+		        this.selectedParticleDetectionRun);
+		frame.sendApplicationEvent(event);
+	}
+
+	private void sendApplicationParticleLinkingRunSelectionEvent() {
+		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+		final OmegaApplicationEvent event = new OmegaApplicationParticleLinkingRunSelectionEvent(
+		        OmegaApplicationEvent.SOURCE_SIDE_BAR,
+		        this.selectedParticleLinkingRun);
+		frame.sendApplicationEvent(event);
+	}
+
+	public void sendApplicationTrajectoriesEvent(
+	        final List<OmegaTrajectory> trajectories, final boolean selection) {
+		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+		final OmegaApplicationEvent event = new OmegaApplicationTrajectoriesEvent(
+		        OmegaApplicationEvent.SOURCE_SIDE_BAR, trajectories, selection);
+		frame.sendApplicationEvent(event);
+	}
+
+	public void selectParticleDetectionRun(
+	        final OmegaParticleDetectionRun analysisRun) {
+		this.isHandlingEvent = true;
+		this.overlayKind_combo.setSelectedIndex(1);
+		this.activateParticlesOverlay();
+		for (int i = 0; i < this.overlayParticle_combo.getItemCount(); i++) {
+			final String s = this.overlayParticle_combo.getItemAt(i);
+			if (analysisRun.getName().equals(s)) {
+				this.overlayParticle_combo.setSelectedIndex(i);
+				this.isHandlingEvent = false;
+				return;
+			}
+		}
+		this.isHandlingEvent = false;
+		// TODO throw error
+	}
+
+	public void selectParticleLinkingRun(
+	        final OmegaParticleLinkingRun analysisRun) {
+		this.isHandlingEvent = true;
+		this.overlayKind_combo.setSelectedIndex(2);
+		this.activateParticlesOverlay();
+		this.activateTrajectoriesOverlay();
+		for (int i = 0; i < this.overlayTraj_combo.getItemCount(); i++) {
+			final String s = this.overlayTraj_combo.getItemAt(i);
+			if (analysisRun.getName().equals(s)) {
+				this.overlayTraj_combo.setSelectedIndex(i);
+				this.isHandlingEvent = false;
+				return;
+			}
+		}
+		this.isHandlingEvent = false;
+		// TODO throw error
 	}
 }

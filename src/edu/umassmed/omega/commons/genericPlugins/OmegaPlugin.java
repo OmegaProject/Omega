@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.genericPlugins;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +50,10 @@ public abstract class OmegaPlugin {
 	private final List<Integer> indexes;
 
 	private final Map<String, String> pluginOptions;
+
+	public OmegaPlugin() {
+		this(1);
+	}
 
 	public OmegaPlugin(final int maxNumOfPanels) {
 		this.maximumNumberOfPanels = maxNumOfPanels;
@@ -140,5 +144,9 @@ public abstract class OmegaPlugin {
 		while (i.hasNext()) {
 			i.next().handleOmegaPluginEvent(event);
 		}
+	}
+
+	protected List<GenericPluginPanel> getPanels() {
+		return this.panels;
 	}
 }

@@ -41,8 +41,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import edu.umassmed.omega.commons.OmegaConstants;
-import edu.umassmed.omega.commons.StringHelper;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.utilities.StringUtility;
 
 /**
  * Paints the image.
@@ -259,7 +259,7 @@ public class ImageViewerCanvasPanel extends JPanel {
 	// && (this.jPanelViewer.getSizeX() > 0.0)) {
 	// xInformation = String.format(
 	// "%s %sm",
-	// StringHelper.DoubleToString(this.jPanelViewer.getSizeX()
+	// StringUtility.DoubleToString(this.jPanelViewer.getSizeX()
 	// * this.image.getWidth(), 1), Greeks.MU);
 	// g2D.drawString(xInformation, 0, y + 15);
 	// } else {
@@ -274,7 +274,7 @@ public class ImageViewerCanvasPanel extends JPanel {
 	// && (this.jPanelViewer.getSizeY() > 0.0)) {
 	// yInformation = String.format(
 	// "%s %sm",
-	// StringHelper.DoubleToString(this.jPanelViewer.getSizeY()
+	// StringUtility.DoubleToString(this.jPanelViewer.getSizeY()
 	// * this.image.getHeight(), 1), Greeks.MU);
 	// g2D.drawString(yInformation, x, 24);
 	// } else {
@@ -449,8 +449,8 @@ public class ImageViewerCanvasPanel extends JPanel {
 
 	private void saveSingleImage(final String imageDirectory) {
 		try {
-			final String imageName = StringHelper
-			        .removeFileExtension(StringHelper
+			final String imageName = StringUtility
+			        .removeFileExtension(StringUtility
 			                .getImageName(this.jPanelViewer.getImage()
 			                        .getName()));
 			final String fileName = String.format("%s%s%s_frame_%d.png",

@@ -29,9 +29,9 @@ package edu.umassmed.omega.omeroPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.genericPlugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
@@ -41,7 +41,8 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 	private OmeroPluginPanel panel;
 
 	public OmeroPlugin() {
-		super(new OmeroGateway());
+		super(1);
+		this.setGateway(new OmeroGateway());
 		this.panel = null;
 	}
 

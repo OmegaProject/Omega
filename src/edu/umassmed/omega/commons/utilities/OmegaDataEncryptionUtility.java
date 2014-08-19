@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.utilities;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +40,7 @@ import javax.crypto.spec.PBEParameterSpec;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-public class OmegaDataEncryption {
+public class OmegaDataEncryptionUtility {
 	private static final char[] PASSWORD = "enfldsgbnlsngdlksdsgm"
 	        .toCharArray();
 	private static final byte[] SALT = { (byte) 0xde, (byte) 0x33, (byte) 0x10,
@@ -51,11 +51,11 @@ public class OmegaDataEncryption {
 		final SecretKeyFactory keyFactory = SecretKeyFactory
 		        .getInstance("PBEWithMD5AndDES");
 		final SecretKey key = keyFactory.generateSecret(new PBEKeySpec(
-		        OmegaDataEncryption.PASSWORD));
+		        OmegaDataEncryptionUtility.PASSWORD));
 		final Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
 		pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(
-		        OmegaDataEncryption.SALT, 20));
-		return OmegaDataEncryption.base64Encode(pbeCipher.doFinal(property
+		        OmegaDataEncryptionUtility.SALT, 20));
+		return OmegaDataEncryptionUtility.base64Encode(pbeCipher.doFinal(property
 		        .getBytes("UTF-8")));
 	}
 
@@ -69,11 +69,11 @@ public class OmegaDataEncryption {
 		final SecretKeyFactory keyFactory = SecretKeyFactory
 		        .getInstance("PBEWithMD5AndDES");
 		final SecretKey key = keyFactory.generateSecret(new PBEKeySpec(
-		        OmegaDataEncryption.PASSWORD));
+		        OmegaDataEncryptionUtility.PASSWORD));
 		final Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
 		pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(
-		        OmegaDataEncryption.SALT, 20));
-		return new String(pbeCipher.doFinal(OmegaDataEncryption
+		        OmegaDataEncryptionUtility.SALT, 20));
+		return new String(pbeCipher.doFinal(OmegaDataEncryptionUtility
 		        .base64Decode(property)), "UTF-8");
 	}
 

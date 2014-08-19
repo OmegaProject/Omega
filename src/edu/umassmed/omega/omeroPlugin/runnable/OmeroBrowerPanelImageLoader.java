@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 import pojos.DatasetData;
 import pojos.ImageData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;

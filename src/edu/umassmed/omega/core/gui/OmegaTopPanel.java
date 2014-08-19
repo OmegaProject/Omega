@@ -38,7 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 
 public class OmegaTopPanel extends GenericPanel {

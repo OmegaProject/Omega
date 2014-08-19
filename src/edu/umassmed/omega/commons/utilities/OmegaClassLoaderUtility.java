@@ -25,39 +25,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.utilities;
 
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+public class OmegaClassLoaderUtility {
 
-public abstract class OmegaParticleTrackingPlugin extends OmegaAlgorithmPlugin {
+	public static void addLibraryPath(final String pathToAdd)
+	        throws NoSuchFieldException, SecurityException,
+	        IllegalArgumentException, IllegalAccessException {
+		final Field usrPathsField = ClassLoader.class
+		        .getDeclaredField("usr_paths");
+		usrPathsField.setAccessible(true);
 
-	private OmegaGateway gateway;
+		// get array of paths
+		final String[] paths = (String[]) usrPathsField.get(null);
 
-	private List<OmegaImage> loadedImages;
+		// check if the path to add is already present
+		for (final String path : paths) {
+			if (path.equals(pathToAdd))
+				return;
+		}
 
-	public OmegaParticleTrackingPlugin(final int maxNumOfPanels) {
-		super(maxNumOfPanels);
-
-		this.gateway = null;
-		this.loadedImages = null;
-	}
-
-	public OmegaGateway getGateway() {
-		return this.gateway;
-	}
-
-	public void setGateway(final OmegaGateway gateway) {
-		this.gateway = gateway;
-	}
-
-	public List<OmegaImage> getLoadedImages() {
-		return this.loadedImages;
-	}
-
-	public void setLoadedImages(final List<OmegaImage> images) {
-		this.loadedImages = images;
+		// add the new path
+		final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
+		newPaths[newPaths.length - 1] = pathToAdd;
+		usrPathsField.set(null, newPaths);
 	}
 }

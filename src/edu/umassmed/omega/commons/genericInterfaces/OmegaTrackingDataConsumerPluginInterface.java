@@ -25,9 +25,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.genericInterfaces;
 
-public class OmegaEvents {
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 
-	public static String PROPERTY_CONNECTION = "Connection";
+public interface OmegaTrackingDataConsumerPluginInterface {
+	public void selectImage(OmegaImage image);
+
+	public void selectParticleDetectionRun(OmegaParticleDetectionRun analysisRun);
+
+	public void selectParticleLinkingRun(OmegaParticleLinkingRun analysisRun);
 }

@@ -31,9 +31,9 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaBrowserPlugin;
-import edu.umassmed.omega.commons.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.genericInterfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.genericPlugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;

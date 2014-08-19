@@ -38,7 +38,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.OmegaPlugin;
+import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.core.gui.OmegaGUIFrame;
 
 public abstract class GenericPluginPanel extends GenericPanel implements

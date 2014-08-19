@@ -25,8 +25,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.genericPlugins;
 
-public interface OmegaDataDisplayerPluginInterface {
-	public void updateDisplayedData();
+import edu.umassmed.omega.commons.genericInterfaces.OmegaLoaderPluginInterface;
+import edu.umassmed.omega.commons.genericInterfaces.OmegaMainDataConsumerPluginInterface;
+import edu.umassmed.omega.dataNew.OmegaData;
+import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+
+public abstract class OmegaLoaderPlugin extends OmegaPlugin implements
+        OmegaLoaderPluginInterface, OmegaMainDataConsumerPluginInterface {
+
+	private OmegaGateway gateway;
+	private OmegaData omegaData;
+
+	public OmegaLoaderPlugin() {
+		this(1);
+	}
+
+	public OmegaLoaderPlugin(final int numOfPanels) {
+		super(numOfPanels);
+
+		this.gateway = null;
+		this.omegaData = null;
+	}
+
+	@Override
+	public OmegaGateway getGateway() {
+		return this.gateway;
+	}
+
+	@Override
+	public void setGateway(final OmegaGateway gateway) {
+		this.gateway = gateway;
+	}
+
+	@Override
+	public void setMainData(final OmegaData omegaData) {
+		this.omegaData = omegaData;
+	}
+
+	@Override
+	public OmegaData getMainData() {
+		return this.omegaData;
+	}
 }

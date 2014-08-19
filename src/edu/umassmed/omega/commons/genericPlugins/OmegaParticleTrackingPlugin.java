@@ -25,21 +25,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons;
+package edu.umassmed.omega.commons.genericPlugins;
 
+import java.util.List;
+
+import edu.umassmed.omega.commons.genericInterfaces.OmegaImageConsumerPluginInterface;
+import edu.umassmed.omega.commons.genericInterfaces.OmegaLoaderPluginInterface;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
-public abstract class OmegaLoaderPlugin extends OmegaDataManagerPlugin {
+public abstract class OmegaParticleTrackingPlugin extends OmegaAlgorithmPlugin
+        implements OmegaLoaderPluginInterface,
+        OmegaImageConsumerPluginInterface {
 
-	private final OmegaGateway gateway;
+	private OmegaGateway gateway;
 
-	public OmegaLoaderPlugin(final OmegaGateway gateway) {
-		super();
+	private List<OmegaImage> loadedImages;
 
+	public OmegaParticleTrackingPlugin() {
+		this(1);
+	}
+
+	public OmegaParticleTrackingPlugin(final int maxNumOfPanels) {
+		super(maxNumOfPanels);
+
+		this.gateway = null;
+		this.loadedImages = null;
+	}
+
+	@Override
+	public OmegaGateway getGateway() {
+		return this.gateway;
+	}
+
+	@Override
+	public void setGateway(final OmegaGateway gateway) {
 		this.gateway = gateway;
 	}
 
-	public OmegaGateway getGateway() {
-		return this.gateway;
+	@Override
+	public List<OmegaImage> getLoadedImages() {
+		return this.loadedImages;
+	}
+
+	@Override
+	public void setLoadedImages(final List<OmegaImage> images) {
+		this.loadedImages = images;
 	}
 }
