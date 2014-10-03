@@ -34,7 +34,9 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,12 +53,17 @@ public class CheckBoxNodeEditor extends TriStateCheckBox implements
 
 	private static final long serialVersionUID = 2410966108128999421L;
 
+	private final List<DefaultMutableTreeNode> disabledNodes;
+
 	private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 	private final JPanel panel = new JPanel(new BorderLayout());
 	private String str = null;
 
 	public CheckBoxNodeEditor() {
 		super();
+
+		this.disabledNodes = new ArrayList<DefaultMutableTreeNode>();
+
 		this.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -217,5 +224,13 @@ public class CheckBoxNodeEditor extends TriStateCheckBox implements
 				        .editingCanceled(this.changeEvent);
 			}
 		}
+	}
+
+	public void resetDisabledNodesList() {
+		this.disabledNodes.clear();
+	}
+
+	public void addNodeToDisabledList(final DefaultMutableTreeNode node) {
+		this.disabledNodes.add(node);
 	}
 }

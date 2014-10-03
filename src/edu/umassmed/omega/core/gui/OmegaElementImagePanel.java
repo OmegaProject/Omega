@@ -29,17 +29,13 @@ package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
-import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -64,18 +60,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import sun.awt.image.IntegerInterleavedRaster;
-import edu.umassmed.omega.commons.eventSystem.OmegaApplicationBufferedImageEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleDetectionRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleLinkingRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationTrajectoriesEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaApplicationTrajectoriesManagerRunSelectionEvent;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericImageCanvas;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.utilities.OmegaImageRenderingUtilities;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaTrajectoriesManagerRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
@@ -93,29 +90,23 @@ public class OmegaElementImagePanel extends GenericPanel {
 	private OmegaImagePixels pixels;
 	private OmegaGateway gateway;
 	/** The image canvas. */
+	private JScrollPane canvasSP;
 	private GenericImageCanvas canvas;
 
 	private JTabbedPane tabPane;
 	private JPanel imageControlsPanel, imageOverlayPanel;
 
-	private final Map<OmegaParticleDetectionRun, List<OmegaParticleLinkingRun>> displayableElements;
+	private final Map<OmegaParticleDetectionRun, List<OmegaParticleLinkingRun>> trajectoriesMap;
+	private final Map<OmegaParticleLinkingRun, List<OmegaTrajectoriesManagerRun>> modifiedTrajectoriesMap;
 
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	private OmegaParticleLinkingRun selectedParticleLinkingRun;
+	private OmegaTrajectoriesManagerRun selectedTrajectoriesManagerRun;
 
 	private boolean isPopulatingOverlay, particlesOverlay, isHandlingEvent;
 
 	/** The compression level. */
 	private static final float COMPRESSION = 0.5f;
-	/** The red mask. */
-	private static final int RED_MASK = 0x00ff0000;
-	/** The green mask. */
-	private static final int GREEN_MASK = 0x0000ff00;
-	/** The blue mask. */
-	private static final int BLUE_MASK = 0x000000ff;
-	/** The RGB masks. */
-	private static final int[] RGB = { OmegaElementImagePanel.RED_MASK,
-	        OmegaElementImagePanel.GREEN_MASK, OmegaElementImagePanel.BLUE_MASK };
 	/** The slider to select the z-section and t-section. */
 	private JSlider z_slider, t_slider;
 	/** The label showing the Z and T values */
@@ -149,12 +140,13 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 	// Overlay panel element
 	private JComboBox<String> overlayKind_combo, overlayParticle_combo,
-	        overlayTraj_combo;
+	        overlayTraj_combo, overlayTM_combo;
 
 	public OmegaElementImagePanel(final RootPaneContainer parent) {
 		super(parent);
 
-		this.displayableElements = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParticleLinkingRun>>();
+		this.trajectoriesMap = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParticleLinkingRun>>();
+		this.modifiedTrajectoriesMap = new LinkedHashMap<OmegaParticleLinkingRun, List<OmegaTrajectoriesManagerRun>>();
 
 		this.isPopulatingOverlay = false;
 		this.particlesOverlay = false;
@@ -165,10 +157,11 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		this.selectedParticleDetectionRun = null;
 		this.selectedParticleLinkingRun = null;
+		this.selectedTrajectoriesManagerRun = null;
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		this.setBorder(new TitledBorder("Selected element"));
+		this.setBorder(new TitledBorder("Selected item"));
 
 		this.setBackground(Color.white);
 
@@ -180,7 +173,9 @@ public class OmegaElementImagePanel extends GenericPanel {
 	private void createAndAddWidgets() {
 		this.canvas = new GenericImageCanvas(this.getParentContainer(), this);
 		this.render();
-		final JScrollPane scrollPane = new JScrollPane(this.canvas);
+		this.canvasSP = new JScrollPane(this.canvas);
+		this.resizeCanvasScrollPane();
+
 		// scrollPane.setPreferredSize(this.canvas.getPreferredSize());
 
 		this.tabPane = new JTabbedPane(SwingConstants.TOP,
@@ -189,7 +184,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.infoPanel = new OmegaElementInformationsPanel(
 		        this.getParentContainer());
 
-		this.tabPane.add("Element information", this.infoPanel);
+		this.tabPane.add("Information", this.infoPanel);
 
 		this.imageControlsPanel = new JPanel();
 		// this.imageControlsPanel.setBorder(new
@@ -255,41 +250,55 @@ public class OmegaElementImagePanel extends GenericPanel {
 		final JScrollPane imageControlsScrollPane = new JScrollPane(
 		        this.imageControlsPanel);
 
-		this.tabPane.add("Image controls", imageControlsScrollPane);
+		this.tabPane.add("Viewing options", imageControlsScrollPane);
 
 		this.imageOverlayPanel = new JPanel();
-		this.imageOverlayPanel.setLayout(new GridLayout(3, 1));
+		this.imageOverlayPanel.setLayout(new GridLayout(4, 1));
 
 		this.overlayKind_combo = new JComboBox<String>();
 		this.overlayKind_combo.addItem("None");
 		this.overlayKind_combo.addItem("Particles");
 		this.overlayKind_combo.addItem("Trajectories");
+		this.overlayKind_combo.addItem("Trajectories manager");
 		this.overlayKind_combo.setSelectedIndex(0);
 		this.overlayKind_combo.setEnabled(false);
-
 		this.imageOverlayPanel.add(this.overlayKind_combo);
 
 		this.overlayParticle_combo = new JComboBox<String>();
 		this.overlayParticle_combo.setEnabled(false);
-
 		this.imageOverlayPanel.add(this.overlayParticle_combo);
 
 		this.overlayTraj_combo = new JComboBox<String>();
 		this.overlayTraj_combo.setEnabled(false);
-
 		this.imageOverlayPanel.add(this.overlayTraj_combo);
+
+		this.overlayTM_combo = new JComboBox<String>();
+		this.overlayTM_combo.setEnabled(false);
+		this.imageOverlayPanel.add(this.overlayTM_combo);
 
 		final JScrollPane imageOverlayScrollPane = new JScrollPane(
 		        this.imageOverlayPanel);
-		this.tabPane.add("Image overlays", imageOverlayScrollPane);
+		this.tabPane.add("Overlays", imageOverlayScrollPane);
 
-		this.add(scrollPane, BorderLayout.CENTER);
+		this.add(this.canvasSP, BorderLayout.NORTH);
 		this.add(this.tabPane, BorderLayout.SOUTH);
 	}
 
-	private void addListeners() {
-		this.compressed.addActionListener(new ActionListener() {
+	private void resizeCanvasScrollPane() {
+		final Dimension dim = new Dimension(this.getWidth() - 20,
+		        (this.getHeight() - 20) / 2);
+		this.canvasSP.setPreferredSize(dim);
+		this.canvasSP.setSize(dim);
+	}
 
+	private void addListeners() {
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(final ComponentEvent evt) {
+				OmegaElementImagePanel.this.resizeCanvasScrollPane();
+			}
+		});
+		this.compressed.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				if (OmegaElementImagePanel.this.compressed.isEnabled()) {
@@ -302,77 +311,146 @@ public class OmegaElementImagePanel extends GenericPanel {
 		this.overlayKind_combo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				if (OmegaElementImagePanel.this.isHandlingEvent)
-					return;
-				if (OmegaElementImagePanel.this.overlayKind_combo
-				        .getSelectedItem().equals("Particles")) {
-					OmegaElementImagePanel.this.activateParticlesOverlay();
-				} else if (OmegaElementImagePanel.this.overlayKind_combo
-				        .getSelectedItem().equals("Trajectories")) {
-					OmegaElementImagePanel.this.activateParticlesOverlay();
-					OmegaElementImagePanel.this.activateTrajectoriesOverlay();
-				} else {
-					OmegaElementImagePanel.this.deactivateOverlay();
-				}
+				OmegaElementImagePanel.this.selectOverlayKind();
 			}
 		});
 		this.overlayParticle_combo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				if (OmegaElementImagePanel.this.isPopulatingOverlay)
-					return;
-				if (OmegaElementImagePanel.this.overlayKind_combo
-				        .getSelectedItem().equals("Particles")) {
-					OmegaElementImagePanel.this.selectParticlesOverlay();
-					if (!OmegaElementImagePanel.this.isHandlingEvent) {
-						OmegaElementImagePanel.this
-						        .sendApplicationParticleDetectionRunSelectionEvent();
-					}
-				} else {
-					OmegaElementImagePanel.this.populateTrajectoriesOverlay();
-				}
+				OmegaElementImagePanel.this.selectParticles();
 			}
 		});
 		this.overlayTraj_combo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				if (OmegaElementImagePanel.this.isPopulatingOverlay)
-					return;
-				OmegaElementImagePanel.this.selectParticlesOverlay();
-				OmegaElementImagePanel.this.selectTrajectoriesOverlay();
-				if (!OmegaElementImagePanel.this.isHandlingEvent) {
-					OmegaElementImagePanel.this
-					        .sendApplicationParticleLinkingRunSelectionEvent();
-				}
+				OmegaElementImagePanel.this.selectTrajectories();
+			}
+		});
+		this.overlayTM_combo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaElementImagePanel.this.selectModifiedTrajectories();
 			}
 		});
 	}
 
-	private void selectTrajectoriesOverlay() {
-		if (this.isPopulatingOverlay)
+	private void selectOverlayKind() {
+		if (this.isHandlingEvent)
 			return;
-		List<OmegaTrajectory> trajectories = null;
-		final String s1 = (String) this.overlayParticle_combo.getSelectedItem();
-		final String s2 = (String) this.overlayTraj_combo.getSelectedItem();
-		for (final OmegaParticleDetectionRun particleDetectionRun : this.displayableElements
-		        .keySet()) {
-			if (particleDetectionRun.getName().equals(s1)) {
-				final List<OmegaParticleLinkingRun> trajectoriesRuns = this.displayableElements
-				        .get(particleDetectionRun);
-				for (final OmegaParticleLinkingRun particleLinkingRun : trajectoriesRuns) {
-					if (particleLinkingRun.getName().equals(s2)) {
-						this.selectedParticleLinkingRun = particleLinkingRun;
-						trajectories = particleLinkingRun
-						        .getResultingTrajectory();
-						break;
-					}
+		final String selected = (String) OmegaElementImagePanel.this.overlayKind_combo
+		        .getSelectedItem();
+		if (selected.equals("Particles")) {
+			this.activateParticlesOverlay();
+		} else if (selected.equals("Trajectories")) {
+			// this.activateParticlesOverlay();
+			this.activateTrajectoriesOverlay();
+		} else if (selected.equals("Trajectories manager")) {
+			// this.activateParticlesOverlay();
+			// this.activateTrajectoriesOverlay();
+			this.activateTrajectoriesManagerOverlay();
+		} else {
+			this.deactivateOverlays();
+		}
+	}
+
+	private void selectModifiedTrajectories() {
+		if (this.isPopulatingOverlay || !this.overlayTM_combo.isEnabled())
+			return;
+		this.resetCurrentSelection();
+		final List<OmegaROI> particles = this.selectParticlesOverlay();
+		this.selectTrajectoriesOverlay();
+		final List<OmegaTrajectory> modifiedTrajectories = this
+		        .selectTrajectoriesManagerOverlay();
+		this.setParticles(particles);
+		this.setTrajectories(modifiedTrajectories);
+		if (!OmegaElementImagePanel.this.isHandlingEvent) {
+			OmegaElementImagePanel.this
+			        .sendApplicationTrajectoriesManagerRunSelectionEvent();
+		}
+	}
+
+	private void selectTrajectories() {
+		if (this.isPopulatingOverlay || !this.overlayTraj_combo.isEnabled())
+			return;
+		this.resetCurrentSelection();
+		final List<OmegaROI> particles = this.selectParticlesOverlay();
+		final List<OmegaTrajectory> trajectories = this
+		        .selectTrajectoriesOverlay();
+		if (this.overlayKind_combo.getSelectedItem().equals("Trajectories")) {
+			this.setParticles(particles);
+			this.setTrajectories(trajectories);
+			if (!this.isHandlingEvent) {
+				this.sendApplicationParticleLinkingRunSelectionEvent();
+			}
+		} else {
+			this.populateTrajectoriesManagerOverlay();
+		}
+	}
+
+	private void selectParticles() {
+		if (this.isPopulatingOverlay || !this.overlayParticle_combo.isEnabled())
+			return;
+		this.resetCurrentSelection();
+		final List<OmegaROI> particles = this.selectParticlesOverlay();
+		if (this.overlayKind_combo.getSelectedItem().equals("Particles")) {
+			this.setParticles(particles);
+			if (!this.isHandlingEvent) {
+				this.sendApplicationParticleDetectionRunSelectionEvent();
+			}
+		} else {
+			this.populateTrajectoriesOverlay();
+		}
+	}
+
+	private void setTrajectories(final List<OmegaTrajectory> trajectories) {
+		this.canvas.setTrajectories(trajectories);
+	}
+
+	private void setParticles(final List<OmegaROI> particles) {
+		this.canvas.setParticles(particles);
+	}
+
+	private List<OmegaTrajectory> selectTrajectoriesManagerOverlay() {
+		if (this.isPopulatingOverlay)
+			return null;
+		List<OmegaTrajectory> modifiedTrajectories = null;
+		final String s = (String) this.overlayTM_combo.getSelectedItem();
+		if (this.selectedParticleLinkingRun != null) {
+			final List<OmegaTrajectoriesManagerRun> modifiedTrajectoriesRun = this.modifiedTrajectoriesMap
+			        .get(this.selectedParticleLinkingRun);
+			for (final OmegaTrajectoriesManagerRun trajectoriesManagerRun : modifiedTrajectoriesRun) {
+				if (!trajectoriesManagerRun.getName().equals(s)) {
+					continue;
 				}
-				if (trajectories != null) {
-					break;
-				}
+				this.selectedTrajectoriesManagerRun = trajectoriesManagerRun;
+				modifiedTrajectories = trajectoriesManagerRun
+				        .getResultingTrajectories();
+				return modifiedTrajectories;
 			}
 		}
-		this.canvas.setTrajectories(trajectories);
+		return null;
+		// this.canvas.setTrajectories(modifiedTrajectories);
+	}
+
+	private List<OmegaTrajectory> selectTrajectoriesOverlay() {
+		if (this.isPopulatingOverlay)
+			return null;
+		List<OmegaTrajectory> trajectories = null;
+		final String s = (String) this.overlayTraj_combo.getSelectedItem();
+		if (this.selectedParticleDetectionRun != null) {
+			final List<OmegaParticleLinkingRun> trajectoriesRuns = this.trajectoriesMap
+			        .get(this.selectedParticleDetectionRun);
+			for (final OmegaParticleLinkingRun particleLinkingRun : trajectoriesRuns) {
+				if (!particleLinkingRun.getName().equals(s)) {
+					continue;
+				}
+				this.selectedParticleLinkingRun = particleLinkingRun;
+				trajectories = particleLinkingRun.getResultingTrajectories();
+				return trajectories;
+			}
+		}
+		return null;
+		// this.canvas.setTrajectories(trajectories);
 	}
 
 	private List<OmegaROI> getFrameParticlesOverlay() {
@@ -386,39 +464,61 @@ public class OmegaElementImagePanel extends GenericPanel {
 		return null;
 	}
 
-	private void selectParticlesOverlay() {
+	private List<OmegaROI> selectParticlesOverlay() {
 		if (this.isPopulatingOverlay)
-			return;
+			return null;
 		List<OmegaROI> particles = null;
-		this.t_slider.getValue();
-		final String s1 = (String) this.overlayParticle_combo.getSelectedItem();
-		for (final OmegaParticleDetectionRun particleDetectionRun : this.displayableElements
+		final String s = (String) this.overlayParticle_combo.getSelectedItem();
+		for (final OmegaParticleDetectionRun particleDetectionRun : this.trajectoriesMap
 		        .keySet()) {
-			if (particleDetectionRun.getName().equals(s1)) {
-				this.selectedParticleDetectionRun = particleDetectionRun;
-				particles = this.getFrameParticlesOverlay();
-				if (particles != null) {
-					break;
-				}
+			if (!particleDetectionRun.getName().equals(s)) {
+				continue;
 			}
+			this.selectedParticleDetectionRun = particleDetectionRun;
+			particles = this.getFrameParticlesOverlay();
+			if (particles != null)
+				return particles;
 		}
-		this.canvas.setParticles(particles);
+
+		return null;
+		// this.canvas.setParticles(particles);
+	}
+
+	private void resetCurrentSelection() {
+		this.selectedParticleDetectionRun = null;
+		this.selectedParticleLinkingRun = null;
+		this.selectedTrajectoriesManagerRun = null;
+	}
+
+	private void populateTrajectoriesManagerOverlay() {
+		if (!this.overlayTM_combo.isEnabled())
+			return;
+		this.isPopulatingOverlay = true;
+		this.overlayTM_combo.removeAllItems();
+		if (this.selectedParticleLinkingRun != null) {
+			final List<OmegaTrajectoriesManagerRun> modifiedTrajectories = this.modifiedTrajectoriesMap
+			        .get(this.selectedParticleLinkingRun);
+			for (final OmegaTrajectoriesManagerRun trajManagerRun : modifiedTrajectories) {
+				this.overlayTM_combo.addItem(trajManagerRun.getName());
+			}
+			this.overlayTM_combo.addItem("Actual modification");
+		}
+		this.isPopulatingOverlay = false;
+		if (this.overlayTM_combo.getItemCount() > 0) {
+			this.overlayTM_combo.setSelectedIndex(0);
+		}
 	}
 
 	private void populateTrajectoriesOverlay() {
+		if (!this.overlayTraj_combo.isEnabled())
+			return;
 		this.isPopulatingOverlay = true;
-		this.overlayTraj_combo.setEnabled(true);
 		this.overlayTraj_combo.removeAllItems();
-		final String s = (String) this.overlayParticle_combo.getSelectedItem();
-		for (final OmegaParticleDetectionRun particleDetectionRun : this.displayableElements
-		        .keySet()) {
-			if (particleDetectionRun.getName().equals(s)) {
-				final List<OmegaParticleLinkingRun> trajectories = this.displayableElements
-				        .get(particleDetectionRun);
-				for (final OmegaParticleLinkingRun particleLinkingRun : trajectories) {
-					this.overlayTraj_combo
-					        .addItem(particleLinkingRun.getName());
-				}
+		if (this.selectedParticleDetectionRun != null) {
+			final List<OmegaParticleLinkingRun> trajectories = this.trajectoriesMap
+			        .get(this.selectedParticleDetectionRun);
+			for (final OmegaParticleLinkingRun particleLinkingRun : trajectories) {
+				this.overlayTraj_combo.addItem(particleLinkingRun.getName());
 			}
 		}
 		this.isPopulatingOverlay = false;
@@ -428,11 +528,11 @@ public class OmegaElementImagePanel extends GenericPanel {
 	}
 
 	private void populateParticlesOverlay() {
+		if (!this.overlayParticle_combo.isEnabled())
+			return;
 		this.isPopulatingOverlay = true;
-		this.particlesOverlay = true;
-		this.overlayParticle_combo.setEnabled(true);
 		this.overlayParticle_combo.removeAllItems();
-		for (final OmegaParticleDetectionRun particleDetectionRun : this.displayableElements
+		for (final OmegaParticleDetectionRun particleDetectionRun : this.trajectoriesMap
 		        .keySet()) {
 			this.overlayParticle_combo.addItem(particleDetectionRun.getName());
 		}
@@ -442,28 +542,47 @@ public class OmegaElementImagePanel extends GenericPanel {
 		}
 	}
 
-	private void deactivateOverlay() {
+	private void deactivateOverlays() {
 		this.particlesOverlay = false;
 		this.overlayParticle_combo.setEnabled(false);
 		this.overlayParticle_combo.setSelectedIndex(-1);
 		this.overlayTraj_combo.setEnabled(false);
 		this.overlayTraj_combo.setSelectedIndex(-1);
+		this.overlayTM_combo.setEnabled(false);
+		this.overlayTM_combo.setSelectedIndex(-1);
+	}
+
+	private void activateTrajectoriesManagerOverlay() {
+		this.overlayParticle_combo.setEnabled(true);
+		this.populateParticlesOverlay();
+		this.overlayTraj_combo.setEnabled(true);
+		this.populateTrajectoriesOverlay();
+		this.overlayTM_combo.setEnabled(true);
+		this.populateTrajectoriesManagerOverlay();
 	}
 
 	private void activateTrajectoriesOverlay() {
+		this.overlayTM_combo.setEnabled(false);
+		this.overlayTM_combo.setSelectedIndex(-1);
+		this.overlayParticle_combo.setEnabled(true);
 		this.populateParticlesOverlay();
+		this.overlayTraj_combo.setEnabled(true);
 		this.populateTrajectoriesOverlay();
 	}
 
 	private void activateParticlesOverlay() {
-		this.populateParticlesOverlay();
 		this.overlayTraj_combo.setEnabled(false);
 		this.overlayTraj_combo.setSelectedIndex(-1);
+		this.overlayTM_combo.setEnabled(false);
+		this.overlayTM_combo.setSelectedIndex(-1);
+		this.setTrajectories(null);
+		this.overlayParticle_combo.setEnabled(true);
+		this.particlesOverlay = true;
+		this.populateParticlesOverlay();
 	}
 
 	private ChangeListener createChangeListener() {
 		final ChangeListener cl = new ChangeListener() {
-
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
 				final JSlider slider = (JSlider) evt.getSource();
@@ -481,6 +600,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 				final int t = OmegaElementImagePanel.this.t_slider.getValue();
 
 				if (t == 0) {
+					// TODO handle error if needed
 					System.out.println("ERROR");
 				}
 
@@ -551,7 +671,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 	}
 
 	private void addOverlayControl() {
-		if (this.displayableElements.isEmpty()) {
+		if (this.trajectoriesMap.isEmpty()) {
 			// Alert that no possible analysis there
 		} else {
 			this.overlayKind_combo.setSelectedIndex(0);
@@ -560,15 +680,12 @@ public class OmegaElementImagePanel extends GenericPanel {
 	}
 
 	private void removeOverlayControl() {
-		this.overlayKind_combo.setSelectedIndex(0);
 		this.overlayKind_combo.setEnabled(false);
-		this.particlesOverlay = false;
-		this.overlayParticle_combo.setSelectedIndex(-1);
-		this.overlayParticle_combo.setEnabled(false);
+		this.overlayKind_combo.setSelectedIndex(0);
+		this.deactivateOverlays();
 		this.overlayParticle_combo.removeAllItems();
-		this.overlayTraj_combo.setSelectedIndex(-1);
-		this.overlayTraj_combo.setEnabled(false);
 		this.overlayTraj_combo.removeAllItems();
+		this.overlayTM_combo.removeAllItems();
 	}
 
 	private void removeRenderingControl() {
@@ -688,7 +805,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 			return;
 		}
 		this.canvas.setImage(img, true);
-		this.sendApplicationBufferedImageEvent(null);
 	}
 
 	/** Renders a plane. */
@@ -702,7 +818,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 			final int sizeY = this.pixels.getSizeY();
 			if (this.compressed.isSelected()) {
 				final int[] buf = this.gateway.renderAsPackedInt(id);
-				img = this.createImage(buf, 32, sizeX, sizeY);
+				img = OmegaImageRenderingUtilities.createImage(buf, 32, sizeX,
+				        sizeY);
 			} else {
 				final byte[] values = this.gateway.renderCompressed(id);
 				final ByteArrayInputStream stream = new ByteArrayInputStream(
@@ -711,47 +828,10 @@ public class OmegaElementImagePanel extends GenericPanel {
 				img.setAccelerationPriority(1f);
 			}
 			this.canvas.setImage(img, false);
-			// this.sendApplicationBufferedImageEvent(img);
 		} catch (final IOException e) {
 			// TODO manage exception
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Creates a buffer image from the specified <code>array</code> of integers.
-	 * 
-	 * @param buf
-	 *            The array to handle.
-	 * @param bits
-	 *            The number of bits in the pixel values.
-	 * @param sizeX
-	 *            The width (in pixels) of the region of image data described.
-	 * @param sizeY
-	 *            The height (in pixels) of the region of image data described.
-	 * @return See above.
-	 */
-	private BufferedImage createImage(final int[] buf, final int bits,
-	        final int sizeX, final int sizeY) {
-		if (buf == null)
-			return null;
-
-		final DataBuffer j2DBuf = new DataBufferInt(buf, sizeX * sizeY);
-
-		final SinglePixelPackedSampleModel sampleModel = new SinglePixelPackedSampleModel(
-		        DataBuffer.TYPE_INT, sizeX, sizeY, sizeX,
-		        OmegaElementImagePanel.RGB);
-
-		final WritableRaster raster = new IntegerInterleavedRaster(sampleModel,
-		        j2DBuf, new Point(0, 0));
-
-		final ColorModel colorModel = new DirectColorModel(bits,
-		        OmegaElementImagePanel.RGB[0], OmegaElementImagePanel.RGB[1],
-		        OmegaElementImagePanel.RGB[2]);
-		final BufferedImage image = new BufferedImage(colorModel, raster,
-		        false, null);
-		image.setAccelerationPriority(1f);
-		return image;
 	}
 
 	/**
@@ -776,42 +856,68 @@ public class OmegaElementImagePanel extends GenericPanel {
 		for (final OmegaAnalysisRun particleDetectionRun : image
 		        .getAnalysisRuns()) {
 			if (particleDetectionRun instanceof OmegaParticleDetectionRun) {
-				this.updateDisplayableElements(loadedAnalysisRuns,
+				this.updateTrajectoriesMap(loadedAnalysisRuns,
 				        (OmegaParticleDetectionRun) particleDetectionRun);
 			}
 		}
 	}
 
-	private void updateDisplayableElements(
+	private void updateTrajectoriesMap(
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaParticleDetectionRun particleDetectionRun) {
-		if ((particleDetectionRun instanceof OmegaParticleDetectionRun)
-		        && loadedAnalysisRuns.contains(particleDetectionRun)) {
-			List<OmegaParticleLinkingRun> particleLinkingRuns;
-			if (this.displayableElements.containsKey(particleDetectionRun)) {
-				particleLinkingRuns = this.displayableElements
-				        .get(particleDetectionRun);
-			} else {
-				particleLinkingRuns = new ArrayList<OmegaParticleLinkingRun>();
-			}
-			for (final OmegaAnalysisRun particleLinkingRun : particleDetectionRun
-			        .getAnalysisRuns()) {
-				if ((particleLinkingRun instanceof OmegaParticleLinkingRun)
-				        && loadedAnalysisRuns.contains(particleLinkingRun)) {
-					particleLinkingRuns
-					        .add((OmegaParticleLinkingRun) particleLinkingRun);
-				}
-			}
-			this.displayableElements.put(particleDetectionRun,
-			        particleLinkingRuns);
+		if (!loadedAnalysisRuns.contains(particleDetectionRun))
+			return;
+		List<OmegaParticleLinkingRun> particleLinkingRuns;
+		if (this.trajectoriesMap.containsKey(particleDetectionRun)) {
+			particleLinkingRuns = this.trajectoriesMap
+			        .get(particleDetectionRun);
+		} else {
+			particleLinkingRuns = new ArrayList<OmegaParticleLinkingRun>();
 		}
+		for (final OmegaAnalysisRun analysisRun : particleDetectionRun
+		        .getAnalysisRuns()) {
+			if (!(analysisRun instanceof OmegaParticleLinkingRun)
+			        || !loadedAnalysisRuns.contains(analysisRun)) {
+				continue;
+			}
+			final OmegaParticleLinkingRun particleLinkingRun = (OmegaParticleLinkingRun) analysisRun;
+			particleLinkingRuns.add(particleLinkingRun);
+			this.updateModifiedTrajectoriesMap(loadedAnalysisRuns,
+			        particleLinkingRun);
+		}
+		this.trajectoriesMap.put(particleDetectionRun, particleLinkingRuns);
+	}
+
+	private void updateModifiedTrajectoriesMap(
+	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
+	        final OmegaParticleLinkingRun particleLinkingRun) {
+		if (!loadedAnalysisRuns.contains(particleLinkingRun))
+			return;
+		List<OmegaTrajectoriesManagerRun> trajectoriesManagerRuns;
+		if (this.modifiedTrajectoriesMap.containsKey(particleLinkingRun)) {
+			trajectoriesManagerRuns = this.modifiedTrajectoriesMap
+			        .get(particleLinkingRun);
+		} else {
+			trajectoriesManagerRuns = new ArrayList<OmegaTrajectoriesManagerRun>();
+		}
+		for (final OmegaAnalysisRun analysisRun : particleLinkingRun
+		        .getAnalysisRuns()) {
+			if (!(analysisRun instanceof OmegaTrajectoriesManagerRun)
+			        || !loadedAnalysisRuns.contains(analysisRun)) {
+				continue;
+			}
+			final OmegaTrajectoriesManagerRun trajectoriesManagerRun = (OmegaTrajectoriesManagerRun) analysisRun;
+			trajectoriesManagerRuns.add(trajectoriesManagerRun);
+		}
+		this.modifiedTrajectoriesMap.put(particleLinkingRun,
+		        trajectoriesManagerRuns);
 	}
 
 	public void update(final OmegaElement element,
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
 		this.infoPanel.update(element);
-		this.displayableElements.clear();
+		this.trajectoriesMap.clear();
 		// this.loadedAnalysisRuns = loadedAnalysisRuns;
 		this.gateway = gateway;
 		if (element == null) {
@@ -867,13 +973,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 		return frame;
 	}
 
-	private void sendApplicationBufferedImageEvent(final BufferedImage buffImage) {
-		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
-		final OmegaApplicationEvent event = new OmegaApplicationBufferedImageEvent(
-		        OmegaApplicationEvent.SOURCE_SIDE_BAR, buffImage);
-		frame.sendApplicationEvent(event);
-	}
-
 	private void sendApplicationParticleDetectionRunSelectionEvent() {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaApplicationEvent event = new OmegaApplicationParticleDetectionRunSelectionEvent(
@@ -887,6 +986,14 @@ public class OmegaElementImagePanel extends GenericPanel {
 		final OmegaApplicationEvent event = new OmegaApplicationParticleLinkingRunSelectionEvent(
 		        OmegaApplicationEvent.SOURCE_SIDE_BAR,
 		        this.selectedParticleLinkingRun);
+		frame.sendApplicationEvent(event);
+	}
+
+	private void sendApplicationTrajectoriesManagerRunSelectionEvent() {
+		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+		final OmegaApplicationEvent event = new OmegaApplicationTrajectoriesManagerRunSelectionEvent(
+		        OmegaApplicationEvent.SOURCE_SIDE_BAR,
+		        this.selectedTrajectoriesManagerRun);
 		frame.sendApplicationEvent(event);
 	}
 
@@ -929,6 +1036,33 @@ public class OmegaElementImagePanel extends GenericPanel {
 				return;
 			}
 		}
+		this.isHandlingEvent = false;
+		// TODO throw error
+	}
+
+	public void selectTrajectoriesManagerRun(
+	        final OmegaParticleLinkingRun analysisRun) {
+		this.isHandlingEvent = true;
+		this.overlayKind_combo.setSelectedIndex(3);
+		this.activateParticlesOverlay();
+		this.activateTrajectoriesOverlay();
+		this.activateTrajectoriesManagerOverlay();
+
+		if (analysisRun == null) {
+			this.overlayTM_combo.setSelectedIndex(0);
+			this.isHandlingEvent = false;
+			return;
+		}
+
+		for (int i = 0; i < this.overlayTM_combo.getItemCount(); i++) {
+			final String s = this.overlayTM_combo.getItemAt(i);
+			if (analysisRun.getName().equals(s)) {
+				this.overlayTM_combo.setSelectedIndex(i);
+				this.isHandlingEvent = false;
+				return;
+			}
+		}
+
 		this.isHandlingEvent = false;
 		// TODO throw error
 	}

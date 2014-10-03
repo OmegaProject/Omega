@@ -200,9 +200,21 @@ public class OmegaImagePixels extends OmegaElement implements
 		this.sizeC = sizeC;
 		this.sizeT = sizeT;
 
-		this.pixelSizeX = pixelSizeX;
-		this.pixelSizeY = pixelSizeY;
-		this.pixelSizeZ = pixelSizeZ;
+		if (pixelSizeX == 0) {
+			this.pixelSizeX = -1;
+		} else {
+			this.pixelSizeX = pixelSizeX;
+		}
+		if (pixelSizeY == 0) {
+			this.pixelSizeY = -1;
+		} else {
+			this.pixelSizeY = pixelSizeY;
+		}
+		if (pixelSizeZ == 0) {
+			this.pixelSizeZ = -1;
+		} else {
+			this.pixelSizeZ = pixelSizeZ;
+		}
 
 		this.selectedZ = -1;
 		this.selectedC = -1;
@@ -228,9 +240,21 @@ public class OmegaImagePixels extends OmegaElement implements
 		this.sizeC = sizeC;
 		this.sizeT = sizeT;
 
-		this.pixelSizeX = pixelSizeX;
-		this.pixelSizeY = pixelSizeY;
-		this.pixelSizeZ = pixelSizeZ;
+		if (pixelSizeX == 0) {
+			this.pixelSizeX = -1;
+		} else {
+			this.pixelSizeX = pixelSizeX;
+		}
+		if (pixelSizeY == 0) {
+			this.pixelSizeY = -1;
+		} else {
+			this.pixelSizeY = pixelSizeY;
+		}
+		if (pixelSizeZ == 0) {
+			this.pixelSizeZ = -1;
+		} else {
+			this.pixelSizeZ = pixelSizeZ;
+		}
 
 		this.selectedZ = -1;
 		this.selectedC = -1;
@@ -295,6 +319,14 @@ public class OmegaImagePixels extends OmegaElement implements
 		this.frames.add(frame);
 	}
 
+	public boolean containsFrame(final long id) {
+		for (final OmegaFrame frame : this.frames) {
+			if (frame.getElementID() == id)
+				return true;
+		}
+		return false;
+	}
+
 	@Override
 	public List<OmegaAnalysisRun> getAnalysisRuns() {
 		return this.analysisRuns;
@@ -303,6 +335,20 @@ public class OmegaImagePixels extends OmegaElement implements
 	@Override
 	public void addAnalysisRun(final OmegaAnalysisRun analysisRun) {
 		this.analysisRuns.add(analysisRun);
+	}
+
+	@Override
+	public void removeAnalysisRun(final OmegaAnalysisRun analysisRun) {
+		this.analysisRuns.remove(analysisRun);
+	}
+
+	@Override
+	public boolean containsAnalysisRun(final long id) {
+		for (final OmegaAnalysisRun analysisRun : this.analysisRuns) {
+			if (analysisRun.getElementID() == id)
+				return true;
+		}
+		return false;
 	}
 
 	public int getSelectedZ() {

@@ -33,8 +33,12 @@ import java.util.List;
 
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 
-public class OmegaTrajectory extends OmegaElement {
+public class OmegaTrajectory extends OmegaElement implements
+        Comparable<OmegaTrajectory> {
 
+	private static final String DEFAULT_TRAJ_NAME = "Traj";
+
+	private String trajName;
 	private int length;
 	private OmegaROI startingROI;
 	private OmegaROI endingROI;
@@ -43,10 +47,15 @@ public class OmegaTrajectory extends OmegaElement {
 	private final List<OmegaLink> links;
 
 	private Color color;
-	private boolean isVisible;
+	private boolean isVisible, isColorChanged, isNameChanged,
+	        isAnnotationChanged;
+
+	private String annotations;
 
 	public OmegaTrajectory(final int length) {
 		super((long) -1);
+
+		this.trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME;
 
 		this.startingROI = null;
 		this.endingROI = null;
@@ -58,11 +67,18 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.color = Color.yellow;
 		this.isVisible = true;
+		this.isColorChanged = false;
+		this.isNameChanged = false;
+
+		this.annotations = null;
+		this.isAnnotationChanged = false;
 	}
 
 	public OmegaTrajectory(final OmegaROI startingROI,
 	        final OmegaROI endingROI, final int length) {
 		super((long) -1);
+
+		this.trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME;
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
@@ -74,12 +90,19 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.color = Color.yellow;
 		this.isVisible = true;
+		this.isColorChanged = false;
+		this.isNameChanged = false;
+
+		this.annotations = null;
+		this.isAnnotationChanged = false;
 	}
 
 	public OmegaTrajectory(final OmegaROI startingROI,
 	        final OmegaROI endingROI, final int length,
 	        final List<OmegaROI> ROIs, final List<OmegaLink> links) {
 		super((long) -1);
+
+		this.trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME;
 
 		this.startingROI = startingROI;
 		this.endingROI = endingROI;
@@ -91,6 +114,27 @@ public class OmegaTrajectory extends OmegaElement {
 
 		this.color = Color.yellow;
 		this.isVisible = true;
+		this.isColorChanged = false;
+		this.isNameChanged = false;
+
+		this.annotations = null;
+		this.isAnnotationChanged = false;
+	}
+
+	public boolean isNameChanged() {
+		return this.isNameChanged;
+	}
+
+	public void setNameChanged(final boolean isNameChanged) {
+		this.isNameChanged = isNameChanged;
+	}
+
+	public void setName(final String name) {
+		this.trajName = name;
+	}
+
+	public String getName() {
+		return this.trajName;
 	}
 
 	public OmegaROI getStartingROI() {
@@ -125,12 +169,24 @@ public class OmegaTrajectory extends OmegaElement {
 		this.ROIs.add(ROI);
 	}
 
+	public void addROIs(final List<OmegaROI> ROIs) {
+		this.ROIs.addAll(ROIs);
+	}
+
 	public List<OmegaLink> getLinks() {
 		return this.links;
 	}
 
 	public void addLink(final OmegaLink link) {
 		this.links.add(link);
+	}
+
+	public boolean isColorChanged() {
+		return this.isColorChanged;
+	}
+
+	public void setColorChanged(final boolean isColorChanged) {
+		this.isColorChanged = isColorChanged;
 	}
 
 	public void setColor(final Color color) {
@@ -147,5 +203,56 @@ public class OmegaTrajectory extends OmegaElement {
 
 	public void setVisible(final boolean isVisible) {
 		this.isVisible = isVisible;
+	}
+
+	public boolean isAnnotationsChanged() {
+		return this.isAnnotationChanged;
+	}
+
+	public void setAnnotationsChanged(final boolean isAnnotationChanged) {
+		this.isAnnotationChanged = isAnnotationChanged;
+	}
+
+	public void updateAnnotations(final String newAnnotations) {
+		this.annotations = newAnnotations;
+	}
+
+	public String getAnnotations() {
+		return this.annotations;
+	}
+
+	public boolean isEqual(final OmegaTrajectory traj) {
+		if (this.length != traj.length)
+			return false;
+		for (final OmegaROI roi : this.ROIs) {
+			boolean found = false;
+			for (final OmegaROI roi2 : traj.ROIs) {
+				if (roi.getFrameIndex() != roi2.getFrameIndex()) {
+					continue;
+				}
+				if ((roi.getX() != roi2.getX()) || (roi.getY() != roi2.getY())) {
+					continue;
+				}
+				found = true;
+				break;
+			}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int compareTo(final OmegaTrajectory traj) {
+		return (this.trajName.compareTo(traj.trajName));
+	}
+
+	@Override
+	public OmegaTrajectory clone() {
+		final OmegaTrajectory newTraj = new OmegaTrajectory(this.length);
+		newTraj.setColor(this.color);
+		newTraj.addROIs(this.ROIs);
+		newTraj.setVisible(this.isVisible);
+		return newTraj;
 	}
 }

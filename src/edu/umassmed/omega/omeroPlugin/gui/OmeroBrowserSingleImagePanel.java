@@ -41,11 +41,11 @@ public class OmeroBrowserSingleImagePanel extends JPanel {
 
 	private static final long serialVersionUID = 7924490362486444828L;
 
-	private Long imageID = 0L;
+	private final Long imageID;
 	private BufferedImage image = null;
 
-	public OmeroBrowserSingleImagePanel(final Long imageID, final String imageName,
-	        final BufferedImage image) {
+	public OmeroBrowserSingleImagePanel(final Long imageID,
+	        final String imageName, final BufferedImage image) {
 		super(null);
 		this.imageID = imageID;
 		this.image = image;

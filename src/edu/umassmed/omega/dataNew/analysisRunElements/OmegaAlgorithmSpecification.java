@@ -59,11 +59,23 @@ public class OmegaAlgorithmSpecification extends OmegaElement {
 		return this.algorithmInfo;
 	}
 
+	public OmegaParameter getParameter(final String name) {
+		for (final OmegaParameter param : this.parameters) {
+			if (param.getName().equals(name))
+				return param;
+		}
+		return null;
+	}
+
 	public List<OmegaParameter> getParameters() {
 		return this.parameters;
 	}
 
-	public void addParameters(final OmegaParameter parameter) {
+	public void addParameter(final OmegaParameter parameter) {
 		this.parameters.add(parameter);
+	}
+
+	public void addParameters(final List<OmegaParameter> parameters) {
+		this.parameters.addAll(parameters);
 	}
 }

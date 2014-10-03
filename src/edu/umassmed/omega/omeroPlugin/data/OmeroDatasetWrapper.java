@@ -30,15 +30,15 @@ package edu.umassmed.omega.omeroPlugin.data;
 import pojos.DatasetData;
 import pojos.ProjectData;
 
-public class OmeroDatasetWrapper {
+public class OmeroDatasetWrapper extends OmeroDataWrapper {
 
 	private final ProjectData project;
 	private final DatasetData dataset;
 
 	// private final List<OmeroDatasetWrapper> datasets;
 
-	public OmeroDatasetWrapper(final ProjectData project,
-	        final DatasetData dataset) {
+	public OmeroDatasetWrapper(final DatasetData dataset,
+	        final ProjectData project) {
 		this.project = project;
 		this.dataset = dataset;
 		// this.datasets = new ArrayList<OmeroDatasetWrapper>();
@@ -56,13 +56,8 @@ public class OmeroDatasetWrapper {
 	// return this.datasets;
 	// }
 
-	@Override
-	public String toString() {
-		return this.dataset.getName();
-	}
-
-	public long getID() {
-		return this.dataset.getId();
+	public int getNumOfImages() {
+		return this.dataset.getImages().size();
 	}
 
 	public DatasetData getDatasetData() {
@@ -71,5 +66,15 @@ public class OmeroDatasetWrapper {
 
 	public ProjectData getProject() {
 		return this.project;
+	}
+
+	@Override
+	public Long getID() {
+		return this.dataset.getId();
+	}
+
+	@Override
+	public String getStringRepresentation() {
+		return "[" + this.getID() + "] " + this.dataset.getName();
 	}
 }

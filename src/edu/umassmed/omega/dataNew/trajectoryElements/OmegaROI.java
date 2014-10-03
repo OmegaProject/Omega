@@ -31,7 +31,7 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 
 public class OmegaROI extends OmegaElement {
 
-	private final int frameIndex;
+	private int frameIndex;
 	private final double x, y;
 
 	public OmegaROI(final int frameIndex, final double x, final double y) {
@@ -44,6 +44,10 @@ public class OmegaROI extends OmegaElement {
 
 	public int getFrameIndex() {
 		return this.frameIndex;
+	}
+
+	public void setFrameIndex(final int frameIndex) {
+		this.frameIndex = frameIndex;
 	}
 
 	public double getX() {

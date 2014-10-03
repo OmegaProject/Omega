@@ -5,6 +5,7 @@ public class OmegaApplicationEvent {
 	public static final int SOURCE_MAIN_MENU = 0;
 	public static final int SOURCE_WORKSPACE = 1;
 	public static final int SOURCE_SIDE_BAR = 2;
+	public static final int SOURCE_APP = 3;
 
 	private final int source;
 

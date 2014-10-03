@@ -38,8 +38,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class OmegaTopPanel extends GenericPanel {
 	private static final long serialVersionUID = -2511349408103225400L;

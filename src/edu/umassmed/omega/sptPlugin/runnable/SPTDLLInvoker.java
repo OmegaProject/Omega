@@ -133,7 +133,7 @@ public class SPTDLLInvoker {
 	 */
 	static {
 		try {
-			// OmegaClassLoaderUtility
+			// OmegaClassLoaderUtilities
 			// .addLibraryPath(OmegaConstants.OMEGA_SPT_FOLDER);
 			System.loadLibrary(OmegaConstants.OMEGA_SPT_DLL);
 		} catch (final UnsatisfiedLinkError e) {

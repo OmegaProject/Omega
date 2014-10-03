@@ -27,13 +27,15 @@
  *******************************************************************************/
 package edu.umassmed.omega.sptPlugin;
 
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParametersConstants;
+
 public class SPTConstants {
-	public static final String PARAM_RADIUS = "Radius";
-	public static final String PARAM_CUTOFF = "Cutoff";
-	public static final String PARAM_PERCENTILE = "Percentile";
+	public static final String PARAM_RADIUS = OmegaAlgorithmParametersConstants.PARAM_RADIUS;
+	public static final String PARAM_CUTOFF = OmegaAlgorithmParametersConstants.PARAM_CUTOFF;
+	public static final String PARAM_PERCENTILE = OmegaAlgorithmParametersConstants.PARAM_PERCENTILE;
 
-	public static final String PARAM_DISPLACEMENT = "Displacement";
-	public static final String PARAM_LINKRANGE = "Linkrange";
+	public static final String PARAM_DISPLACEMENT = OmegaAlgorithmParametersConstants.PARAM_DISPLACEMENT;
+	public static final String PARAM_LINKRANGE = OmegaAlgorithmParametersConstants.PARAM_LINKRANGE;
 
-	public static final String PARAM_MINPOINTS = "Minimum points per trajectory";
+	public static final String PARAM_MINPOINTS = OmegaAlgorithmParametersConstants.PARAM_MINPOINTS;
 }

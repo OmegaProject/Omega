@@ -40,12 +40,12 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
 import org.jfree.ui.Align;
@@ -53,166 +53,137 @@ import org.jfree.ui.Align;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtility;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 
-public class OmeroConnectionDialog extends JDialog {
+public class OmeroConnectionDialog extends GenericDialog {
 
 	public String OPTION_SERVER_ADRESS = "Omero server adress";
 	public String OPTION_SERVER_PORT = "Omero server port";
 	public String OPTION_LOGIN_USERNAME = "Omero login username";
 	public String OPTION_LOGIN_PASSWORD = "Omero login password";
 
-	private Map<String, String> pluginOptions;
-
-	private final JComponent parent;
+	private final GenericPluginPanel parent;
+	private final Map<String, String> pluginOptions;
 
 	private static final long serialVersionUID = -1021787512167305062L;
 
+	private JPanel mainPanel;
 	private JTextField usernameTxtFie, hostnameTxtFie, portTxtFie;
 	private JPasswordField passwordPswFie;
-
 	private JCheckBox saveServerInfo, saveLoginInfo;
-
 	private JLabel connectionStatusLbl;
-
 	private JButton connectButt;
 
 	private final OmeroGateway gateway;
 
-	public OmeroConnectionDialog(final JComponent parent,
-	        final OmeroGateway gateway) {
-		this.parent = parent;
+	public OmeroConnectionDialog(final RootPaneContainer parentContainer,
+	        final GenericPluginPanel parent, final OmeroGateway gateway) {
+		super(parentContainer, "Omega server connection manager", false);
 		this.gateway = gateway;
 
-		if (parent instanceof GenericPluginPanel) {
-			this.pluginOptions = ((GenericPluginPanel) parent).getPlugin()
-			        .getPluginOptions();
-		} else {
-			this.pluginOptions = new LinkedHashMap<String, String>();
-		}
+		this.parent = parent;
+		this.pluginOptions = parent.getPlugin().getPluginOptions();
 
-		this.createAndAddWidgets();
-
-		this.addListeners();
-		this.setAlwaysOnTop(true);
-		this.setResizable(false);
-		this.pack();
+		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		this.fillFields();
 	}
 
-	private void createAndAddWidgets() {
+	@Override
+	protected void createAndAddWidgets() {
 		this.setLayout(new BorderLayout());
-
-		final JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(2, 0));
-
-		final JPanel serverPanel = this.createServerPanel();
-		mainPanel.add(serverPanel);
-
-		final JPanel loginPanel = this.createLoginPanel();
-		mainPanel.add(loginPanel);
-
-		this.add(mainPanel, BorderLayout.CENTER);
-
+		this.mainPanel = new JPanel();
+		this.mainPanel.setLayout(new GridLayout(2, 0));
+		this.createAndAddServerPanel();
+		this.createAndAddLoginPanel();
+		this.add(this.mainPanel, BorderLayout.CENTER);
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
-
 		this.connectButt = new JButton("Connect");
 		this.connectButt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.connectButt);
-
 		bottomPanel.add(buttonPanel, BorderLayout.CENTER);
-
 		this.connectionStatusLbl = new JLabel("Status: not connected.");
 		this.connectionStatusLbl.setHorizontalAlignment(Align.CENTER);
 		bottomPanel.add(this.connectionStatusLbl, BorderLayout.SOUTH);
-
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
-	private JPanel createServerPanel() {
+	private void createAndAddServerPanel() {
 		final JPanel serverPanel = new JPanel();
 		serverPanel.setLayout(new GridLayout(3, 0));
-
 		serverPanel.setBorder(new TitledBorder("Server information"));
-
 		final JLabel hostnameLbl = new JLabel("Insert server hostname:");
 		serverPanel.add(hostnameLbl);
-
 		this.hostnameTxtFie = new JTextField();
 		this.hostnameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.hostnameTxtFie);
-		if (this.pluginOptions.containsKey(this.OPTION_SERVER_ADRESS)) {
-			this.hostnameTxtFie.setText(this.pluginOptions
-			        .get(this.OPTION_SERVER_ADRESS));
-		}
-
 		final JLabel portLbl = new JLabel(
 		        "Insert server port (empty for default "
 		                + OmegaServerInformation.DEFAULT_PORT + "):");
 		serverPanel.add(portLbl);
-
 		this.portTxtFie = new JTextField();
 		this.portTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.portTxtFie);
+		this.saveServerInfo = new JCheckBox("Remember server information?");
+		serverPanel.add(this.saveServerInfo);
+		this.mainPanel.add(serverPanel);
+	}
+
+	private void createAndAddLoginPanel() {
+		final JPanel loginPanel = new JPanel();
+		loginPanel.setLayout(new GridLayout(3, 0));
+		loginPanel.setBorder(new TitledBorder("Login information"));
+		final JLabel usernameLbl = new JLabel("Insert your username:");
+		loginPanel.add(usernameLbl);
+		this.usernameTxtFie = new JTextField();
+		this.usernameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		loginPanel.add(this.usernameTxtFie);
+		final JLabel passwordLbl = new JLabel("Insert your password:");
+		loginPanel.add(passwordLbl);
+		this.passwordPswFie = new JPasswordField();
+		loginPanel.add(this.passwordPswFie);
+		this.passwordPswFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.saveLoginInfo = new JCheckBox("Remember login information?");
+		loginPanel.add(this.saveLoginInfo);
+		this.mainPanel.add(loginPanel);
+	}
+
+	private void fillFields() {
+		if (this.pluginOptions.containsKey(this.OPTION_SERVER_ADRESS)) {
+			this.hostnameTxtFie.setText(this.pluginOptions
+			        .get(this.OPTION_SERVER_ADRESS));
+		}
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_PORT)) {
 			this.portTxtFie.setText(this.pluginOptions
 			        .get(this.OPTION_SERVER_PORT));
 		}
-
-		this.saveServerInfo = new JCheckBox("Remember server information?");
-		serverPanel.add(this.saveServerInfo);
-
-		return serverPanel;
-	}
-
-	private JPanel createLoginPanel() {
-		final JPanel loginPanel = new JPanel();
-		loginPanel.setLayout(new GridLayout(3, 0));
-
-		loginPanel.setBorder(new TitledBorder("Login information"));
-
-		final JLabel usernameLbl = new JLabel("Insert your username:");
-		loginPanel.add(usernameLbl);
-
-		this.usernameTxtFie = new JTextField();
-		this.usernameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		loginPanel.add(this.usernameTxtFie);
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_USERNAME)) {
 			this.usernameTxtFie.setText(this.pluginOptions
 			        .get(this.OPTION_LOGIN_USERNAME));
 		}
-
-		final JLabel passwordLbl = new JLabel("Insert your password:");
-		loginPanel.add(passwordLbl);
-
-		this.passwordPswFie = new JPasswordField();
-		loginPanel.add(this.passwordPswFie);
-		this.passwordPswFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_PASSWORD)) {
 			final String psw = this.pluginOptions
 			        .get(this.OPTION_LOGIN_PASSWORD);
 			try {
-				this.passwordPswFie.setText(OmegaDataEncryptionUtility.decrypt(psw));
+				this.passwordPswFie.setText(OmegaDataEncryptionUtilities
+				        .decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
-
-		this.saveLoginInfo = new JCheckBox("Remember login information?");
-		loginPanel.add(this.saveLoginInfo);
-
-		return loginPanel;
 	}
 
-	private void addListeners() {
+	@Override
+	protected void addListeners() {
 		this.connectButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
@@ -241,13 +212,38 @@ public class OmeroConnectionDialog extends JDialog {
 					        .setText("Status:  connecting...");
 
 					boolean connected = false;
-					try {
-						connected = OmeroConnectionDialog.this.gateway.connect(
-						        loginCred, serverInfo);
-					} catch (final Exception ext) {
-						// Aggiungere uno status per gli errori
-						OmeroConnectionDialog.this.connectionStatusLbl
-						        .setText(ext.getMessage());
+					final int error = OmeroConnectionDialog.this.gateway
+					        .connect(loginCred, serverInfo);
+					connected = OmeroConnectionDialog.this.gateway
+					        .isConnected();
+					String errorMsg = null;
+					switch (error) {
+					case 0:
+						break;
+					case 1:
+						errorMsg = "Impossibile creare sessione.";
+						break;
+					case 2:
+						errorMsg = "<html>Accesso negato.<br>Ricontrollare nome utente e/o password.</html>";
+						break;
+					case 3:
+						errorMsg = "Errore del server.";
+						break;
+					case 4:
+						errorMsg = "<html>Impossibile trovare il server.<br>Ricontrollare l'indirizzo.</html>";
+						break;
+					case 5:
+						errorMsg = "<html>Il server ha rifiutato la connessione.<br>Ricontrollare la porta.</html>";
+						break;
+					default:
+						errorMsg = "Errore sconosciuto.";
+					}
+					if (errorMsg != null) {
+						final GenericMessageDialog errorDialog = new GenericMessageDialog(
+						        OmeroConnectionDialog.this.getParentContainer(),
+						        "Omega server connection error", errorMsg, true);
+						errorDialog.enableClose();
+						errorDialog.setVisible(true);
 					}
 
 					if (connected == false) {
@@ -310,7 +306,7 @@ public class OmeroConnectionDialog extends JDialog {
 				options.put(this.OPTION_LOGIN_USERNAME, username);
 				String loginPsw = null;
 				try {
-					loginPsw = OmegaDataEncryptionUtility.encrypt(password);
+					loginPsw = OmegaDataEncryptionUtilities.encrypt(password);
 				} catch (final UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (final GeneralSecurityException e) {

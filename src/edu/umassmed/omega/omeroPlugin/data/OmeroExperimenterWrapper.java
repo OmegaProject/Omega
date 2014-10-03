@@ -34,7 +34,7 @@ import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
 
-public class OmeroExperimenterWrapper {
+public class OmeroExperimenterWrapper extends OmeroDataWrapper {
 
 	private final ExperimenterData exp;
 	private final List<OmeroProjectWrapper> projects;
@@ -42,6 +42,10 @@ public class OmeroExperimenterWrapper {
 	public OmeroExperimenterWrapper(final ExperimenterData exp) {
 		this.exp = exp;
 		this.projects = new ArrayList<OmeroProjectWrapper>();
+	}
+
+	public int getNumOfProjects() {
+		return this.projects.size();
 	}
 
 	public void setProjects(final List<ProjectData> projects) {
@@ -65,11 +69,13 @@ public class OmeroExperimenterWrapper {
 	}
 
 	@Override
-	public String toString() {
-		return this.exp.getFirstName() + " " + this.exp.getLastName();
+	public String getStringRepresentation() {
+		return "[" + this.getID() + "] " + this.exp.getFirstName() + " "
+		        + this.exp.getLastName();
 	}
 
-	public long getID() {
+	@Override
+	public Long getID() {
 		return this.exp.getId();
 	}
 }

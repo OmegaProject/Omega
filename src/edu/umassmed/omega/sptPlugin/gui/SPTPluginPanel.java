@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
-import edu.umassmed.omega.commons.genericPlugins.OmegaAlgorithmPlugin;
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
@@ -62,9 +65,14 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.sptPlugin.runnable.SPTLoader;
+import edu.umassmed.omega.sptPlugin.runnable.SPTMessageEvent;
+import edu.umassmed.omega.sptPlugin.runnable.SPTRunnable;
 import edu.umassmed.omega.sptPlugin.runnable.SPTRunner;
+import edu.umassmed.omega.sptPlugin.runnable.SPTWriter;
 
-public class SPTPluginPanel extends GenericPluginPanel {
+public class SPTPluginPanel extends GenericPluginPanel implements
+        OmegaMessageDisplayerPanel {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -74,14 +82,14 @@ public class SPTPluginPanel extends GenericPluginPanel {
 
 	private SPTRunPanel runPanel;
 
-	private JTextArea messages_txtArea;
-
 	// private OmeroListPanel projectListPanel;
 	private SPTLoadedDataBrowserPanel loadedDataBrowserPanel;
 	private SPTQueueRunBrowserPanel queueRunBrowserPanel;
 
 	private JButton addToProcess_butt, removeFromProcess_butt;
 	private JButton processBatch_butt, processRealTime_butt;
+
+	private GenericStatusPanel statusPanel;
 
 	private OmegaGateway gateway;
 
@@ -91,6 +99,8 @@ public class SPTPluginPanel extends GenericPluginPanel {
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
 
 	private final Map<Thread, SPTRunner> threadsAndRunnables;
+
+	private boolean isRunningBatch;
 
 	public SPTPluginPanel(final RootPaneContainer parent,
 	        final OmegaPlugin plugin, final OmegaGateway gateway,
@@ -103,6 +113,8 @@ public class SPTPluginPanel extends GenericPluginPanel {
 
 		this.selectedImage = null;
 
+		this.isRunningBatch = false;
+
 		this.gateway = gateway;
 
 		this.setPreferredSize(new Dimension(750, 500));
@@ -111,6 +123,8 @@ public class SPTPluginPanel extends GenericPluginPanel {
 		this.createAndAddWidgets();
 		this.loadedDataBrowserPanel.updateTree(images);
 		this.addListeners();
+
+		this.resetStatusMessages();
 	}
 
 	private void createMenu() {
@@ -118,15 +132,6 @@ public class SPTPluginPanel extends GenericPluginPanel {
 	}
 
 	public void createAndAddWidgets() {
-		this.messages_txtArea = new JTextArea();
-		this.messages_txtArea.setRows(5);
-		this.messages_txtArea.setEditable(false);
-		this.messages_txtArea.setAutoscrolls(true);
-		this.messages_txtArea.setLineWrap(true);
-
-		final JScrollPane errorPanel = new JScrollPane(this.messages_txtArea);
-		this.add(errorPanel, BorderLayout.NORTH);
-
 		this.loadedDataBrowserPanel = new SPTLoadedDataBrowserPanel(
 		        this.getParentContainer(), this);
 
@@ -181,62 +186,97 @@ public class SPTPluginPanel extends GenericPluginPanel {
 
 		this.add(this.mainSplitPane, BorderLayout.CENTER);
 
+		final JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new BorderLayout());
+
+		this.statusPanel = new GenericStatusPanel(4);
+
 		final JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new FlowLayout());
 
 		this.processRealTime_butt = new JButton("Process in real time");
+		this.processRealTime_butt.setEnabled(false);
 		buttonsPanel.add(this.processRealTime_butt);
+
 		this.processBatch_butt = new JButton("Process in background");
 		buttonsPanel.add(this.processBatch_butt);
 
 		this.setProcessButtonsEnabled(false);
 
-		this.add(buttonsPanel, BorderLayout.SOUTH);
+		bottomPanel.add(buttonsPanel, BorderLayout.NORTH);
+		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
+
+		this.add(bottomPanel, BorderLayout.SOUTH);
+	}
+
+	private void resetStatusMessages() {
+		this.statusPanel.updateStatus(0, "Plugin ready");
+		this.statusPanel.updateStatus(1, "Runner service: ready");
+		this.statusPanel.updateStatus(1, "Loader service: ready");
+		this.statusPanel.updateStatus(1, "Writer service: ready");
 	}
 
 	private void addListeners() {
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(final ComponentEvent evt) {
-				super.componentResized(evt);
-				SPTPluginPanel.this.browserSplitPane.setDividerLocation(0.5);
-				SPTPluginPanel.this.mainSplitPane.setDividerLocation(0.25);
+				SPTPluginPanel.this.handleResize();
 			}
 		});
 		this.addToProcess_butt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				SPTPluginPanel.this.updateImagesToProcess(0);
-				SPTPluginPanel.this.loadedDataBrowserPanel.deselect();
-				SPTPluginPanel.this.setAddAndRemoveButtonsEnabled(false);
+				SPTPluginPanel.this.addToProcessList();
 			}
 		});
 		this.removeFromProcess_butt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				SPTPluginPanel.this.updateImagesToProcess(1);
-				SPTPluginPanel.this.loadedDataBrowserPanel.deselect();
-				SPTPluginPanel.this.queueRunBrowserPanel.deselect();
-				SPTPluginPanel.this.setAddAndRemoveButtonsEnabled(false);
+				SPTPluginPanel.this.removeFromProcessList();
 			}
 		});
 		this.processBatch_butt.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				SPTPluginPanel.this.setEnabled(false);
-				final SPTRunner sptRunner = new SPTRunner(SPTPluginPanel.this,
-				        SPTPluginPanel.this.imagesToProcess,
-				        SPTPluginPanel.this.gateway);
-				final Thread runnerT = new Thread(sptRunner);
-				SPTPluginPanel.this.threadsAndRunnables.put(runnerT, sptRunner);
-
-				runnerT.start();
+				SPTPluginPanel.this.processBatch();
 			}
 		});
 	}
 
-	public void updateRunnerEnded() {
+	private void handleResize() {
+		this.browserSplitPane.setDividerLocation(0.5);
+		this.mainSplitPane.setDividerLocation(0.25);
+	}
+
+	private void addToProcessList() {
+		this.updateImagesToProcess(0);
+		this.loadedDataBrowserPanel.deselect();
+		this.setAddAndRemoveButtonsEnabled(false);
+	}
+
+	private void removeFromProcessList() {
+		this.updateImagesToProcess(1);
+		this.loadedDataBrowserPanel.deselect();
+		this.queueRunBrowserPanel.deselect();
+		this.setAddAndRemoveButtonsEnabled(false);
+	}
+
+	private void processBatch() {
+		this.isRunningBatch = true;
+		this.setAddAndRemoveButtonsEnabled(false);
+		this.setProcessButtonsEnabled(false);
+		this.runPanel.setFieldsEnalbed(false);
+		final SPTRunner sptRunner = new SPTRunner(this, this.imagesToProcess,
+		        this.gateway);
+		final Thread runnerT = new Thread(sptRunner);
+		this.threadsAndRunnables.put(runnerT, sptRunner);
+
+		runnerT.start();
+	}
+
+	private void updateRunnerEnded() {
+		final List<Thread> toRemove = new ArrayList<Thread>();
 		for (final Thread t : this.threadsAndRunnables.keySet()) {
 			final SPTRunner runner = this.threadsAndRunnables.get(t);
 			if (runner.isJobCompleted()) {
@@ -271,10 +311,19 @@ public class SPTPluginPanel extends GenericPluginPanel {
 						// TODO gestire
 						e.printStackTrace();
 					}
+					toRemove.add(t);
 				}
 			}
 			this.setEnabled(true);
 		}
+
+		for (final Thread t : toRemove) {
+			this.threadsAndRunnables.remove(t);
+		}
+
+		this.setProcessButtonsEnabled(true);
+		this.runPanel.setFieldsEnalbed(true);
+		this.resetStatusMessages();
 	}
 
 	private void updateImagesToProcess(final int action) {
@@ -298,9 +347,10 @@ public class SPTPluginPanel extends GenericPluginPanel {
 						exceptionError.append(" & ");
 					}
 				}
-				this.messages_txtArea.append("Wrong parameters type -> ");
-				this.messages_txtArea.append(exceptionError.toString());
-				this.messages_txtArea.append("\n");
+				final StringBuffer buf = new StringBuffer();
+				buf.append("Wrong parameters type -> ");
+				buf.append(exceptionError.toString());
+				this.statusPanel.updateStatus(3, buf.toString());
 				break;
 				// Lanciare eccezione ho printare errore a schermo
 				// throw new OmegaAlgorithmParametersTypeException(
@@ -346,6 +396,8 @@ public class SPTPluginPanel extends GenericPluginPanel {
 	public void updateSelectedImage(final OmegaImage image) {
 		this.selectedImage = image;
 		this.setAddAndRemoveButtonsEnabled(false);
+		if (this.isRunningBatch)
+			return;
 		if (image != null) {
 			this.runPanel.updateImageFields(image);
 			if (this.imagesToProcess.containsKey(this.selectedImage)) {
@@ -365,7 +417,7 @@ public class SPTPluginPanel extends GenericPluginPanel {
 	}
 
 	private void setProcessButtonsEnabled(final boolean enabled) {
-		this.processRealTime_butt.setEnabled(enabled);
+		// this.processRealTime_butt.setEnabled(enabled);
 		this.processBatch_butt.setEnabled(enabled);
 	}
 
@@ -380,5 +432,21 @@ public class SPTPluginPanel extends GenericPluginPanel {
 		        .getPlugin();
 		return plugin.checkIfThisAlgorithm(particleDetectionRun);
 
+	}
+
+	@Override
+	public void updateMessageStatus(final OmegaMessageEvent evt) {
+		final SPTMessageEvent specificEvent = (SPTMessageEvent) evt;
+		final SPTRunnable source = specificEvent.getSource();
+		if (source instanceof SPTRunner) {
+			this.statusPanel.updateStatus(1, evt.getMessage());
+			if (((SPTMessageEvent) evt).isEnded()) {
+				this.updateRunnerEnded();
+			}
+		} else if (source instanceof SPTLoader) {
+			this.statusPanel.updateStatus(2, evt.getMessage());
+		} else if (source instanceof SPTWriter) {
+			this.statusPanel.updateStatus(3, evt.getMessage());
+		}
 	}
 }

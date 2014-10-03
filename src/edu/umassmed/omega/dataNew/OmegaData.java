@@ -30,6 +30,8 @@ package edu.umassmed.omega.dataNew;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.dataNew.analysisRunElements.OmegaTrajectoriesManagerRun;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenterGroup;
@@ -37,17 +39,91 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
+import edu.umassmed.omega.dataNew.trajectoryElements.OmegaSegmentationTypes;
 
 public class OmegaData {
 
 	private final List<OmegaProject> projects;
 	private final List<OmegaExperimenter> experimenters;
 	private final List<OmegaExperimenterGroup> groups;
+	private final List<OmegaSegmentationTypes> segmTypesList;
 
 	public OmegaData() {
 		this.projects = new ArrayList<OmegaProject>();
 		this.experimenters = new ArrayList<OmegaExperimenter>();
 		this.groups = new ArrayList<OmegaExperimenterGroup>();
+		this.segmTypesList = new ArrayList<OmegaSegmentationTypes>();
+		this.segmTypesList.add(OmegaSegmentationTypes
+		        .getDefaultSegmentationTypes());
+	}
+
+	public void addSegmentationTypesIfNeeded(
+	        final OmegaSegmentationTypes segmTypes) {
+		if (!this.segmTypesList.contains(segmTypes)) {
+			this.segmTypesList.add(segmTypes);
+		}
+	}
+
+	private void checkSegmentationTypesListConsistency() {
+		final List<OmegaSegmentationTypes> toRemove = new ArrayList<OmegaSegmentationTypes>();
+		for (final OmegaSegmentationTypes segmTypes : this.segmTypesList) {
+			if (toRemove.contains(segmTypes)) {
+				continue;
+			}
+			for (final OmegaSegmentationTypes segmTypes2 : this.segmTypesList) {
+				if (toRemove.contains(segmTypes2)) {
+					continue;
+				}
+				if (segmTypes.getName().equals(segmTypes2.getName()))
+					if (segmTypes.equals(segmTypes2)) {
+						continue;
+					}
+				if (segmTypes.getElementID() == -1) {
+					toRemove.add(segmTypes);
+				} else if (segmTypes2.getElementID() == -1) {
+					toRemove.add(segmTypes2);
+				}
+			}
+		}
+		this.segmTypesList.removeAll(toRemove);
+		OmegaSegmentationTypes defaultSegmTypes = null;
+		for (final OmegaSegmentationTypes segmTypes : this.segmTypesList) {
+			if (segmTypes.getName().equals(OmegaSegmentationTypes.DEFAULT_NAME)) {
+				defaultSegmTypes = segmTypes;
+			}
+		}
+		this.segmTypesList.remove(defaultSegmTypes);
+		this.segmTypesList.add(0, defaultSegmTypes);
+	}
+
+	public void updateSegmentationTypes() {
+		for (final OmegaProject proj : this.projects) {
+			for (final OmegaDataset dataset : proj.getDatasets()) {
+				for (final OmegaImage img : dataset.getImages()) {
+					for (final OmegaAnalysisRun innerAnalysisRun : img
+					        .getAnalysisRuns()) {
+						this.checkAnalysisRunForSegmentationTypes(innerAnalysisRun);
+					}
+				}
+			}
+		}
+		this.checkSegmentationTypesListConsistency();
+	}
+
+	private void checkAnalysisRunForSegmentationTypes(
+	        final OmegaAnalysisRun analysisRun) {
+		if (!(analysisRun instanceof OmegaTrajectoriesManagerRun))
+			return;
+		final OmegaTrajectoriesManagerRun tmRun = (OmegaTrajectoriesManagerRun) analysisRun;
+		this.segmTypesList.add(tmRun.getSegmentationTypes());
+		for (final OmegaAnalysisRun innerAnalysisRun : analysisRun
+		        .getAnalysisRuns()) {
+			this.checkAnalysisRunForSegmentationTypes(innerAnalysisRun);
+		}
+	}
+
+	public List<OmegaSegmentationTypes> getSegmentationTypesList() {
+		return this.segmTypesList;
 	}
 
 	public List<OmegaProject> getProjects() {

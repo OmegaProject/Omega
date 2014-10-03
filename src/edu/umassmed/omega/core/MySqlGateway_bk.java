@@ -497,7 +497,7 @@ public class MySqlGateway_bk {
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
 		for (final OmegaTrajectory trajectory : trajectoriesDetectionRun
-		        .getResultingTrajectory()) {
+		        .getResultingTrajectories()) {
 			final Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -516,7 +516,8 @@ public class MySqlGateway_bk {
 						return;
 					for (final OmegaROI roi : trajectory.getROIs()) {
 						try {
-							MySqlGateway_bk.this.updateParticle(roi, trajectoryID);
+							MySqlGateway_bk.this.updateParticle(roi,
+							        trajectoryID);
 						} catch (final SQLException ex) {
 							// TODO Auto-generated catch block
 							ex.printStackTrace();

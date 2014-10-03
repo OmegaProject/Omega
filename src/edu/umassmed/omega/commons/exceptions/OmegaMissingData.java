@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.exceptions;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class OmegaMissingData extends Exception {
 

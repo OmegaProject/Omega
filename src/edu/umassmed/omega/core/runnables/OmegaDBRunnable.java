@@ -1,0 +1,48 @@
+package edu.umassmed.omega.core.runnables;
+
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.core.OmegaMySqlGateway;
+
+public abstract class OmegaDBRunnable implements Runnable {
+
+	private final OmegaApplication omegaApp;
+	private final OmegaMySqlGateway gateway;
+	private final GenericMessageDialog dialog;
+
+	public OmegaDBRunnable(final OmegaApplication omegaApp,
+	        final OmegaMySqlGateway gateway, final GenericMessageDialog dialog) {
+		this.omegaApp = omegaApp;
+		this.gateway = gateway;
+		this.dialog = dialog;
+	}
+
+	protected void updateMessage(final String s) {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					OmegaDBRunnable.this.dialog.updateMessage(s);
+				}
+			});
+		} catch (final InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected OmegaMySqlGateway getGateway() {
+		return this.gateway;
+	}
+
+	protected void notifyProcessEndToApplication() {
+		this.omegaApp.handleRunnableProcessTermination(this);
+	}
+}

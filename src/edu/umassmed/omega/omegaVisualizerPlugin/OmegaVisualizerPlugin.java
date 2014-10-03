@@ -29,8 +29,8 @@ package edu.umassmed.omega.omegaVisualizerPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class OmegaVisualizerPlugin extends OmegaPlugin {
 

@@ -45,8 +45,8 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtility;
-import edu.umassmed.omega.core.MySqlGateway;
+import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
+import edu.umassmed.omega.core.OmegaMySqlGateway;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaDBServerInformation;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
 
@@ -74,10 +74,10 @@ public class OmegaDBPreferencesFrame extends JDialog {
 
 	private JButton connectButt;
 
-	// private final MySqlGateway gateway;
+	// private final OmegaMySqlGateway gateway;
 
 	// public OmegaDBPreferencesFrame(final OmegaGUIFrame parent,
-	// final MySqlGateway gateway) {
+	// final OmegaMySqlGateway gateway) {
 	public OmegaDBPreferencesFrame(final OmegaGUIFrame parent) {
 		this.parent = parent;
 		// this.gateway = gateway;
@@ -147,7 +147,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			this.hostnameTxtFie.setText(this.options
 			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS));
 		} else {
-			this.hostnameTxtFie.setText(MySqlGateway.HOSTNAME);
+			this.hostnameTxtFie.setText(OmegaMySqlGateway.HOSTNAME);
 		}
 
 		final JLabel portLbl = new JLabel("Insert server port:");
@@ -161,7 +161,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			this.portTxtFie.setText(this.options
 			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_PORT));
 		} else {
-			this.portTxtFie.setText(MySqlGateway.PORT);
+			this.portTxtFie.setText(OmegaMySqlGateway.PORT);
 		}
 
 		final JLabel dbNameLbl = new JLabel("Insert db name:");
@@ -175,7 +175,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			this.dbNameFie.setText(this.options
 			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME));
 		} else {
-			this.dbNameFie.setText(MySqlGateway.DB_NAME);
+			this.dbNameFie.setText(OmegaMySqlGateway.DB_NAME);
 		}
 
 		this.saveServerInfo = new JCheckBox("Remember server information?");
@@ -201,7 +201,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			this.usernameTxtFie.setText(this.options
 			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME));
 		} else {
-			this.usernameTxtFie.setText(MySqlGateway.USER);
+			this.usernameTxtFie.setText(OmegaMySqlGateway.USER);
 		}
 
 		final JLabel passwordLbl = new JLabel("Insert your password:");
@@ -215,7 +215,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			final String psw = this.options
 			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD);
 			try {
-				this.passwordPswFie.setText(OmegaDataEncryptionUtility.decrypt(psw));
+				this.passwordPswFie.setText(OmegaDataEncryptionUtilities.decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
@@ -223,7 +223,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			}
 
 		} else {
-			this.passwordPswFie.setText(MySqlGateway.PSW);
+			this.passwordPswFie.setText(OmegaMySqlGateway.PSW);
 		}
 
 		this.saveLoginInfo = new JCheckBox("Remember login information?");
@@ -287,7 +287,7 @@ public class OmegaDBPreferencesFrame extends JDialog {
 			options.put(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME, username);
 			String loginPsw = null;
 			try {
-				loginPsw = OmegaDataEncryptionUtility.encrypt(password);
+				loginPsw = OmegaDataEncryptionUtilities.encrypt(password);
 			} catch (final UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (final GeneralSecurityException e) {

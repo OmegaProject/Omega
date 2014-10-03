@@ -427,15 +427,21 @@ public class SPTRunPanel extends GenericPanel {
 		final OmegaImagePixels pixels = image.getDefaultPixels();
 
 		final int sizeX = pixels.getSizeX();
-		final double pixelsSizeX = pixels.getPixelSizeX();
+		double pixelsSizeX = pixels.getPixelSizeX();
 		this.imgWidthPixels_txtField.setText(String.valueOf(sizeX));
+		if (pixelsSizeX == -1) {
+			pixelsSizeX = 0;
+		}
 		this.imgWidthMicron_txtField.setText(String
 		        .valueOf(pixelsSizeX * sizeX));
 		this.imgWidthPixelSize_txtField.setText(String.valueOf(pixelsSizeX));
 
 		final int sizeY = pixels.getSizeY();
-		final double pixelsSizeY = pixels.getPixelSizeY();
+		double pixelsSizeY = pixels.getPixelSizeY();
 		this.imgHeightPixels_txtField.setText(String.valueOf(sizeY));
+		if (pixelsSizeY == -1) {
+			pixelsSizeY = 0;
+		}
 		this.imgHeightMicron_txtField.setText(String.valueOf(pixelsSizeY
 		        * sizeY));
 		this.imgHeightPixelSize_txtField.setText(String.valueOf(pixelsSizeY));
@@ -518,5 +524,14 @@ public class SPTRunPanel extends GenericPanel {
 		        .valueOf(this.minPoints_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_MINPOINTS, minPoints));
 		return params;
+	}
+
+	public void setFieldsEnalbed(final boolean enabled) {
+		this.radius_txtField.setEnabled(enabled);
+		this.cutoff_txtField.setEnabled(enabled);
+		this.percentile_txtField.setEnabled(enabled);
+		this.linkrange_txtField.setEnabled(enabled);
+		this.displacement_txtField.setEnabled(enabled);
+		this.minPoints_txtField.setEnabled(false);
 	}
 }

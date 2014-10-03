@@ -39,34 +39,41 @@ import pojos.DatasetData;
 import pojos.ImageData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroThumbnailImageInfo;
-import edu.umassmed.omega.omeroPlugin.gui.OmeroBrowserPanel;
 
 public class OmeroBrowerPanelImageLoader implements Runnable {
 
-	private final OmeroBrowserPanel browserPanel;
+	private final OmegaMessageDisplayerPanel displayerPanel;
 	private final OmeroGateway gateway;
 	private final ProjectData projectData;
 	private final DatasetData datasetData;
 	private final List<ImageData> images;
-	private volatile ArrayList<OmeroThumbnailImageInfo> imageInfo;
+	private volatile ArrayList<OmeroThumbnailImageInfo> imageInfoList;
+	private volatile ArrayList<OmeroImageWrapper> imageWrapperList;
 	private final int imagesToLoad;
 	private volatile int imagesLoaded;
+	private final boolean loadThumb;
 
-	public OmeroBrowerPanelImageLoader(final OmeroBrowserPanel browserPanel,
-	        final OmeroGateway gateway, final OmeroDatasetWrapper omeDataset) {
-		this.browserPanel = browserPanel;
+	public OmeroBrowerPanelImageLoader(
+	        final OmegaMessageDisplayerPanel displayerPanel,
+	        final OmeroGateway gateway, final OmeroDatasetWrapper datasetWrap,
+	        final boolean loadThumb) {
+		this.displayerPanel = displayerPanel;
 		this.gateway = gateway;
 
-		this.projectData = omeDataset.getProject();
-		this.datasetData = omeDataset.getDatasetData();
+		this.projectData = datasetWrap.getProject();
+		this.datasetData = datasetWrap.getDatasetData();
 		this.images = new ArrayList<ImageData>();
 		for (final Object obj : this.datasetData.getImages()) {
 			this.images.add((ImageData) obj);
 		}
+
+		this.loadThumb = loadThumb;
 
 		// this.images = null;
 		// try {
@@ -77,7 +84,8 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 		// e.printStackTrace();
 		// }
 
-		this.imageInfo = new ArrayList<OmeroThumbnailImageInfo>();
+		this.imageInfoList = new ArrayList<OmeroThumbnailImageInfo>();
+		this.imageWrapperList = new ArrayList<OmeroImageWrapper>();
 
 		this.imagesToLoad = this.images.size();
 		this.imagesLoaded = 0;
@@ -92,7 +100,7 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 	}
 
 	public ArrayList<OmeroThumbnailImageInfo> getImagesInfo() {
-		return this.imageInfo;
+		return this.imageInfoList;
 	}
 
 	@Override
@@ -107,23 +115,26 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 			this.updateLoadingStatus(currentlyLoading);
 			final ImageData imageData = this.images.get(i);
 
-			final Long pixelID = imageData.getDefaultPixels().getId();
+			final OmeroImageWrapper image = new OmeroImageWrapper(imageData,
+			        this.projectData, this.datasetData);
+			this.imageWrapperList.add(image);
 
-			final List<Long> pixelIDs = new ArrayList<Long>();
-			pixelIDs.add(pixelID);
+			if (this.loadThumb) {
+				final Long pixelID = imageData.getDefaultPixels().getId();
 
-			List<BufferedImage> bufferedImages = null;
+				final List<Long> pixelIDs = new ArrayList<Long>();
+				pixelIDs.add(pixelID);
 
-			try {
-				bufferedImages = this.gateway.getThumbnailSet(pixelIDs,
-				        OmegaConstants.THUMBNAIL_SIZE);
-				final OmeroImageWrapper image = new OmeroImageWrapper(pixelID,
-				        imageData.getName(), this.projectData,
-				        this.datasetData, imageData);
-				this.imageInfo.add(new OmeroThumbnailImageInfo(image,
-				        bufferedImages.get(0)));
-			} catch (final Exception e) {
-				error = true;
+				List<BufferedImage> bufferedImages = null;
+
+				try {
+					bufferedImages = this.gateway.getThumbnailSet(pixelIDs,
+					        OmegaConstants.THUMBNAIL_SIZE);
+					this.imageInfoList.add(new OmeroThumbnailImageInfo(image,
+					        bufferedImages.get(0)));
+				} catch (final Exception e) {
+					error = true;
+				}
 			}
 
 			this.imagesLoaded++;
@@ -142,17 +153,30 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 	private void updateLoadingStatus(final int currentlyLoading) {
 		final String loadingStatus = currentlyLoading + "/"
 		        + OmeroBrowerPanelImageLoader.this.imagesToLoad
-		        + "...loaded image(s) for" + this.datasetData.getName();
+		        + " loaded image(s) for " + this.datasetData.getName();
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
-					OmeroBrowerPanelImageLoader.this.browserPanel
-					        .updateLoadingStatus(loadingStatus);
-					if (((OmeroBrowerPanelImageLoader.this.imagesLoaded % 10) == 0)
-					        || (OmeroBrowerPanelImageLoader.this.imagesLoaded == OmeroBrowerPanelImageLoader.this.imagesToLoad)) {
-						OmeroBrowerPanelImageLoader.this.browserPanel
-						        .setImages(OmeroBrowerPanelImageLoader.this.imageInfo);
+					if (OmeroBrowerPanelImageLoader.this.loadThumb) {
+
+						if (((OmeroBrowerPanelImageLoader.this.imagesLoaded % 10) == 0)
+						        || (OmeroBrowerPanelImageLoader.this.imagesLoaded == OmeroBrowerPanelImageLoader.this.imagesToLoad)) {
+							OmeroBrowerPanelImageLoader.this.displayerPanel
+							        .updateMessageStatus(new OmeroThumbnailMessageEvent(
+							                loadingStatus,
+							                OmeroBrowerPanelImageLoader.this.imageInfoList));
+
+						} else {
+							OmeroBrowerPanelImageLoader.this.displayerPanel
+							        .updateMessageStatus(new OmegaMessageEvent(
+							                loadingStatus));
+						}
+					} else {
+						OmeroBrowerPanelImageLoader.this.displayerPanel
+						        .updateMessageStatus(new OmeroWrapperMessageEvent(
+						                loadingStatus,
+						                OmeroBrowerPanelImageLoader.this.imageWrapperList));
 					}
 				}
 			});

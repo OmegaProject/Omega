@@ -135,4 +135,18 @@ public class OmegaFrame extends OmegaElement implements
 	public void addAnalysisRun(final OmegaAnalysisRun analysisRun) {
 		this.analysisRuns.add(analysisRun);
 	}
+
+	@Override
+	public void removeAnalysisRun(final OmegaAnalysisRun analysisRun) {
+		this.analysisRuns.remove(analysisRun);
+	}
+
+	@Override
+	public boolean containsAnalysisRun(final long id) {
+		for (final OmegaAnalysisRun analysisRun : this.analysisRuns) {
+			if (analysisRun.getElementID() == id)
+				return true;
+		}
+		return false;
+	}
 }

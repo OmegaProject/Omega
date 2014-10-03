@@ -29,10 +29,6 @@ package edu.umassmed.omega.omeroPlugin.data;
 
 import java.awt.image.BufferedImage;
 
-import pojos.DatasetData;
-import pojos.ImageData;
-import pojos.ProjectData;
-
 public class OmeroThumbnailImageInfo {
 
 	private final OmeroImageWrapper image;
@@ -53,22 +49,10 @@ public class OmeroThumbnailImageInfo {
 	}
 
 	public Long getImageID() {
-		return this.image.getImageID();
+		return this.image.getID();
 	}
 
 	public String getImageName() {
-		return this.image.getImageName();
-	}
-
-	public ProjectData getProjectData() {
-		return this.image.getProjectData();
-	}
-
-	public DatasetData getDatasetData() {
-		return this.image.getDatasetData();
-	}
-
-	public ImageData getImageData() {
-		return this.image.getImageData();
+		return this.image.getName();
 	}
 }

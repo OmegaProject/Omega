@@ -2,7 +2,7 @@ package edu.umassmed.omega.commons.eventSystem;
 
 import java.util.List;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
 
 public class OmegaTMPluginTrajectoriesEvent extends OmegaPluginEvent {

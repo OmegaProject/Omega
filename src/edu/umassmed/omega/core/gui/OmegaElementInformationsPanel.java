@@ -27,28 +27,33 @@
  *******************************************************************************/
 package edu.umassmed.omega.core.gui;
 
-import java.awt.GridLayout;
+import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.RootPaneContainer;
-import javax.swing.border.TitledBorder;
+import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.utilities.OmegaAnalysisRunContainerUtilities;
+import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.coreElements.OmegaNamedElement;
+import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 
 public class OmegaElementInformationsPanel extends GenericPanel {
 
 	private static final long serialVersionUID = -8599077833612345455L;
 
-	private JLabel class_label, id_label, name_label;
+	private JLabel info_lbl;
 
 	public OmegaElementInformationsPanel(final RootPaneContainer parent) {
 		super(parent);
 
-		this.setLayout(new GridLayout(3, 1));
+		this.setLayout(new BorderLayout());
 
-		this.setBorder(new TitledBorder("Element information"));
+		// this.setBorder(new TitledBorder("Information"));
 
 		this.createAndAddWidgets();
 
@@ -56,15 +61,10 @@ public class OmegaElementInformationsPanel extends GenericPanel {
 	}
 
 	private void createAndAddWidgets() {
-		this.class_label = new JLabel();
-		this.add(this.class_label);
-
-		this.id_label = new JLabel();
-		this.id_label.setText("No element isSelected");
-		this.add(this.id_label);
-
-		this.name_label = new JLabel();
-		this.add(this.name_label);
+		this.info_lbl = new JLabel();
+		this.info_lbl.setVerticalAlignment(SwingConstants.CENTER);
+		this.info_lbl.setText("Nothing selected");
+		this.add(this.info_lbl, BorderLayout.CENTER);
 	}
 
 	private void addListeners() {
@@ -74,17 +74,102 @@ public class OmegaElementInformationsPanel extends GenericPanel {
 
 	public void update(final OmegaElement element) {
 		if (element != null) {
-			this.class_label.setText(element.getClass().getSimpleName());
-			this.id_label.setText(Long.toString(element.getElementID()));
-			if (element instanceof OmegaNamedElement) {
-				this.name_label
-				        .setText(((OmegaNamedElement) element).getName());
-			}
+			final StringBuffer infoBuf = new StringBuffer();
+			infoBuf.append("<html><table>");
+			infoBuf.append(this.getGenericElementInformation(element)
+			        .toString());
+			infoBuf.append("<br>");
+			infoBuf.append(this.getSpecificElementInformation(element)
+			        .toString());
+			infoBuf.append("</table>");
+			this.info_lbl.setText(infoBuf.toString());
 		} else {
-			this.class_label.setText("");
-			this.id_label.setText("No element isSelected");
-			this.name_label.setText("");
+			this.info_lbl.setText("Nothing selected");
 		}
-		this.repaint();
+		this.info_lbl.revalidate();
+		this.info_lbl.repaint();
+	}
+
+	private StringBuffer getGenericElementInformation(final OmegaElement element) {
+		final StringBuffer buf = new StringBuffer();
+		final String clazz = element.getClass().getSimpleName()
+		        .replace("Omega", "");
+		final long id = element.getElementID();
+		String name = null;
+		if (element instanceof OmegaNamedElement) {
+			name = ((OmegaNamedElement) element).getName();
+			buf.append("<tr><td colspan = 2>Name: ");
+			buf.append(name);
+			buf.append("</td></tr>");
+		}
+		buf.append("<tr><td>Item type: ");
+		buf.append(clazz);
+		buf.append("</td><td>Id: ");
+		buf.append(id);
+		buf.append("</td></tr>");
+		return buf;
+	}
+
+	private StringBuffer getSpecificElementInformation(
+	        final OmegaElement element) {
+		if (element instanceof OmegaProject)
+			return this.addAdditionalProjectInformation((OmegaProject) element);
+		else if (element instanceof OmegaDataset)
+			return this.addAdditionalDatasetInformation((OmegaDataset) element);
+		else if (element instanceof OmegaImage)
+			return this.addAdditionalImageInformation((OmegaImage) element);
+		return new StringBuffer();
+		// TODO throw error?
+	}
+
+	private StringBuffer addAdditionalProjectInformation(
+	        final OmegaProject project) {
+		final StringBuffer buf = new StringBuffer();
+		buf.append("<tr><td>Dataset: ");
+		buf.append(project.getDatasets().size());
+		buf.append("</td><td>Analysis: ");
+		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(project));
+		buf.append("</td></tr>");
+		return buf;
+	}
+
+	private StringBuffer addAdditionalDatasetInformation(
+	        final OmegaDataset dataset) {
+		final StringBuffer buf = new StringBuffer();
+		buf.append("<tr><td>Images: ");
+		buf.append(dataset.getImages().size());
+		buf.append("</td><td>Analysis: ");
+		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(dataset));
+		buf.append("</td></tr>");
+		return buf;
+	}
+
+	private StringBuffer addAdditionalImageInformation(final OmegaImage image) {
+		final OmegaImagePixels pixels = image.getDefaultPixels();
+		final StringBuffer buf = new StringBuffer();
+		buf.append("<tr><td>Analysis: ");
+		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(image));
+		buf.append("</td></tr>");
+		buf.append("<tr><td>Width: ");
+		buf.append(pixels.getSizeX());
+		buf.append("</td><td>Height: ");
+		buf.append(pixels.getSizeY());
+		buf.append("</td></tr>");
+		buf.append("<tr><td>Planes (Z): ");
+		buf.append(pixels.getSizeZ());
+		buf.append("</td><td>Time (T): ");
+		buf.append(pixels.getSizeT());
+		buf.append("</td></tr>");
+		buf.append("<tr></tr>");
+
+		buf.append("<tr><td>Pixels size X: ");
+		buf.append(pixels.getPixelSizeX());
+		buf.append("</td><td>Pixels size Y: ");
+		buf.append(pixels.getPixelSizeY());
+		buf.append("</td></tr>");
+		buf.append("<tr><td>Pixels size Z: ");
+		buf.append(pixels.getPixelSizeZ());
+		buf.append("</td></tr>");
+		return buf;
 	}
 }

@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 import com.galliva.gallibrary.GLogManager;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
@@ -47,10 +48,10 @@ import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
-import edu.umassmed.omega.sptPlugin.gui.SPTPluginPanel;
 
 public class SPTRunner implements SPTRunnable {
-	private final SPTPluginPanel pluginPanel;
+	private static final String RUNNER = "Runner service: ";
+	private final OmegaMessageDisplayerPanel displayerPanel;
 
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
 
@@ -63,8 +64,8 @@ public class SPTRunner implements SPTRunnable {
 
 	private boolean isJobCompleted;
 
-	public SPTRunner(final SPTPluginPanel pluginPanel) {
-		this.pluginPanel = pluginPanel;
+	public SPTRunner(final OmegaMessageDisplayerPanel displayerPanel) {
+		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = null;
 		this.gateway = null;
@@ -77,10 +78,10 @@ public class SPTRunner implements SPTRunnable {
 		this.resultingParticles = new HashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
 	}
 
-	public SPTRunner(final SPTPluginPanel pluginPanel,
+	public SPTRunner(final OmegaMessageDisplayerPanel displayerPanel,
 	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
 	        final OmegaGateway gateway) {
-		this.pluginPanel = pluginPanel;
+		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = imagesToProcess;
 		this.gateway = gateway;
@@ -112,6 +113,7 @@ public class SPTRunner implements SPTRunnable {
 		// JPanelSPT.this.sptParametersHandler
 		// .getImages();
 		// final Iterator<ImageDataHandler> it = images.iterator();
+		this.updateStatusSync(SPTRunner.RUNNER + " started.", false);
 
 		if (this.isDebugMode) {
 			this.debugModeRun();
@@ -121,7 +123,7 @@ public class SPTRunner implements SPTRunnable {
 
 		this.isJobCompleted = true;
 
-		this.updateRunnerStatusAsync();
+		this.updateStatusAsync(SPTRunner.RUNNER + " ended.", true);
 		// TODO Update panel at the end of the process
 		// JPanelSPT.this.jLabelStatus.setText("done");
 		// JPanelSPT.this.switchControlsStatus();
@@ -167,69 +169,10 @@ public class SPTRunner implements SPTRunnable {
 			defaultPixels.getPixelSizeY();
 			this.gateway.getTotalT(pixelsID, z, t, c);
 
-			// TODO Update SPT panel with parameter of the image
-			// X Y T
-			// JPanelSPT.this.width.getF2().setText(
-			// totalWidth == 0.0 ? "-" : StringUtility.DoubleToString(
-			// totalWidth, 3));
-			// JPanelSPT.this.height.getF2().setText(
-			// totalHeight == 0.0 ? "-" : StringUtility.DoubleToString(
-			// totalHeight, 3));
-			// JPanelSPT.this.time.getF2().setText(
-			// totalTime == 0.0 ? "-" : StringUtility.DoubleToString(
-			// totalTime, 3));
-			//
-			// JPanelSPT.this.width.getF3().setText(
-			// widthSize == 0.0 ? "-" : StringUtility.DoubleToString(
-			// widthSize, 3));
-			// JPanelSPT.this.height.getF3().setText(
-			// heightSize == 0.0 ? "-" : StringUtility.DoubleToString(
-			// heightSize, 3));
-			// JPanelSPT.this.time.getF3().setText(
-			// avgFrameSize == 0.0 ? "-" : StringUtility.DoubleToString(
-			// avgFrameSize, 3));
-
-			// final String outputDir = this.trajectoriesOut
-			// + System.getProperty("file.separator")
-			// + StringUtility.removeFileExtension(image.getName());
-			//
-			// // empty the output directory if requested
-			// if (FileUtilities.directoryExists(outputDir) &&
-			// this.emptyDirectory) {
-			// FileUtilities.emptyDirectory(outputDir);
-			// } else {
-			// // create the output dir for each image (if not exists)
-			// FileUtilities.createDirectory(outputDir);
-			// }
-
 			int minPoints = -1;
 			try {
 				// init the Runner
 				SPTDLLInvoker.callInitRunner();
-
-				// set the output directory
-				// SPTDLLInvoker.callSetOutputPath(outputDir);
-
-				// set the Parameters
-				// SPTDLLInvoker.callSetParameter("p0",
-				// String.valueOf(jComboBoxRadius.getSelectedItem()));
-				// SPTDLLInvoker.callSetParameter("p1",
-				// String.valueOf(jComboBoxCutOff.getSelectedItem()));
-				// SPTDLLInvoker.callSetParameter("p2",
-				// String.valueOf(jComboBoxPercentile.getSelectedItem()));
-				// SPTDLLInvoker.callSetParameter("p3",
-				// String.valueOf(jComboBoxDisplacement.getSelectedItem()));
-				// SPTDLLInvoker.callSetParameter("p4",
-				// String.valueOf(jComboBoxLinkRange.getSelectedItem()));
-				// p0 radius
-				// p1 cutoff
-				// p2 percentile
-				// p3 displacement
-				// p4 linkrange
-				// p5 T
-				// p6 X
-				// p7 Y
-				// p8 0.
 
 				for (int i = 0; i < parameters.size(); i++) {
 					final OmegaParameter param = parameters.get(i);
@@ -265,6 +208,9 @@ public class SPTRunner implements SPTRunnable {
 				// set the minimun number of points
 				// SPTDLLInvoker.callSetMinPoints(minPoints);
 
+				this.updateStatusSync(SPTRunner.RUNNER
+				        + " correctly initialized.", false);
+
 				// start the Runner
 				SPTDLLInvoker.callStartRunner();
 			} catch (final Exception e) {
@@ -283,23 +229,26 @@ public class SPTRunner implements SPTRunnable {
 			// OmegaConstants.INFO_SPT_RUNNING,
 			// imageDataHandler.getImageName()));
 
+			this.updateStatusSync(SPTRunner.RUNNER + " process.", false);
+
 			final ArrayList<Thread> threads = new ArrayList<Thread>();
 
 			// load the images into the SPT DLL
-			final SPTLoaderRunner loader = new SPTLoaderRunner(image, z, c,
-			        this.gateway);
+			final SPTLoader loader = new SPTLoader(this.displayerPanel, image,
+			        z, c, this.gateway);
 			final Thread loaderT = new Thread(loader);
 			loaderT.start();
 			threads.add(loaderT);
 
 			// write the results to file
-			final SPTWriterRunner writer = new SPTWriterRunner();
+			final SPTWriter writer = new SPTWriter(this.displayerPanel);
 			final Thread writerT = new Thread(writer);
 			writerT.start();
 			threads.add(writerT);
 
 			while (!loader.isJobCompleted() || !writer.isJobCompleted()) {
-				// TODO do something here, update gui
+				this.updateStatusSync(SPTRunner.RUNNER + " waiting results.",
+				        false);
 			}
 
 			final List<OmegaTrajectory> trajectories = new ArrayList<OmegaTrajectory>();
@@ -307,9 +256,13 @@ public class SPTRunner implements SPTRunnable {
 			final Object trackList = writer.getTrackList();
 			if (trackList != null) {
 				final List<OmegaTrajectory> tracks = (List<OmegaTrajectory>) trackList;
+				int counter = 0;
 				for (final OmegaTrajectory track : tracks) {
+					track.setName(track.getName() + "_" + counter);
+					counter++;
 					for (final OmegaROI point : track.getROIs()) {
 						final int frameIndex = point.getFrameIndex() - 1;
+						point.setFrameIndex(frameIndex);
 						final OmegaFrame frame = defaultPixels.getFrames().get(
 						        frameIndex);
 						List<OmegaROI> framePoints;
@@ -379,7 +332,7 @@ public class SPTRunner implements SPTRunnable {
 	}
 
 	private void debugModeRun() {
-		final SPTWriterRunner writer = new SPTWriterRunner();
+		final SPTWriter writer = new SPTWriter(this.displayerPanel);
 		final Thread writerT = new Thread(writer);
 		writerT.start();
 
@@ -414,12 +367,14 @@ public class SPTRunner implements SPTRunnable {
 		return this.resultingTrajectories;
 	}
 
-	private void updateRunnerStatusSync() {
+	private void updateStatusSync(final String msg, final boolean ended) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
-					SPTRunner.this.pluginPanel.updateRunnerEnded();
+					SPTRunner.this.displayerPanel
+					        .updateMessageStatus(new SPTMessageEvent(msg,
+					                SPTRunner.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -429,11 +384,13 @@ public class SPTRunner implements SPTRunnable {
 		}
 	}
 
-	private void updateRunnerStatusAsync() {
+	private void updateStatusAsync(final String msg, final boolean ended) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				SPTRunner.this.pluginPanel.updateRunnerEnded();
+				SPTRunner.this.displayerPanel
+				        .updateMessageStatus(new SPTMessageEvent(msg,
+				                SPTRunner.this, ended));
 			}
 		});
 	}

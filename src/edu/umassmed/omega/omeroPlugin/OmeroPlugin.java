@@ -31,8 +31,8 @@ import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
-import edu.umassmed.omega.commons.genericPlugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
 
@@ -48,7 +48,7 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public String getName() {
-		return "Omero Browser";
+		return "Omero Image Browser";
 	}
 
 	@Override

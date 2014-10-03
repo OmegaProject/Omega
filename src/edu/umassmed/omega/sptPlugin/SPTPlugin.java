@@ -35,9 +35,10 @@ import java.util.List;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
-import edu.umassmed.omega.commons.genericInterfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.commons.genericPlugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
 import edu.umassmed.omega.dataNew.coreElements.OmegaPerson;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sptPlugin.gui.SPTPluginPanel;
@@ -45,18 +46,12 @@ import edu.umassmed.omega.sptPlugin.gui.SPTPluginPanel;
 public class SPTPlugin extends OmegaParticleTrackingPlugin implements
         OmegaDataDisplayerPluginInterface {
 
-	private final List<SPTPluginPanel> panels;
-
 	public SPTPlugin() {
 		super(1);
-
-		this.panels = new ArrayList<SPTPluginPanel>();
 	}
 
 	public SPTPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
-
-		this.panels = new ArrayList<SPTPluginPanel>();
 	}
 
 	@Override
@@ -90,6 +85,13 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	}
 
 	@Override
+	public List<OperatingSystemEnum> getSupportedPlatforms() {
+		final List<OperatingSystemEnum> supportedPlatforms = new ArrayList<OperatingSystemEnum>();
+		supportedPlatforms.add(OperatingSystemEnum.WIN);
+		return supportedPlatforms;
+	}
+
+	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 
@@ -100,22 +102,23 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	        final int index) throws OmegaMissingData {
 		final SPTPluginPanel panel = new SPTPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(), index);
-		this.panels.add(panel);
 		return panel;
 	}
 
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
-		for (final SPTPluginPanel panel : this.panels) {
-			panel.setGateway(gateway);
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final SPTPluginPanel specificPanel = (SPTPluginPanel) panel;
+			specificPanel.setGateway(gateway);
 		}
 	}
 
 	@Override
 	public void updateDisplayedData() {
-		for (final SPTPluginPanel panel : this.panels) {
-			panel.updateTrees(this.getLoadedImages());
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final SPTPluginPanel specificPanel = (SPTPluginPanel) panel;
+			specificPanel.updateTrees(this.getLoadedImages());
 		}
 	}
 

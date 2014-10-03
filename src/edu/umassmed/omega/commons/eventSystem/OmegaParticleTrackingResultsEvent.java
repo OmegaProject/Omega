@@ -30,7 +30,7 @@ package edu.umassmed.omega.commons.eventSystem;
 import java.util.List;
 import java.util.Map;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;

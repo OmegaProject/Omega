@@ -27,33 +27,56 @@
  *******************************************************************************/
 package edu.umassmed.omega.dataNew.analysisRunElements;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
+import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
 
 public class OmegaParticleLinkingRun extends OmegaAnalysisRun {
-	private final List<OmegaTrajectory> resultingTrajectory;
+	private final List<OmegaTrajectory> resultingTrajectories;
 
 	public OmegaParticleLinkingRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
 	        final List<OmegaTrajectory> resultingTrajectory) {
 		super(owner, algorithmSpec);
 
-		this.resultingTrajectory = resultingTrajectory;
+		this.resultingTrajectories = resultingTrajectory;
+
+		this.reorderParticles();
 	}
 
 	public OmegaParticleLinkingRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
 	        final Date timeStamps, final String name,
-	        final List<OmegaTrajectory> resultingTrajectory) {
+	        final List<OmegaTrajectory> resultingTrajectories) {
 		super(owner, algorithmSpec, timeStamps, name);
 
-		this.resultingTrajectory = resultingTrajectory;
+		this.resultingTrajectories = resultingTrajectories;
+
+		this.reorderParticles();
 	}
 
-	public List<OmegaTrajectory> getResultingTrajectory() {
-		return this.resultingTrajectory;
+	private void reorderParticles() {
+		for (final OmegaTrajectory traj : this.resultingTrajectories) {
+			final List<OmegaROI> particles = traj.getROIs();
+			Collections.sort(particles, new Comparator<OmegaROI>() {
+				@Override
+				public int compare(final OmegaROI o1, final OmegaROI o2) {
+					if (o1.getFrameIndex() == o2.getFrameIndex())
+						return 0;
+					else if (o1.getFrameIndex() < o2.getFrameIndex())
+						return -1;
+					return 1;
+				};
+			});
+		}
+	}
+
+	public List<OmegaTrajectory> getResultingTrajectories() {
+		return this.resultingTrajectories;
 	}
 }

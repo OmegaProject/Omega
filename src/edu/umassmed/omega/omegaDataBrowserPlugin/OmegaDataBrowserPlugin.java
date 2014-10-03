@@ -32,9 +32,9 @@ import java.util.List;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
-import edu.umassmed.omega.commons.genericInterfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.commons.genericPlugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
@@ -51,7 +51,7 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 
 	@Override
 	public String getName() {
-		return "Omega Browser";
+		return "Omega Analysis Browser";
 	}
 
 	@Override

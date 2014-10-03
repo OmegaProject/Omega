@@ -27,7 +27,6 @@
  *******************************************************************************/
 package edu.umassmed.omega.dataNew.imageDBConnectionElements;
 
-
 public abstract class OmegaGateway {
 
 	/** Flag indicating if you are connected or not. */
@@ -37,7 +36,7 @@ public abstract class OmegaGateway {
 		this.isConnected = false;
 	}
 
-	public abstract boolean connect(final OmegaLoginCredentials loginCred,
+	public abstract int connect(final OmegaLoginCredentials loginCred,
 	        final OmegaServerInformation serverInfo);
 
 	public abstract byte[] getImageData(final Long pixelsID, final int z,
@@ -61,7 +60,11 @@ public abstract class OmegaGateway {
 
 	public abstract int[] renderAsPackedInt(final Long pixelsID);
 
+	public abstract int[] renderAsPackedInt(final Long pixelsID, int t, int z);
+
 	public abstract byte[] renderCompressed(final Long pixelsID);
+
+	public abstract byte[] renderCompressed(final Long pixelsID, int t, int z);
 
 	public abstract void setActiveChannel(final Long pixelsID, int channel,
 	        boolean active);

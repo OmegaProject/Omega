@@ -33,7 +33,7 @@ import java.util.List;
 import pojos.DatasetData;
 import pojos.ProjectData;
 
-public class OmeroProjectWrapper {
+public class OmeroProjectWrapper extends OmeroDataWrapper {
 
 	private final ProjectData proj;
 	private final List<OmeroDatasetWrapper> datasets;
@@ -43,10 +43,14 @@ public class OmeroProjectWrapper {
 		this.datasets = new ArrayList<OmeroDatasetWrapper>();
 	}
 
+	public int getNumOfDatasets() {
+		return this.datasets.size();
+	}
+
 	public void setDatasets(final List<DatasetData> datasets) {
 		for (final DatasetData dataset : datasets) {
 			final OmeroDatasetWrapper omeDataset = new OmeroDatasetWrapper(
-			        this.proj, dataset);
+			        dataset, this.proj);
 			this.datasets.add(omeDataset);
 		}
 	}
@@ -56,11 +60,12 @@ public class OmeroProjectWrapper {
 	}
 
 	@Override
-	public String toString() {
-		return this.proj.getName();
+	public String getStringRepresentation() {
+		return "[" + this.getID() + "] " + this.proj.getName();
 	}
 
-	public long getID() {
+	@Override
+	public Long getID() {
 		return this.proj.getId();
 	}
 

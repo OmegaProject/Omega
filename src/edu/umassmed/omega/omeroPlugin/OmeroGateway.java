@@ -68,6 +68,8 @@ import pojos.GroupData;
 import pojos.ProjectData;
 import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
+import Ice.ConnectionRefusedException;
+import Ice.DNSException;
 
 import com.galliva.gallibrary.GLogManager;
 
@@ -80,6 +82,7 @@ import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformati
  * services alive.
  */
 public class OmeroGateway extends OmegaGateway {
+
 	/**
 	 * The maximum number of thumbnails retrieved before restarting the
 	 * thumbnails service.
@@ -251,7 +254,7 @@ public class OmeroGateway extends OmegaGateway {
 
 	/** Creates a new instance. */
 	public OmeroGateway() {
-		this.setConnected(false);
+		super();
 		this.services = new ArrayList<ServiceInterfacePrx>();
 		this.reServices = new HashMap<Long, StatefulServiceInterfacePrx>();
 	}
@@ -289,7 +292,7 @@ public class OmeroGateway extends OmegaGateway {
 	 * @throws CannotCreateSessionException
 	 */
 	@Override
-	public boolean connect(final OmegaLoginCredentials loginCred,
+	public int connect(final OmegaLoginCredentials loginCred,
 	        final OmegaServerInformation serverInfo) {
 		// read login file
 		// parse
@@ -300,21 +303,31 @@ public class OmeroGateway extends OmegaGateway {
 		try {
 			this.entryEncrypted = this.secureClient.createSession(
 			        loginCred.getUserName(), loginCred.getPassword());
-		} catch (final CannotCreateSessionException e) {
-			e.printStackTrace();
-			return this.isConnected();
-		} catch (final PermissionDeniedException e) {
-			e.printStackTrace();
-			return this.isConnected();
-		} catch (final ServerError e) {
-			e.printStackTrace();
-			return this.isConnected();
+		} catch (final CannotCreateSessionException ex) {
+			ex.printStackTrace();
+			return 1;
+		} catch (final PermissionDeniedException ex) {
+			ex.printStackTrace();
+			return 2;
+		} catch (final ServerError ex) {
+			ex.printStackTrace();
+			return 3;
+		} catch (final DNSException ex) {
+			ex.printStackTrace();
+			return 4;
+		} catch (final ConnectionRefusedException ex) {
+			ex.printStackTrace();
+			return 5;
+		} catch (final Exception ex) {
+			ex.printStackTrace();
+			return -1;
 		}
+
 		this.setConnected(true);
 		final OmeroKeepClientAlive kca = new OmeroKeepClientAlive(this);
 		this.executor = new ScheduledThreadPoolExecutor(1);
 		this.executor.scheduleWithFixedDelay(kca, 60, 60, TimeUnit.SECONDS);
-		return this.isConnected();
+		return 0;
 	}
 
 	public void disconnect() {
@@ -678,15 +691,15 @@ public class OmeroGateway extends OmegaGateway {
 	}
 
 	@Override
-	public int[] renderAsPackedInt(final Long pixelsID) {
+	public int[] renderAsPackedInt(final Long pixelsID, final int t, final int z) {
 		try {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			final PlaneDef planeDef = new PlaneDef();
 			// time choice (sliding)
-			planeDef.t = engine.getDefaultT();
+			planeDef.t = t;
 			// Z-plan choice
-			planeDef.z = engine.getDefaultZ();
+			planeDef.z = z;
 			// display the XY plane
 			planeDef.slice = omero.romio.XY.value;
 
@@ -699,19 +712,47 @@ public class OmeroGateway extends OmegaGateway {
 	}
 
 	@Override
-	public byte[] renderCompressed(final Long pixelsID) {
+	public int[] renderAsPackedInt(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			return this.renderAsPackedInt(pixelsID, engine.getDefaultT(),
+			        engine.getDefaultZ());
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public byte[] renderCompressed(final Long pixelsID, final int t, final int z) {
 		try {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			final PlaneDef planeDef = new PlaneDef();
 			// time choice (sliding)
-			planeDef.t = engine.getDefaultT();
+			planeDef.t = t;
 			// Z-plan choice
-			planeDef.z = engine.getDefaultZ();
+			planeDef.z = z;
 			// display the XY plane
 			planeDef.slice = omero.romio.XY.value;
 
 			return engine.renderCompressed(planeDef);
+		} catch (final ServerError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public byte[] renderCompressed(final Long pixelsID) {
+		try {
+			final RenderingEnginePrx engine = this
+			        .getRenderingService(pixelsID);
+			return this.renderCompressed(pixelsID, engine.getDefaultT(),
+			        engine.getDefaultZ());
 		} catch (final ServerError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

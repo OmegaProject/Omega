@@ -31,30 +31,27 @@ import pojos.DatasetData;
 import pojos.ImageData;
 import pojos.ProjectData;
 
-public class OmeroImageWrapper {
+public class OmeroImageWrapper extends OmeroDataWrapper {
 
-	private final Long imageID;
-	private final String imageName;
-	private final ImageData imageData;
+	private final ImageData image;
 	private final DatasetData datasetData;
 	private final ProjectData projectData;
 
-	public OmeroImageWrapper(final Long imageID, final String imageName,
-	        final ProjectData projectData, final DatasetData datasetData,
-	        final ImageData imageData) {
-		this.imageID = imageID;
+	public OmeroImageWrapper(final ImageData imageData,
+	        final ProjectData projectData, final DatasetData datasetData) {
 		this.projectData = projectData;
 		this.datasetData = datasetData;
-		this.imageData = imageData;
-		this.imageName = imageName;
+		this.image = imageData;
 	}
 
-	public Long getImageID() {
-		return this.imageID;
+	@Override
+	public Long getID() {
+		return this.image.getId();
 	}
 
-	public String getImageName() {
-		return this.imageName;
+	@Override
+	public String getStringRepresentation() {
+		return "[" + this.getID() + "] " + this.getName();
 	}
 
 	public ProjectData getProjectData() {
@@ -66,6 +63,10 @@ public class OmeroImageWrapper {
 	}
 
 	public ImageData getImageData() {
-		return this.imageData;
+		return this.image;
+	}
+
+	public String getName() {
+		return this.image.getName();
 	}
 }

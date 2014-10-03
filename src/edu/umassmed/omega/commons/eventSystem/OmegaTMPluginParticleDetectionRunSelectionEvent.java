@@ -1,6 +1,6 @@
 package edu.umassmed.omega.commons.eventSystem;
 
-import edu.umassmed.omega.commons.genericPlugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
 
 public class OmegaTMPluginParticleDetectionRunSelectionEvent extends

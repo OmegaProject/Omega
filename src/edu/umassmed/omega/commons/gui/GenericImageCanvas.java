@@ -56,8 +56,9 @@ import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaMathSymbolsConstants;
-import edu.umassmed.omega.commons.utilities.OmegaTrajectoryColorManagerUtility;
-import edu.umassmed.omega.commons.utilities.StringUtility;
+import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
+import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
+import edu.umassmed.omega.commons.utilities.StringUtilities;
 import edu.umassmed.omega.core.gui.OmegaElementImagePanel;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
@@ -80,16 +81,10 @@ public class GenericImageCanvas extends GenericPanel {
 	private double scale;
 
 	/** Trajectories to be drawed (data exploration). **/
-	private List<OmegaROI> particles;
+	private final List<OmegaROI> particles;
 	/** Trajectories to be drawed, scaled. **/
-	private List<OmegaTrajectory> trajectories;
-
-	private final List<OmegaTrajectory> selectedTrajectories;
-	/**
-	 * List of (random) Colors to be used when the user does not specify any
-	 * color.
-	 */
-	private final int trajectoryToDraw;
+	private final List<OmegaTrajectory> selectedTrajectories,
+	        actualModifiedTrajectories;
 
 	private int selectedTrajectoryIndex;
 
@@ -126,10 +121,9 @@ public class GenericImageCanvas extends GenericPanel {
 		// this.jPanelViewer = jPanelViewer;
 		this.parentPanel = parentPanel;
 
-		this.particles = null;
-		this.trajectories = null;
+		this.particles = new ArrayList<OmegaROI>();
 		this.selectedTrajectories = new ArrayList<OmegaTrajectory>();
-		this.trajectoryToDraw = -1;
+		this.actualModifiedTrajectories = new ArrayList<OmegaTrajectory>();
 		this.selectedTrajectoryIndex = -1;
 
 		this.setDoubleBuffered(true);
@@ -166,7 +160,8 @@ public class GenericImageCanvas extends GenericPanel {
 				final int index = GenericImageCanvas.this.selectedTrajectoryIndex;
 				OmegaTrajectory traj = null;
 				if (index > -1) {
-					traj = GenericImageCanvas.this.trajectories.get(index);
+					traj = GenericImageCanvas.this.actualModifiedTrajectories
+					        .get(index);
 				}
 				if (SwingUtilities.isRightMouseButton(evt)) {
 					if (traj != null) {
@@ -220,38 +215,52 @@ public class GenericImageCanvas extends GenericPanel {
 				dialog.setVisible(true);
 				if (!dialog.getConfirmation())
 					return;
-				OmegaTrajectoryColorManagerUtility
-				        .generateRandomColors(GenericImageCanvas.this.trajectories);
+				final List<Color> colors = OmegaColorManagerUtilities
+				        .generateRandomColors(GenericImageCanvas.this.actualModifiedTrajectories
+				                .size());
+				for (int i = 0; i < GenericImageCanvas.this.actualModifiedTrajectories
+				        .size(); i++) {
+					final OmegaTrajectory traj = GenericImageCanvas.this.actualModifiedTrajectories
+					        .get(i);
+					final Color c = colors.get(i);
+					traj.setColor(c);
+					traj.setColorChanged(true);
+				}
 				GenericImageCanvas.this.repaint();
 				GenericImageCanvas.this.sendApplicationTrajectoriesEvent(
-				        GenericImageCanvas.this.trajectories, false);
+				        GenericImageCanvas.this.actualModifiedTrajectories,
+				        false);
 
 			}
 		});
 		this.chooseColor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				final Color c = OmegaTrajectoryColorManagerUtility
-				        .openPaletteColor(GenericImageCanvas.this.trajectories,
-				                GenericImageCanvas.this,
-				                GenericImageCanvas.this.selectedTrajectoryIndex);
+				final OmegaTrajectory traj = GenericImageCanvas.this.actualModifiedTrajectories
+				        .get(GenericImageCanvas.this.selectedTrajectoryIndex);
+				final StringBuffer buf1 = new StringBuffer();
+				buf1.append("Choose color for trajectory ");
+				buf1.append(traj.getName());
 
-				final StringBuffer buf = new StringBuffer();
-				buf.append("Do you want to color trajectory ");
-				buf.append(GenericImageCanvas.this.selectedTrajectoryIndex + 1);
-				buf.append("?");
+				final Color c = OmegaColorManagerUtilities.openPaletteColor(
+				        GenericImageCanvas.this, buf1.toString(),
+				        traj.getColor());
+
+				final StringBuffer buf2 = new StringBuffer();
+				buf2.append("Do you want to color trajectory ");
+				buf2.append(traj.getName());
+				buf2.append("?");
 
 				final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
 				        GenericImageCanvas.this.getParentContainer(),
-				        "Choose single color confirmation", buf.toString(),
+				        "Choose single color confirmation", buf2.toString(),
 				        true);
 				dialog.setVisible(true);
 				if (!dialog.getConfirmation())
 					return;
 
-				final OmegaTrajectory traj = GenericImageCanvas.this.trajectories
-				        .get(GenericImageCanvas.this.selectedTrajectoryIndex);
 				traj.setColor(c);
+				traj.setColorChanged(true);
 				GenericImageCanvas.this.repaint();
 				final List<OmegaTrajectory> trajectories = new ArrayList<OmegaTrajectory>();
 				trajectories.add(traj);
@@ -271,14 +280,14 @@ public class GenericImageCanvas extends GenericPanel {
 		final int x = (int) (clickP.x / this.scale);
 		final int y = (int) (clickP.y / this.scale);
 		int trajIndex = -1;
-		for (final OmegaTrajectory traj : GenericImageCanvas.this.trajectories) {
+		for (final OmegaTrajectory traj : GenericImageCanvas.this.actualModifiedTrajectories) {
 			final List<OmegaROI> rois = traj.getROIs();
 			for (final OmegaROI roi : rois) {
 				final int roiX = (int) roi.getX();
 				final int roiY = (int) roi.getY();
 				if ((x < (roiX + 2)) && (x > (roiX - 2)) && (y < (roiY + 2))
 				        && (y > (roiY - 2))) {
-					trajIndex = GenericImageCanvas.this.trajectories
+					trajIndex = GenericImageCanvas.this.actualModifiedTrajectories
 					        .indexOf(traj);
 					break;
 				}
@@ -318,6 +327,7 @@ public class GenericImageCanvas extends GenericPanel {
 		}
 		this.setPreferredSize(dim);
 		this.setSize(dim);
+		this.revalidate();
 		this.repaint();
 	}
 
@@ -338,7 +348,9 @@ public class GenericImageCanvas extends GenericPanel {
 		        (int) (this.image.getHeight() * this.scale)
 		                + GenericImageCanvas.AXISSPACE + 5);
 		this.setPreferredSize(newDimension);
+		this.setSize(newDimension);
 		this.revalidate();
+		this.repaint();
 	}
 
 	/**
@@ -398,7 +410,7 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeX() > 0.0)) {
 				final String xInformation = String.format(
 				        "%s %sm",
-				        StringUtility.doubleToString(
+				        StringUtilities.doubleToString(
 				                this.parentPanel.getSizeX() * width, 1),
 				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(xInformation, 0, scaledHeight + 15);
@@ -412,7 +424,7 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeY() > 0.0)) {
 				final String yInformation = String.format(
 				        "%s %sm",
-				        StringUtility.doubleToString(
+				        StringUtilities.doubleToString(
 				                this.parentPanel.getSizeY() * height, 1),
 				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(yInformation, scaledWidth, 24);
@@ -427,7 +439,7 @@ public class GenericImageCanvas extends GenericPanel {
 		final double adjusterD = this.scale / 2;
 		final int adjuster = new BigDecimal(adjusterD, mc).intValue();
 
-		if (this.particles != null) {
+		if (!this.particles.isEmpty()) {
 			// set the point size
 			// final BigDecimal pointSizeD = new BigDecimal(this.radius
 			// * this.scale, mc);
@@ -466,19 +478,13 @@ public class GenericImageCanvas extends GenericPanel {
 
 		// start drawing trajectories...
 
-		if (this.trajectories != null) {
+		if (!this.actualModifiedTrajectories.isEmpty()) {
 			// set the stroke
 			g2D.setStroke(new BasicStroke(this.currentStroke));
 			// set the trajectory color (if we have one), or set random ones
 			// draw trajectories
-			int currentTrajectoryIndex = 0;
-			for (final OmegaTrajectory trajectory : this.trajectories) {
+			for (final OmegaTrajectory trajectory : this.actualModifiedTrajectories) {
 				if (!trajectory.isVisible()) {
-					continue;
-				}
-				if ((this.trajectoryToDraw > -1)
-				        && (this.trajectoryToDraw != currentTrajectoryIndex)) {
-					currentTrajectoryIndex++;
 					continue;
 				}
 				int minX = scaledWidth;
@@ -526,20 +532,18 @@ public class GenericImageCanvas extends GenericPanel {
 				if (this.selectedTrajectories.contains(trajectory)) {
 					g2D.setColor(OmegaConstants
 					        .getDefaultSelectionBackgroundColor());
-					minX -= 5;
-					maxX += 5;
-					minY -= 5;
-					maxY += 5;
-					final int ovalWidth = (maxX - minX);
-					final int ovalHeight = (maxY - minY);
-					g2D.drawRect(minX, minY, ovalWidth, ovalHeight);
+					minX -= 3;
+					maxX += 3;
+					minY -= 3;
+					maxY += 3;
+					final int rectWidth = (maxX - minX);
+					final int rectHeight = (maxY - minY);
+					g2D.drawRect(minX, minY, rectWidth, rectHeight);
 					// g2D.draw(new Line2D.Double(x1 + 1, y1 + 1, x2 + 1,
 					// y2 + 1));
 					// g2D.draw(new Line2D.Double(x1 + 1, y1 + 1, x2 + 1,
 					// y2 + 1));
 				}
-
-				currentTrajectoryIndex++;
 			}
 		}
 	}
@@ -628,8 +632,8 @@ public class GenericImageCanvas extends GenericPanel {
 
 	// private void saveSingleImage(final String imageDirectory) {
 	// try {
-	// final String imageName = StringUtility
-	// .removeFileExtension(StringUtility
+	// final String imageName = StringUtilities
+	// .removeFileExtension(StringUtilities
 	// .getImageName(this.jPanelViewer.getImage()
 	// .getName()));
 	// final String fileName = String.format("%s%s%s_frame_%d.png",
@@ -652,12 +656,18 @@ public class GenericImageCanvas extends GenericPanel {
 	}
 
 	public void setTrajectories(final List<OmegaTrajectory> trajectories) {
-		this.trajectories = trajectories;
+		this.actualModifiedTrajectories.clear();
+		if (trajectories != null) {
+			this.actualModifiedTrajectories.addAll(trajectories);
+		}
 		this.repaint();
 	}
 
 	public void setParticles(final List<OmegaROI> particles) {
-		this.particles = particles;
+		this.particles.clear();
+		if (particles != null) {
+			this.particles.addAll(particles);
+		}
 		this.repaint();
 	}
 
@@ -677,8 +687,15 @@ public class GenericImageCanvas extends GenericPanel {
 	        final boolean selection) {
 		// TODO check if this can be done smarter, maybe just repainting
 		// trajectories instead of everything
-		this.selectedTrajectories.clear();
-		this.selectedTrajectories.addAll(trajectories);
+		if (selection) {
+			this.selectedTrajectories.clear();
+			this.selectedTrajectories.addAll(trajectories);
+		} else {
+			// TODO check if its working here
+			this.actualModifiedTrajectories.clear();
+			this.actualModifiedTrajectories.addAll(trajectories);
+		}
+
 		this.repaint();
 	}
 }

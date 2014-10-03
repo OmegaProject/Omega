@@ -33,4 +33,8 @@ public interface OmegaAnalysisRunContainer {
 	public List<OmegaAnalysisRun> getAnalysisRuns();
 
 	public void addAnalysisRun(final OmegaAnalysisRun analysisRun);
+
+	public void removeAnalysisRun(OmegaAnalysisRun analysisRun);
+
+	public boolean containsAnalysisRun(long id);
 }

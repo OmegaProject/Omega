@@ -29,7 +29,8 @@ package edu.umassmed.omega.dataNew.coreElements;
 
 public class OmegaNamedElement extends OmegaElement {
 
-	private final String name;
+	private String name;
+	private boolean nameChanged;
 
 	public OmegaNamedElement(final long elementID, final String name) {
 		super(elementID);
@@ -38,5 +39,16 @@ public class OmegaNamedElement extends OmegaElement {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+		if (this.getElementID() != -1) {
+			this.nameChanged = true;
+		}
+	}
+
+	public boolean isNameChanged() {
+		return this.nameChanged;
 	}
 }

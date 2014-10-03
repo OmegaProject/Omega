@@ -33,6 +33,11 @@ public class OmegaParameter extends OmegaNamedElement {
 
 	private final Object value;
 
+	public OmegaParameter(final String name, final String clazz,
+	        final String value) {
+		this(name, OmegaParameter.getObjectValue(value, clazz));
+	}
+
 	public OmegaParameter(final String name, final Object value) {
 		super(-1, name);
 
@@ -41,6 +46,21 @@ public class OmegaParameter extends OmegaNamedElement {
 
 	public Object getValue() {
 		return this.value;
+	}
+
+	public String getClazz() {
+		return this.value.getClass().getName();
+	}
+
+	public static Object getObjectValue(final String value, final String clazz) {
+		if (clazz.equals(Integer.class.getName()))
+			return Integer.valueOf(value);
+		else if (clazz.equals(Double.class.getName()))
+			return Double.valueOf(value);
+		else if (clazz.equals(String.class.getName()))
+			return value;
+		else
+			return value.toString();
 	}
 
 	public String getStringValue() {

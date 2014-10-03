@@ -30,6 +30,8 @@ package edu.umassmed.omega.commons.gui.checkboxTree;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,11 +45,16 @@ public class CheckBoxNodeRenderer extends TriStateCheckBox implements
 
 	private static final long serialVersionUID = 5667252206708991028L;
 
+	private final List<DefaultMutableTreeNode> disabledNodes;
+
 	private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
 	private final JPanel panel = new JPanel(new BorderLayout());
 
 	public CheckBoxNodeRenderer() {
 		super();
+
+		this.disabledNodes = new ArrayList<DefaultMutableTreeNode>();
+
 		final String uiName = this.getUI().getClass().getName();
 		if (uiName.contains("Synth")
 		        && System.getProperty("java.version").startsWith("1.7.0")) {
@@ -104,5 +111,13 @@ public class CheckBoxNodeRenderer extends TriStateCheckBox implements
 		// if(System.getProperty("java.version").startsWith("1.6.0")) {
 		// renderer = new DefaultTreeCellRenderer();
 		// }
+	}
+
+	public void resetDisabledNodesList() {
+		this.disabledNodes.clear();
+	}
+
+	public void addNodeToDisabledList(final DefaultMutableTreeNode node) {
+		this.disabledNodes.add(node);
 	}
 }
