@@ -109,10 +109,10 @@ public class TMAdjustTrajectoriesPanel extends GenericPanel implements
 		this.checkboxes = new ArrayList<Point>();
 
 		this.cb = new JCheckBox();
-		this.cb.setSelectedIcon(new ImageIcon("img" + File.separatorChar
-		        + "checkbox_selected.png"));
-		this.cb.setIcon(new ImageIcon("img" + File.separatorChar
-		        + "checkbox_deselected.png"));
+		this.cb.setSelectedIcon(new ImageIcon(OmegaConstants.OMEGA_IMGS_FOLDER
+		        + File.separatorChar + "checkbox_selected.png"));
+		this.cb.setIcon(new ImageIcon(OmegaConstants.OMEGA_IMGS_FOLDER
+		        + File.separatorChar + "checkbox_deselected.png"));
 
 		this.createPopupMenu();
 

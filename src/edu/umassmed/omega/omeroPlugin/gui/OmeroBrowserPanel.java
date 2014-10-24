@@ -63,7 +63,7 @@ import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.commons.utilities.StringUtilities;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
@@ -369,7 +369,7 @@ public class OmeroBrowserPanel extends GenericPanel {
 		        temp.getImageID(), temp.getImageName(), temp.getBufferedImage());
 
 		// image name lbl
-		final String imageName = StringUtilities.getImageName(temp
+		final String imageName = OmegaStringUtilities.getImageName(temp
 		        .getImageName());
 		final JLabel imageNameLbl = new JLabel(imageName);
 		final Dimension nameLblDim = new Dimension(nameDim, imgHeight);
@@ -482,7 +482,7 @@ public class OmeroBrowserPanel extends GenericPanel {
 		        temp.getImageID(), temp.getImageName(), temp.getBufferedImage());
 
 		// image name
-		final String imageName = StringUtilities.getImageName(temp
+		final String imageName = OmegaStringUtilities.getImageName(temp
 		        .getImageName());
 		final JLabel imageNameLbl = new JLabel(imageName);
 		imageNameLbl.setSize(d);

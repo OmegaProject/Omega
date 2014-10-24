@@ -221,22 +221,22 @@ public class OmeroConnectionDialog extends GenericDialog {
 					case 0:
 						break;
 					case 1:
-						errorMsg = "Impossibile creare sessione.";
+						errorMsg = "Unable to create a session.";
 						break;
 					case 2:
-						errorMsg = "<html>Accesso negato.<br>Ricontrollare nome utente e/o password.</html>";
+						errorMsg = "<html>Access denied.<br>Verify username and/or password.</html>";
 						break;
 					case 3:
-						errorMsg = "Errore del server.";
+						errorMsg = "Server error.";
 						break;
 					case 4:
-						errorMsg = "<html>Impossibile trovare il server.<br>Ricontrollare l'indirizzo.</html>";
+						errorMsg = "<html>Unable to find the server<br>Verify server address.</html>";
 						break;
 					case 5:
-						errorMsg = "<html>Il server ha rifiutato la connessione.<br>Ricontrollare la porta.</html>";
+						errorMsg = "<html>Server refused the connection.<br>Verify port.</html>";
 						break;
 					default:
-						errorMsg = "Errore sconosciuto.";
+						errorMsg = "Unknown error.";
 					}
 					if (errorMsg != null) {
 						final GenericMessageDialog errorDialog = new GenericMessageDialog(

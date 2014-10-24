@@ -28,7 +28,11 @@
 package edu.umassmed.omega.omeroPlugin;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -299,7 +303,6 @@ public class OmeroGateway extends OmegaGateway {
 		this.setConnected(false);
 		this.secureClient = new client(serverInfo.getHostName(),
 		        serverInfo.getPort());
-
 		try {
 			this.entryEncrypted = this.secureClient.createSession(
 			        loginCred.getUserName(), loginCred.getPassword());
@@ -319,6 +322,26 @@ public class OmeroGateway extends OmegaGateway {
 			ex.printStackTrace();
 			return 5;
 		} catch (final Exception ex) {
+			try {
+				final File f = new File("ConnectionErrorLog.txt");
+				final FileWriter fw = new FileWriter(f, true);
+				final BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(ex.getClass().getName() + "\n");
+				bw.write(ex.toString() + "\n");
+				if (ex.getMessage() != null) {
+					bw.write(ex.getMessage() + "\n");
+				}
+				if (ex.getStackTrace() != null) {
+					for (final StackTraceElement ele : ex.getStackTrace()) {
+						bw.write(ele.toString() + "\n");
+					}
+				}
+				bw.close();
+				fw.close();
+			} catch (final IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ex.printStackTrace();
 			return -1;
 		}

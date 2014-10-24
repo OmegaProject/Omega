@@ -34,6 +34,8 @@ import javax.swing.UIDefaults;
 
 public class OmegaConstants {
 
+	public final static String OMEGA_IMGS_FOLDER = "imgs";
+
 	/**
 	 * Build and info
 	 */

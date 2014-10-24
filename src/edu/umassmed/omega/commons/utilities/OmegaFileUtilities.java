@@ -27,67 +27,63 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.utilities;
 
-import java.text.DecimalFormat;
+import java.io.File;
 
-public class StringUtilities {
-	public static String getImageName(final String imagePath) {
+public class OmegaFileUtilities {
+	public static boolean directoryExists(final String dirName) {
+		final File dir = new File(dirName);
+		return dir.exists();
+	}
+
+	public static void createDirectory(final String dirName) {
+		final File dir = new File(dirName);
+		if (!dir.exists()) {
+			dir.mkdir();
+		} else {
+			// TODO throw error and print message
+		}
 		try {
-			if (imagePath.contains("/")) {
-				final String[] splitted = imagePath.split("/");
-				return splitted[splitted.length - 1];
+
+		} catch (final Exception e) {
+			// GLogManager.log(
+			// String.format("%s: %s", "Cannot create the directory",
+			// e.toString()), Level.WARNING);
+		}
+	}
+
+	public static void emptyDirectory(final String directoryName) {
+		try {
+			final File dir = new File(directoryName);
+			if (!dir.exists())
+				// TODO throw error and print message
+				return;
+
+			final String[] info = dir.list();
+			for (final String element : info) {
+				final File n = new File(directoryName + File.separator
+				        + element);
+				if (n.isFile()) {
+					n.delete();
+				} else if (n.isDirectory()) {
+					OmegaFileUtilities.deleteDirectory(n);
+				}
 			}
 		} catch (final Exception e) {
-			// nothing to do here...
-		}
-		return imagePath;
-	}
-
-	public static String removeFileExtension(final String fileName) {
-		try {
-			return fileName.substring(0, fileName.lastIndexOf('.'));
-		} catch (final Exception e) {
-			return fileName;
+			// GLogManager.log(
+			// String.format("%s: %s", "Cannot empty the directory",
+			// e.toString()), Level.WARNING);
+			// TODO throw error
 		}
 	}
 
-	/**
-	 * Checks the widthSize and the heightSize of an image and sets the correct
-	 * texts in the JTextFields.
-	 * 
-	 * @param widthSize
-	 * @param heightSize
-	 */
-	public static String getPixelSizeString(final double size,
-	        final int maxLenght) {
-		String sizeString = (size == 0.0) ? "-" : String.valueOf(size);
-		if (sizeString.length() > maxLenght) {
-			sizeString = sizeString.substring(0, maxLenght);
+	private static boolean deleteDirectory(final File dir) {
+		final String[] children = dir.list();
+		for (final String element : children) {
+			final boolean success = OmegaFileUtilities.deleteDirectory(new File(dir,
+			        element));
+			if (!success)
+				return false;
 		}
-		return sizeString;
-	}
-
-	public static String doubleToString(final double d, final int decimalPlaces) {
-		String dec = "";
-		for (int i = 0; i < decimalPlaces; i++) {
-			dec = dec + "#";
-		}
-		final DecimalFormat df = new DecimalFormat("#." + dec);
-		return df.format(d);
-	}
-
-	/**
-	 * Returns a splitted String[] from a String.
-	 * 
-	 * @param strLine
-	 * @param separator
-	 * @return
-	 */
-	public static String[] splitString(String strLine, final String separator) {
-		try {
-			strLine = strLine.trim();
-			return strLine.split(separator);
-		} catch (final Exception e) {
-			return null;
-		}
+		return dir.delete();
 	}
 }

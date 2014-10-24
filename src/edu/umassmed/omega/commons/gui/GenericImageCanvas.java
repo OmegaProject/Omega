@@ -58,7 +58,7 @@ import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaMathSymbolsConstants;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
-import edu.umassmed.omega.commons.utilities.StringUtilities;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 import edu.umassmed.omega.core.gui.OmegaElementImagePanel;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
@@ -410,7 +410,7 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeX() > 0.0)) {
 				final String xInformation = String.format(
 				        "%s %sm",
-				        StringUtilities.doubleToString(
+				        OmegaStringUtilities.doubleToString(
 				                this.parentPanel.getSizeX() * width, 1),
 				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(xInformation, 0, scaledHeight + 15);
@@ -424,7 +424,7 @@ public class GenericImageCanvas extends GenericPanel {
 			        && (this.parentPanel.getSizeY() > 0.0)) {
 				final String yInformation = String.format(
 				        "%s %sm",
-				        StringUtilities.doubleToString(
+				        OmegaStringUtilities.doubleToString(
 				                this.parentPanel.getSizeY() * height, 1),
 				        OmegaMathSymbolsConstants.MU);
 				g2D.drawString(yInformation, scaledWidth, 24);
@@ -632,8 +632,8 @@ public class GenericImageCanvas extends GenericPanel {
 
 	// private void saveSingleImage(final String imageDirectory) {
 	// try {
-	// final String imageName = StringUtilities
-	// .removeFileExtension(StringUtilities
+	// final String imageName = OmegaStringUtilities
+	// .removeFileExtension(OmegaStringUtilities
 	// .getImageName(this.jPanelViewer.getImage()
 	// .getName()));
 	// final String fileName = String.format("%s%s%s_frame_%d.png",

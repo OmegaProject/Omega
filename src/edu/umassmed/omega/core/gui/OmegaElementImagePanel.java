@@ -60,6 +60,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleDetectionRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaApplicationParticleLinkingRunSelectionEvent;
@@ -796,7 +797,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 	}
 
 	private void renderNoImage() {
-		final String fileName = "img" + File.separator + "noImage.jpg";
+		final String fileName = OmegaConstants.OMEGA_IMGS_FOLDER
+		        + File.separator + "noImage.jpg";
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(new File(fileName));

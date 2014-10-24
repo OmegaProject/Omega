@@ -40,6 +40,14 @@ public class OmegaParticle extends OmegaROI {
 	}
 
 	public OmegaParticle(final int frameIndex, final double x, final double y,
+	        final double intensity) {
+		super(frameIndex, x, y);
+
+		this.intensity = intensity;
+		this.probability = -1;
+	}
+
+	public OmegaParticle(final int frameIndex, final double x, final double y,
 	        final double intensity, final double probability) {
 		super(frameIndex, x, y);
 

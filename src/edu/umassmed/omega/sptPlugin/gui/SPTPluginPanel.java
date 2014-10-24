@@ -50,6 +50,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -150,13 +151,15 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 
-		final ImageIcon addIcon = new ImageIcon("img" + File.separatorChar
-		        + "green_plus.png");
+		final ImageIcon addIcon = new ImageIcon(
+		        OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
+		                + "green_plus.png");
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
 
-		final ImageIcon removeIcon = new ImageIcon("img" + File.separatorChar
-		        + "red_minus.png");
+		final ImageIcon removeIcon = new ImageIcon(
+		        OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
+		                + "red_minus.png");
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 
