@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesManagerPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
@@ -81,7 +81,7 @@ public class TrajectoriesManagerPlugin extends OmegaTrajectoriesManagerPlugin
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaMissingData {
+	        final int index) throws OmegaCorePluginMissingData {
 		final TMPluginPanel panel = new TMPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(),
 		        this.getLoadedAnalysisRuns(), this.getSegmentationTypesList(),

@@ -53,9 +53,11 @@ import javax.swing.SwingConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
@@ -73,7 +75,7 @@ import edu.umassmed.omega.sptPlugin.runnable.SPTRunner;
 import edu.umassmed.omega.sptPlugin.runnable.SPTWriter;
 
 public class SPTPluginPanel extends GenericPluginPanel implements
-        OmegaMessageDisplayerPanel {
+        OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -213,10 +215,15 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 	}
 
 	private void resetStatusMessages() {
-		this.statusPanel.updateStatus(0, "Plugin ready");
-		this.statusPanel.updateStatus(1, "Runner service: ready");
-		this.statusPanel.updateStatus(1, "Loader service: ready");
-		this.statusPanel.updateStatus(1, "Writer service: ready");
+		try {
+			this.statusPanel.updateStatus(0, "Plugin ready");
+			this.statusPanel.updateStatus(1, "Runner service: ready");
+			this.statusPanel.updateStatus(1, "Loader service: ready");
+			this.statusPanel.updateStatus(1, "Writer service: ready");
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
 	}
 
 	private void addListeners() {
@@ -353,7 +360,12 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 				final StringBuffer buf = new StringBuffer();
 				buf.append("Wrong parameters type -> ");
 				buf.append(exceptionError.toString());
-				this.statusPanel.updateStatus(3, buf.toString());
+				try {
+					this.statusPanel.updateStatus(3, buf.toString());
+				} catch (final OmegaPluginStatusPanelException ex) {
+					this.getPlugin().fireEvent(
+					        new OmegaPluginLogEvent(this.getPlugin(), ex));
+				}
 				break;
 				// Lanciare eccezione ho printare errore a schermo
 				// throw new OmegaAlgorithmParametersTypeException(
@@ -442,14 +454,41 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		final SPTMessageEvent specificEvent = (SPTMessageEvent) evt;
 		final SPTRunnable source = specificEvent.getSource();
 		if (source instanceof SPTRunner) {
-			this.statusPanel.updateStatus(1, evt.getMessage());
-			if (((SPTMessageEvent) evt).isEnded()) {
-				this.updateRunnerEnded();
-			}
+			this.updateSPTRunnerMessageStatus(evt);
 		} else if (source instanceof SPTLoader) {
-			this.statusPanel.updateStatus(2, evt.getMessage());
+			this.updateSPTLoaderMessageStatus(evt);
 		} else if (source instanceof SPTWriter) {
+			this.updateSPTWriterMessageStatus(evt);
+		}
+	}
+
+	private void updateSPTWriterMessageStatus(final OmegaMessageEvent evt) {
+		try {
 			this.statusPanel.updateStatus(3, evt.getMessage());
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
+	}
+
+	private void updateSPTLoaderMessageStatus(final OmegaMessageEvent evt) {
+		try {
+			this.statusPanel.updateStatus(2, evt.getMessage());
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
+	}
+
+	private void updateSPTRunnerMessageStatus(final OmegaMessageEvent evt) {
+		try {
+			this.statusPanel.updateStatus(1, evt.getMessage());
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
+		if (((SPTMessageEvent) evt).isEnded()) {
+			this.updateRunnerEnded();
 		}
 	}
 }

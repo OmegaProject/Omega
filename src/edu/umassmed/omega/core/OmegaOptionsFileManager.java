@@ -77,7 +77,7 @@ public class OmegaOptionsFileManager {
 			this.workingDirPath = System.getProperty("user.dir");
 		}
 
-		this.configFile = new File(this.workingDirPath + "/"
+		this.configFile = new File(this.workingDirPath + File.separator
 		        + OmegaOptionsFileManager.CONFIG_FILENAME);
 
 		this.loadOptionsFromFile();

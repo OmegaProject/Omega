@@ -38,6 +38,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.gui.interfaces.GenericPluginPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.core.gui.OmegaGUIFrame;
 

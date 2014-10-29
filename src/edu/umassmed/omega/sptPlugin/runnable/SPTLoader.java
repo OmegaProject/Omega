@@ -37,7 +37,7 @@ import javax.swing.SwingUtilities;
 import com.galliva.gallibrary.GLogManager;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
@@ -45,14 +45,14 @@ import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
 public class SPTLoader implements SPTRunnable {
 	private static final String RUNNER = "Loader service: ";
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private final OmegaImage image;
 	private final OmegaGateway gateway;
 	private final int z, c;
 
 	private boolean isJobCompleted;
 
-	public SPTLoader(final OmegaMessageDisplayerPanel displayerPanel,
+	public SPTLoader(final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final OmegaImage image, final int z, final int c,
 	        final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;

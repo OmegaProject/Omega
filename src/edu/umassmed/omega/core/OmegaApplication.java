@@ -48,6 +48,7 @@ import edu.umassmed.omega.commons.eventSystem.OmegaParticleLinkingResultsEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginImageSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleDetectionRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleLinkingRunSelectionEvent;
@@ -119,6 +120,8 @@ public class OmegaApplication implements OmegaPluginListener {
 	private final Map<String, Long> pluginIndexes;
 	private final Map<Long, OmegaPlugin> registeredPlugin;
 
+	private final OmegaLogFileManager logFileManager;
+
 	private final OmegaOptionsFileManager optionsFileManager;
 	private final Map<String, Map<String, String>> generalOptions;
 
@@ -131,6 +134,8 @@ public class OmegaApplication implements OmegaPluginListener {
 		this.pluginIndexes = new HashMap<String, Long>();
 		this.registeredPlugin = new HashMap<Long, OmegaPlugin>();
 		this.pluginIndex = 0;
+
+		this.logFileManager = new OmegaLogFileManager();
 
 		this.optionsFileManager = new OmegaOptionsFileManager();
 		this.generalOptions = this.optionsFileManager.getGeneralOptions();
@@ -154,9 +159,9 @@ public class OmegaApplication implements OmegaPluginListener {
 
 	private void registerCorePlugins() {
 		this.registerPlugin(new OmeroPlugin());
-		this.registerPlugin(new OmegaDataBrowserPlugin());
 		this.registerPlugin(new SPTPlugin());
 		this.registerPlugin(new TrajectoriesManagerPlugin());
+		this.registerPlugin(new OmegaDataBrowserPlugin());
 
 		for (final OmegaPlugin plugin : this.registeredPlugin.values()) {
 			final String optionsCategory = plugin.getOptionsCategory();
@@ -193,6 +198,8 @@ public class OmegaApplication implements OmegaPluginListener {
 
 	protected void showGUI() {
 		this.gui.setVisible(true);
+		final List<Integer> bla = new ArrayList<>();
+		bla.get(2);
 	}
 
 	public OmegaPlugin getPlugin(final long pluginIndex) {
@@ -317,28 +324,32 @@ public class OmegaApplication implements OmegaPluginListener {
 	@Override
 	public void handleOmegaPluginEvent(final OmegaPluginEvent event) {
 		final OmegaPlugin plugin = event.getSource();
-		if (plugin instanceof OmegaLoaderPlugin) {
-			if (event instanceof OmegaGatewayEvent) {
-				this.handleOmegaLoaderPluginGatewayEvent((OmegaGatewayEvent) event);
-			} else if (event instanceof OmegaDataChangedEvent) {
-				this.handleOmegaLoaderPluginDataChangedEvent((OmegaDataChangedEvent) event);
-			}
-		} else if (plugin instanceof OmegaBrowserPlugin) {
-			this.handleOmegaBrowserPluginDataChangedEvent((OmegaDataChangedEvent) event);
-		} else if (plugin instanceof OmegaAlgorithmPlugin) {
-			if (event instanceof OmegaAlgorithmPluginEvent) {
-				this.handleOmegaAlgorithmPluginEvent((OmegaAlgorithmPluginEvent) event);
-			} else if (plugin instanceof OmegaTrajectoriesManagerPlugin) {
-				if (event instanceof OmegaTMPluginImageSelectionEvent) {
-					this.handleOmegaTMPluginImageSelectionEvent((OmegaTMPluginImageSelectionEvent) event);
-				} else if (event instanceof OmegaTMPluginParticleDetectionRunSelectionEvent) {
-					this.handleOmegaTMPluginParticleDetectionRunSelectionEvent((OmegaTMPluginParticleDetectionRunSelectionEvent) event);
-				} else if (event instanceof OmegaTMPluginParticleLinkingRunSelectionEvent) {
-					this.handleOmegaTMPluginParticleLinkingRunSelectionEvent((OmegaTMPluginParticleLinkingRunSelectionEvent) event);
-				} else if (event instanceof OmegaTMPluginTrajectoriesManagerRunSelectionEvent) {
-					this.handleOmegaTMPluginTrajectoriesManagerRunSelectionEvent((OmegaTMPluginTrajectoriesManagerRunSelectionEvent) event);
-				} else {
-					this.handleOmegaTMPluginTrajectoriesEvent((OmegaTMPluginTrajectoriesEvent) event);
+		if (event instanceof OmegaPluginLogEvent) {
+			this.handleOmegaPluginLogEvent((OmegaPluginLogEvent) event);
+		} else {
+			if (plugin instanceof OmegaLoaderPlugin) {
+				if (event instanceof OmegaGatewayEvent) {
+					this.handleOmegaLoaderPluginGatewayEvent((OmegaGatewayEvent) event);
+				} else if (event instanceof OmegaDataChangedEvent) {
+					this.handleOmegaLoaderPluginDataChangedEvent((OmegaDataChangedEvent) event);
+				}
+			} else if (plugin instanceof OmegaBrowserPlugin) {
+				this.handleOmegaBrowserPluginDataChangedEvent((OmegaDataChangedEvent) event);
+			} else if (plugin instanceof OmegaAlgorithmPlugin) {
+				if (event instanceof OmegaAlgorithmPluginEvent) {
+					this.handleOmegaAlgorithmPluginEvent((OmegaAlgorithmPluginEvent) event);
+				} else if (plugin instanceof OmegaTrajectoriesManagerPlugin) {
+					if (event instanceof OmegaTMPluginImageSelectionEvent) {
+						this.handleOmegaTMPluginImageSelectionEvent((OmegaTMPluginImageSelectionEvent) event);
+					} else if (event instanceof OmegaTMPluginParticleDetectionRunSelectionEvent) {
+						this.handleOmegaTMPluginParticleDetectionRunSelectionEvent((OmegaTMPluginParticleDetectionRunSelectionEvent) event);
+					} else if (event instanceof OmegaTMPluginParticleLinkingRunSelectionEvent) {
+						this.handleOmegaTMPluginParticleLinkingRunSelectionEvent((OmegaTMPluginParticleLinkingRunSelectionEvent) event);
+					} else if (event instanceof OmegaTMPluginTrajectoriesManagerRunSelectionEvent) {
+						this.handleOmegaTMPluginTrajectoriesManagerRunSelectionEvent((OmegaTMPluginTrajectoriesManagerRunSelectionEvent) event);
+					} else {
+						this.handleOmegaTMPluginTrajectoriesEvent((OmegaTMPluginTrajectoriesEvent) event);
+					}
 				}
 			}
 		}
@@ -541,6 +552,11 @@ public class OmegaApplication implements OmegaPluginListener {
 	private void handleOmegaBrowserPluginDataChangedEvent(
 	        final OmegaDataChangedEvent event) {
 		this.updateGUI(event.getSource(), true);
+	}
+
+	private void handleOmegaPluginLogEvent(final OmegaPluginLogEvent event) {
+		this.logFileManager.handlePluginException(event.getSource(),
+		        event.getException());
 	}
 
 	private void updateGUI(final OmegaPlugin source, final boolean dataLoaded) {

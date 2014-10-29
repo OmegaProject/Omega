@@ -29,61 +29,51 @@ package edu.umassmed.omega.commons.utilities;
 
 import java.io.File;
 
+import edu.umassmed.omega.commons.exceptions.OmegaCoreFileManagerException;
+
 public class OmegaFileUtilities {
 	public static boolean directoryExists(final String dirName) {
 		final File dir = new File(dirName);
 		return dir.exists();
 	}
 
-	public static void createDirectory(final String dirName) {
+	public static void createDirectory(final String dirName)
+	        throws OmegaCoreFileManagerException {
 		final File dir = new File(dirName);
 		if (!dir.exists()) {
 			dir.mkdir();
-		} else {
-			// TODO throw error and print message
-		}
-		try {
-
-		} catch (final Exception e) {
-			// GLogManager.log(
-			// String.format("%s: %s", "Cannot create the directory",
-			// e.toString()), Level.WARNING);
-		}
+		} else
+			throw new OmegaCoreFileManagerException(
+			        "createDirectory: directory " + dirName + " already exists");
 	}
 
-	public static void emptyDirectory(final String directoryName) {
-		try {
-			final File dir = new File(directoryName);
-			if (!dir.exists())
-				// TODO throw error and print message
-				return;
-
-			final String[] info = dir.list();
-			for (final String element : info) {
-				final File n = new File(directoryName + File.separator
-				        + element);
-				if (n.isFile()) {
-					n.delete();
-				} else if (n.isDirectory()) {
-					OmegaFileUtilities.deleteDirectory(n);
-				}
+	public static void emptyDirectory(final String dirName)
+	        throws OmegaCoreFileManagerException {
+		final File dir = new File(dirName);
+		if (!dir.exists())
+			throw new OmegaCoreFileManagerException(
+			        "emptyDirectory: directory " + dirName + " doesn't exist");
+		final String[] info = dir.list();
+		for (final String element : info) {
+			final File n = new File(dirName + File.separator + element);
+			if (n.isFile()) {
+				n.delete();
+			} else if (n.isDirectory()) {
+				OmegaFileUtilities.deleteDirectory(n.getAbsolutePath());
 			}
-		} catch (final Exception e) {
-			// GLogManager.log(
-			// String.format("%s: %s", "Cannot empty the directory",
-			// e.toString()), Level.WARNING);
-			// TODO throw error
 		}
 	}
 
-	private static boolean deleteDirectory(final File dir) {
+	private static void deleteDirectory(final String dirName)
+	        throws OmegaCoreFileManagerException {
+		final File dir = new File(dirName);
 		final String[] children = dir.list();
 		for (final String element : children) {
-			final boolean success = OmegaFileUtilities.deleteDirectory(new File(dir,
-			        element));
-			if (!success)
-				return false;
+			OmegaFileUtilities.deleteDirectory(dir + File.separator + element);
 		}
-		return dir.delete();
+		final boolean deleted = dir.delete();
+		if (!deleted)
+			throw new OmegaCoreFileManagerException(
+			        "deleteDirectory: it was not possible to delete " + dirName);
 	}
 }

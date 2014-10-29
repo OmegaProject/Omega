@@ -34,7 +34,7 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
@@ -99,7 +99,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaMissingData {
+	        final int index) throws OmegaCorePluginMissingData {
 		final SPTPluginPanel panel = new SPTPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(), index);
 		return panel;

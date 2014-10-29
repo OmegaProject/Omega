@@ -58,12 +58,14 @@ import javax.swing.event.ChangeListener;
 import edu.umassmed.omega.commons.constants.OmegaAlgorithmParametersConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginImageSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleDetectionRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleLinkingRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginTrajectoriesEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginTrajectoriesManagerRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTrajectoriesManagerResultsEvent;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
@@ -1466,7 +1468,12 @@ public class TMPluginPanel extends GenericPluginPanel {
 	}
 
 	public void updateStatus(final String s) {
-		this.statusPanel.updateStatus(0, s);
+		try {
+			this.statusPanel.updateStatus(0, s);
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
 	}
 
 	public void handleTrajNameChanged() {

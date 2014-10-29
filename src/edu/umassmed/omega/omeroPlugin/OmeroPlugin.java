@@ -30,7 +30,7 @@ package edu.umassmed.omega.omeroPlugin;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
-import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.dataNew.OmegaData;
@@ -48,19 +48,19 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public String getName() {
-		return "Omero Image Browser";
+		return "Image Selection";
 	}
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaMissingData {
+	        final int index) throws OmegaCorePluginMissingData {
 
 		this.fireEvent(new OmegaGatewayEvent(this,
 		        OmegaGatewayEvent.STATUS_CREATED));
 
 		final OmegaData omegaData = this.getMainData();
 		if (omegaData == null)
-			throw new OmegaMissingData(this);
+			throw new OmegaCorePluginMissingData(this);
 
 		this.panel = new OmeroPluginPanel(parent, this,
 		        (OmeroGateway) this.getGateway(), omegaData, index);

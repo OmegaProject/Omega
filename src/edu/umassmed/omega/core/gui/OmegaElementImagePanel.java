@@ -74,10 +74,12 @@ import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaTrajectoriesManagerRun;
+import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
@@ -143,6 +145,8 @@ public class OmegaElementImagePanel extends GenericPanel {
 	private JComboBox<String> overlayKind_combo, overlayParticle_combo,
 	        overlayTraj_combo, overlayTM_combo;
 
+	private final TitledBorder border;
+
 	public OmegaElementImagePanel(final RootPaneContainer parent) {
 		super(parent);
 
@@ -162,13 +166,21 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		this.setBorder(new TitledBorder("Selected item"));
+		this.border = new TitledBorder("No item selected");
+		this.setBorder(this.border);
 
 		this.setBackground(Color.white);
 
 		this.createAndAddWidgets();
 
 		this.addListeners();
+	}
+
+	private void setBorderTitle(final String title) {
+		this.border.setTitle(title);
+		// FIXME see if there is another way instead of repaint everything here
+		this.validate();
+		this.repaint();
 	}
 
 	private void createAndAddWidgets() {
@@ -655,6 +667,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 			this.channelsPanel.add(this.channels[i]);
 		}
 
+		this.channelsPanel.validate();
 		this.channelsPanel.repaint();
 	}
 
@@ -923,19 +936,33 @@ public class OmegaElementImagePanel extends GenericPanel {
 		// this.loadedAnalysisRuns = loadedAnalysisRuns;
 		this.gateway = gateway;
 		if (element == null) {
+			this.setBorderTitle("No item selected");
 			this.pixels = null;
 		} else {
-			if (element instanceof OmegaImage) {
+			if (element instanceof OmegaProject) {
+				this.setBorderTitle("Selected project");
+				this.pixels = null;
+			} else if (element instanceof OmegaDataset) {
+				this.setBorderTitle("Selected dataset");
+				this.pixels = null;
+			} else if (element instanceof OmegaImage) {
+				this.setBorderTitle("Selected image");
 				final OmegaImage image = (OmegaImage) element;
 				this.pixels = image.getDefaultPixels();
 				this.updateDisplayableElements(image, loadedAnalysisRuns);
 			} else if (element instanceof OmegaImagePixels) {
+				this.setBorderTitle("Selected image pixels");
 				this.pixels = (OmegaImagePixels) element;
 			} else if (element instanceof OmegaFrame) {
+				this.setBorderTitle("Selected frame");
 				final OmegaFrame frame = (OmegaFrame) element;
 				frame.getIndex();
 				this.pixels = null;
 			} else {
+				// TODO manage exception
+				System.out
+				        .println("OmegaElementImagePanel: update case not supported");
+				this.setBorderTitle("No valid selected");
 				this.pixels = null;
 			}
 		}

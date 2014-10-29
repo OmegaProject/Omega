@@ -10,20 +10,20 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 
 public class TMFrameImagesLoader implements Runnable {
 
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 
 	private final OmegaGateway gateway;
 	private final OmegaImage img;
 	private final List<BufferedImage> buffImages;
 
-	public TMFrameImagesLoader(final OmegaMessageDisplayerPanel displayerPanel,
+	public TMFrameImagesLoader(final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final OmegaGateway gateway, final OmegaImage img) {
 		this.displayerPanel = displayerPanel;
 		this.gateway = gateway;

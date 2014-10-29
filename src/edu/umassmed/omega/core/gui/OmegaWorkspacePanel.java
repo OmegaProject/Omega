@@ -50,11 +50,11 @@ import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import edu.umassmed.omega.commons.exceptions.OmegaMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericDesktopPane;
-import edu.umassmed.omega.commons.gui.GenericPanelInterface;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.GenericPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
@@ -260,23 +260,26 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 
 	private void showUnsupportedPluginDialog(
 	        final OmegaAlgorithmPlugin algoPlugin) {
-		final String title = "Operating system not supported";
+		final String title = "Plugin incompatibility with operating system";
 		final StringBuffer msg = new StringBuffer();
 		msg.append("<html>The plugin ");
 		msg.append(algoPlugin.getName());
-		msg.append(" doesn't support the actual operating system!<br>Actual operating system: ");
+		msg.append(" is incompatibile with the current operating system!<br>Current operating system: ");
 		msg.append(OperatingSystemUtilities.getOS().toString());
-		msg.append("<br>Supported operating system: ");
+		msg.append("<br>Operating system required: ");
 		for (int index = 0; index < algoPlugin.getSupportedPlatforms().size(); index++) {
-			final OperatingSystemEnum os = algoPlugin.getSupportedPlatforms().get(
-			        index);
+			final OperatingSystemEnum os = algoPlugin.getSupportedPlatforms()
+			        .get(index);
 			msg.append(os.toString());
 			if (index < (algoPlugin.getSupportedPlatforms().size() - 1)) {
 				msg.append(", ");
 			}
 		}
 		msg.append("<html>");
-		new GenericConfirmationDialog(this.parent, title, msg.toString(), true);
+		final GenericMessageDialog gd = new GenericMessageDialog(this.parent,
+		        title, msg.toString(), false);
+		gd.enableClose();
+		gd.setVisible(true);
 	}
 
 	private boolean isPluginSupported(final OmegaAlgorithmPlugin algoPlugin) {
@@ -293,7 +296,6 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 			if (!this.isPluginSupported(algoPlugin)) {
 				this.showUnsupportedPluginDialog(algoPlugin);
 				return;
-
 			}
 		}
 
@@ -321,7 +323,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		GenericPluginPanel content = null;
 		try {
 			content = plugin.getNewPanel(intFrame, startingIndex);
-		} catch (final OmegaMissingData e) {
+		} catch (final OmegaCorePluginMissingData e) {
 			e.printStackTrace();
 			// TODO inserire warning
 			return;
@@ -394,7 +396,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		GenericPluginPanel content = null;
 		try {
 			content = plugin.getNewPanel(frame, startingIndex);
-		} catch (final OmegaMissingData e) {
+		} catch (final OmegaCorePluginMissingData e) {
 			// TODO inserire warning
 			e.printStackTrace();
 			return;

@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
+
 public class GenericStatusPanel extends JPanel {
 
 	private static final long serialVersionUID = 2082839769774952925L;
@@ -17,7 +19,6 @@ public class GenericStatusPanel extends JPanel {
 	private final List<JLabel> statusList;
 
 	public GenericStatusPanel(final int numStatus) {
-
 		this.numStatus = numStatus;
 		this.statusList = new ArrayList<JLabel>();
 
@@ -45,10 +46,12 @@ public class GenericStatusPanel extends JPanel {
 		return this.numStatus;
 	}
 
-	public void updateStatus(final int status, final String s) {
+	public void updateStatus(final int status, final String s)
+	        throws OmegaPluginStatusPanelException {
 		if (status >= this.numStatus)
-			// TODO THROW ERROR
-			return;
+			throw new OmegaPluginStatusPanelException("The status " + status
+			        + " is not present, the maximum status index is "
+			        + this.numStatus);
 		this.statusList.get(status).setText(s);
 		this.repaint();
 

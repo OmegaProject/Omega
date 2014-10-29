@@ -25,15 +25,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons.exceptions;
+package edu.umassmed.omega.commons.gui.interfaces;
 
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import javax.swing.JMenuBar;
 
-public class OmegaMissingData extends Exception {
+public interface GenericPluginPanelInterface {
+	public JMenuBar getMenu();
 
-	private static final long serialVersionUID = -8169438237589027577L;
-
-	public OmegaMissingData(final OmegaPlugin plugin) {
-		super(plugin.getName() + " - missing omega data");
-	}
+	public void onCloseOperation();
 }

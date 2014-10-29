@@ -40,7 +40,7 @@ import javax.swing.SwingUtilities;
 import com.galliva.gallibrary.GLogManager;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
@@ -51,7 +51,7 @@ import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
 
 public class SPTRunner implements SPTRunnable {
 	private static final String RUNNER = "Runner service: ";
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
 
@@ -64,7 +64,7 @@ public class SPTRunner implements SPTRunnable {
 
 	private boolean isJobCompleted;
 
-	public SPTRunner(final OmegaMessageDisplayerPanel displayerPanel) {
+	public SPTRunner(final OmegaMessageDisplayerPanelInterface displayerPanel) {
 		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = null;
@@ -78,7 +78,7 @@ public class SPTRunner implements SPTRunnable {
 		this.resultingParticles = new HashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
 	}
 
-	public SPTRunner(final OmegaMessageDisplayerPanel displayerPanel,
+	public SPTRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
 	        final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;

@@ -30,7 +30,7 @@ package edu.umassmed.omega.dataNew;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.umassmed.omega.commons.exceptions.OmegaLoadedElementNotFound;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreLoadedElementNotFound;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
@@ -65,7 +65,7 @@ public class OmegaLoadedData {
 	}
 
 	public int getElementIndex(final OmegaElement element)
-	        throws OmegaLoadedElementNotFound {
+	        throws OmegaCoreLoadedElementNotFound {
 		int index = 1;
 		if (element instanceof OmegaProject) {
 			index += this.projects.indexOf(element);
@@ -91,11 +91,11 @@ public class OmegaLoadedData {
 			index += this.frames.indexOf(element);
 			return index;
 		}
-		throw new OmegaLoadedElementNotFound("Element not found");
+		throw new OmegaCoreLoadedElementNotFound("Element not found");
 	}
 
 	public OmegaElement getElement(final int index)
-	        throws OmegaLoadedElementNotFound {
+	        throws OmegaCoreLoadedElementNotFound {
 		int newIndex = index - 1;
 		if ((this.projects.size() > 0) && (newIndex < this.projects.size()))
 			return this.projects.get(newIndex);
@@ -112,7 +112,7 @@ public class OmegaLoadedData {
 		if ((this.frames.size() > 0) && (newIndex < this.frames.size()))
 			return this.frames.get(newIndex);
 
-		throw new OmegaLoadedElementNotFound("Index: " + index + " Total: "
+		throw new OmegaCoreLoadedElementNotFound("Index: " + index + " Total: "
 		        + this.getLoadedDataSize());
 	}
 

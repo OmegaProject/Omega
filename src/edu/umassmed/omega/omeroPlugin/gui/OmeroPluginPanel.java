@@ -66,10 +66,12 @@ import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
@@ -90,7 +92,7 @@ import edu.umassmed.omega.omeroPlugin.runnable.OmeroThumbnailMessageEvent;
 import edu.umassmed.omega.omeroPlugin.runnable.OmeroWrapperMessageEvent;
 
 public class OmeroPluginPanel extends GenericPluginPanel implements
-        OmegaMessageDisplayerPanel {
+        OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -743,7 +745,12 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
-		this.statusPanel.updateStatus(0, evt.getMessage());
+		try {
+			this.statusPanel.updateStatus(0, evt.getMessage());
+		} catch (final OmegaPluginStatusPanelException ex) {
+			this.getPlugin().fireEvent(
+			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+		}
 		if (evt instanceof OmeroThumbnailMessageEvent) {
 			this.setBrowsingImages(((OmeroThumbnailMessageEvent) evt)
 			        .getThumbnails());

@@ -35,7 +35,7 @@ import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
@@ -45,7 +45,7 @@ import edu.umassmed.omega.trajectoryManagerPlugin.runnable.TMFrameImagesLoader;
 import edu.umassmed.omega.trajectoryManagerPlugin.runnable.TMLoaderMessage;
 
 public class TMAdjustTrajectoriesPanel extends GenericPanel implements
-        OmegaMessageDisplayerPanel {
+        OmegaMessageDisplayerPanelInterface {
 
 	private final int PARTICLE_SIZE = 30;
 	private final int PARTICLE_SPACE = 50;

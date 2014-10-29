@@ -6,7 +6,6 @@ import java.util.List;
 import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
 
 public class OmegaTrajectoryStatistics {
-	// TODO shoudnt it be a paramter?
 	public static final Integer MAX_NU = 6;
 
 	private final List<OmegaAlgorithmPoint> points;

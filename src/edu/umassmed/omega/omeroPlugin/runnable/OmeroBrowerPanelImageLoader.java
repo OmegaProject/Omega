@@ -40,7 +40,7 @@ import pojos.ImageData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
@@ -48,7 +48,7 @@ import edu.umassmed.omega.omeroPlugin.data.OmeroThumbnailImageInfo;
 
 public class OmeroBrowerPanelImageLoader implements Runnable {
 
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private final OmeroGateway gateway;
 	private final ProjectData projectData;
 	private final DatasetData datasetData;
@@ -60,7 +60,7 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 	private final boolean loadThumb;
 
 	public OmeroBrowerPanelImageLoader(
-	        final OmegaMessageDisplayerPanel displayerPanel,
+	        final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final OmeroGateway gateway, final OmeroDatasetWrapper datasetWrap,
 	        final boolean loadThumb) {
 		this.displayerPanel = displayerPanel;

@@ -25,12 +25,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons.gui;
+package edu.umassmed.omega.commons.exceptions;
 
-import javax.swing.JMenuBar;
+public class OmegaCoreLoadedElementNotFound extends OmegaCoreException {
 
-public interface GenericPluginPanelInterface {
-	public JMenuBar getMenu();
+	private static final long serialVersionUID = -8169438237589027577L;
 
-	public void onCloseOperation();
+	public OmegaCoreLoadedElementNotFound(final String details) {
+		super("loaded elements not found\n" + details + "\n");
+	}
 }

@@ -77,6 +77,4 @@ public class GenericFrame extends JFrame {
 	public JFrame getParent() {
 		return this.parent;
 	}
-
-	// TODO vedere se ne servono altri
 }

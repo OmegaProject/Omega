@@ -36,15 +36,15 @@ import javax.swing.SwingUtilities;
 import com.galliva.gallibrary.GLogManager;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 
 public class SPTWriter implements SPTRunnable {
 	private static final String RUNNER = "Writer service: ";
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private boolean isJobCompleted;
 	private Object trackList;
 
-	public SPTWriter(final OmegaMessageDisplayerPanel displayerPanel) {
+	public SPTWriter(final OmegaMessageDisplayerPanelInterface displayerPanel) {
 		this.displayerPanel = displayerPanel;
 		this.isJobCompleted = false;
 		this.trackList = null;

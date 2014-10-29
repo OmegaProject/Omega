@@ -39,13 +39,13 @@ import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
-import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 
 public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 
 	// private final OmeroListPanel omeroProjectsPanel;
-	private final OmegaMessageDisplayerPanel displayerPanel;
+	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private final OmeroGateway gateway;
 	private final ExperimenterData expData;
 
@@ -55,7 +55,7 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 	private final Map<ProjectData, List<DatasetData>> data;
 
 	public OmeroListPanelProjectAndDatasetLoader(
-	        final OmegaMessageDisplayerPanel displayerPanel,
+	        final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final OmeroGateway gateway, final ExperimenterData expData) {
 		this.displayerPanel = displayerPanel;
 		this.gateway = gateway;

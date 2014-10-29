@@ -1,7 +1,7 @@
 Omega configuration file
-Last updated	17.10.14 17:10
+Last updated	29.10.14 17:23
 
-CATEGORY OMERO BROWSER PLUGIN
+CATEGORY IMAGE SELECTION PLUGIN
 Omero server adress	omero.umassmed.edu
 Omero login username	riganoa
 Omero login password	VOU11J9+ZLE=
@@ -12,9 +12,4 @@ Omega server port	3306
 Omega server db name	omega
 Omega login username	omega
 Omega login password	+CLuLoHq57U=
-
-CATEGORY OMERO IMAGE BROWSER PLUGIN
-Omero server adress	omero.umassmed.edu
-Omero login username	riganoa
-Omero login password	VOU11J9+ZLE=
 

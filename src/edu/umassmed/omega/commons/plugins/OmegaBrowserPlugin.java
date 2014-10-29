@@ -41,8 +41,6 @@ public abstract class OmegaBrowserPlugin extends OmegaPlugin implements
         OmegaLoadedDataConsumerPluginInterface,
         OmegaLoadedAnalysisConsumerPluginInterface {
 
-	// private final OmegaGateway gateway;
-	// TODO Loaded data
 	private OmegaData omegaData;
 	private OmegaLoadedData loadedData;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;

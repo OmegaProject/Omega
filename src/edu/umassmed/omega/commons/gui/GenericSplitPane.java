@@ -30,6 +30,8 @@ package edu.umassmed.omega.commons.gui;
 import javax.swing.JSplitPane;
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.gui.interfaces.GenericPanelInterface;
+
 public class GenericSplitPane extends JSplitPane implements GenericPanelInterface {
 	private static final long serialVersionUID = 7177189735018949022L;
 
