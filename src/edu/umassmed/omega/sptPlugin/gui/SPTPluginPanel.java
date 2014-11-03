@@ -53,13 +53,13 @@ import javax.swing.SwingConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaParticleTrackingResultsEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
@@ -221,8 +221,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			this.statusPanel.updateStatus(1, "Loader service: ready");
 			this.statusPanel.updateStatus(1, "Writer service: ready");
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 	}
 
@@ -280,6 +279,8 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		final SPTRunner sptRunner = new SPTRunner(this, this.imagesToProcess,
 		        this.gateway);
 		final Thread runnerT = new Thread(sptRunner);
+		runnerT.setName(sptRunner.getClass().getSimpleName());
+		OmegaLogFileManager.registerAsExceptionHandlerOnThread(runnerT);
 		this.threadsAndRunnables.put(runnerT, sptRunner);
 
 		runnerT.start();
@@ -363,8 +364,8 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 				try {
 					this.statusPanel.updateStatus(3, buf.toString());
 				} catch (final OmegaPluginStatusPanelException ex) {
-					this.getPlugin().fireEvent(
-					        new OmegaPluginLogEvent(this.getPlugin(), ex));
+					OmegaLogFileManager.handlePluginException(this.getPlugin(),
+					        ex);
 				}
 				break;
 				// Lanciare eccezione ho printare errore a schermo
@@ -466,8 +467,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(3, evt.getMessage());
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 	}
 
@@ -475,8 +475,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(2, evt.getMessage());
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 	}
 
@@ -484,8 +483,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(1, evt.getMessage());
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 		if (((SPTMessageEvent) evt).isEnded()) {
 			this.updateRunnerEnded();

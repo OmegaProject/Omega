@@ -165,7 +165,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.windowsMenu.add(this.attachEdetachAllWindows);
 
 		this.omegaDbMenu = new JMenu("Omega DB Options");
-		this.omegaDbOptionsMItem = new JMenuItem("Preferences");
+		this.omegaDbOptionsMItem = new JMenuItem("Connection preferences");
 		this.omegaDbLoadMItem = new JMenuItem("Load analysis");
 		this.omegaDbSaveMItem = new JMenuItem("Save analysis");
 		this.omegaDbUpdateTrajectoriesMItem = new JMenuItem(

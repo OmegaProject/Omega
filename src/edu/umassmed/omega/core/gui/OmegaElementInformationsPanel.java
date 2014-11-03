@@ -68,8 +68,7 @@ public class OmegaElementInformationsPanel extends GenericPanel {
 	}
 
 	private void addListeners() {
-		// TODO Auto-generated method stub
-
+		// TODO should i do something here?
 	}
 
 	public void update(final OmegaElement element) {

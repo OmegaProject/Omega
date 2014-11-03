@@ -58,7 +58,6 @@ import javax.swing.event.ChangeListener;
 import edu.umassmed.omega.commons.constants.OmegaAlgorithmParametersConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginImageSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleDetectionRunSelectionEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaTMPluginParticleLinkingRunSelectionEvent;
@@ -71,6 +70,7 @@ import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.commons.utilities.OmegaAnalysisRunContainerUtilities;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
@@ -1393,7 +1393,7 @@ public class TMPluginPanel extends GenericPluginPanel {
 				this.trajectoriesManager_combo.addItem(analysisRun.getName());
 			}
 		}
-		this.trajectoriesManager_combo.addItem("Actual modification");
+		this.trajectoriesManager_combo.addItem("Current trajectories");
 
 		this.trajectoriesManager_combo.setEnabled(true);
 		this.popTrajManager = false;
@@ -1471,8 +1471,7 @@ public class TMPluginPanel extends GenericPluginPanel {
 		try {
 			this.statusPanel.updateStatus(0, s);
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 	}
 

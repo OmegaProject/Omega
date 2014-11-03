@@ -27,11 +27,47 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.utilities;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import edu.umassmed.omega.commons.exceptions.OmegaCoreFileManagerException;
 
 public class OmegaFileUtilities {
+
+	private static void copyFile(final File f1, final File f2,
+	        final boolean append) throws IOException {
+		final FileWriter fw = new FileWriter(f2, append);
+		final BufferedWriter bw = new BufferedWriter(fw);
+		final FileReader fr = new FileReader(f1);
+		final BufferedReader br = new BufferedReader(fr);
+
+		String line = br.readLine();
+		while (line != null) {
+			bw.write(line);
+			bw.write("\n");
+			line = br.readLine();
+		}
+
+		bw.close();
+		br.close();
+		br.close();
+		fr.close();
+	}
+
+	public static void copyFile(final File f1, final File f2)
+	        throws IOException {
+		OmegaFileUtilities.copyFile(f1, f2, false);
+	}
+
+	public static void appendFile(final File f1, final File f2)
+	        throws IOException {
+		OmegaFileUtilities.copyFile(f1, f2, true);
+	}
+
 	public static boolean directoryExists(final String dirName) {
 		final File dir = new File(dirName);
 		return dir.exists();

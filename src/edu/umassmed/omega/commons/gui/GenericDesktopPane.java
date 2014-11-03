@@ -77,7 +77,7 @@ public class GenericDesktopPane extends JDesktopPane {
 		frame.setVisible(true);
 		try {
 			frame.setSelected(true);
-		} catch (final PropertyVetoException e) {
+		} catch (final PropertyVetoException ex) {
 			frame.toBack();
 		}
 		return retval;
@@ -173,6 +173,15 @@ class MDIDesktopManager extends DefaultDesktopManager {
 	@Override
 	public void endDraggingFrame(final JComponent f) {
 		super.endDraggingFrame(f);
+		int x = f.getLocation().x;
+		if (x < 0) {
+			x = 0;
+		}
+		int y = f.getLocation().y;
+		if (y < 0) {
+			y = 0;
+		}
+		f.setLocation(x, y);
 		this.resizeDesktop();
 	}
 

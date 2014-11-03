@@ -695,9 +695,8 @@ public class OmegaMySqlGateway {
 							segmentID = OmegaMySqlGateway.this.saveSegment(
 							        analysisRunID, trajectoryID, segment);
 						}
-					} catch (final SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (final SQLException ex) {
+						OmegaLogFileManager.handleCoreException(ex);
 					}
 					trajectory.setElementID(trajectoryID);
 				}
@@ -713,9 +712,8 @@ public class OmegaMySqlGateway {
 			if (t.isAlive()) {
 				try {
 					t.join();
-				} catch (final InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (final InterruptedException ex) {
+					OmegaLogFileManager.handleCoreException(ex);
 				}
 			}
 		}
@@ -784,9 +782,8 @@ public class OmegaMySqlGateway {
 							        .saveTrajectoryParticleLinkIfNeeded(
 							                (int) roiID, (int) trajectoryID);
 						}
-					} catch (final SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (final SQLException ex) {
+						OmegaLogFileManager.handleCoreException(ex);
 					}
 					trajectory.setElementID(trajectoryID);
 				}
@@ -802,9 +799,8 @@ public class OmegaMySqlGateway {
 			if (t.isAlive()) {
 				try {
 					t.join();
-				} catch (final InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (final InterruptedException ex) {
+					OmegaLogFileManager.handleCoreException(ex);
 				}
 			}
 		}

@@ -28,11 +28,7 @@
 package edu.umassmed.omega.omeroPlugin;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +38,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 
@@ -74,9 +69,7 @@ import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
 import Ice.ConnectionRefusedException;
 import Ice.DNSException;
-
-import com.galliva.gallibrary.GLogManager;
-
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
@@ -179,8 +172,9 @@ public class OmeroGateway extends OmegaGateway {
 			}
 			this.thumbnailRetrieval++;
 			return this.thumbnailService;
-		} catch (final Throwable e) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		// TODO Manage Null Case
@@ -205,8 +199,9 @@ public class OmeroGateway extends OmegaGateway {
 				this.services.add(this.containerService);
 			}
 			return this.containerService;
-		} catch (final Throwable e) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		// TODO Manage Null Case
@@ -225,8 +220,9 @@ public class OmeroGateway extends OmegaGateway {
 				this.services.add(this.adminService);
 			}
 			return this.adminService;
-		} catch (final Throwable e) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		// TODO Manage Null Case
@@ -248,8 +244,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this.entryEncrypted
 			        .createRenderingEngine();
 			return engine;
-		} catch (final Throwable e) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		// TODO Manage Null Case
@@ -298,8 +295,7 @@ public class OmeroGateway extends OmegaGateway {
 	@Override
 	public int connect(final OmegaLoginCredentials loginCred,
 	        final OmegaServerInformation serverInfo) {
-		// read login file
-		// parse
+		// TODO check with cases should throw exception and what shouldn't
 		this.setConnected(false);
 		this.secureClient = new client(serverInfo.getHostName(),
 		        serverInfo.getPort());
@@ -307,42 +303,22 @@ public class OmeroGateway extends OmegaGateway {
 			this.entryEncrypted = this.secureClient.createSession(
 			        loginCred.getUserName(), loginCred.getPassword());
 		} catch (final CannotCreateSessionException ex) {
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 1;
 		} catch (final PermissionDeniedException ex) {
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 2;
 		} catch (final ServerError ex) {
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 3;
 		} catch (final DNSException ex) {
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 4;
 		} catch (final ConnectionRefusedException ex) {
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 5;
 		} catch (final Exception ex) {
-			try {
-				final File f = new File("ConnectionErrorLog.txt");
-				final FileWriter fw = new FileWriter(f, true);
-				final BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(ex.getClass().getName() + "\n");
-				bw.write(ex.toString() + "\n");
-				if (ex.getMessage() != null) {
-					bw.write(ex.getMessage() + "\n");
-				}
-				if (ex.getStackTrace() != null) {
-					for (final StackTraceElement ele : ex.getStackTrace()) {
-						bw.write(ele.toString() + "\n");
-					}
-				}
-				bw.close();
-				fw.close();
-			} catch (final IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			ex.printStackTrace();
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return -1;
 		}
 
@@ -363,8 +339,6 @@ public class OmeroGateway extends OmegaGateway {
 		this.adminService = null;
 		this.services.clear();
 		this.reServices.clear();
-
-		// TODO CHECK IF THE TRY CATCH FINALLY IS NEEDED HERE
 
 		this.secureClient.closeSession();
 		this.secureClient = null;
@@ -578,8 +552,9 @@ public class OmeroGateway extends OmegaGateway {
 					if (image != null) {
 						images.add(image);
 					}
-				} catch (final Exception e) {
-					// TODO Manage exception
+				} catch (final Exception ex) {
+					// TODO handle differently
+					OmegaLogFileManager.handleUncaughtException(ex);
 				}
 			}
 
@@ -589,8 +564,9 @@ public class OmeroGateway extends OmegaGateway {
 			if (this.thumbnailService != null) {
 				try {
 					this.thumbnailService.close();
-				} catch (final Exception e) {
-					// TODO Manage exception
+				} catch (final Exception ex) {
+					// TODO handle differently
+					OmegaLogFileManager.handleUncaughtException(ex);
 				}
 			}
 			this.thumbnailService = null;
@@ -604,28 +580,25 @@ public class OmeroGateway extends OmegaGateway {
 		RawPixelsStorePrx service = null;
 		try {
 			service = this.entryEncrypted.createRawPixelsStore();
-		} catch (final ServerError err) {
-			err.printStackTrace();
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		}
 		try {
 			service.setPixelsId(pixelsID, false);
 
 			return service.getPlane(z, c, t);
-		} catch (final ServerError err) {
-			// TODO Manage exception
-			err.printStackTrace();
-			GLogManager.log(
-			        String.format("%s: %s", "cannot retrieve the plane (z=" + z
-			                + ", t=" + t + ", c=" + c + ") for pixelsID: "
-			                + pixelsID, err.toString()), Level.SEVERE);
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		} finally {
 			try {
 				service.close();
-			} catch (final ServerError err) {
-				err.printStackTrace();
-				return null;
+			} catch (final ServerError ex) {
+				// TODO handle differently
+				OmegaLogFileManager.handleUncaughtException(ex);
 			}
 		}
 	}
@@ -638,14 +611,16 @@ public class OmeroGateway extends OmegaGateway {
 			service = this.entryEncrypted.createRawPixelsStore();
 			service.setPixelsId(pixelsID, false);
 			return service.getByteWidth();
-		} catch (final ServerError e) {
-			// TODO Manage exception
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return 2;
 		} finally {
 			try {
 				service.close();
-			} catch (final ServerError e) {
-				// TODO Manage exception
+			} catch (final ServerError ex) {
+				// TODO handle differently
+				OmegaLogFileManager.handleUncaughtException(ex);
 			}
 		}
 	}
@@ -670,8 +645,9 @@ public class OmeroGateway extends OmegaGateway {
 					sizeT = tTemp.getValue();
 				}
 			}
-		} catch (final Exception e) {
-			GLogManager.log("exception in calculateSizeT: " + e.toString());
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		return sizeT;
@@ -682,10 +658,8 @@ public class OmeroGateway extends OmegaGateway {
 	        final int t, final int channel) throws Exception {
 		// isSessionAlive();
 		final IQueryPrx service = this.entryEncrypted.getQueryService();
-		StringBuilder sb;
-		ParametersI param;
-		sb = new StringBuilder();
-		param = new ParametersI();
+		final StringBuilder sb = new StringBuilder();
+		final ParametersI param = new ParametersI();
 		sb.append("select info from PlaneInfo as info ");
 		sb.append("where pixels.id =:id");
 		param.addLong("id", pixelsID);
@@ -706,10 +680,10 @@ public class OmeroGateway extends OmegaGateway {
 			final List<IObject> info = service.findAllByQuery(sb.toString(),
 			        param);
 			return info;
-		} catch (final Exception e) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			// TODO create the proper exception here
 			throw new Exception("Cannot load the plane info for pixels: "
-			        + pixelsID, e);
+			        + pixelsID, ex);
 		}
 	}
 
@@ -727,9 +701,8 @@ public class OmeroGateway extends OmegaGateway {
 			planeDef.slice = omero.romio.XY.value;
 
 			return engine.renderAsPackedInt(planeDef);
-		} catch (final ServerError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		}
 	}
@@ -741,9 +714,9 @@ public class OmeroGateway extends OmegaGateway {
 			        .getRenderingService(pixelsID);
 			return this.renderAsPackedInt(pixelsID, engine.getDefaultT(),
 			        engine.getDefaultZ());
-		} catch (final ServerError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		}
 	}
@@ -762,9 +735,9 @@ public class OmeroGateway extends OmegaGateway {
 			planeDef.slice = omero.romio.XY.value;
 
 			return engine.renderCompressed(planeDef);
-		} catch (final ServerError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		}
 	}
@@ -776,9 +749,9 @@ public class OmeroGateway extends OmegaGateway {
 			        .getRenderingService(pixelsID);
 			return this.renderCompressed(pixelsID, engine.getDefaultT(),
 			        engine.getDefaultZ());
-		} catch (final ServerError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return null;
 		}
 	}
@@ -801,9 +774,9 @@ public class OmeroGateway extends OmegaGateway {
 			if (tTemp != null) {
 				sizeT = tTemp.getValue() / pixelSizeT;
 			}
-		} catch (final Exception e) {
-			// TODO Manage exception
-			e.printStackTrace();
+		} catch (final Exception ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 		return sizeT;
 	}
@@ -815,9 +788,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			engine.setActive(channel, active);
-		} catch (final ServerError e) {
-			// TODO create and send OmegaServerError
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 
@@ -827,9 +800,8 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			engine.setDefaultZ(z);
-		} catch (final ServerError e) {
-			// TODO create and send OmegaServerError
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 
@@ -839,9 +811,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			return engine.getDefaultZ();
-		} catch (final ServerError e) {
-			e.printStackTrace();
-			// TODO create and send OmegaServerError
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return -1;
 		}
 	}
@@ -852,9 +824,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			engine.setDefaultT(t);
-		} catch (final ServerError e) {
-			e.printStackTrace();
-			// TODO create and send OmegaServerError
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 
@@ -864,9 +836,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			return engine.getDefaultT();
-		} catch (final ServerError e) {
-			e.printStackTrace();
-			// TODO create and send OmegaServerError
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 			return -1;
 		}
 	}
@@ -877,9 +849,9 @@ public class OmeroGateway extends OmegaGateway {
 			final RenderingEnginePrx engine = this
 			        .getRenderingService(pixelsID);
 			engine.setCompressionLevel(compression);
-		} catch (final ServerError e) {
-			e.printStackTrace();
-			// TODO create and send OmegaServerError
+		} catch (final ServerError ex) {
+			// TODO handle differently
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 }

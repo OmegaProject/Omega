@@ -64,6 +64,7 @@ import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
@@ -639,6 +640,8 @@ public class OmeroBrowserPanel extends GenericPanel {
 		this.pluginPanel.updateMessageStatus(new OmegaMessageEvent(
 		        loadingStatus));
 		final Thread t = new Thread(loader);
+		t.setName(loader.getClass().getSimpleName());
+		OmegaLogFileManager.registerAsExceptionHandlerOnThread(t);
 		t.start();
 	}
 

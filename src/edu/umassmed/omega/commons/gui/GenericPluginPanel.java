@@ -73,11 +73,11 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 		this.menu = new JMenuBar();
 
 		this.fileMenu = new JMenu("File");
-		this.quitMItem = new JMenuItem("Quit");
+		this.quitMItem = new JMenuItem("Close");
 		this.fileMenu.add(this.quitMItem);
 
 		this.windowMenu = new JMenu("Window");
-		this.toggleWindowMItem = new JMenuItem("Toggle window in workspace");
+		this.toggleWindowMItem = new JMenuItem("Detach window from workspace");
 		this.windowMenu.add(this.toggleWindowMItem);
 
 		this.menu.add(this.fileMenu);
@@ -91,6 +91,11 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 
 	public void setIsAttached(final boolean isAttached) {
 		this.isAttached = isAttached;
+		if (isAttached) {
+			this.toggleWindowMItem.setText("Detach window from workspace");
+		} else {
+			this.toggleWindowMItem.setText("Attach window to workspace");
+		}
 	}
 
 	public boolean isAttached() {
@@ -117,8 +122,8 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 					        oldValue, newValue);
 				} else if (parent instanceof JInternalFrame) {
 					final JInternalFrame intFrame = (JInternalFrame) parent;
-					intFrame.firePropertyChange(OmegaGUIFrame.PROP_TOGGLEWINDOW,
-					        oldValue, newValue);
+					intFrame.firePropertyChange(
+					        OmegaGUIFrame.PROP_TOGGLEWINDOW, oldValue, newValue);
 				}
 			}
 		});

@@ -41,6 +41,7 @@ import pojos.ProjectData;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
@@ -132,8 +133,9 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 					        OmegaConstants.THUMBNAIL_SIZE);
 					this.imageInfoList.add(new OmeroThumbnailImageInfo(image,
 					        bufferedImages.get(0)));
-				} catch (final Exception e) {
+				} catch (final Exception ex) {
 					error = true;
+					OmegaLogFileManager.handleUncaughtException(ex);
 				}
 			}
 
@@ -180,10 +182,8 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 					}
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 }

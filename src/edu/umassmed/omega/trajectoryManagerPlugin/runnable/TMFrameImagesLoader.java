@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
@@ -23,7 +24,8 @@ public class TMFrameImagesLoader implements Runnable {
 	private final OmegaImage img;
 	private final List<BufferedImage> buffImages;
 
-	public TMFrameImagesLoader(final OmegaMessageDisplayerPanelInterface displayerPanel,
+	public TMFrameImagesLoader(
+	        final OmegaMessageDisplayerPanelInterface displayerPanel,
 	        final OmegaGateway gateway, final OmegaImage img) {
 		this.displayerPanel = displayerPanel;
 		this.gateway = gateway;
@@ -57,9 +59,8 @@ public class TMFrameImagesLoader implements Runnable {
 				buffer.append(maxT);
 				buffer.append(" loaded");
 				this.updateStatus(buffer.toString(), (x % 5) == 0);
-			} catch (final IOException e) {
-				// TODO manage exception
-				e.printStackTrace();
+			} catch (final IOException ex) {
+				OmegaLogFileManager.handleUncaughtException(ex);
 			}
 		}
 		final StringBuffer buffer = new StringBuffer();
@@ -77,12 +78,8 @@ public class TMFrameImagesLoader implements Runnable {
 					                repaint));
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 

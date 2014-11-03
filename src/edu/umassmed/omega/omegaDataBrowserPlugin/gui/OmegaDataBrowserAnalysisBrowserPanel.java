@@ -110,7 +110,7 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
 		scrollPane.setBorder(new TitledBorder(this.clazz.getSimpleName()
-		        + " data"));
+		        .replace("Omega", "").replace("Run", "")));
 
 		this.add(scrollPane, BorderLayout.CENTER);
 	}

@@ -58,6 +58,7 @@ import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
@@ -324,6 +325,8 @@ public class OmeroTreePanel extends GenericPanel {
 		final OmeroListPanelProjectAndDatasetLoader loader = new OmeroListPanelProjectAndDatasetLoader(
 		        this.pluginPanel, this.gateway, experimenterData);
 		final Thread t = new Thread(loader);
+		t.setName(loader.getClass().getSimpleName());
+		OmegaLogFileManager.registerAsExceptionHandlerOnThread(t);
 		t.start();
 	}
 

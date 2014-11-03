@@ -142,12 +142,8 @@ public class OmegaTrajectoriesImporterTest {
 					smssOutput.put(snr, lSMSSMap);
 				}
 			}
-		} catch (final IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final IllegalArgumentException | IOException ex) {
+			// TODO should I do something here?
 		}
 
 		int snrCounter = 0, lCounter = 0;
@@ -233,8 +229,7 @@ public class OmegaTrajectoriesImporterTest {
 							bw.close();
 							fw.close();
 						} catch (final IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							// TODO should I do something here?
 						}
 					}
 				}

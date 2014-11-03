@@ -32,9 +32,6 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -57,8 +54,8 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 
 	private static final long serialVersionUID = 4804154980131328463L;
 
-	private JMenu visualizationMenu;
-	private JMenuItem refreshMItem;
+	// private JMenu visualizationMenu;
+	// private JMenuItem refreshMItem;
 
 	private OmegaDataBrowserLoadedDataBrowserPanel loadedDataPanel;
 	private List<OmegaDataBrowserAnalysisBrowserPanel> analysisPanels;
@@ -98,12 +95,12 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 	}
 
 	private void createMenu() {
-		final JMenuBar menu = super.getMenu();
-		this.visualizationMenu = new JMenu("Visualization");
-		this.refreshMItem = new JMenuItem("Refresh data");
-		this.visualizationMenu.add(this.refreshMItem);
+		// final JMenuBar menu = super.getMenu();
+		// this.visualizationMenu = new JMenu("Visualization");
+		// this.refreshMItem = new JMenuItem("Refresh data");
+		// this.visualizationMenu.add(this.refreshMItem);
 
-		menu.add(this.visualizationMenu);
+		// menu.add(this.visualizationMenu);
 	}
 
 	public void createAndAddWidgets() {
@@ -122,7 +119,7 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 
 		this.analysisPanels = new ArrayList<OmegaDataBrowserAnalysisBrowserPanel>();
 
-		// TODO change classes based on thingy
+		// TODO change classes based on thingy ???
 		final OmegaDataBrowserAnalysisBrowserPanel spotDetectionPanel = new OmegaDataBrowserAnalysisBrowserPanel(
 		        this.getParentContainer(), this,
 		        OmegaParticleDetectionRun.class, this.selectedOmeroElement,
@@ -170,10 +167,10 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 
 		final JScrollPane trackigScrollPane = new JScrollPane(
 		        trackingBasedAnalysisPanel);
-		tabbedPane.add("Tracking based analysis", trackigScrollPane);
+		tabbedPane.add("Tracking analysis", trackigScrollPane);
 		final JScrollPane genericScrollPane = new JScrollPane(
 		        genericAnalysisPanel);
-		tabbedPane.add("Generic analysis", genericScrollPane);
+		tabbedPane.add("Other analysis", genericScrollPane);
 
 		this.splitPane = new JSplitPane();
 		this.splitPane.setDividerLocation(0.3);

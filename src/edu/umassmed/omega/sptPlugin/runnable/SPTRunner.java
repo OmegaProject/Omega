@@ -32,15 +32,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import com.galliva.gallibrary.GLogManager;
-
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
@@ -169,6 +165,7 @@ public class SPTRunner implements SPTRunnable {
 			defaultPixels.getPixelSizeY();
 			this.gateway.getTotalT(pixelsID, z, t, c);
 
+			boolean dllInit = true;
 			int minPoints = -1;
 			try {
 				// init the Runner
@@ -213,16 +210,16 @@ public class SPTRunner implements SPTRunnable {
 
 				// start the Runner
 				SPTDLLInvoker.callStartRunner();
-			} catch (final Exception e) {
-				JOptionPane.showMessageDialog(null,
-				        OmegaConstants.ERROR_INIT_SPT_RUN,
-				        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
-				GLogManager.log(String.format("%s: %s",
-				        OmegaConstants.ERROR_INIT_SPT_RUN, e.toString()),
-				        Level.SEVERE);
-				return;
+			} catch (final Exception ex) {
+				OmegaLogFileManager.handleUncaughtException(ex);
+				dllInit = false;
 			}
 
+			if (!dllInit) {
+				this.updateStatusSync(SPTRunner.RUNNER
+				        + " unable to initialize dll.", false);
+				return;
+			}
 			// TODO update panel with running image name and other available
 			// infos
 			// JPanelSPT.this.jLabelStatus.setText(String.format(
@@ -237,12 +234,16 @@ public class SPTRunner implements SPTRunnable {
 			final SPTLoader loader = new SPTLoader(this.displayerPanel, image,
 			        z, c, this.gateway);
 			final Thread loaderT = new Thread(loader);
+			loaderT.setName(loader.getClass().getSimpleName());
+			OmegaLogFileManager.registerAsExceptionHandlerOnThread(loaderT);
 			loaderT.start();
 			threads.add(loaderT);
 
 			// write the results to file
 			final SPTWriter writer = new SPTWriter(this.displayerPanel);
 			final Thread writerT = new Thread(writer);
+			writerT.setName(writer.getClass().getSimpleName());
+			OmegaLogFileManager.registerAsExceptionHandlerOnThread(writerT);
 			writerT.start();
 			threads.add(writerT);
 
@@ -290,8 +291,8 @@ public class SPTRunner implements SPTRunnable {
 			try {
 				loaderT.join();
 				writerT.join();
-			} catch (final InterruptedException e) {
-				// TODO gestire
+			} catch (final Exception ex) {
+				OmegaLogFileManager.handleUncaughtException(ex);
 			}
 
 			// when done, write SPT information on file (for each image)
@@ -334,6 +335,8 @@ public class SPTRunner implements SPTRunnable {
 	private void debugModeRun() {
 		final SPTWriter writer = new SPTWriter(this.displayerPanel);
 		final Thread writerT = new Thread(writer);
+		writerT.setName(writer.getClass().getSimpleName());
+		OmegaLogFileManager.registerAsExceptionHandlerOnThread(writerT);
 		writerT.start();
 
 		// wait until the two threads are finished before process the
@@ -349,9 +352,8 @@ public class SPTRunner implements SPTRunnable {
 		}
 		try {
 			writerT.join();
-		} catch (final InterruptedException e) {
-			// TODO gestire
-			e.printStackTrace();
+		} catch (final InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 

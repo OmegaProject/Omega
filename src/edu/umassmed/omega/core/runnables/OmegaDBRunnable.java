@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
 
 public abstract class OmegaDBRunnable implements Runnable {
@@ -29,12 +30,9 @@ public abstract class OmegaDBRunnable implements Runnable {
 					OmegaDBRunnable.this.dialog.updateMessage(s);
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
+			// TODO should I do something here?
 		}
 	}
 

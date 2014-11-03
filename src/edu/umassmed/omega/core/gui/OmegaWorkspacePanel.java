@@ -31,8 +31,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -120,9 +118,9 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		// JMenuItem("Quit"); this.fileMenu.add(this.quitMItem);
 
 		this.windowsMenu = new JMenu("Window");
-		this.attachAllWindows = new JMenuItem("Attached all windows");
+		this.attachAllWindows = new JMenuItem("Attach all windows");
 		this.windowsMenu.add(this.attachAllWindows);
-		this.detachAllWindows = new JMenuItem("Detached all windows");
+		this.detachAllWindows = new JMenuItem("Detach all workspace");
 		this.windowsMenu.add(this.detachAllWindows);
 
 		// this.menu.add(this.fileMenu);
@@ -150,29 +148,6 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 
 	private void addListeners() {
-		this.addContainerListener(new ContainerListener() {
-			@Override
-			public void componentRemoved(final ContainerEvent evt) {
-				// if (evt.getChild() instanceof JInternalFrame) {
-				// final JInternalFrame intFrame = (JInternalFrame) evt
-				// .getChild();
-				// for (final GenericPluginPanel content :
-				// OmegaWorkspacePanel.this.contents) {
-				// if (intFrame.equals(OmegaWorkspacePanel.this.internalFrames
-				// .get(content))) {
-				// OmegaWorkspacePanel.this.visibilities.put(
-				// content.getIndex(), false);
-				// }
-				// }
-				// }
-			}
-
-			@Override
-			public void componentAdded(final ContainerEvent evt) {
-
-			}
-		});
-
 		this.detachAllWindows.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {

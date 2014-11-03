@@ -40,6 +40,7 @@ import pojos.ExperimenterData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 
 public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
@@ -81,8 +82,8 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 				this.data.put(proj, datasets);
 				this.projectLoaded++;
 			}
-		} catch (final ServerError e) {
-			e.printStackTrace();
+		} catch (final ServerError ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		this.updateLoadingStatus(this.projectLoaded);
@@ -111,10 +112,8 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 					}
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 }

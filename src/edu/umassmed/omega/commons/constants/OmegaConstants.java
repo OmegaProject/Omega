@@ -39,10 +39,10 @@ public class OmegaConstants {
 	/**
 	 * Build and info
 	 */
-	public final static String OMEGA_TITLE = "OMEGA public alpha release";
-	public final static String OMEGA_BUILD = "build 20121220";
-	public final static String OMEGA_WEBSITE = "http://www.supsi.ch";
-	public final static String OMEGA_AUTHOR = "Supsi";
+	public final static String OMEGA_TITLE = "OMEGA pre beta release";
+	public final static String OMEGA_BUILD = "build 0.02";
+	public final static String OMEGA_WEBSITE = "http://omega.umassmed.edu/";
+	public final static String OMEGA_AUTHOR = "UMass Medical School";
 	public final static String OMEGA_DESCRIPTION = "<html>Open Microscopy Environment inteGrated Analysis</html>";
 
 	public final static String OMEGA_SPT_FOLDER = "sptPlugin_LibsAndDlls";

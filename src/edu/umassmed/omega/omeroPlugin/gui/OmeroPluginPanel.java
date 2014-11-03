@@ -66,12 +66,12 @@ import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
 import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaPluginLogEvent;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.OmegaData;
 import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
 import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
@@ -159,7 +159,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 
 		this.notLoggedVisualMItem = new JMenuItem(
 		        "Login to load visualization option");
-		this.loadableUserMenu = new JMenu("Data");
+		this.loadableUserMenu = new JMenu("Laboratories/Users");
 		this.loadableUserMenu.add(this.notLoggedVisualMItem);
 
 		menu.add(this.connectionMenu);
@@ -250,7 +250,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 
-		this.loadImages_butt = new JButton("Load images to browser");
+		this.loadImages_butt = new JButton("Load");
 		buttonPanel.add(this.loadImages_butt);
 
 		// this.loadAndSelectImages_butt = new
@@ -542,6 +542,8 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 			        this, this.gateway, datasetWrapper, false);
 			final Thread t = new Thread(runnable);
 			threads.put(t, runnable);
+			t.setName(runnable.getClass().getSimpleName());
+			OmegaLogFileManager.registerAsExceptionHandlerOnThread(t);
 			t.start();
 		}
 
@@ -748,8 +750,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(0, evt.getMessage());
 		} catch (final OmegaPluginStatusPanelException ex) {
-			this.getPlugin().fireEvent(
-			        new OmegaPluginLogEvent(this.getPlugin(), ex));
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 		if (evt instanceof OmeroThumbnailMessageEvent) {
 			this.setBrowsingImages(((OmeroThumbnailMessageEvent) evt)

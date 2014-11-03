@@ -263,7 +263,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 		final JScrollPane imageControlsScrollPane = new JScrollPane(
 		        this.imageControlsPanel);
 
-		this.tabPane.add("Viewing options", imageControlsScrollPane);
+		this.tabPane.add("Rendering settings", imageControlsScrollPane);
 
 		this.imageOverlayPanel = new JPanel();
 		this.imageOverlayPanel.setLayout(new GridLayout(4, 1));
@@ -291,7 +291,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		final JScrollPane imageOverlayScrollPane = new JScrollPane(
 		        this.imageOverlayPanel);
-		this.tabPane.add("Overlays", imageOverlayScrollPane);
+		this.tabPane.add("Tracks", imageOverlayScrollPane);
 
 		this.add(this.canvasSP, BorderLayout.NORTH);
 		this.add(this.tabPane, BorderLayout.SOUTH);
@@ -514,7 +514,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 			for (final OmegaTrajectoriesManagerRun trajManagerRun : modifiedTrajectories) {
 				this.overlayTM_combo.addItem(trajManagerRun.getName());
 			}
-			this.overlayTM_combo.addItem("Actual modification");
+			this.overlayTM_combo.addItem("Current trajectories");
 		}
 		this.isPopulatingOverlay = false;
 		if (this.overlayTM_combo.getItemCount() > 0) {
@@ -1049,6 +1049,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 		}
 		this.isHandlingEvent = false;
 		// TODO throw error
+		// What error? Why?
 	}
 
 	public void selectParticleLinkingRun(
@@ -1067,6 +1068,7 @@ public class OmegaElementImagePanel extends GenericPanel {
 		}
 		this.isHandlingEvent = false;
 		// TODO throw error
+		// What error? Why?
 	}
 
 	public void selectTrajectoriesManagerRun(
@@ -1094,5 +1096,6 @@ public class OmegaElementImagePanel extends GenericPanel {
 
 		this.isHandlingEvent = false;
 		// TODO throw error
+		// What error? Why?
 	}
 }

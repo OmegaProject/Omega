@@ -27,13 +27,10 @@
  *******************************************************************************/
 package edu.umassmed.omega.sptPlugin.runnable;
 
-import java.util.logging.Level;
-
 import javax.swing.JOptionPane;
 
-import com.galliva.gallibrary.GLogManager;
-
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 
 public class SPTDLLInvoker {
 	// native methods
@@ -53,79 +50,41 @@ public class SPTDLLInvoker {
 
 	private native void disposeRunner();
 
-	public static void callSetOutputPath(final String path) {
-		try {
-			new SPTDLLInvoker().setOutputPath(path);
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callSetOutputPath(final String path)
+	        throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().setOutputPath(path);
 	}
 
-	public static void callInitRunner() {
-		try {
-			new SPTDLLInvoker().initRunner();
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callInitRunner() throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().initRunner();
 	}
 
 	public static void callSetParameter(final String pNumber,
-	        final String pValue) {
-		try {
-			new SPTDLLInvoker().setParameter(pNumber, pValue);
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	        final String pValue) throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().setParameter(pNumber, pValue);
 	}
 
-	public static void callSetMinPoints(final int minPoints) {
-		try {
-			new SPTDLLInvoker().setMinPoints(minPoints);
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callSetMinPoints(final int minPoints)
+	        throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().setMinPoints(minPoints);
+
 	}
 
-	public static void callStartRunner() {
-		try {
-			new SPTDLLInvoker().startRunner();
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callStartRunner() throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().startRunner();
 	}
 
-	public static void callLoadImage(final int[] imageData) {
-		try {
-			new SPTDLLInvoker().loadImage(imageData);
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callLoadImage(final int[] imageData)
+	        throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().loadImage(imageData);
 	}
 
-	public static Object callWriteResults() {
-		Object obj = null;
-		try {
-			obj = new SPTDLLInvoker().writeResults();
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
-		return obj;
+	public static Object callWriteResults() throws UnsatisfiedLinkError {
+		return new SPTDLLInvoker().writeResults();
 	}
 
-	public static void callDisposeRunner() {
-		try {
-			new SPTDLLInvoker().disposeRunner();
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
-		}
+	public static void callDisposeRunner() throws UnsatisfiedLinkError {
+		new SPTDLLInvoker().disposeRunner();
 	}
 
 	/**
@@ -136,19 +95,13 @@ public class SPTDLLInvoker {
 			// OmegaClassLoaderUtilities
 			// .addLibraryPath(OmegaConstants.OMEGA_SPT_FOLDER);
 			System.loadLibrary(OmegaConstants.OMEGA_SPT_DLL);
-		} catch (final UnsatisfiedLinkError e) {
-			GLogManager.log(OmegaConstants.ERROR_NODLL + e.toString(),
-			        Level.SEVERE);
+		} catch (final UnsatisfiedLinkError ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 			JOptionPane.showMessageDialog(null,
-			        OmegaConstants.ERROR_NODLL + e.toString(),
+			        OmegaConstants.ERROR_NODLL + ex.toString(),
 			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		} catch (final SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final SecurityException | IllegalArgumentException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 }

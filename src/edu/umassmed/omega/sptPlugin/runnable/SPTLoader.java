@@ -29,15 +29,13 @@ package edu.umassmed.omega.sptPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import com.galliva.gallibrary.GLogManager;
-
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
@@ -84,10 +82,6 @@ public class SPTLoader implements SPTRunnable {
 		final int byteWidth = this.gateway.getByteWidth(pixelsID);
 
 		boolean error = false;
-
-		GLogManager.log(
-		        String.format("processing %d byte per pixel", byteWidth),
-		        Level.INFO);
 
 		for (int t = 0; t < framesNumber; t++) {
 			final int frameIndex = t + 1;
@@ -153,11 +147,9 @@ public class SPTLoader implements SPTRunnable {
 					break;
 				}
 				SPTDLLInvoker.callLoadImage(data);
-			} catch (final Exception e) {
+			} catch (final Exception ex) {
 				error = true;
-				GLogManager.log(String.format("%s: %s",
-				        OmegaConstants.ERROR_DURING_SPT_RUN, e.toString()),
-				        Level.SEVERE);
+				OmegaLogFileManager.handleUncaughtException(ex);
 			}
 		}
 
@@ -181,10 +173,8 @@ public class SPTLoader implements SPTRunnable {
 					                SPTLoader.this, ended));
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 

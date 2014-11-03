@@ -28,15 +28,13 @@
 package edu.umassmed.omega.sptPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import com.galliva.gallibrary.GLogManager;
-
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 
 public class SPTWriter implements SPTRunnable {
 	private static final String RUNNER = "Writer service: ";
@@ -63,25 +61,20 @@ public class SPTWriter implements SPTRunnable {
 	public void run() {
 		this.updateStatusSync(SPTWriter.RUNNER + " started.", false);
 		try {
-
 			this.trackList = SPTDLLInvoker.callWriteResults();
-
-		} catch (final Exception e) {
+		} catch (final Exception ex) {
 			JOptionPane.showMessageDialog(null,
 			        OmegaConstants.ERROR_SPT_SAVE_RESULTS,
 			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
-			GLogManager.log(
-			        String.format("%s: %s", "Error writing the results",
-			                e.toString()), Level.SEVERE);
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 
 		try {
 			SPTDLLInvoker.callDisposeRunner();
-		} catch (final Exception e) {
-			GLogManager.log(
-			        String.format("%s: %s", "Error disposing the runner",
-			                e.toString()), Level.SEVERE);
+		} catch (final Exception ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
+
 		this.updateStatusAsync(SPTWriter.RUNNER + " ended.", true);
 		this.isJobCompleted = true;
 	}
@@ -96,10 +89,8 @@ public class SPTWriter implements SPTRunnable {
 					                SPTWriter.this, ended));
 				}
 			});
-		} catch (final InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InvocationTargetException | InterruptedException ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
 		}
 	}
 

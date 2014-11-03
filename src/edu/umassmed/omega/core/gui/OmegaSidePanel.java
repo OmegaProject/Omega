@@ -45,6 +45,7 @@ import edu.umassmed.omega.commons.eventSystem.OmegaApplicationImageSelectionEven
 import edu.umassmed.omega.commons.exceptions.OmegaCoreLoadedElementNotFound;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.OmegaLoadedData;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
@@ -240,8 +241,8 @@ public class OmegaSidePanel extends GenericPanel {
 				element = OmegaSidePanel.this.loadedData.getElement(index);
 
 			} catch (final OmegaCoreLoadedElementNotFound ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				OmegaLogFileManager.handleCoreException(ex);
+				// TODO should i do something here?
 				return;
 			}
 			if (!this.isHandlingEvent) {
@@ -287,9 +288,9 @@ public class OmegaSidePanel extends GenericPanel {
 		try {
 			this.itemIndex = this.loadedData.getElementIndex(image);
 			this.manageItemChanged();
-		} catch (final OmegaCoreLoadedElementNotFound e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final OmegaCoreLoadedElementNotFound ex) {
+			OmegaLogFileManager.handleCoreException(ex);
+			// TODO should I do something here?
 		}
 	}
 

@@ -37,6 +37,7 @@ import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
 import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
@@ -688,6 +689,10 @@ public class TMAdjustTrajectoriesPanel extends GenericPanel implements
 			return;
 		this.frameLoader = new TMFrameImagesLoader(this, this.gateway, this.img);
 		this.frameLoaderThread = new Thread(this.frameLoader);
+		this.frameLoaderThread.setName(this.frameLoader.getClass()
+		        .getSimpleName());
+		OmegaLogFileManager
+		        .registerAsExceptionHandlerOnThread(this.frameLoaderThread);
 		this.frameLoaderThread.start();
 	}
 

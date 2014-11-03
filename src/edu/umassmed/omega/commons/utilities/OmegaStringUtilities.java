@@ -54,8 +54,8 @@ public class OmegaStringUtilities {
 				final String[] splitted = imagePath.split("/");
 				return splitted[splitted.length - 1];
 			}
-		} catch (final Exception e) {
-			// nothing to do here...
+		} catch (final Exception ex) {
+			// TODO launch proper exception here
 		}
 		return imagePath;
 	}
@@ -64,8 +64,9 @@ public class OmegaStringUtilities {
 		try {
 			return fileName.substring(0, fileName.lastIndexOf('.'));
 		} catch (final Exception e) {
-			return fileName;
+			// TODO launch proper exception here
 		}
+		return fileName;
 	}
 
 	/**
@@ -105,7 +106,8 @@ public class OmegaStringUtilities {
 			strLine = strLine.trim();
 			return strLine.split(separator);
 		} catch (final Exception e) {
-			return null;
+			// TODO launch proper exception here
 		}
+		return null;
 	}
 }

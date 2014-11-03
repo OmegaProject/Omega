@@ -27,6 +27,8 @@
  *******************************************************************************/
 package edu.umassmed.omega.omeroPlugin;
 
+import edu.umassmed.omega.core.OmegaLogFileManager;
+
 /**
  * Keeps the services alive.
  */
@@ -54,8 +56,9 @@ class OmeroKeepClientAlive implements Runnable {
 			synchronized (this.gateway) {
 				this.gateway.keepSessionAlive();
 			}
-		} catch (final Throwable t) {
-			// TODO Manage exception
+		} catch (final Exception ex) {
+			OmegaLogFileManager.handleUncaughtException(ex);
+			// TODO handle differently
 		}
 	}
 }
