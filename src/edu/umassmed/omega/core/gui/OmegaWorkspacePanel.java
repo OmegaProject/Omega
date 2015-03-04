@@ -48,7 +48,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericDesktopPane;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
@@ -75,7 +75,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 
 	private boolean isAttached;
 
-	private boolean hasAttachedFrame;
+	private final boolean hasAttachedFrame;
 
 	private JMenuBar menu;
 	private JMenu workspaceMenu;
@@ -151,49 +151,56 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.detachAllWindows.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				OmegaWorkspacePanel.this.hasAttachedFrame = false;
-				for (final Integer index : OmegaWorkspacePanel.this.contents
-				        .keySet()) {
-					final GenericPluginPanel content = OmegaWorkspacePanel.this.contents
-					        .get(index);
-					if (content.isAttached()) {
-						OmegaWorkspacePanel.this.detachFrame(content);
-					}
-				}
+				OmegaWorkspacePanel.this.handleDetachAllFrames();
 			}
 		});
 
 		this.attachAllWindows.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				OmegaWorkspacePanel.this.hasAttachedFrame = true;
-				for (final Integer index : OmegaWorkspacePanel.this.contents
-				        .keySet()) {
-					final GenericPluginPanel content = OmegaWorkspacePanel.this.contents
-					        .get(index);
-					if (!content.isAttached()) {
-						OmegaWorkspacePanel.this.attachFrame(content);
-					}
-				}
+				OmegaWorkspacePanel.this.handleAttachAllFrames();
 			}
 		});
 
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(
-				        OmegaGUIFrame.PROP_TOGGLEWINDOW)) {
-					final GenericPluginPanel content = OmegaWorkspacePanel.this.contents
-					        .get(Integer.valueOf(evt.getNewValue().toString()));
-					evt.getNewValue();
-					if (content.isAttached()) {
-						OmegaWorkspacePanel.this.detachFrame(content);
-					} else {
-						OmegaWorkspacePanel.this.attachFrame(content);
-					}
-				}
+				OmegaWorkspacePanel.this.handlePropertyChange(
+				        evt.getPropertyName(), evt.getOldValue(),
+				        evt.getNewValue());
 			}
 		});
+	}
+
+	private void handlePropertyChange(final String propertyName,
+	        final Object oldVal, final Object newVal) {
+		if (propertyName.equals(OmegaGUIFrame.PROP_TOGGLEWINDOW)) {
+			final GenericPluginPanel content = OmegaWorkspacePanel.this.contents
+			        .get(Integer.valueOf(newVal.toString()));
+			if (content.isAttached()) {
+				this.detachFrame(content);
+			} else {
+				this.attachFrame(content);
+			}
+		}
+	}
+
+	private void handleDetachAllFrames() {
+		for (final Integer index : this.contents.keySet()) {
+			final GenericPluginPanel content = this.contents.get(index);
+			if (content.isAttached()) {
+				this.detachFrame(content);
+			}
+		}
+	}
+
+	private void handleAttachAllFrames() {
+		for (final Integer index : this.contents.keySet()) {
+			final GenericPluginPanel content = this.contents.get(index);
+			if (!content.isAttached()) {
+				this.attachFrame(content);
+			}
+		}
 	}
 
 	public boolean isAttached() {
@@ -298,7 +305,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		GenericPluginPanel content = null;
 		try {
 			content = plugin.getNewPanel(intFrame, startingIndex);
-		} catch (final OmegaCorePluginMissingData e) {
+		} catch (final OmegaCoreExceptionPluginMissingData e) {
 			e.printStackTrace();
 			// TODO inserire warning
 			return;
@@ -371,7 +378,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		GenericPluginPanel content = null;
 		try {
 			content = plugin.getNewPanel(frame, startingIndex);
-		} catch (final OmegaCorePluginMissingData e) {
+		} catch (final OmegaCoreExceptionPluginMissingData e) {
 			// TODO inserire warning
 			e.printStackTrace();
 			return;
@@ -509,6 +516,12 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		intFrame.dispose();
 
 		content.setIsAttached(false);
+
+		if (!this.isAttached && this.internalFrames.isEmpty()) {
+			final JFrame workspaceFrame = (JFrame) this.parent;
+			workspaceFrame.setVisible(false);
+		}
+
 		this.validate();
 		this.repaint();
 	}
@@ -524,5 +537,13 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.frames.remove(index);
 		frame.dispose();
 		content.setIsAttached(true);
+
+		if (!this.isAttached && !this.internalFrames.isEmpty()) {
+			final JFrame workspaceFrame = (JFrame) this.parent;
+			workspaceFrame.setVisible(true);
+		}
+
+		this.validate();
+		this.repaint();
 	}
 }

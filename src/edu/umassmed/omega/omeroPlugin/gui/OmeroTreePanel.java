@@ -31,6 +31,8 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -52,15 +54,15 @@ import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.core.OmegaLogFileManager;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDataWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
@@ -336,10 +338,24 @@ public class OmeroTreePanel extends GenericPanel {
 		final OmeroExperimenterWrapper expWrapper = new OmeroExperimenterWrapper(
 		        expData);
 
-		expWrapper.setProjects(new ArrayList(datas.keySet()));
+		final List<ProjectData> projects = new ArrayList<>(datas.keySet());
+		Collections.sort(projects, new Comparator<ProjectData>() {
+			@Override
+			public int compare(final ProjectData o1, final ProjectData o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		expWrapper.setProjects(projects);
 
-		for (final ProjectData proj : datas.keySet()) {
-			expWrapper.setDatasets(proj, datas.get(proj));
+		for (final ProjectData proj : projects) {
+			final List<DatasetData> dataset = new ArrayList<>(datas.get(proj));
+			Collections.sort(dataset, new Comparator<DatasetData>() {
+				@Override
+				public int compare(final DatasetData o1, final DatasetData o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
+			expWrapper.setDatasets(proj, dataset);
 		}
 
 		this.expList.add(expWrapper);

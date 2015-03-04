@@ -50,19 +50,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaApplicationEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.core.OmegaApplication;
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaDBServerInformation;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.data.OmegaLoadedData;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaGUIFrame extends JFrame {
 
@@ -133,6 +136,12 @@ public class OmegaGUIFrame extends JFrame {
 		this.sidePanel.initializePanel();
 	}
 
+	public void reinitializeStrings() {
+		this.topPanel.reinitializeStrings();
+		// this.workspacePanel.reinitializeStrings();
+		// this.sidePanel.reinitializeStrings();
+	}
+
 	private void createAndAddWidgets() {
 		this.topPanel = new OmegaTopPanel(this);
 		this.getContentPane().add(this.topPanel, BorderLayout.NORTH);
@@ -187,7 +196,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(final ComponentEvent evt) {
-				OmegaGUIFrame.this.manageComponentResized();
+				OmegaGUIFrame.this.handleResize();
 			}
 		});
 		this.mainSplitPane.addPropertyChangeListener(
@@ -197,8 +206,7 @@ public class OmegaGUIFrame extends JFrame {
 			        @Override
 			        public void propertyChange(final PropertyChangeEvent evt) {
 				        final JSplitPane source = (JSplitPane) evt.getSource();
-				        OmegaGUIFrame.this.manageDividerPositionChanged(source
-				                .getSize());
+				        OmegaGUIFrame.this.handleSplitChange(source.getSize());
 			        }
 		        });
 		this.quitMItem.addActionListener(new ActionListener() {
@@ -266,11 +274,13 @@ public class OmegaGUIFrame extends JFrame {
 		        });
 	}
 
-	private void manageComponentResized() {
+	private void handleResize() {
 		this.mainSplitPane.setDividerLocation(this.dividerLocation);
 	}
 
-	private void manageDividerPositionChanged(final Dimension dimension) {
+	private void handleSplitChange(final Dimension dimension) {
+		if (!this.isAttached)
+			return;
 		boolean resize = true;
 		if (this.oldSplitPaneDimension != null) {
 			final boolean widthEqual = this.oldSplitPaneDimension.width == dimension.width;
@@ -404,7 +414,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.isAttached = false;
 		this.setSize(this.getDetachedNewDimension());
 
-		this.validate();
+		this.revalidate();
 		this.repaint();
 	}
 
@@ -429,7 +439,8 @@ public class OmegaGUIFrame extends JFrame {
 		this.isAttached = true;
 		this.setSize(this.getAttachedNewDimension());
 
-		this.validate();
+		this.mainSplitPane.setDividerLocation(this.dividerLocation);
+		this.revalidate();
 		this.repaint();
 	}
 
@@ -471,8 +482,8 @@ public class OmegaGUIFrame extends JFrame {
 		return this.omegaDbPrefFrame.getOmegaDBLoginCredentials();
 	}
 
-	public void sendApplicationEvent(final OmegaApplicationEvent event) {
-		this.omegaApp.handleOmegaApplicationEvent(event);
+	public void sendCoreEvent(final OmegaCoreEvent event) {
+		this.omegaApp.handleCoreEvent(event);
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
@@ -494,8 +505,23 @@ public class OmegaGUIFrame extends JFrame {
 		this.sidePanel.selectParticleLinkingRun(analysisRun);
 	}
 
-	public void selectTrajectoriesManagerRun(
-	        final OmegaParticleLinkingRun analysisRun) {
-		this.sidePanel.selectTrajectoriesManagerRun(analysisRun);
+	public void selectTrajectoriesRelinkingRun(
+	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+		this.sidePanel.selectTrajectoriesRelinkingRun(analysisRun);
+	}
+
+	public void selectCurrentTrajectoriesRelinkingRun(
+	        final List<OmegaTrajectory> trajectories) {
+		this.sidePanel.selectCurrentTrajectoriesRelinking(trajectories);
+	}
+
+	public void selectTrajectoriesSegmentationRun(
+	        final OmegaTrajectoriesSegmentationRun analysisRun) {
+		this.sidePanel.selectTrajectoriesSegmentationRun(analysisRun);
+	}
+
+	public void selectCurrentTrajectoriesSegmentationRun(
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+		this.sidePanel.selectCurrentTrajectoriesSegmentationRun(segmentsMap);
 	}
 }

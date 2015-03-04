@@ -27,9 +27,8 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.plugins.interfaces;
 
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 
-public interface OmegaSelectParticleDetectionRunPluginInterface extends
-        OmegaSelectImagePluginInterface {
+public interface OmegaSelectParticleDetectionRunPluginInterface {
 	public void selectParticleDetectionRun(OmegaParticleDetectionRun analysisRun);
 }

@@ -30,6 +30,7 @@ package edu.umassmed.omega.core;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -45,29 +46,31 @@ import java.util.List;
 import java.util.Map;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAlgorithmInformation;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAlgorithmSpecification;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaTrajectoriesManagerRun;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
-import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
-import edu.umassmed.omega.dataNew.coreElements.OmegaFrame;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.dataNew.coreElements.OmegaPerson;
-import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaDBServerInformation;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaParticle;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaSegmentationType;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAlgorithmInformation;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAlgorithmSpecification;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.data.coreElements.OmegaExperimenter;
+import edu.umassmed.omega.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.data.coreElements.OmegaProject;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationType;
+import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaMySqlGateway {
 
@@ -141,12 +144,16 @@ public class OmegaMySqlGateway {
 		final Statement stat = this.connection.createStatement();
 		final int error = stat.executeUpdate(query,
 		        Statement.RETURN_GENERATED_KEYS);
-		final ResultSet rs = stat.getGeneratedKeys();
-		if ((error != 1) || !rs.next())
+		final ResultSet results = stat.getGeneratedKeys();
+		if ((error != 1) || !results.next()) {
+			results.close();
 			// this.rollback();
 			throw new SQLException("Any generated keys");
+		}
 		// this.commit();
-		return rs.getInt(1);
+		final int dbID = results.getInt(1);
+		results.close();
+		return dbID;
 	}
 
 	private int getDBIdFROMOmegaElementId(final String elementType,
@@ -156,28 +163,39 @@ public class OmegaMySqlGateway {
 		query.append(elementType);
 		query.append(" WHERE Omero_Id = ");
 		query.append(omegaID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
-	private void loadParticleDetectionAnalysisRun(final OmegaImage image,
-	        final int imageID) throws SQLException, ParseException {
-		final StringBuffer query = new StringBuffer();
-		query.append("SELECT * FROM analysis_run_map WHERE OmegaElement_Seq_Id = ");
-		query.append(imageID);
-		query.append(" AND OmegaElement_Type = 'image'");
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
+	private List<OmegaAnalysisRun> loadParticleDetectionAnalysisRun(
+	        final OmegaImage image, final int imageID,
+	        final List<OmegaElement> expLoaded,
+	        final List<OmegaElement> personLoaded,
+	        final List<OmegaElement> algoInfoLoaded) throws SQLException,
+	        ParseException {
+		final List<OmegaAnalysisRun> particleDetectionRuns = new ArrayList<>();
+		final StringBuffer query1 = new StringBuffer();
+		query1.append("SELECT * FROM analysis_run_map WHERE OmegaElement_Seq_Id = ");
+		query1.append(imageID);
+		query1.append(" AND OmegaElement_Type = 'image'");
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
 		final List<Integer> analysisRunIDs = new ArrayList<Integer>();
-		while (results.next()) {
-			final int analysisRunID = results.getInt(1);
+		while (results1.next()) {
+			final int analysisRunID = results1.getInt(1);
 			analysisRunIDs.add(analysisRunID);
 		}
-
+		results1.close();
+		stat1.close();
 		final List<Integer> alreadyLoaded = new ArrayList<Integer>();
 		for (final int id : analysisRunIDs) {
 			if (image.containsAnalysisRun(id)) {
@@ -185,16 +203,13 @@ public class OmegaMySqlGateway {
 			}
 		}
 		analysisRunIDs.removeAll(alreadyLoaded);
-
-		final List<OmegaElement> expLoaded = new ArrayList<OmegaElement>();
-		final List<OmegaElement> personLoaded = new ArrayList<OmegaElement>();
-		final List<OmegaElement> algoInfoLoaded = new ArrayList<OmegaElement>();
 		for (final Integer analysisRunID : analysisRunIDs) {
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("SELECT * FROM analysis_run WHERE AnalysisRun_Seq_Id = ");
 			query2.append(analysisRunID);
-			final ResultSet results2 = this.connection.prepareStatement(
-			        query2.toString()).executeQuery();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			final ResultSet results2 = stat2.executeQuery();
 			while (results2.next()) {
 				final String name = results2.getString(2);
 				final String publicationDate = results2.getString(3);
@@ -213,40 +228,44 @@ public class OmegaMySqlGateway {
 				final OmegaAlgorithmSpecification algoSpec = this
 				        .loadAlgorithmSpecification(algoSpecID, personLoaded,
 				                algoInfoLoaded);
+				final int c = (int) algoSpec.getParameter(
+				        OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)
+				        .getValue();
+				final int z = (int) algoSpec.getParameter(
+				        OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)
+				        .getValue();
+
 				final Map<OmegaFrame, List<OmegaROI>> resultingParticles = this
 				        .loadParticles(analysisRunID, image.getDefaultPixels()
-				                .getFrames());
+				                .getFrames(c, z));
 
 				final OmegaAnalysisRun analysisRun = new OmegaParticleDetectionRun(
 				        owner, algoSpec, timeStamps, name, resultingParticles);
 				analysisRun.setElementID((long) analysisRunID);
 				// this.loadParticleLinkingAnalysisRun(analysisRun);
 				image.addAnalysisRun(analysisRun);
+				particleDetectionRuns.add(analysisRun);
 			}
+			results2.close();
+			stat2.close();
 		}
-
-		for (final OmegaAnalysisRun analysisRun : image.getAnalysisRuns()) {
-			if (analysisRun instanceof OmegaParticleDetectionRun) {
-				final List<OmegaElement> trajsLoaded = new ArrayList<OmegaElement>();
-				this.loadParticleLinkingAnalysisRun(analysisRun, expLoaded,
-				        personLoaded, algoInfoLoaded, trajsLoaded);
-			}
-		}
+		return particleDetectionRuns;
 	}
 
-	private void loadParticleLinkingAnalysisRun(
+	private List<OmegaAnalysisRun> loadParticleLinkingAnalysisRun(
 	        final OmegaAnalysisRun parentAnalysisRun,
 	        final List<OmegaElement> expLoaded,
 	        final List<OmegaElement> personLoaded,
 	        final List<OmegaElement> algoInfoLoaded,
 	        final List<OmegaElement> trajsLoaded) throws SQLException,
 	        ParseException {
+		final List<OmegaAnalysisRun> particleLinkingRuns = new ArrayList<>();
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM analysis_run WHERE ParentAnalysisRun_Seq_Id = ");
 		query.append(parentAnalysisRun.getElementID());
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
 		final OmegaParticleDetectionRun particleDetRun = (OmegaParticleDetectionRun) parentAnalysisRun;
 		final Map<OmegaFrame, List<OmegaROI>> particlesMap = particleDetRun
 		        .getResultingParticles();
@@ -281,33 +300,28 @@ public class OmegaMySqlGateway {
 			// this.loadTrajectoriesManagerAnlysisRun(analysisRun);
 			// this.loadLinkingAnalysisRun(analysisRun);
 			parentAnalysisRun.addAnalysisRun(analysisRun);
+			particleLinkingRuns.add(analysisRun);
 		}
-
-		for (final OmegaAnalysisRun analysisRun : parentAnalysisRun
-		        .getAnalysisRuns()) {
-			if (analysisRun instanceof OmegaParticleLinkingRun) {
-				final List<OmegaElement> segmTypesLoaded = new ArrayList<OmegaElement>();
-				this.loadTrajectoriesManagerAnalysisRun(analysisRun,
-				        particlesMap, expLoaded, personLoaded, algoInfoLoaded,
-				        trajsLoaded, segmTypesLoaded);
-			}
-		}
+		results.close();
+		stat.close();
+		return particleLinkingRuns;
 	}
 
-	private void loadTrajectoriesManagerAnalysisRun(
+	private List<OmegaAnalysisRun> loadTrajectoriesRelinkingAnalysisRun(
 	        final OmegaAnalysisRun parentAnalysisRun,
 	        final Map<OmegaFrame, List<OmegaROI>> particlesMap,
 	        final List<OmegaElement> expLoaded,
 	        final List<OmegaElement> personLoaded,
 	        final List<OmegaElement> algoInfoLoaded,
-	        final List<OmegaElement> trajsLoaded,
-	        final List<OmegaElement> segmTypesLoaded) throws SQLException,
+	        final List<OmegaElement> trajsLoaded) throws SQLException,
 	        ParseException {
+		final List<OmegaAnalysisRun> trajectoriesRelinkingRuns = new ArrayList<>();
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM analysis_run WHERE ParentAnalysisRun_Seq_Id = ");
 		query.append(parentAnalysisRun.getElementID());
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
 		while (results.next()) {
 			final int analysisRunID = results.getInt(1);
 			if (parentAnalysisRun.containsAnalysisRun(analysisRunID)) {
@@ -330,6 +344,65 @@ public class OmegaMySqlGateway {
 			final OmegaAlgorithmSpecification algoSpec = this
 			        .loadAlgorithmSpecification(algoSpecID, personLoaded,
 			                algoInfoLoaded);
+
+			final List<OmegaTrajectory> resultingTrajectories = this
+			        .loadTrajectories(analysisRunID, particlesMap, trajsLoaded);
+
+			final OmegaAnalysisRun analysisRun = new OmegaTrajectoriesRelinkingRun(
+			        owner, algoSpec, timeStamps, name, resultingTrajectories);
+			analysisRun.setElementID((long) analysisRunID);
+			// this.loadLinkingAnalysisRun(analysisRun);
+			parentAnalysisRun.addAnalysisRun(analysisRun);
+			trajectoriesRelinkingRuns.add(analysisRun);
+		}
+		results.close();
+		stat.close();
+		return trajectoriesRelinkingRuns;
+	}
+
+	private void loadTrajectoriesSegmentationAnlysisRun(
+	        final OmegaAnalysisRun parentAnalysisRun,
+	        final Map<OmegaFrame, List<OmegaROI>> particlesMap,
+	        final List<OmegaElement> expLoaded,
+	        final List<OmegaElement> personLoaded,
+	        final List<OmegaElement> algoInfoLoaded,
+	        final List<OmegaElement> segmTypesLoaded) throws SQLException,
+	        ParseException {
+		final StringBuffer query = new StringBuffer();
+		query.append("SELECT * FROM analysis_run WHERE ParentAnalysisRun_Seq_Id = ");
+		query.append(parentAnalysisRun.getElementID());
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		while (results.next()) {
+			final int analysisRunID = results.getInt(1);
+			if (parentAnalysisRun.containsAnalysisRun(analysisRunID)) {
+				continue;
+			}
+			final String name = results.getString(2);
+			final String publicationDate = results.getString(3);
+			final SimpleDateFormat formatter = new SimpleDateFormat(
+			        OmegaConstants.OMEGA_DATE_FORMAT);
+			final Date timeStamps = formatter.parse(publicationDate);
+			final int experimenterID = results.getInt(4);
+			final int algoSpecID = results.getInt(6);
+			OmegaExperimenter owner = (OmegaExperimenter) this.getElement(
+			        expLoaded, experimenterID);
+			if (owner == null) {
+				owner = this.loadExperimenter(experimenterID);
+				expLoaded.add(owner);
+				personLoaded.add(owner);
+			}
+			final OmegaAlgorithmSpecification algoSpec = this
+			        .loadAlgorithmSpecification(algoSpecID, personLoaded,
+			                algoInfoLoaded);
+
+			final List<OmegaTrajectory> resultingTrajectories = ((OmegaTrajectoriesRelinkingRun) parentAnalysisRun)
+			        .getResultingTrajectories();
+			final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = this
+			        .loadSegments(analysisRunID, resultingTrajectories,
+			                particlesMap);
+
 			final int segmTypesID = this.getSegmentationTypesID(analysisRunID);
 			OmegaSegmentationTypes segmTypes = null;
 			if (segmTypesID != -1) {
@@ -341,32 +414,20 @@ public class OmegaMySqlGateway {
 				}
 			}
 
-			final List<OmegaTrajectory> resultingTrajectories = this
-			        .loadTrajectories(analysisRunID, particlesMap, trajsLoaded);
-			final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = this
-			        .loadSegments(analysisRunID, resultingTrajectories,
-			                particlesMap);
-
-			final OmegaAnalysisRun analysisRun = new OmegaTrajectoriesManagerRun(
-			        owner, algoSpec, timeStamps, name, resultingTrajectories,
-			        resultingSegments, segmTypes);
+			final OmegaAnalysisRun analysisRun = new OmegaTrajectoriesSegmentationRun(
+			        owner, algoSpec, timeStamps, name, resultingSegments,
+			        segmTypes);
 			analysisRun.setElementID((long) analysisRunID);
 			// this.loadLinkingAnalysisRun(analysisRun);
 			parentAnalysisRun.addAnalysisRun(analysisRun);
 		}
-
-		// for (final OmegaAnalysisRun analysisRun : parentAnalysisRun
-		// .getAnalysisRuns()) {
-		// if (analysisRun instanceof OmegaTrajectoriesManagerRun) {
-		// this.loadTrajectoriesManagerAnlysisRun(analysisRun);
-		// }
-		// }
+		results.close();
+		stat.close();
 	}
 
 	public long saveAnalysisRun(final OmegaImage image,
 	        final OmegaAnalysisRun analysisRun) throws SQLException {
 		final OmegaImagePixels pixels = image.getDefaultPixels();
-
 		int imageID = this.getDBIdFROMOmegaElementId("image",
 		        image.getElementID());
 		if (imageID == -1) {
@@ -377,14 +438,22 @@ public class OmegaMySqlGateway {
 		if (pixelsID == -1) {
 			pixelsID = this.saveImagePixels(pixels, imageID);
 		}
-		for (final OmegaFrame frame : pixels.getFrames()) {
-			final int frameID = this.saveFrames(frame, pixelsID);
+		final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
+		final int c = (int) particleDetectionRun.getAlgorithmSpec()
+		        .getParameter(OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)
+		        .getValue();
+		final int z = (int) particleDetectionRun.getAlgorithmSpec()
+		        .getParameter(OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)
+		        .getValue();
+
+		for (final OmegaFrame frame : pixels.getFrames(c, z)) {
+			final int frameID = this.getOrSaveFrame(frame, pixelsID);
 			frame.setElementID((long) frameID);
 		}
 		long analysisID = -1;
 		if (analysisRun instanceof OmegaParticleDetectionRun) {
 			analysisID = this
-			        .saveParticleDetectionAnalysisRun((OmegaParticleDetectionRun) analysisRun);
+			        .saveParticleDetectionAnalysisRun(particleDetectionRun);
 		}
 		if (analysisID != -1) {
 			this.saveElementAnalysisLinkIfNeeded(imageID, "image", analysisID);
@@ -395,9 +464,13 @@ public class OmegaMySqlGateway {
 	public long saveAnalysisRun(final int parentAnalysisRunID,
 	        final OmegaAnalysisRun analysisRun) throws SQLException {
 		long analysisID = -1;
-		if (analysisRun instanceof OmegaTrajectoriesManagerRun) {
-			analysisID = this.saveTrajectoriesManagerAnalysisRun(
-			        (OmegaTrajectoriesManagerRun) analysisRun,
+		if (analysisRun instanceof OmegaTrajectoriesSegmentationRun) {
+			analysisID = this.saveTrajectoriesSegmentationAnalysisRun(
+			        (OmegaTrajectoriesSegmentationRun) analysisRun,
+			        parentAnalysisRunID);
+		} else if (analysisRun instanceof OmegaTrajectoriesRelinkingRun) {
+			analysisID = this.saveTrajectoriesRelinkingAnalysisRun(
+			        (OmegaTrajectoriesRelinkingRun) analysisRun,
 			        parentAnalysisRunID);
 		} else if (analysisRun instanceof OmegaParticleLinkingRun) {
 			analysisID = this.saveParticleLinkingAnalysisRun(
@@ -419,50 +492,36 @@ public class OmegaMySqlGateway {
 		}
 	}
 
-	public void updateTrajectoriesManagerRun(
-	        final OmegaTrajectoriesManagerRun tmRun) throws SQLException {
-		if (tmRun.getElementID() == -1)
-			return;
-		final OmegaSegmentationTypes segmTypes = tmRun.getSegmentationTypes();
-		if (segmTypes.isChanged() || segmTypes.isNameChanged()) {
-			this.updateTMSegmentationTypes(tmRun);
-		}
-		if (tmRun.isTrajectoriesModified()) {
-			// TODO
-			// updateTMTrajectories(tmRun.getResultingTrajectories());
-		}
-		if (tmRun.isSegmentsModified()) {
-			// TODO
-			// updateTMSegments(tmRun.getResultingSegments());
-		}
-	}
-
 	private void saveElementAnalysisLinkIfNeeded(final int elementID,
 	        final String elementType, final long analysisID)
 	        throws SQLException {
-		final StringBuffer query = new StringBuffer();
-		query.append("SELECT * FROM analysis_run_map WHERE AnalysisRun_Seq_Id =");
-		query.append(analysisID);
-		query.append(" AND  OmegaElement_Seq_Id = ");
-		query.append(elementID);
-		query.append(" AND OmegaElement_Type = '");
-		query.append(elementType);
-		query.append("'");
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-
-		if (results.next())
-			return;
-
 		final StringBuffer query1 = new StringBuffer();
-		query1.append("INSERT INTO analysis_run_map (AnalysisRun_Seq_Id, OmegaElement_Seq_Id, OmegaElement_Type) VALUES (");
+		query1.append("SELECT * FROM analysis_run_map WHERE AnalysisRun_Seq_Id =");
 		query1.append(analysisID);
-		query1.append(",");
+		query1.append(" AND  OmegaElement_Seq_Id = ");
 		query1.append(elementID);
-		query1.append(",'");
+		query1.append(" AND OmegaElement_Type = '");
 		query1.append(elementType);
-		query1.append("')");
-		this.connection.prepareStatement(query1.toString()).executeUpdate();
+		query1.append("'");
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
+			final StringBuffer query2 = new StringBuffer();
+			query2.append("INSERT INTO analysis_run_map (AnalysisRun_Seq_Id, OmegaElement_Seq_Id, OmegaElement_Type) VALUES (");
+			query2.append(analysisID);
+			query2.append(",");
+			query2.append(elementID);
+			query2.append(",'");
+			query2.append(elementType);
+			query2.append("')");
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			stat2.executeUpdate();
+			stat2.close();
+		}
+		results1.close();
+		stat1.close();
 	}
 
 	private int saveAnalysisRun(final OmegaAnalysisRun analysisRun,
@@ -513,16 +572,13 @@ public class OmegaMySqlGateway {
 		long tmpAnalysisRunID = particlesDetectionRun.getElementID();
 		if (tmpAnalysisRunID != -1)
 			return tmpAnalysisRunID;
-
 		final OmegaExperimenter experimenter = particlesDetectionRun
 		        .getExperimenter();
 		final int experimenterID = this.getOrSaveExperimenter(experimenter);
 		tmpAnalysisRunID = this.saveAnalysisRun(particlesDetectionRun,
 		        experimenterID);
 		particlesDetectionRun.setElementID(tmpAnalysisRunID);
-
 		final long analysisRunID = tmpAnalysisRunID;
-
 		final Map<OmegaFrame, List<OmegaROI>> particles = particlesDetectionRun
 		        .getResultingParticles();
 		for (final OmegaFrame frame : particles.keySet()) {
@@ -542,22 +598,35 @@ public class OmegaMySqlGateway {
 	        final int analysisRunID, final List<OmegaFrame> frames)
 	        throws SQLException {
 		final Map<OmegaFrame, List<OmegaROI>> particlesMap = new LinkedHashMap<OmegaFrame, List<OmegaROI>>();
-		final StringBuffer query = new StringBuffer();
-		query.append("SELECT * FROM particle WHERE AnalysisRun_Seq_Id = ");
-		query.append(analysisRunID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		while (results.next()) {
-			final int roiID = results.getInt(2);
-			final double intensity = results.getDouble(5);
-			final double probability = results.getDouble(6);
+		final StringBuffer query1 = new StringBuffer();
+		query1.append("SELECT * FROM particle WHERE AnalysisRun_Seq_Id = ");
+		query1.append(analysisRunID);
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		while (results1.next()) {
+			final int roiID = results1.getInt(2);
+			// final double intensity = results1.getDouble(4);
+			// final double probability = results1.getDouble(5);
+			final double totalSignal = results1.getDouble(6);
+			final int numOfSignal = results1.getInt(7);
+			final double peakSignal = results1.getDouble(8);
+			final double meanSignal = results1.getDouble(9);
+			final double snr = results1.getDouble(10);
+			final double meanBg = results1.getDouble(11);
+			final double meanNoise = results1.getDouble(12);
+			final double m0 = results1.getDouble(13);
+			final double m2 = results1.getDouble(14);
 
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("SELECT * FROM roi WHERE ROI_Seq_Id = ");
 			query2.append(roiID);
-			final ResultSet results2 = this.connection.prepareStatement(
-			        query2.toString()).executeQuery();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			final ResultSet results2 = stat2.executeQuery();
 			if (!results2.next()) {
+				results2.close();
+				stat2.close();
 				// TODO Throw error
 				continue;
 			}
@@ -566,9 +635,14 @@ public class OmegaMySqlGateway {
 			final StringBuffer query3 = new StringBuffer();
 			query3.append("SELECT * FROM frame WHERE Frame_Seq_Id = ");
 			query3.append(frameID);
-			final ResultSet results3 = this.connection.prepareStatement(
-			        query3.toString()).executeQuery();
+			final PreparedStatement stat3 = this.connection
+			        .prepareStatement(query3.toString());
+			final ResultSet results3 = stat3.executeQuery();
 			if (!results3.next()) {
+				results2.close();
+				stat2.close();
+				results3.close();
+				stat3.close();
 				// TODO Throw error
 				continue;
 			}
@@ -580,6 +654,8 @@ public class OmegaMySqlGateway {
 
 			List<OmegaROI> particles;
 			final OmegaFrame frame = frames.get(frameIndex);
+			// System.out.println("FrameIndex: " + frameIndex + " VS RealIndex"
+			// + frame.getIndex());
 			if (particlesMap.containsKey(frame)) {
 				particles = particlesMap.get(frame);
 			} else {
@@ -587,13 +663,19 @@ public class OmegaMySqlGateway {
 			}
 
 			final OmegaROI particle = new OmegaParticle(frameIndex, x, y,
-			        intensity, probability);
+			        totalSignal, numOfSignal, meanSignal, peakSignal, snr,
+			        meanBg, meanNoise, m0, m2);
 			particle.setElementID((long) roiID);
 
 			particles.add(particle);
 			particlesMap.put(frame, particles);
+			results2.close();
+			stat2.close();
+			results3.close();
+			stat3.close();
 		}
-
+		results1.close();
+		stat1.close();
 		return particlesMap;
 	}
 
@@ -608,12 +690,30 @@ public class OmegaMySqlGateway {
 		query1.append(roi.getY());
 		query1.append(")");
 		final int roiID = this.insertAndGetId(query1.toString());
-
+		final OmegaParticle particle = (OmegaParticle) roi;
 		final StringBuffer query2 = new StringBuffer();
-		query2.append("INSERT INTO particle (ROI_Seq_Id, AnalysisRun_Seq_Id) VALUES (");
+		query2.append("INSERT INTO particle (ROI_Seq_Id, AnalysisRun_Seq_Id, TotalSignal, NumberOfSignal, PeakSignal, MeanSignal, LocalSNR, LocalMeanBackground, LocalMeanNoise, M0, M2) VALUES (");
 		query2.append(roiID);
 		query2.append(",");
 		query2.append(analysisRunID);
+		query2.append(",");
+		query2.append(particle.getTotalSignal());
+		query2.append(",");
+		query2.append(particle.getNumOfSignals());
+		query2.append(",");
+		query2.append(particle.getPeakSignal());
+		query2.append(",");
+		query2.append(particle.getMeanSignal());
+		query2.append(",");
+		query2.append(particle.getSNR());
+		query2.append(",");
+		query2.append(particle.getMeanBackground());
+		query2.append(",");
+		query2.append(particle.getMeanNoise());
+		query2.append(",");
+		query2.append(particle.getM0());
+		query2.append(",");
+		query2.append(particle.getM2());
 		query2.append(")");
 		this.insertAndGetId(query2.toString());
 		return roiID;
@@ -626,46 +726,42 @@ public class OmegaMySqlGateway {
 		query1.append(trajectoryID);
 		query1.append(" AND ROI_Seq_Id = ");
 		query1.append(roiID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results.next()) {
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("INSERT INTO trajectoriesParticlesMap (Trajectory_Seq_Id, ROI_Seq_Id) VALUES (");
 			query2.append(trajectoryID);
 			query2.append(",");
 			query2.append(roiID);
 			query2.append(")");
-			this.connection.prepareStatement(query2.toString()).executeUpdate();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			stat2.executeUpdate();
+			stat2.close();
 		}
+		results1.close();
+		stat1.close();
 	}
 
-	private long saveTrajectoriesManagerAnalysisRun(
-	        final OmegaTrajectoriesManagerRun tmRun,
+	private long saveTrajectoriesRelinkingAnalysisRun(
+	        final OmegaTrajectoriesRelinkingRun trRun,
 	        final int parentAnalysisRunID) throws SQLException {
-		long tmpAnalysisRunID = tmRun.getElementID();
+		long tmpAnalysisRunID = trRun.getElementID();
 		if (tmpAnalysisRunID != -1)
 			return tmpAnalysisRunID;
-
-		final OmegaExperimenter experimenter = tmRun.getExperimenter();
+		final OmegaExperimenter experimenter = trRun.getExperimenter();
 		final int experimenterID = this.getOrSaveExperimenter(experimenter);
-		tmpAnalysisRunID = this.saveAnalysisRun(tmRun, experimenterID,
+		tmpAnalysisRunID = this.saveAnalysisRun(trRun, experimenterID,
 		        parentAnalysisRunID);
-		tmRun.setElementID(tmpAnalysisRunID);
-
+		trRun.setElementID(tmpAnalysisRunID);
 		final long analysisRunID = tmpAnalysisRunID;
-
-		final OmegaSegmentationTypes segmTypes = tmRun.getSegmentationTypes();
-		final int segmTypesID = this.getOrSaveSegmentationTypes(segmTypes);
-		this.saveAnalysisSegmentationTypesLinkIfNeeded(analysisRunID,
-		        segmTypesID);
-
 		final Long startingTime = System.currentTimeMillis();
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
-		final List<OmegaTrajectory> trajectories = tmRun
+		final List<OmegaTrajectory> trajectories = trRun
 		        .getResultingTrajectories();
-		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = tmRun
-		        .getResultingSegments();
 		for (final OmegaTrajectory trajectory : trajectories) {
 			final Thread t = new Thread(new Runnable() {
 				@Override
@@ -685,23 +781,13 @@ public class OmegaMySqlGateway {
 							        .saveTrajectoryParticleLinkIfNeeded(
 							                (int) roiID, (int) trajectoryID);
 						}
-						final List<OmegaSegment> segments = segmentsMap
-						        .get(trajectory);
-						for (final OmegaSegment segment : segments) {
-							long segmentID = segment.getElementID();
-							if (segmentID != -1) {
-								continue;
-							}
-							segmentID = OmegaMySqlGateway.this.saveSegment(
-							        analysisRunID, trajectoryID, segment);
-						}
 					} catch (final SQLException ex) {
 						OmegaLogFileManager.handleCoreException(ex);
 					}
 					trajectory.setElementID(trajectoryID);
 				}
 			});
-			t.setName("SavingTrajectoryAndSegments" + counter);
+			t.setName("SavingRelinkedTrajectory" + counter);
 			counter++;
 			threads.add(t);
 		}
@@ -719,7 +805,69 @@ public class OmegaMySqlGateway {
 		}
 		final Long totalTime = System.currentTimeMillis() - startingTime;
 		System.out.println("TotalTime: " + (totalTime / 1000));
+		return analysisRunID;
+	}
 
+	private long saveTrajectoriesSegmentationAnalysisRun(
+	        final OmegaTrajectoriesSegmentationRun tsRun,
+	        final int parentAnalysisRunID) throws SQLException {
+		long tmpAnalysisRunID = tsRun.getElementID();
+		if (tmpAnalysisRunID != -1)
+			return tmpAnalysisRunID;
+		final OmegaExperimenter experimenter = tsRun.getExperimenter();
+		final int experimenterID = this.getOrSaveExperimenter(experimenter);
+		tmpAnalysisRunID = this.saveAnalysisRun(tsRun, experimenterID,
+		        parentAnalysisRunID);
+		tsRun.setElementID(tmpAnalysisRunID);
+		final long segmTypesID = this.getOrSaveSegmentationTypes(tsRun
+		        .getSegmentationTypes());
+		final long analysisRunID = tmpAnalysisRunID;
+		this.saveAnalysisSegmentationTypesLinkIfNeeded(analysisRunID,
+		        segmTypesID);
+		final Long startingTime = System.currentTimeMillis();
+		final List<Thread> threads = new ArrayList<Thread>();
+		int counter = 0;
+		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = tsRun
+		        .getResultingSegments();
+		for (final OmegaTrajectory trajectory : segmentsMap.keySet()) {
+			final Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					final long trajectoryID = trajectory.getElementID();
+					try {
+						if (trajectoryID == -1)
+							// TODO HANDLE ERROR
+							return;
+						final List<OmegaSegment> segments = segmentsMap
+						        .get(trajectory);
+						for (final OmegaSegment segment : segments) {
+							OmegaMySqlGateway.this.saveSegment(analysisRunID,
+							        trajectoryID, segment);
+						}
+					} catch (final SQLException ex) {
+						OmegaLogFileManager.handleCoreException(ex);
+					}
+					trajectory.setElementID(trajectoryID);
+				}
+			});
+			t.setName("SavingTrajectorySegments" + counter);
+			counter++;
+			threads.add(t);
+		}
+		for (final Thread t : threads) {
+			t.start();
+		}
+		for (final Thread t : threads) {
+			if (t.isAlive()) {
+				try {
+					t.join();
+				} catch (final InterruptedException ex) {
+					OmegaLogFileManager.handleCoreException(ex);
+				}
+			}
+		}
+		final Long totalTime = System.currentTimeMillis() - startingTime;
+		System.out.println("TotalTime: " + (totalTime / 1000));
 		return analysisRunID;
 	}
 
@@ -730,17 +878,23 @@ public class OmegaMySqlGateway {
 		query1.append(analysisRunID);
 		query1.append(" AND Trajectory_Seq_Id = ");
 		query1.append(trajectoryID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results.next()) {
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("INSERT INTO analysisTrajectoriesMap (AnalysisRun_Seq_Id, Trajectory_Seq_Id) VALUES (");
 			query2.append(analysisRunID);
 			query2.append(",");
 			query2.append(trajectoryID);
 			query2.append(")");
-			this.connection.prepareStatement(query2.toString()).executeUpdate();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			stat2.executeUpdate();
+			stat2.close();
 		}
+		results1.close();
+		stat1.close();
 	}
 
 	private long saveParticleLinkingAnalysisRun(
@@ -749,16 +903,13 @@ public class OmegaMySqlGateway {
 		long tmpAnalysisRunID = particleLinkingRun.getElementID();
 		if (tmpAnalysisRunID != -1)
 			return tmpAnalysisRunID;
-
 		final OmegaExperimenter experimenter = particleLinkingRun
 		        .getExperimenter();
 		final int experimenterID = this.getOrSaveExperimenter(experimenter);
 		tmpAnalysisRunID = this.saveAnalysisRun(particleLinkingRun,
 		        experimenterID, parentAnalysisRunID);
 		particleLinkingRun.setElementID(tmpAnalysisRunID);
-
 		final long analysisRunID = tmpAnalysisRunID;
-
 		final Long startingTime = System.currentTimeMillis();
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
@@ -806,7 +957,6 @@ public class OmegaMySqlGateway {
 		}
 		final Long totalTime = System.currentTimeMillis() - startingTime;
 		System.out.println("TotalTime: " + (totalTime / 1000));
-
 		return analysisRunID;
 	}
 
@@ -817,15 +967,23 @@ public class OmegaMySqlGateway {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("SELECT * FROM analysisTrajectoriesMap WHERE AnalysisRun_Seq_Id = ");
 		query1.append(analysisRunID);
-		final ResultSet results1 = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
 		while (results1.next()) {
 			final int trajectoryID = results1.getInt(2);
+			OmegaTrajectory trajectory = (OmegaTrajectory) this.getElement(
+			        trajsLoaded, trajectoryID);
+			if (trajectory != null) {
+				trajectories.add(trajectory);
+				continue;
+			}
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("SELECT * FROM trajectory WHERE Trajectory_Seq_Id = ");
 			query2.append(trajectoryID);
-			final ResultSet results2 = this.connection.prepareStatement(
-			        query2.toString()).executeQuery();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			final ResultSet results2 = stat2.executeQuery();
 			while (results2.next()) {
 				// final int trajectoryID = results2.getInt(1);
 				final String name = results2.getString(2);
@@ -833,35 +991,41 @@ public class OmegaMySqlGateway {
 				final int color_r = results2.getInt(4);
 				final int color_g = results2.getInt(5);
 				final int color_b = results2.getInt(6);
-				OmegaTrajectory trajectory = (OmegaTrajectory) this.getElement(
-				        trajsLoaded, trajectoryID);
 				if (trajectory == null) {
 					trajectory = new OmegaTrajectory(length);
 					trajectory.setElementID((long) trajectoryID);
 					trajectory.setName(name);
 					trajectory.setColor(new Color(color_r, color_g, color_b));
+					trajsLoaded.add(trajectory);
+					trajectories.add(trajectory);
 				}
-				trajectories.add(trajectory);
 				for (final OmegaFrame frame : particlesMap.keySet()) {
 					for (final OmegaROI roi : particlesMap.get(frame)) {
 						final StringBuffer query3 = new StringBuffer();
 						query3.append("SELECT * FROM trajectoriesParticlesMap WHERE ROI_Seq_Id = ");
 						query3.append(roi.getElementID());
-						final ResultSet results3 = this.connection
-						        .prepareStatement(query3.toString())
-						        .executeQuery();
+						final PreparedStatement stat3 = this.connection
+						        .prepareStatement(query3.toString());
+						final ResultSet results3 = stat3.executeQuery();
 						if (!results3.next()) {
+							results3.close();
+							stat3.close();
 							// TODO manage error
 							continue;
 						}
 						if (results3.getInt(1) == trajectoryID) {
 							trajectory.addROI(roi);
 						}
+						results3.close();
+						stat3.close();
 					}
 				}
 			}
+			results2.close();
+			stat2.close();
 		}
-
+		results1.close();
+		stat1.close();
 		Collections.sort(trajectories);
 		return trajectories;
 	}
@@ -893,7 +1057,6 @@ public class OmegaMySqlGateway {
 			query.append(trajectory.getName());
 			query.append("'");
 		}
-
 		if (trajectory.isColorChanged()) {
 			if (trajectory.isNameChanged()) {
 				query.append(", ");
@@ -905,11 +1068,13 @@ public class OmegaMySqlGateway {
 			query.append(", Color_Blue = ");
 			query.append(trajectory.getColor().getBlue());
 		}
-
 		query.append(" WHERE Trajectory_Seq_Id = ");
 		query.append(trajectory.getElementID());
 		// final int rowCount =
-		this.connection.prepareStatement(query.toString()).executeUpdate();
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		stat.executeUpdate();
+		stat.close();
 	}
 
 	private List<OmegaROI> getROIs(
@@ -933,11 +1098,11 @@ public class OmegaMySqlGateway {
 			query.append(analysisRunID);
 			query.append(" AND Trajectory_Seq_Id = ");
 			query.append(traj.getElementID());
-			final ResultSet results = this.connection.prepareStatement(
-			        query.toString()).executeQuery();
+			final PreparedStatement stat = this.connection
+			        .prepareStatement(query.toString());
+			final ResultSet results = stat.executeQuery();
 			final List<OmegaSegment> segments = new ArrayList<OmegaSegment>();
 			while (results.next()) {
-				results.getInt(1);
 				final int segmentID = results.getInt(1);
 				final int segmType = results.getInt(4);
 				final int startingROI_ID = results.getInt(5);
@@ -949,6 +1114,10 @@ public class OmegaMySqlGateway {
 				        particlesMap, startingROIFrame);
 				final List<OmegaROI> endingParticles = this.getROIs(
 				        particlesMap, endingROIFrame);
+
+				// for (final OmegaROI roi : endingParticles) {
+				// System.out.println("FI: " + roi.getElementID());
+				// }
 
 				if ((startingParticles == null) || (endingParticles == null)) {
 					// TODO error
@@ -968,6 +1137,8 @@ public class OmegaMySqlGateway {
 				segment.setElementID((long) segmentID);
 				segments.add(segment);
 			}
+			results.close();
+			stat.close();
 			resultingSegments.put(traj, segments);
 		}
 		return resultingSegments;
@@ -1004,11 +1175,15 @@ public class OmegaMySqlGateway {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM algorithm_specification WHERE AlgorithmSpecification_Seq_Id = ");
 		query.append(algoSpecID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		if (!results.next()) {
+			results.close();
+			stat.close();
 			// TODO gestire errore
 			return null;
+		}
 		final int algoInfoID = results.getInt(2);
 		OmegaAlgorithmInformation algoInfo = (OmegaAlgorithmInformation) this
 		        .getElement(algoInfoLoaded, algoInfoID);
@@ -1021,6 +1196,8 @@ public class OmegaMySqlGateway {
 		algoSpec.setElementID((long) algoSpecID);
 		final List<OmegaParameter> params = this.loadParameters(algoSpecID);
 		algoSpec.addParameters(params);
+		results.close();
+		stat.close();
 		return algoSpec;
 	}
 
@@ -1029,18 +1206,29 @@ public class OmegaMySqlGateway {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM parameter WHERE AlgorithmSpecification_Seq_Id = ");
 		query.append(algoSpecID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		while (results.next()) {
 			final int id = results.getInt(1);
 			final String name = results.getString(3);
-			final String value = results.getString(4);
-			results.getString(5);
+			final String valueS = results.getString(4);
+			final String clazz = results.getString(5);
+			Object value;
+			if (clazz.equals(Double.class.getName())) {
+				value = Double.valueOf(valueS);
+			} else if (clazz.equals(Integer.class.getName())) {
+				value = Integer.valueOf(valueS);
+			} else {
+				value = valueS;
+			}
 			final OmegaParameter param = new OmegaParameter(name, value);
 			param.setElementID((long) id);
 			params.add(param);
 		}
+		results.close();
+		stat.close();
 		return params;
 	}
 
@@ -1050,11 +1238,15 @@ public class OmegaMySqlGateway {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM algorithm_information WHERE AlgorithmInformation_Seq_Id = ");
 		query.append(algoInfoID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		if (!results.next()) {
+			results.close();
+			stat.close();
 			// TODO gestire errore
 			return null;
+		}
 		final int personID = results.getInt(2);
 		OmegaPerson author = (OmegaPerson) this.getElement(personLoaded,
 		        personID);
@@ -1072,6 +1264,8 @@ public class OmegaMySqlGateway {
 		final OmegaAlgorithmInformation algoInfo = new OmegaAlgorithmInformation(
 		        name, version, description, author, publicationDate);
 		algoInfo.setElementID((long) algoInfoID);
+		results.close();
+		stat.close();
 		return algoInfo;
 	}
 
@@ -1080,14 +1274,17 @@ public class OmegaMySqlGateway {
 		final OmegaAlgorithmSpecification algoSpec = analysisRun
 		        .getAlgorithmSpec();
 		final OmegaAlgorithmInformation algoInfo = algoSpec.getAlgorithmInfo();
-		int infoID = this.getAlgorithmInformation(algoInfo);
+		long infoID = algoInfo.getElementID();
 		if (infoID == -1) {
-			infoID = this.saveAlgorithmInformation(algoInfo);
-			algoInfo.setElementID((long) infoID);
+			infoID = this.getAlgorithmInformation(algoInfo);
+			if (infoID == -1) {
+				infoID = this.saveAlgorithmInformation(algoInfo);
+			}
+			algoInfo.setElementID(infoID);
 		}
-		int specID = this.getAlgorithmSpecification(algoSpec);
+		int specID = -1;// this.getAlgorithmSpecification(algoSpec);
 		if (specID == -1) {
-			specID = this.saveAlgorithmSpecification(algoSpec, infoID);
+			specID = this.saveAlgorithmSpecification(algoSpec);
 			algoSpec.setElementID((long) specID);
 		}
 		return specID;
@@ -1099,23 +1296,27 @@ public class OmegaMySqlGateway {
 		query.append("SELECT * FROM algorithm_specification WHERE AlgorithmInformation_Seq_Id = ");
 		query.append(algoSpec.getAlgorithmInfo().getElementID());
 		// TODO parameter stuff
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
 	private int saveAlgorithmSpecification(
-	        final OmegaAlgorithmSpecification algoSpec, final int infoID)
-	        throws SQLException {
+	        final OmegaAlgorithmSpecification algoSpec) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO algorithm_specification (AlgorithmInformation_Seq_Id) VALUES (");
 		query.append(algoSpec.getAlgorithmInfo().getElementID());
 		query.append(")");
 		final int id = this.insertAndGetId(query.toString());
 		for (final OmegaParameter param : algoSpec.getParameters()) {
+			// TODO get or save?
 			final int paramID = this.saveParameter(id, param);
 			param.setElementID((long) paramID);
 		}
@@ -1140,9 +1341,16 @@ public class OmegaMySqlGateway {
 
 	private int getAlgorithmInformation(final OmegaAlgorithmInformation algoInfo)
 	        throws SQLException {
+		int personID = Integer.valueOf(algoInfo.getAuthor().getElementID()
+		        .toString());
+		if (personID == -1) {
+			personID = this.getPerson(algoInfo.getAuthor());
+		}
+		if (personID == -1)
+			return -1;
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM algorithm_information WHERE Person_Seq_Id = ");
-		query.append(algoInfo.getAuthor().getElementID());
+		query.append(personID);
 		query.append(" AND Name = '");
 		query.append(algoInfo.getName());
 		query.append("' AND Version = ");
@@ -1154,11 +1362,15 @@ public class OmegaMySqlGateway {
 		        OmegaConstants.OMEGA_DATE_FORMAT);
 		query.append(format.format(algoInfo.getPublicationData()));
 		query.append("'");
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
@@ -1166,7 +1378,6 @@ public class OmegaMySqlGateway {
 	        final OmegaAlgorithmInformation algoInfo) throws SQLException {
 		final OmegaPerson person = algoInfo.getAuthor();
 		final int personID = this.getOrSavePerson(person);
-
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO algorithm_information (Person_Seq_Id, Name, Version, Description, Publication_date) VALUES (");
 		query.append(personID);
@@ -1252,7 +1463,75 @@ public class OmegaMySqlGateway {
 		final int imageID = this.getDBIdFROMOmegaElementId("image",
 		        image.getElementID());
 		this.loadFrames(image);
-		this.loadParticleDetectionAnalysisRun(image, imageID);
+		final List<OmegaElement> expLoaded = new ArrayList<>();
+		final List<OmegaElement> personLoaded = new ArrayList<>();
+		final List<OmegaElement> algoInfoLoaded = new ArrayList<>();
+		final List<OmegaElement> trajsLoaded = new ArrayList<>();
+		final List<OmegaElement> segmTypesLoaded = new ArrayList<>();
+		final List<OmegaAnalysisRun> particleDetectionRuns = this
+		        .loadParticleDetectionAnalysisRun(image, imageID, expLoaded,
+		                personLoaded, algoInfoLoaded);
+		System.gc();
+		final Map<OmegaAnalysisRun, List<OmegaAnalysisRun>> particleLinkingRunsMap = new LinkedHashMap<>();
+		final Map<OmegaAnalysisRun, List<OmegaAnalysisRun>> trajectoriesRelinkingRunsMap = new LinkedHashMap<>();
+		for (final OmegaAnalysisRun particleDetectionRun : particleDetectionRuns) {
+			if (particleDetectionRun instanceof OmegaParticleDetectionRun) {
+				final List<OmegaAnalysisRun> particleLinkingRuns = this
+				        .loadParticleLinkingAnalysisRun(particleDetectionRun,
+				                expLoaded, personLoaded, algoInfoLoaded,
+				                trajsLoaded);
+				particleLinkingRunsMap.put(particleDetectionRun,
+				        particleLinkingRuns);
+			}
+		}
+		System.gc();
+		for (final OmegaAnalysisRun particleDetectionRun : particleLinkingRunsMap
+		        .keySet()) {
+			final Map<OmegaFrame, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
+			        .getResultingParticles();
+			final List<OmegaAnalysisRun> particleLinkingRuns = particleLinkingRunsMap
+			        .get(particleDetectionRun);
+			for (final OmegaAnalysisRun particleLinkingRun : particleLinkingRuns) {
+				if (particleLinkingRun instanceof OmegaParticleLinkingRun) {
+					final List<OmegaAnalysisRun> trajectoriesRelinkingRuns = this
+					        .loadTrajectoriesRelinkingAnalysisRun(
+					                particleLinkingRun, particlesMap,
+					                expLoaded, personLoaded, algoInfoLoaded,
+					                trajsLoaded);
+					trajectoriesRelinkingRunsMap.put(particleLinkingRun,
+					        trajectoriesRelinkingRuns);
+				}
+			}
+		}
+		System.gc();
+		for (final OmegaAnalysisRun particleDetectionRun : particleLinkingRunsMap
+		        .keySet()) {
+			final Map<OmegaFrame, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
+			        .getResultingParticles();
+			// System.out.println("BEGIN");
+			// for (final OmegaFrame frame : particlesMap.keySet()) {
+			// System.out.println("FI : " + frame.getIndex());
+			// for (final OmegaROI roi : particlesMap.get(frame)) {
+			// System.out.print(roi.getElementID() + " \t");
+			// }
+			// System.out.println();
+			// }
+			// System.out.println("END");
+			final List<OmegaAnalysisRun> particleLinkingRuns = particleLinkingRunsMap
+			        .get(particleDetectionRun);
+			for (final OmegaAnalysisRun particleLinkingRun : particleLinkingRuns) {
+				final List<OmegaAnalysisRun> particleRelinkingRuns = trajectoriesRelinkingRunsMap
+				        .get(particleLinkingRun);
+				for (final OmegaAnalysisRun particleRelinkingRun : particleRelinkingRuns) {
+					if (particleRelinkingRun instanceof OmegaTrajectoriesRelinkingRun) {
+						this.loadTrajectoriesSegmentationAnlysisRun(
+						        particleRelinkingRun, particlesMap, expLoaded,
+						        personLoaded, algoInfoLoaded, segmTypesLoaded);
+					}
+				}
+			}
+		}
+		System.gc();
 	}
 
 	private int saveImagePixels(final OmegaImagePixels pixels, final int imageID)
@@ -1283,53 +1562,102 @@ public class OmegaMySqlGateway {
 		return id;
 	}
 
-	private List<OmegaFrame> loadFrames(final OmegaImage image)
-	        throws SQLException {
-		final List<OmegaFrame> frameList = new ArrayList<OmegaFrame>();
+	private Map<Integer, Map<Integer, List<OmegaFrame>>> loadFrames(
+	        final OmegaImage image) throws SQLException {
+		final Map<Integer, Map<Integer, List<OmegaFrame>>> frameList = new LinkedHashMap<>();
 		final int pixelsID = this.getDBIdFROMOmegaElementId("pixels", image
 		        .getDefaultPixels().getElementID());
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM frame WHERE Pixel_Seq_Id = ");
 		query.append(pixelsID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
 		while (results.next()) {
 			final int id = results.getInt(1);
-			if (image.getDefaultPixels().containsFrame(id)) {
-				continue;
-			}
 			final int index = results.getInt(4);
 			final int channel = results.getInt(5);
 			final int zPlane = results.getInt(6);
-			final OmegaFrame f = new OmegaFrame((long) id, index, channel,
-			        zPlane);
+			if (image.getDefaultPixels().containsFrame(channel, zPlane, id)) {
+				continue;
+			}
+			final OmegaFrame f = new OmegaFrame(index, channel, zPlane);
+			f.setElementID((long) id);
 			f.setParentPixels(image.getDefaultPixels());
-			frameList.add(f);
+			Map<Integer, List<OmegaFrame>> subMap = null;
+			List<OmegaFrame> frames = null;
+			if (frameList.containsKey(channel)) {
+				subMap = frameList.get(channel);
+				if (subMap.containsKey(zPlane)) {
+					frames = subMap.get(zPlane);
+				} else {
+					frames = new ArrayList<>();
+				}
+			} else {
+				subMap = new LinkedHashMap<>();
+				frames = new ArrayList<>();
+			}
+			frames.add(f);
+			subMap.put(zPlane, frames);
+			frameList.put(channel, subMap);
+		}
+		results.close();
+		stat.close();
+		for (final Integer channel : frameList.keySet()) {
+			final Map<Integer, List<OmegaFrame>> subMap = frameList
+			        .get(channel);
+			for (final Integer zPlane : subMap.keySet()) {
+				final List<OmegaFrame> frames = subMap.get(zPlane);
+				Collections.sort(frames, new Comparator<OmegaFrame>() {
+					@Override
+					public int compare(final OmegaFrame o1, final OmegaFrame o2) {
+						if (o1.getIndex() == o2.getIndex())
+							return 0;
+						else if (o1.getIndex() < o2.getIndex())
+							return -1;
+						return 1;
+					};
+				});
+				image.getDefaultPixels().addFrames(channel, zPlane, frames);
+			}
 		}
 
-		Collections.sort(frameList, new Comparator<OmegaFrame>() {
-			@Override
-			public int compare(final OmegaFrame o1, final OmegaFrame o2) {
-				if (o1.getIndex() == o2.getIndex())
-					return 0;
-				else if (o1.getIndex() < o2.getIndex())
-					return -1;
-				return 1;
-			};
-		});
-		image.getDefaultPixels().addFrames(frameList);
 		return frameList;
-		// // FIXME Reorder, check if there is a better way
-		// for (int i = 0; i < frameList.size(); i++) {
-		// for (final OmegaFrame f : frameList) {
-		// if (f.getIndex() == i) {
-		// image.getDefaultPixels().addFrame(f);
-		// }
-		// }
-		// }
 	}
 
-	private int saveFrames(final OmegaFrame frame, final int pixelsID)
+	private int getOrSaveFrame(final OmegaFrame frame, final int pixelsID)
+	        throws SQLException {
+		int frameID = this.getFrame(frame, pixelsID);
+		if (frameID == -1) {
+			frameID = this.saveFrame(frame, pixelsID);
+		}
+		return frameID;
+	}
+
+	private int getFrame(final OmegaFrame frame, final int pixelsID)
+	        throws SQLException {
+		final StringBuffer query = new StringBuffer();
+		query.append("SELECT * FROM frame WHERE Pixel_Seq_Id = ");
+		query.append(pixelsID);
+		query.append(" AND Frame_Index = ");
+		query.append(frame.getIndex());
+		query.append(" AND Channel = ");
+		query.append(frame.getChannel());
+		query.append(" AND ZPlane = ");
+		query.append(frame.getZPlane());
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
+		return dbID;
+	}
+
+	private int saveFrame(final OmegaFrame frame, final int pixelsID)
 	        throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO frame (Pixel_Seq_Id, Frame_index, Channel, ZPlane) VALUES (");
@@ -1370,26 +1698,38 @@ public class OmegaMySqlGateway {
 
 	private OmegaExperimenter loadExperimenter(final int experimenterID)
 	        throws SQLException {
-		final StringBuffer query = new StringBuffer();
-		query.append("SELECT * FROM experimenter WHERE Experimenter_Seq_Id = ");
-		query.append(experimenterID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
+		final StringBuffer query1 = new StringBuffer();
+		query1.append("SELECT * FROM experimenter WHERE Experimenter_Seq_Id = ");
+		query1.append(experimenterID);
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
+			results1.close();
+			stat1.close();
 			// TODO throw error here
 			return null;
-		final int personID = results.getInt(2);
-		final int omeroID = results.getInt(3);
+		}
+		final int personID = results1.getInt(2);
+		final int omeroID = results1.getInt(3);
+		results1.close();
+		stat1.close();
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("SELECT * FROM person WHERE Person_Seq_Id = ");
 		query2.append(personID);
-		final ResultSet results2 = this.connection.prepareStatement(
-		        query2.toString()).executeQuery();
-		if (!results2.next())
+		final PreparedStatement stat2 = this.connection.prepareStatement(query2
+		        .toString());
+		final ResultSet results2 = stat2.executeQuery();
+		if (!results2.next()) {
+			results2.close();
+			stat2.close();
 			// TODO throw error here
 			return null;
+		}
 		final String firstName = results2.getString(1);
 		final String lastName = results2.getString(2);
+		results2.close();
+		stat2.close();
 		final OmegaExperimenter exp = new OmegaExperimenter(omeroID, firstName,
 		        lastName);
 		exp.setElementID((long) experimenterID);
@@ -1413,13 +1753,19 @@ public class OmegaMySqlGateway {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM person WHERE Person_Seq_Id = ");
 		query.append(personID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		if (!results.next()) {
+			results.close();
+			stat.close();
 			// TODO throw error here
 			return null;
+		}
 		final String firstName = results.getString(2);
 		final String lastName = results.getString(3);
+		results.close();
+		stat.close();
 		final OmegaPerson person = new OmegaPerson(firstName, lastName);
 		person.setElementID((long) personID);
 		return person;
@@ -1454,11 +1800,15 @@ public class OmegaMySqlGateway {
 		query.append("' AND Last_name = '");
 		query.append(person.getLastName());
 		query.append("'");
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
@@ -1478,28 +1828,35 @@ public class OmegaMySqlGateway {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("SELECT * FROM segmentationTypes WHERE SegmentationTypes_Seq_Id = ");
 		query1.append(segmentationTypesID);
-		final ResultSet results1 = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results1.next())
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
+			results1.close();
+			stat1.close();
 			return null;
+		}
 		final String name = results1.getString(2);
-
+		results1.close();
+		stat1.close();
 		final List<OmegaSegmentationType> types = new ArrayList<OmegaSegmentationType>();
-
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("SELECT * FROM segmentationTypesMap WHERE SegmentationTypes_Seq_Id = ");
 		query2.append(segmentationTypesID);
-		final ResultSet results2 = this.connection.prepareStatement(
-		        query2.toString()).executeQuery();
-
+		final PreparedStatement stat2 = this.connection.prepareStatement(query2
+		        .toString());
+		final ResultSet results2 = stat2.executeQuery();
 		while (!results2.next()) {
 			final int segmentationTypeID = results2.getInt(2);
 			final StringBuffer query3 = new StringBuffer();
 			query3.append("SELECT * FROM segmentationType WHERE SegmentationType_Seq_Id = ");
 			query3.append(segmentationTypeID);
-			final ResultSet results3 = this.connection.prepareStatement(
-			        query3.toString()).executeQuery();
+			final PreparedStatement stat3 = this.connection
+			        .prepareStatement(query3.toString());
+			final ResultSet results3 = stat3.executeQuery();
 			if (!results3.next()) {
+				results3.close();
+				stat3.close();
 				continue; // TODO throw error
 			}
 
@@ -1512,7 +1869,11 @@ public class OmegaMySqlGateway {
 			final OmegaSegmentationType segmType = new OmegaSegmentationType(s,
 			        val, col);
 			types.add(segmType);
+			results3.close();
+			stat3.close();
 		}
+		results2.close();
+		stat2.close();
 
 		final OmegaSegmentationTypes segmTypes = new OmegaSegmentationTypes(
 		        name, types);
@@ -1522,14 +1883,19 @@ public class OmegaMySqlGateway {
 
 	private int getSegmentationTypesID(final int analysisRunID)
 	        throws SQLException {
-		final StringBuffer query1 = new StringBuffer();
-		query1.append("SELECT * FROM analysisSegmentationTypesMap WHERE AnalysisRun_Seq_Id = ");
-		query1.append(analysisRunID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		return results.getInt(1);
+		final StringBuffer query = new StringBuffer();
+		query.append("SELECT * FROM analysisSegmentationTypesMap WHERE AnalysisRun_Seq_Id = ");
+		query.append(analysisRunID);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (!results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
+		return dbID;
 	}
 
 	private void saveAnalysisSegmentationTypesLinkIfNeeded(
@@ -1540,17 +1906,23 @@ public class OmegaMySqlGateway {
 		query1.append(analysisRunID);
 		query1.append(" AND SegmentationTypes_Seq_Id = ");
 		query1.append(segmTypesID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results.next()) {
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("INSERT INTO analysisSegmentationTypesMap (AnalysisRun_Seq_Id, SegmentationTypes_Seq_Id) VALUES (");
 			query2.append(analysisRunID);
 			query2.append(",");
 			query2.append(segmTypesID);
 			query2.append(")");
-			this.connection.prepareStatement(query2.toString()).executeUpdate();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			stat2.executeUpdate();
+			stat2.close();
 		}
+		results1.close();
+		stat1.close();
 	}
 
 	private void updateAnalysisSegmentationTypesLinkIfNeeded(
@@ -1559,15 +1931,20 @@ public class OmegaMySqlGateway {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("DELETE FROM analysisSegmentationTypesMap WHERE AnalysisRun_Seq_Id = ");
 		query1.append(analysisRunID);
-		this.connection.prepareStatement(query1.toString()).executeUpdate();
-
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		stat1.executeUpdate();
+		stat1.close();
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("INSERT INTO analysisSegmentationTypesMap (AnalysisRun_Seq_Id, SegmentationTypes_Seq_Id) VALUES (");
 		query2.append(analysisRunID);
 		query2.append(",");
 		query2.append(segmTypesID);
 		query2.append(")");
-		this.connection.prepareStatement(query2.toString()).executeUpdate();
+		final PreparedStatement stat2 = this.connection.prepareStatement(query2
+		        .toString());
+		stat2.executeUpdate();
+		stat2.close();
 	}
 
 	/**
@@ -1585,63 +1962,80 @@ public class OmegaMySqlGateway {
 		query1.append("SELECT * FROM segmentationTypes WHERE Name = '");
 		query1.append(segmTypes.getName());
 		query1.append("'");
-		final ResultSet results1 = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results1.next())
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
+			results1.close();
+			stat1.close();
 			return 0;
+		}
 		final int segmentationTypesID = results1.getInt(1);
-
+		results1.close();
+		stat1.close();
 		segmTypes.getTypes();
 
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("SELECT * FROM segmentationTypesMap WHERE SegmentationTypes_Seq_Id = ");
 		query2.append(segmentationTypesID);
-		final ResultSet results2 = this.connection.prepareStatement(
-		        query2.toString()).executeQuery();
-
+		final PreparedStatement stat2 = this.connection.prepareStatement(query2
+		        .toString());
+		final ResultSet results2 = stat2.executeQuery();
 		while (!results2.next()) {
 			final int segmentationTypeID = results2.getInt(2);
 			final OmegaSegmentationType segmType = segmTypes
 			        .getSegmentationType(segmentationTypeID);
-			if (segmType == null)
+			if (segmType == null) {
+				results2.close();
+				stat2.close();
 				return -1;
+			}
 			final String origName = segmType.getName();
 			final Integer origVal = segmType.getValue();
 			final Color origCol = segmType.getColor();
 			final StringBuffer query3 = new StringBuffer();
 			query3.append("SELECT * FROM segmentationType WHERE SegmentationType_Seq_Id = ");
 			query3.append(segmentationTypeID);
-			final ResultSet results3 = this.connection.prepareStatement(
-			        query3.toString()).executeQuery();
-			if (!results3.next())
+			final PreparedStatement stat3 = this.connection
+			        .prepareStatement(query3.toString());
+			final ResultSet results3 = stat3.executeQuery();
+			if (!results3.next()) {
+				results3.close();
+				stat3.close();
 				return 0; // TODO throw error
+			}
 			final String name = results3.getString(2);
 			final Integer val = results2.getInt(3);
 			final Integer red = results2.getInt(4);
 			final Integer blue = results2.getInt(5);
 			final Integer green = results2.getInt(6);
+			results3.close();
+			stat3.close();
 			if (!name.equals(origName) || (val != origVal)
 			        || !(origCol.getRed() != red)
 			        || (origCol.getBlue() != blue)
-			        || (origCol.getGreen() != green))
+			        || (origCol.getGreen() != green)) {
+				results2.close();
+				stat2.close();
 				return -1;
+			}
 		}
+		results2.close();
+		stat2.close();
 		return 1;
 	}
 
-	private void updateTMSegmentationTypes(
-	        final OmegaTrajectoriesManagerRun tmRun) throws SQLException {
+	private void updateTSSegmentationTypes(
+	        final OmegaTrajectoriesSegmentationRun tmRun) throws SQLException {
 		final OmegaSegmentationTypes segmTypes = tmRun.getSegmentationTypes();
 		long segmTypesID = segmTypes.getElementID();
 		if (segmTypesID == -1) {
 			segmTypesID = this.getOrSaveSegmentationTypes(segmTypes);
-
 		} else {
 			if (segmTypes.isNameChanged() || segmTypes.isChanged()) {
 				this.updateSegmentationTypes(segmTypes);
 			}
 		}
-
 		this.updateAnalysisSegmentationTypesLinkIfNeeded(tmRun.getElementID(),
 		        segmTypesID);
 	}
@@ -1649,24 +2043,25 @@ public class OmegaMySqlGateway {
 	private void updateSegmentationTypes(final OmegaSegmentationTypes segmTypes)
 	        throws SQLException {
 		final long segmTypesID = segmTypes.getElementID();
-		final StringBuffer query = new StringBuffer();
+		final StringBuffer query1 = new StringBuffer();
 		if (segmTypes.isNameChanged()) {
-			query.append("UPDATE segmentationTypes SET Name = ");
-			query.append(segmTypes.getName());
-			query.append(" WHERE  = SegmentationTypes_Seq_Id");
-			query.append(segmTypesID);
-			this.connection.prepareStatement(query.toString()).executeUpdate();
+			query1.append("UPDATE segmentationTypes SET Name = ");
+			query1.append(segmTypes.getName());
+			query1.append(" WHERE  = SegmentationTypes_Seq_Id");
+			query1.append(segmTypesID);
+			final PreparedStatement stat1 = this.connection
+			        .prepareStatement(query1.toString());
+			stat1.executeUpdate();
+			stat1.close();
 		}
-
 		if (!segmTypes.isChanged())
 			return;
-
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("SELECT * FROM segmentationTypesMap WHERE SegmentationTypes_Seq_Id = ");
 		query2.append(segmTypesID);
-		final ResultSet results2 = this.connection.prepareStatement(
-		        query2.toString()).executeQuery();
-
+		final PreparedStatement stat2 = this.connection.prepareStatement(query2
+		        .toString());
+		final ResultSet results2 = stat2.executeQuery();
 		final List<Integer> idsToRemove = new ArrayList<Integer>();
 		while (!results2.next()) {
 			final int segmentationTypeID = results2.getInt(2);
@@ -1676,13 +2071,17 @@ public class OmegaMySqlGateway {
 				idsToRemove.add(segmentationTypeID);
 			}
 		}
+		results2.close();
+		stat2.close();
 		for (final Integer segmTypeID : idsToRemove) {
 			final StringBuffer query3 = new StringBuffer();
 			query3.append("DELETE FROM segmentationTypesMap WHERE SegmentationType_Seq_Id = ");
 			query3.append(segmTypeID);
-			this.connection.prepareStatement(query3.toString()).executeQuery();
+			final PreparedStatement stat3 = this.connection
+			        .prepareStatement(query3.toString());
+			stat3.executeUpdate();
+			stat3.close();
 		}
-
 		for (final OmegaSegmentationType segmType : segmTypes.getTypes()) {
 			long segmTypeID = segmType.getElementID();
 			if (segmTypeID == -1) {
@@ -1712,11 +2111,15 @@ public class OmegaMySqlGateway {
 		query.append("SELECT * FROM segmentationTypes WHERE Name = '");
 		query.append(segmTypes.getName());
 		query.append("'");
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
@@ -1727,7 +2130,6 @@ public class OmegaMySqlGateway {
 		query.append(segmTypes.getName());
 		query.append("')");
 		final int segmTypesID = this.insertAndGetId(query.toString());
-
 		for (final OmegaSegmentationType segmType : segmTypes.getTypes()) {
 			final int segmTypeID = this
 			        .getOrSaveSingleSegmentationType(segmType);
@@ -1743,17 +2145,23 @@ public class OmegaMySqlGateway {
 		query1.append(segmTypesID);
 		query1.append(" AND SegmentationType_Seq_Id = ");
 		query1.append(segmTypeID);
-		final ResultSet results = this.connection.prepareStatement(
-		        query1.toString()).executeQuery();
-		if (!results.next()) {
+		final PreparedStatement stat1 = this.connection.prepareStatement(query1
+		        .toString());
+		final ResultSet results1 = stat1.executeQuery();
+		if (!results1.next()) {
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("INSERT INTO segmentationTypesMap (SegmentationTypes_Seq_Id, SegmentationType_Seq_Id) VALUES (");
 			query2.append(segmTypesID);
 			query2.append(",");
 			query2.append(segmTypeID);
 			query2.append(")");
-			this.connection.prepareStatement(query2.toString()).executeUpdate();
+			final PreparedStatement stat2 = this.connection
+			        .prepareStatement(query2.toString());
+			stat2.executeUpdate();
+			stat2.close();
 		}
+		results1.close();
+		stat1.close();
 	}
 
 	private int getOrSaveSingleSegmentationType(
@@ -1780,11 +2188,15 @@ public class OmegaMySqlGateway {
 		query.append(c.getBlue());
 		query.append(" AND Color_green = ");
 		query.append(c.getGreen());
-		final ResultSet results = this.connection.prepareStatement(
-		        query.toString()).executeQuery();
-		if (!results.next())
-			return -1;
-		final int dbID = results.getInt(1);
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		final ResultSet results = stat.executeQuery();
+		int dbID = -1;
+		if (results.next()) {
+			dbID = results.getInt(1);
+		}
+		results.close();
+		stat.close();
 		return dbID;
 	}
 
@@ -1831,6 +2243,9 @@ public class OmegaMySqlGateway {
 		}
 		query.append(" WHERE SegmentationType_Seq_Id = ");
 		query.append(segmType.getElementID());
-		this.connection.prepareStatement(query.toString()).executeUpdate();
+		final PreparedStatement stat = this.connection.prepareStatement(query
+		        .toString());
+		stat.executeUpdate();
+		stat.close();
 	}
 }

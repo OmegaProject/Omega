@@ -34,7 +34,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import edu.umassmed.omega.commons.exceptions.OmegaCoreFileManagerException;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionFileManager;
 
 public class OmegaFileUtilities {
 
@@ -74,20 +74,20 @@ public class OmegaFileUtilities {
 	}
 
 	public static void createDirectory(final String dirName)
-	        throws OmegaCoreFileManagerException {
+	        throws OmegaCoreExceptionFileManager {
 		final File dir = new File(dirName);
 		if (!dir.exists()) {
 			dir.mkdir();
 		} else
-			throw new OmegaCoreFileManagerException(
+			throw new OmegaCoreExceptionFileManager(
 			        "createDirectory: directory " + dirName + " already exists");
 	}
 
 	public static void emptyDirectory(final String dirName)
-	        throws OmegaCoreFileManagerException {
+	        throws OmegaCoreExceptionFileManager {
 		final File dir = new File(dirName);
 		if (!dir.exists())
-			throw new OmegaCoreFileManagerException(
+			throw new OmegaCoreExceptionFileManager(
 			        "emptyDirectory: directory " + dirName + " doesn't exist");
 		final String[] info = dir.list();
 		for (final String element : info) {
@@ -101,7 +101,7 @@ public class OmegaFileUtilities {
 	}
 
 	private static void deleteDirectory(final String dirName)
-	        throws OmegaCoreFileManagerException {
+	        throws OmegaCoreExceptionFileManager {
 		final File dir = new File(dirName);
 		final String[] children = dir.list();
 		for (final String element : children) {
@@ -109,7 +109,7 @@ public class OmegaFileUtilities {
 		}
 		final boolean deleted = dir.delete();
 		if (!deleted)
-			throw new OmegaCoreFileManagerException(
+			throw new OmegaCoreExceptionFileManager(
 			        "deleteDirectory: it was not possible to delete " + dirName);
 	}
 }

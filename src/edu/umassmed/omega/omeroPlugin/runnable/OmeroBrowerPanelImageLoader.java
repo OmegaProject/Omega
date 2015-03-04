@@ -39,7 +39,8 @@ import pojos.DatasetData;
 import pojos.ImageData;
 import pojos.ProjectData;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
@@ -144,7 +145,7 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 
 		if (error) {
 			JOptionPane.showMessageDialog(null,
-			        OmegaConstants.ERROR_LOADING_THE_DS,
+			        OmegaConstantsError.ERROR_LOADING_THE_DS,
 			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -161,7 +162,6 @@ public class OmeroBrowerPanelImageLoader implements Runnable {
 				@Override
 				public void run() {
 					if (OmeroBrowerPanelImageLoader.this.loadThumb) {
-
 						if (((OmeroBrowerPanelImageLoader.this.imagesLoaded % 10) == 0)
 						        || (OmeroBrowerPanelImageLoader.this.imagesLoaded == OmeroBrowerPanelImageLoader.this.imagesToLoad)) {
 							OmeroBrowerPanelImageLoader.this.displayerPanel

@@ -29,15 +29,18 @@ package edu.umassmed.omega.commons.gui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class GenericMessageDialog extends GenericDialog {
 
@@ -50,10 +53,24 @@ public class GenericMessageDialog extends GenericDialog {
 	        final String title, final String label, final boolean modal) {
 		super(parentContainer, title, modal);
 
-		this.lbl.setText(label);
-		final Dimension dim = new Dimension(400, 100);
+		int lines = OmegaStringUtilities.countLines(label, "<br>");
+		if (lines < 4) {
+			lines = 4;
+		}
+		final Dimension textDim = OmegaStringUtilities.getStringSize(
+		        this.lbl.getGraphics(), this.lbl.getFont(), label);
+		int width = 400;
+		final int height = (lines * textDim.height) + 50;
+		if (width < textDim.width) {
+			width = textDim.width;
+		}
+
+		final Dimension dim = new Dimension(width, height);
 		this.setSize(dim);
 		this.setPreferredSize(dim);
+
+		this.lbl.setText(label);
+
 		this.revalidate();
 		this.repaint();
 	}
@@ -64,11 +81,15 @@ public class GenericMessageDialog extends GenericDialog {
 		this.lbl.setHorizontalAlignment(SwingConstants.CENTER);
 		this.add(this.lbl, BorderLayout.CENTER);
 
-		this.close_btt = new JButton("OK");
+		final JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+		this.close_btt = new JButton("Ok");
 		this.close_btt.setEnabled(false);
-		this.close_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		this.close_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.add(this.close_btt, BorderLayout.SOUTH);
+		this.close_btt.setSize(OmegaConstants.BUTTON_SIZE);
+		bottomPanel.add(this.close_btt);
+		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
 	@Override

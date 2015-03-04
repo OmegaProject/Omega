@@ -31,13 +31,13 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.OmegaLoadedData;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
 public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
@@ -51,19 +51,19 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 
 	@Override
 	public String getName() {
-		return "Data Browser";
+		return "OMEGA data browser";
 	}
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCorePluginMissingData {
+	        final int index) throws OmegaCoreExceptionPluginMissingData {
 
 		final OmegaData omegaData = this.getMainData();
 		final OmegaLoadedData loadedData = this.getLoadedData();
 		final List<OmegaAnalysisRun> loadedAnalysisRuns = this
 		        .getLoadedAnalysisRuns();
 		if (omegaData == null)
-			throw new OmegaCorePluginMissingData(this);
+			throw new OmegaCoreExceptionPluginMissingData(this);
 
 		// TODO loadedData exception
 		// TODO loadedAnalysisRuns exception
@@ -84,5 +84,10 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 		if (this.panel != null) {
 			this.panel.updateTrees();
 		}
+	}
+
+	@Override
+	public String getDescription() {
+		return "Default OMEGA data browser";
 	}
 }

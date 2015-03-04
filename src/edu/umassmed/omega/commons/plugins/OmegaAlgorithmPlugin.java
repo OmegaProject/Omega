@@ -32,9 +32,9 @@ import java.util.Date;
 import java.util.List;
 
 import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAlgorithmInformation;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.dataNew.coreElements.OmegaPerson;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAlgorithmInformation;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.coreElements.OmegaPerson;
 
 public abstract class OmegaAlgorithmPlugin extends OmegaPlugin {
 

@@ -51,13 +51,13 @@ import javax.swing.border.TitledBorder;
 import org.jfree.ui.Align;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.constants.OmegaEventConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 
 public class OmeroConnectionDialog extends GenericDialog {
@@ -107,6 +107,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 		buttonPanel.setLayout(new FlowLayout());
 		this.connectButt = new JButton("Connect");
 		this.connectButt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
+		this.connectButt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.connectButt);
 		bottomPanel.add(buttonPanel, BorderLayout.CENTER);
 		this.connectionStatusLbl = new JLabel("Status: not connected.");
@@ -250,7 +251,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 						OmeroConnectionDialog.this.connectionStatusLbl
 						        .setText("Status: not connected.");
 						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
+						        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
 					} else {
 						OmeroConnectionDialog.this.usernameTxtFie
 						        .setEditable(false);
@@ -265,7 +266,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 						OmeroConnectionDialog.this.connectionStatusLbl
 						        .setText("Status: connected.");
 						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
+						        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
 					}
 
 					OmeroConnectionDialog.this.saveOptions(hostname, portS,
@@ -278,7 +279,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 					OmeroConnectionDialog.this.portTxtFie.setEditable(true);
 					OmeroConnectionDialog.this.connectButt.setText("Connect");
 					OmeroConnectionDialog.this.parent.firePropertyChange(
-					        OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
+					        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
 
 				}
 			}

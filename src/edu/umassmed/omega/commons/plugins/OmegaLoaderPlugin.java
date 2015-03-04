@@ -29,8 +29,8 @@ package edu.umassmed.omega.commons.plugins;
 
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaMainDataConsumerPluginInterface;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
 public abstract class OmegaLoaderPlugin extends OmegaPlugin implements
         OmegaLoaderPluginInterface, OmegaMainDataConsumerPluginInterface {

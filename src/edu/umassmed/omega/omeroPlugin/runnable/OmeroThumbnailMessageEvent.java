@@ -2,7 +2,7 @@ package edu.umassmed.omega.omeroPlugin.runnable;
 
 import java.util.List;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.omeroPlugin.data.OmeroThumbnailImageInfo;
 
 public class OmeroThumbnailMessageEvent extends OmegaMessageEvent {

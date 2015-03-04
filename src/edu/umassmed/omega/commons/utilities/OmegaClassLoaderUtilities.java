@@ -27,30 +27,35 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.utilities;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+import edu.umassmed.omega.core.OmegaLogFileManager;
 
 public class OmegaClassLoaderUtilities {
 
-	public static void addLibraryPath(final String pathToAdd)
-	        throws NoSuchFieldException, SecurityException,
-	        IllegalArgumentException, IllegalAccessException {
-		final Field usrPathsField = ClassLoader.class
-		        .getDeclaredField("usr_paths");
-		usrPathsField.setAccessible(true);
-
-		// get array of paths
-		final String[] paths = (String[]) usrPathsField.get(null);
-
-		// check if the path to add is already present
-		for (final String path : paths) {
-			if (path.equals(pathToAdd))
-				return;
-		}
-
-		// add the new path
-		final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
-		newPaths[newPaths.length - 1] = pathToAdd;
-		usrPathsField.set(null, newPaths);
+	// public static void addLibraryPath(final String pathToAdd)
+	// throws NoSuchFieldException, SecurityException,
+	// IllegalArgumentException, IllegalAccessException {
+	// final Field usrPathsField = ClassLoader.class
+	// .getDeclaredField("usr_paths");
+	// usrPathsField.setAccessible(true);
+	//
+	// // get array of paths
+	// final String[] paths = (String[]) usrPathsField.get(null);
+	//
+	// // check if the path to add is already present
+	// for (final String path : paths) {
+	// if (path.equals(pathToAdd))
+	// return;
+	// }
+	//
+	// // add the new path
+	// final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
+	// newPaths[newPaths.length - 1] = pathToAdd;
+	// usrPathsField.set(null, newPaths);
+	// }
+	public static void addLibraryPath(final String pathToAdd) {
+		final String paths = System.getProperty("java.library.path");
+		final String newPaths = pathToAdd + ";" + paths;
+		System.setProperty("java.library.path", newPaths);
+		OmegaLogFileManager.appendToMainLog(newPaths);
 	}
 }

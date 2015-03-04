@@ -38,7 +38,7 @@ import omero.ServerError;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;

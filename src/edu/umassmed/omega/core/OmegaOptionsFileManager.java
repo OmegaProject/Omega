@@ -62,6 +62,8 @@ public class OmegaOptionsFileManager {
 	private final Map<String, List<String>> optionsCat;
 	private final Map<String, String> options;
 
+	private String optionsSaved;
+
 	public OmegaOptionsFileManager() {
 		this.optionsCat = new LinkedHashMap<String, List<String>>();
 		this.options = new LinkedHashMap<String, String>();
@@ -80,7 +82,20 @@ public class OmegaOptionsFileManager {
 		this.configFile = new File(this.workingDirPath + File.separator
 		        + OmegaOptionsFileManager.CONFIG_FILENAME);
 
+		this.optionsSaved = "Unknown";
+
 		this.loadOptionsFromFile();
+		if (OmegaApplication.ISDEBUG) {
+			OmegaLogFileManager.appendToMainLog("Loading options saved: "
+			        + this.optionsSaved);
+			for (final String cat : this.optionsCat.keySet()) {
+				OmegaLogFileManager.appendToMainLog(cat);
+				for (final String optionKey : this.optionsCat.get(cat)) {
+					OmegaLogFileManager.appendToMainLog(optionKey + "\t"
+					        + this.options.get(optionKey));
+				}
+			}
+		}
 	}
 
 	protected int loadWorkingDirPathFromFile() {
@@ -101,7 +116,7 @@ public class OmegaOptionsFileManager {
 			final String date = dateString.substring(1);
 			final DateFormat format = DateFormat.getInstance();
 			final Date d = format.parse(date);
-			System.out.println(format.format(d));
+			this.optionsSaved = format.format(d);
 
 			this.workingDirPath = br.readLine();
 			br.close();
@@ -147,7 +162,7 @@ public class OmegaOptionsFileManager {
 			if ((configFileIdent == null)
 			        || !configFileIdent
 			                .equals(OmegaOptionsFileManager.CONFIG_FILE_IDENT)) {
-				// TODO ERROR
+				OmegaLogFileManager.appendToMainLog("Error loading options");
 				br.close();
 				fr.close();
 				return -1;
@@ -158,7 +173,7 @@ public class OmegaOptionsFileManager {
 			final String date = dateString.substring(1);
 			final DateFormat format = DateFormat.getInstance();
 			final Date d = format.parse(date);
-			System.out.println(format.format(d));
+			this.optionsSaved = format.format(d);
 
 			String line = br.readLine();
 			String actualCategory = "CATEGORY GENERAL";
@@ -188,16 +203,22 @@ public class OmegaOptionsFileManager {
 			br.close();
 			fr.close();
 			return 1;
-		} catch (final FileNotFoundException e) {
+		} catch (final FileNotFoundException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
 			return -1;
-		} catch (final IOException e) {
+		} catch (final IOException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
 			return -1;
-		} catch (final ParseException e) {
+		} catch (final ParseException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
 			return -1;
 		}
 	}
 
 	protected void saveOptionsToFile() {
+		if (OmegaApplication.ISDEBUG) {
+			OmegaLogFileManager.appendToMainLog("Saving options");
+		}
 		try {
 			final FileWriter fw = new FileWriter(this.configFile);
 			final BufferedWriter bw = new BufferedWriter(fw);
@@ -220,10 +241,10 @@ public class OmegaOptionsFileManager {
 
 			bw.close();
 			fw.close();
-		} catch (final FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (final IOException e) {
-			e.printStackTrace();
+		} catch (final FileNotFoundException ex) {
+			ex.printStackTrace();
+		} catch (final IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 

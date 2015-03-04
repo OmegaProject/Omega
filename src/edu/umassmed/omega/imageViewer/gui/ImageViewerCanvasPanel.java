@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsError;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 /**
@@ -459,7 +460,7 @@ public class ImageViewerCanvasPanel extends JPanel {
 			ImageIO.write(this.imageScaled, "PNG", new File(fileName));
 		} catch (final IOException e) {
 			JOptionPane.showMessageDialog(null,
-			        OmegaConstants.ERROR_SAVE_IMAGE,
+			        OmegaConstantsError.ERROR_SAVE_IMAGE,
 			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 	}

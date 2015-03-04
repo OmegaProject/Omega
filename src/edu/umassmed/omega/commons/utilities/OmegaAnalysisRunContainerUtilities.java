@@ -30,10 +30,10 @@ package edu.umassmed.omega.commons.utilities;
 import java.util.List;
 import java.util.Map;
 
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.dataNew.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaAnalysisRunContainerUtilities {
 

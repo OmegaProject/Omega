@@ -27,31 +27,47 @@
  *******************************************************************************/
 package edu.umassmed.omega.core.gui;
 
-import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 
-import javax.swing.JLabel;
+import javax.swing.JTextPane;
 import javax.swing.RootPaneContainer;
-import javax.swing.SwingConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
-import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
+import edu.umassmed.omega.commons.gui.GenericScrollPane;
+import edu.umassmed.omega.commons.gui.GenericWrapEditorKit;
 import edu.umassmed.omega.commons.utilities.OmegaAnalysisRunContainerUtilities;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.dataNew.coreElements.OmegaNamedElement;
-import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
+import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.data.coreElements.OmegaNamedElement;
+import edu.umassmed.omega.data.coreElements.OmegaProject;
 
-public class OmegaElementInformationsPanel extends GenericPanel {
+public class OmegaElementInformationsPanel extends GenericScrollPane {
 
 	private static final long serialVersionUID = -8599077833612345455L;
 
-	private JLabel info_lbl;
+	private JTextPane info_txt;
+
+	private final SimpleAttributeSet normal, bold;
 
 	public OmegaElementInformationsPanel(final RootPaneContainer parent) {
 		super(parent);
 
-		this.setLayout(new BorderLayout());
+		this.normal = new SimpleAttributeSet();
+		this.bold = new SimpleAttributeSet();
+		StyleConstants.setBold(this.bold, true);
 
 		// this.setBorder(new TitledBorder("Information"));
 
@@ -61,114 +77,191 @@ public class OmegaElementInformationsPanel extends GenericPanel {
 	}
 
 	private void createAndAddWidgets() {
-		this.info_lbl = new JLabel();
-		this.info_lbl.setVerticalAlignment(SwingConstants.CENTER);
-		this.info_lbl.setText("Nothing selected");
-		this.add(this.info_lbl, BorderLayout.CENTER);
+		this.info_txt = new JTextPane();
+		this.info_txt.setEditable(false);
+		this.info_txt.setEditorKit(new GenericWrapEditorKit());
+		this.info_txt.setBackground(this.getBackground());
+		try {
+			this.appendString("Nothing selected", this.bold);
+		} catch (final BadLocationException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
+		}
+
+		this.setViewportView(this.info_txt);
 	}
 
 	private void addListeners() {
 		// TODO should i do something here?
 	}
 
-	public void update(final OmegaElement element) {
-		if (element != null) {
-			final StringBuffer infoBuf = new StringBuffer();
-			infoBuf.append("<html><table>");
-			infoBuf.append(this.getGenericElementInformation(element)
-			        .toString());
-			infoBuf.append("<br>");
-			infoBuf.append(this.getSpecificElementInformation(element)
-			        .toString());
-			infoBuf.append("</table>");
-			this.info_lbl.setText(infoBuf.toString());
+	public void resizePanel(final int width, final int height) {
+		final int lines = OmegaStringUtilities.countLines(this.info_txt,
+		        this.info_txt.getDocument().getLength());
+		int neededHeight = lines * 17;
+		final int neededWidth = width;
+		// System.out.println(height + " VS " + neededHeight);
+		if (height > neededHeight) {
+			neededHeight = height;
 		} else {
-			this.info_lbl.setText("Nothing selected");
+			// neededWidth -= 20;
+			// neededHeight += 17;
 		}
-		this.info_lbl.revalidate();
-		this.info_lbl.repaint();
+
+		final Dimension panelDim = new Dimension(width, height);
+		this.setPreferredSize(panelDim);
+		this.setSize(panelDim);
+		final Dimension textDim = new Dimension(neededWidth, neededHeight);
+		this.info_txt.setPreferredSize(textDim);
+		this.info_txt.setSize(textDim);
 	}
 
-	private StringBuffer getGenericElementInformation(final OmegaElement element) {
-		final StringBuffer buf = new StringBuffer();
+	private void appendString(final String s, final AttributeSet style)
+	        throws BadLocationException {
+		final Document doc = this.info_txt.getDocument();
+		final int length = doc.getLength();
+		doc.insertString(length, s, style);
+	}
+
+	private void appendNewline() throws BadLocationException {
+		final Document doc = this.info_txt.getDocument();
+		final int length = doc.getLength();
+		doc.insertString(length, "\n", this.normal);
+	}
+
+	private void reset() throws BadLocationException {
+		final Document doc = this.info_txt.getDocument();
+		final int length = doc.getLength();
+		doc.remove(0, length);
+	}
+
+	public void update(final OmegaElement element) {
+		try {
+			this.reset();
+			if (element != null) {
+				this.getGenericElementInformation(element);
+				this.appendNewline();
+				this.getSpecificElementInformation(element);
+			} else {
+				this.appendString("Nothing selected", this.bold);
+			}
+		} catch (final BadLocationException ex) {
+			OmegaLogFileManager.handleCoreException(ex);
+		}
+
+		this.info_txt.revalidate();
+		this.info_txt.repaint();
+	}
+
+	private void getGenericElementInformation(final OmegaElement element)
+	        throws BadLocationException {
+		final long id = element.getElementID();
 		final String clazz = element.getClass().getSimpleName()
 		        .replace("Omega", "");
-		final long id = element.getElementID();
-		String name = null;
+		this.appendString(clazz, this.bold);
+		this.appendString(" Id: ", this.bold);
+		this.appendString(String.valueOf(id), this.normal);
+		this.appendNewline();
+		this.appendString("Name: ", this.bold);
 		if (element instanceof OmegaNamedElement) {
-			name = ((OmegaNamedElement) element).getName();
-			buf.append("<tr><td colspan = 2>Name: ");
-			buf.append(name);
-			buf.append("</td></tr>");
+			this.appendString(((OmegaNamedElement) element).getName(),
+			        this.normal);
+		} else {
+			this.appendString("Element not named", this.normal);
 		}
-		buf.append("<tr><td>Item type: ");
-		buf.append(clazz);
-		buf.append("</td><td>Id: ");
-		buf.append(id);
-		buf.append("</td></tr>");
-		return buf;
 	}
 
-	private StringBuffer getSpecificElementInformation(
-	        final OmegaElement element) {
-		if (element instanceof OmegaProject)
-			return this.addAdditionalProjectInformation((OmegaProject) element);
-		else if (element instanceof OmegaDataset)
-			return this.addAdditionalDatasetInformation((OmegaDataset) element);
-		else if (element instanceof OmegaImage)
-			return this.addAdditionalImageInformation((OmegaImage) element);
-		return new StringBuffer();
-		// TODO throw error?
+	private void getSpecificElementInformation(final OmegaElement element)
+	        throws BadLocationException {
+		if (element instanceof OmegaProject) {
+			this.addAdditionalProjectInformation((OmegaProject) element);
+		} else if (element instanceof OmegaDataset) {
+			this.addAdditionalDatasetInformation((OmegaDataset) element);
+		} else if (element instanceof OmegaImage) {
+			this.addAdditionalImageInformation((OmegaImage) element);
+			// TODO throw error?
+		}
 	}
 
-	private StringBuffer addAdditionalProjectInformation(
-	        final OmegaProject project) {
-		final StringBuffer buf = new StringBuffer();
-		buf.append("<tr><td>Dataset: ");
-		buf.append(project.getDatasets().size());
-		buf.append("</td><td>Analysis: ");
-		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(project));
-		buf.append("</td></tr>");
-		return buf;
+	private void addAdditionalProjectInformation(final OmegaProject project)
+	        throws BadLocationException {
+		this.appendString("# of datasets: ", this.bold);
+		this.appendString(String.valueOf(project.getDatasets().size()),
+		        this.normal);
+		this.appendNewline();
+		this.appendString("# of analysis: ", this.bold);
+		this.appendString(String.valueOf(OmegaAnalysisRunContainerUtilities
+		        .getAnalysisCount(project)), this.normal);
 	}
 
-	private StringBuffer addAdditionalDatasetInformation(
-	        final OmegaDataset dataset) {
-		final StringBuffer buf = new StringBuffer();
-		buf.append("<tr><td>Images: ");
-		buf.append(dataset.getImages().size());
-		buf.append("</td><td>Analysis: ");
-		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(dataset));
-		buf.append("</td></tr>");
-		return buf;
+	private void addAdditionalDatasetInformation(final OmegaDataset dataset)
+	        throws BadLocationException {
+		this.appendString("# of images: ", this.bold);
+		this.appendString(String.valueOf(dataset.getImages().size()),
+		        this.normal);
+		this.appendNewline();
+		this.appendString("# of analysis: ", this.bold);
+		this.appendString(String.valueOf(OmegaAnalysisRunContainerUtilities
+		        .getAnalysisCount(dataset)), this.normal);
 	}
 
-	private StringBuffer addAdditionalImageInformation(final OmegaImage image) {
+	private void addAdditionalImageInformation(final OmegaImage image)
+	        throws BadLocationException {
+		final SimpleDateFormat format = new SimpleDateFormat(
+		        OmegaConstants.OMEGA_DATE_FORMAT);
 		final OmegaImagePixels pixels = image.getDefaultPixels();
-		final StringBuffer buf = new StringBuffer();
-		buf.append("<tr><td>Analysis: ");
-		buf.append(OmegaAnalysisRunContainerUtilities.getAnalysisCount(image));
-		buf.append("</td></tr>");
-		buf.append("<tr><td>Width: ");
-		buf.append(pixels.getSizeX());
-		buf.append("</td><td>Height: ");
-		buf.append(pixels.getSizeY());
-		buf.append("</td></tr>");
-		buf.append("<tr><td>Planes (Z): ");
-		buf.append(pixels.getSizeZ());
-		buf.append("</td><td>Time (T): ");
-		buf.append(pixels.getSizeT());
-		buf.append("</td></tr>");
-		buf.append("<tr></tr>");
-
-		buf.append("<tr><td>Pixels size X: ");
-		buf.append(pixels.getPixelSizeX());
-		buf.append("</td><td>Pixels size Y: ");
-		buf.append(pixels.getPixelSizeY());
-		buf.append("</td></tr>");
-		buf.append("<tr><td>Pixels size Z: ");
-		buf.append(pixels.getPixelSizeZ());
-		buf.append("</td></tr>");
-		return buf;
+		this.appendString("# of analysis: ", this.bold);
+		this.appendString(String.valueOf(OmegaAnalysisRunContainerUtilities
+		        .getAnalysisCount(image)), this.normal);
+		this.appendNewline();
+		this.appendString("Acquired: ", this.bold);
+		this.appendString(format.format(image.getAcquisitionDate()),
+		        this.normal);
+		this.appendNewline();
+		this.appendString("Imported: ", this.bold);
+		this.appendString(format.format(image.getImportedDate()), this.normal);
+		this.appendNewline();
+		this.appendString("Dimensions px (xy): ", this.bold);
+		this.appendString(String.valueOf(pixels.getSizeX()), this.normal);
+		this.appendString(" x ", this.normal);
+		this.appendString(String.valueOf(pixels.getSizeY()), this.normal);
+		this.appendNewline();
+		this.appendString("Pixel type: ", this.bold);
+		this.appendString(pixels.getPixelsType(), this.normal);
+		this.appendNewline();
+		this.appendString("Image sizes ", this.bold);
+		this.appendString(OmegaConstantsMathSymbols.MU, this.bold);
+		this.appendString("m (xyz): ", this.bold);
+		final double pixelsSizeX = pixels.getPixelSizeX();
+		final BigDecimal bigX = new BigDecimal(pixelsSizeX).setScale(2,
+		        RoundingMode.HALF_UP);
+		final String pixelsSizeXs = bigX.toString();
+		this.appendString(pixelsSizeXs, this.normal);
+		this.appendString(" x ", this.normal);
+		final double pixelsSizeY = pixels.getPixelSizeY();
+		final BigDecimal bigY = new BigDecimal(pixelsSizeY).setScale(2,
+		        RoundingMode.HALF_UP);
+		final String pixelsSizeYs = bigY.toString();
+		this.appendString(pixelsSizeYs, this.normal);
+		this.appendString(" x ", this.normal);
+		final double pixelsSizeZ = pixels.getPixelSizeZ();
+		final BigDecimal bigZ = new BigDecimal(pixelsSizeZ).setScale(2,
+		        RoundingMode.HALF_UP);
+		final String pixelsSizeZs = bigZ.toString();
+		this.appendString(pixelsSizeZs, this.normal);
+		this.appendNewline();
+		this.appendString("z-sections/timepoints/channels: ", this.bold);
+		final int sizeZ = pixels.getSizeZ();
+		final String sizeZs = String.valueOf(sizeZ);
+		this.appendString(sizeZs, this.normal);
+		this.appendString(" x ", this.normal);
+		final int sizeT = pixels.getSizeT();
+		final String sizeTs = String.valueOf(sizeT);
+		this.appendString(sizeTs, this.normal);
+		this.appendString(" x ", this.normal);
+		final int sizeC = pixels.getSizeC();
+		final String sizeCs = String.valueOf(sizeC);
+		this.appendString(sizeCs, this.normal);
+		// this.appendNewline();
+		// this.appendString("Channels: ", this.bold);
 	}
 }

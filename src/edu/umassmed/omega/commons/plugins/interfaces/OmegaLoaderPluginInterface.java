@@ -1,6 +1,6 @@
 package edu.umassmed.omega.commons.plugins.interfaces;
 
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
 public interface OmegaLoaderPluginInterface {
 	public OmegaGateway getGateway();

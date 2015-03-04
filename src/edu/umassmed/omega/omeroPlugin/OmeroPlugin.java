@@ -29,11 +29,11 @@ package edu.umassmed.omega.omeroPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
-import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import edu.umassmed.omega.dataNew.OmegaData;
+import edu.umassmed.omega.data.OmegaData;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
 
 public class OmeroPlugin extends OmegaLoaderPlugin {
@@ -48,19 +48,19 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public String getName() {
-		return "Image Selection";
+		return "OMERO image browser";
 	}
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCorePluginMissingData {
+	        final int index) throws OmegaCoreExceptionPluginMissingData {
 
-		this.fireEvent(new OmegaGatewayEvent(this,
-		        OmegaGatewayEvent.STATUS_CREATED));
+		this.fireEvent(new OmegaPluginEventGateway(this,
+		        OmegaPluginEventGateway.STATUS_CREATED));
 
 		final OmegaData omegaData = this.getMainData();
 		if (omegaData == null)
-			throw new OmegaCorePluginMissingData(this);
+			throw new OmegaCoreExceptionPluginMissingData(this);
 
 		this.panel = new OmeroPluginPanel(parent, this,
 		        (OmeroGateway) this.getGateway(), omegaData, index);
@@ -71,5 +71,10 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 	@Override
 	public void run() {
 		//
+	}
+
+	@Override
+	public String getDescription() {
+		return "Default OMEGA image browser";
 	}
 }

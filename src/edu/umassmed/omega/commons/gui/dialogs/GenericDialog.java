@@ -11,6 +11,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.WindowConstants;
 
 public abstract class GenericDialog extends JDialog {
+	private static final long serialVersionUID = -3182818498954948942L;
 
 	private RootPaneContainer parentContainer;
 
@@ -37,7 +38,7 @@ public abstract class GenericDialog extends JDialog {
 
 	protected abstract void addListeners();
 
-	private void setPosition() {
+	public void setPosition() {
 		Point parentLocOnScren = null;
 		Dimension parentSize = null;
 		if (this.parentContainer instanceof JInternalFrame) {
@@ -55,7 +56,15 @@ public abstract class GenericDialog extends JDialog {
 		final int xOffset = (parentSize.width / 2) - (this.getSize().width / 2);
 		final int yOffset = (parentSize.height / 2)
 		        - (this.getSize().height / 2);
-		final Point dialogPos = new Point(x + xOffset, y + yOffset);
+		int newX = x + xOffset;
+		int newY = y + yOffset;
+		if (newX < 0) {
+			newX = 0;
+		}
+		if (newY < 0) {
+			newY = 0;
+		}
+		final Point dialogPos = new Point(newX, newY);
 		this.setLocation(dialogPos);
 	}
 

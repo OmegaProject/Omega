@@ -34,15 +34,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaPluginEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaPluginListener;
-import edu.umassmed.omega.commons.exceptions.OmegaCorePluginMissingData;
+import edu.umassmed.omega.commons.eventSystem.OmegaPluginEventListener;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 
 public abstract class OmegaPlugin {
-	private final List<OmegaPluginListener> listeners = new ArrayList<OmegaPluginListener>();
+	private final List<OmegaPluginEventListener> listeners = new ArrayList<OmegaPluginEventListener>();
 
 	private final int maximumNumberOfPanels;
 
@@ -64,7 +65,7 @@ public abstract class OmegaPlugin {
 	}
 
 	public GenericPluginPanel getNewPanel(final RootPaneContainer parent,
-	        final int startingIndex) throws OmegaCorePluginMissingData {
+	        final int startingIndex) throws OmegaCoreExceptionPluginMissingData {
 		if (this.panels.size() >= this.maximumNumberOfPanels)
 			return null;
 
@@ -88,12 +89,8 @@ public abstract class OmegaPlugin {
 	}
 
 	public void addPluginOptions(final Map<String, String> pluginOptions) {
-		for (final String option : pluginOptions.keySet()) {
-			this.pluginOptions.put(option, pluginOptions.get(option));
-		}
-		System.out.println(this.getOptionsCategory());
-		for (final String s : pluginOptions.keySet()) {
-			System.out.println(s + "\t" + pluginOptions.get(s));
+		for (final String optionKey : pluginOptions.keySet()) {
+			this.pluginOptions.put(optionKey, pluginOptions.get(optionKey));
 		}
 	}
 
@@ -104,49 +101,47 @@ public abstract class OmegaPlugin {
 	public abstract String getName();
 
 	public String getShortName() {
-		final String[] tokens = this.getName().split(" ");
-		String shortName = "<html><center>" + tokens[0] + "</center>";
-		for (int i = 1; i < tokens.length; i++) {
-			final String s = tokens[i];
-			shortName += "<br /><center>";
-			shortName += s + "</center>";
-		}
-		shortName += "</html>";
-		return shortName;
+		return this.getName();
 	}
 
 	// TODO check if needed
 	public abstract void run();
 
 	public abstract GenericPluginPanel createNewPanel(RootPaneContainer parent,
-	        int index) throws OmegaCorePluginMissingData;
+	        int index) throws OmegaCoreExceptionPluginMissingData;
 
 	public synchronized void addOmegaPluginListener(
-	        final OmegaPluginListener listener) {
+	        final OmegaPluginEventListener listener) {
 		this.listeners.add(listener);
 	}
 
 	public synchronized void removeOmegaPluginEventListener(
-	        final OmegaPluginListener listener) {
+	        final OmegaPluginEventListener listener) {
 		this.listeners.remove(listener);
 	}
 
 	public synchronized void fireEvent() {
 		final OmegaPluginEvent event = new OmegaPluginEvent(null);
-		final Iterator<OmegaPluginListener> i = this.listeners.iterator();
+		final Iterator<OmegaPluginEventListener> i = this.listeners.iterator();
 		while (i.hasNext()) {
-			i.next().handleOmegaPluginEvent(event);
+			i.next().handlePluginEvent(event);
 		}
 	}
 
 	public synchronized void fireEvent(final OmegaPluginEvent event) {
-		final Iterator<OmegaPluginListener> i = this.listeners.iterator();
+		final Iterator<OmegaPluginEventListener> i = this.listeners.iterator();
 		while (i.hasNext()) {
-			i.next().handleOmegaPluginEvent(event);
+			i.next().handlePluginEvent(event);
 		}
 	}
 
 	protected List<GenericPluginPanel> getPanels() {
 		return this.panels;
+	}
+
+	public abstract String getDescription();
+
+	public Icon getIcon() {
+		return null;
 	}
 }

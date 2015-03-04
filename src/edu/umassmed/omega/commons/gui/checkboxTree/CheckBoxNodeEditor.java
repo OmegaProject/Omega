@@ -133,8 +133,8 @@ public class CheckBoxNodeEditor extends TriStateCheckBox implements
 				if ((this.str == null)
 				        && System.getProperty("java.version").startsWith(
 				                "1.7.0")) {
-					System.out.println("XXX: Java 7, only on first run\n"
-					        + this.getBounds());
+					// System.out.println("XXX: Java 7, only on first run\n"
+					// + this.getBounds());
 					this.setBounds(new Rectangle(0, 0, d.width, r.height));
 				}
 				// System.out.println(getBounds());

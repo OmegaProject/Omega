@@ -58,8 +58,8 @@ public class CheckBoxNodeRenderer extends TriStateCheckBox implements
 		final String uiName = this.getUI().getClass().getName();
 		if (uiName.contains("Synth")
 		        && System.getProperty("java.version").startsWith("1.7.0")) {
-			System.out
-			        .println("XXX: FocusBorder bug?, JDK 1.7.0, Nimbus start LnF");
+			// System.out
+			// .println("XXX: FocusBorder bug?, JDK 1.7.0, Nimbus start LnF");
 			this.renderer.setBackgroundSelectionColor(new Color(0, 0, 0, 0));
 		}
 		this.panel.setFocusable(false);

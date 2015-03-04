@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
-import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 
 public class GenericStatusPanel extends JPanel {
 
@@ -47,9 +47,9 @@ public class GenericStatusPanel extends JPanel {
 	}
 
 	public void updateStatus(final int status, final String s)
-	        throws OmegaPluginStatusPanelException {
+	        throws OmegaPluginExceptionStatusPanel {
 		if (status >= this.numStatus)
-			throw new OmegaPluginStatusPanelException("The status " + status
+			throw new OmegaPluginExceptionStatusPanel("The status " + status
 			        + " is not present, the maximum status index is "
 			        + this.numStatus);
 		this.statusList.get(status).setText(s);

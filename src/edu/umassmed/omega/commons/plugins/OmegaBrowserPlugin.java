@@ -32,9 +32,9 @@ import java.util.List;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedDataConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaMainDataConsumerPluginInterface;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.OmegaLoadedData;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 
 public abstract class OmegaBrowserPlugin extends OmegaPlugin implements
         OmegaMainDataConsumerPluginInterface,

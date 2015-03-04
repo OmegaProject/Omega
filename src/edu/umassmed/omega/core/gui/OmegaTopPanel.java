@@ -36,61 +36,131 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaTrackingMeasuresPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class OmegaTopPanel extends GenericPanel {
 	private static final long serialVersionUID = -2511349408103225400L;
 
-	private final Map<Long, JButton> buttons;
+	private static Dimension button_dim = new Dimension(120, 60);
+
+	// private final Map<Long, JButton> buttons;
+	private final Map<String, Map<Long, OmegaPlugin>> pluginsCategories;
+	private final Map<String, JButton> buttons;
+	private final Map<String, OmegaPluginLauncherDialog> pluginsLauncher;
 
 	public OmegaTopPanel(final JFrame parent) {
 		super(parent);
 
-		this.buttons = new LinkedHashMap<Long, JButton>();
+		// this.buttons = new LinkedHashMap<Long, JButton>();
+		this.pluginsLauncher = new LinkedHashMap<>();
+		this.pluginsCategories = new LinkedHashMap<>();
+		this.buttons = new LinkedHashMap<>();
+	}
+
+	private void addPluginToCategoryMap(final String s, final long id,
+	        final OmegaPlugin plugin) {
+		Map<Long, OmegaPlugin> pluginsMap = null;
+		if (this.pluginsCategories.keySet().contains(s)) {
+			pluginsMap = this.pluginsCategories.get(s);
+		} else {
+			pluginsMap = new LinkedHashMap<>();
+		}
+		pluginsMap.put(id, plugin);
+		this.pluginsCategories.put(s, pluginsMap);
 	}
 
 	protected void initializePanel(final Map<Long, OmegaPlugin> registeredPlugin) {
-		this.createAndAddWidgets(registeredPlugin);
+		for (final Long id : registeredPlugin.keySet()) {
+			final OmegaPlugin plugin = registeredPlugin.get(id);
+			if (plugin instanceof OmegaTrackingMeasuresPlugin) {
+				this.addPluginToCategoryMap("Tracking Measures", id, plugin);
+			} else if ((plugin instanceof OmegaTrajectoriesRelinkingPlugin)
+			        || (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
+				this.addPluginToCategoryMap("Trajectories Manager", id, plugin);
+			} else if (plugin instanceof OmegaParticleTrackingPlugin) {
+				this.addPluginToCategoryMap("Single Particle Tracking", id,
+				        plugin);
+			} else if (plugin instanceof OmegaBrowserPlugin) {
+				this.addPluginToCategoryMap("Data Browser", id, plugin);
+			} else if (plugin instanceof OmegaLoaderPlugin) {
+				this.addPluginToCategoryMap("Image Selection", id, plugin);
+			}
+
+		}
+		this.createAndAddWidgets();
 
 		this.addListeners();
 	}
 
-	private void createAndAddWidgets(
-	        final Map<Long, OmegaPlugin> registeredPlugin) {
-		this.setLayout(new FlowLayout());
-
-		for (final Long id : registeredPlugin.keySet()) {
-			final OmegaPlugin plugin = registeredPlugin.get(id);
-
-			final JButton butt = new JButton(plugin.getShortName());
-
-			butt.setPreferredSize(new Dimension(120, 120));
-			this.buttons.put(id, butt);
-			this.add(butt);
+	public void reinitializeStrings() {
+		for (final String s : this.buttons.keySet()) {
+			final JButton butt = this.buttons.get(s);
+			final String name = OmegaStringUtilities.getHtmlString(s, " ");
+			butt.setText(name);
+		}
+		for (final OmegaPluginLauncherDialog pluginLauncher : this.pluginsLauncher
+		        .values()) {
+			pluginLauncher.reinitializeStrings();
 		}
 	}
 
+	private void createAndAddWidgets() {
+		this.setLayout(new FlowLayout());
+		for (final String s : this.pluginsCategories.keySet()) {
+			final JButton butt = new JButton(s);
+			butt.setPreferredSize(OmegaTopPanel.button_dim);
+			this.buttons.put(s, butt);
+			this.add(butt);
+
+			this.pluginsLauncher.put(s,
+			        new OmegaPluginLauncherDialog(this.getParentContainer(),
+			                this.pluginsCategories.get(s)));
+		}
+
+		// for (final Long id : registeredPlugin.keySet()) {
+		// final OmegaPlugin plugin = registeredPlugin.get(id);
+		//
+		// final JButton butt = new JButton(plugin.getShortName());
+		//
+		// butt.setPreferredSize(new Dimension(120, 120));
+		// this.buttons.put(id, butt);
+		// this.add(butt);
+		// }
+	}
+
 	private void addListeners() {
-		for (final Long id : this.buttons.keySet()) {
-			final JButton butt = this.buttons.get(id);
+		for (final String s : this.buttons.keySet()) {
+			final JButton butt = this.buttons.get(s);
 			butt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent evt) {
-					if (OmegaTopPanel.this.getParentContainer() instanceof JFrame) {
-						final JFrame frame = (JFrame) OmegaTopPanel.this
-						        .getParentContainer();
-						frame.firePropertyChange(OmegaGUIFrame.PROP_PLUGIN, -1, id);
-					} else {
-						final JInternalFrame intFrame = (JInternalFrame) OmegaTopPanel.this
-						        .getParentContainer();
-						intFrame.firePropertyChange(OmegaGUIFrame.PROP_PLUGIN, -1,
-						        id);
-					}
+					OmegaTopPanel.this.showFrame(s);
 				}
 			});
+		}
+	}
+
+	private void showFrame(final String s) {
+		final OmegaPluginLauncherDialog dialog = this.pluginsLauncher.get(s);
+		dialog.setVisible(true);
+	}
+
+	@Override
+	public void updateParentContainer(final RootPaneContainer parent) {
+		super.updateParentContainer(parent);
+		for (final OmegaPluginLauncherDialog panel : this.pluginsLauncher
+		        .values()) {
+			panel.updateParentContainer(parent);
 		}
 	}
 }

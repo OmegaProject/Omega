@@ -35,22 +35,22 @@ import java.security.GeneralSecurityException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaDBServerInformation;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
 
-public class OmegaDBPreferencesFrame extends JDialog {
+public class OmegaDBPreferencesFrame extends GenericDialog {
 
 	public static String CATEGORY = "CATEGORY GENERAL OMEGA_DB_PREFERENCES";
 	public static String OPTION_SERVER_ADRESS = "Omega server adress";
@@ -70,34 +70,20 @@ public class OmegaDBPreferencesFrame extends JDialog {
 
 	private JCheckBox saveServerInfo, saveLoginInfo;
 
-	private JLabel connectionStatusLbl;
-
-	private JButton connectButt;
-
-	// private final OmegaMySqlGateway gateway;
-
-	// public OmegaDBPreferencesFrame(final OmegaGUIFrame parent,
-	// final OmegaMySqlGateway gateway) {
 	public OmegaDBPreferencesFrame(final OmegaGUIFrame parent) {
+		super(parent, "Omega DB Preferences", false);
 		this.parent = parent;
 		// this.gateway = gateway;
 
 		this.options = parent
 		        .getGeneralOptions(OmegaDBPreferencesFrame.CATEGORY);
-		System.out.println(OmegaDBPreferencesFrame.CATEGORY);
-		for (final String s : this.options.keySet()) {
-			System.out.println(s + "\t" + this.options.get(s));
-		}
+		this.populateFields();
 
-		this.createAndAddWidgets();
-
-		this.addListeners();
-		this.setAlwaysOnTop(true);
-		this.setResizable(false);
-		this.pack();
+		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 	}
 
-	private void createAndAddWidgets() {
+	@Override
+	protected void createAndAddWidgets() {
 		this.setLayout(new BorderLayout());
 
 		final JPanel mainPanel = new JPanel();
@@ -110,24 +96,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		mainPanel.add(loginPanel);
 
 		this.add(mainPanel, BorderLayout.CENTER);
-
-		// final JPanel bottomPanel = new JPanel();
-		// bottomPanel.setLayout(new BorderLayout());
-
-		// final JPanel buttonPanel = new JPanel();
-		// buttonPanel.setLayout(new FlowLayout());
-
-		// this.connectButt = new JButton("Connect");
-		// this.connectButt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		// buttonPanel.add(this.connectButt);
-
-		// bottomPanel.add(buttonPanel, BorderLayout.CENTER);
-
-		// this.connectionStatusLbl = new JLabel("Status: not connected.");
-		// this.connectionStatusLbl.setHorizontalAlignment(Align.CENTER);
-		// bottomPanel.add(this.connectionStatusLbl, BorderLayout.SOUTH);
-
-		// this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
 	private JPanel createServerPanel() {
@@ -142,13 +110,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		this.hostnameTxtFie = new JTextField();
 		this.hostnameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.hostnameTxtFie);
-		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS)) {
-			this.hostnameTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS));
-		} else {
-			this.hostnameTxtFie.setText(OmegaMySqlGateway.HOSTNAME);
-		}
 
 		final JLabel portLbl = new JLabel("Insert server port:");
 		serverPanel.add(portLbl);
@@ -156,13 +117,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		this.portTxtFie = new JTextField();
 		this.portTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.portTxtFie);
-		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_PORT)) {
-			this.portTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_PORT));
-		} else {
-			this.portTxtFie.setText(OmegaMySqlGateway.PORT);
-		}
 
 		final JLabel dbNameLbl = new JLabel("Insert db name:");
 		serverPanel.add(dbNameLbl);
@@ -170,13 +124,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		this.dbNameFie = new JTextField();
 		this.dbNameFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.dbNameFie);
-		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME)) {
-			this.dbNameFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME));
-		} else {
-			this.dbNameFie.setText(OmegaMySqlGateway.DB_NAME);
-		}
 
 		this.saveServerInfo = new JCheckBox("Remember server information?");
 		serverPanel.add(this.saveServerInfo);
@@ -196,13 +143,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		this.usernameTxtFie = new JTextField();
 		this.usernameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		loginPanel.add(this.usernameTxtFie);
-		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME)) {
-			this.usernameTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME));
-		} else {
-			this.usernameTxtFie.setText(OmegaMySqlGateway.USER);
-		}
 
 		final JLabel passwordLbl = new JLabel("Insert your password:");
 		loginPanel.add(passwordLbl);
@@ -210,21 +150,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		this.passwordPswFie = new JPasswordField();
 		loginPanel.add(this.passwordPswFie);
 		this.passwordPswFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD)) {
-			final String psw = this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD);
-			try {
-				this.passwordPswFie.setText(OmegaDataEncryptionUtilities.decrypt(psw));
-			} catch (final GeneralSecurityException e) {
-				e.printStackTrace();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-
-		} else {
-			this.passwordPswFie.setText(OmegaMySqlGateway.PSW);
-		}
 
 		this.saveLoginInfo = new JCheckBox("Remember login information?");
 		loginPanel.add(this.saveLoginInfo);
@@ -259,10 +184,6 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		        username, password);
 		this.saveLoginCredsOptions(username, password);
 		return loginCred;
-	}
-
-	private void addListeners() {
-
 	}
 
 	public void saveServerInfoOptions(final String hostname, final String port,
@@ -300,5 +221,61 @@ public class OmegaDBPreferencesFrame extends JDialog {
 		}
 		this.parent
 		        .addGeneralOptions(OmegaDBPreferencesFrame.CATEGORY, options);
+	}
+
+	private void populateFields() {
+		if (this.options
+		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME)) {
+			this.usernameTxtFie.setText(this.options
+			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME));
+		} else {
+			this.usernameTxtFie.setText(OmegaMySqlGateway.USER);
+		}
+		if (this.options
+		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD)) {
+			final String psw = this.options
+			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD);
+			try {
+				this.passwordPswFie.setText(OmegaDataEncryptionUtilities
+				        .decrypt(psw));
+			} catch (final GeneralSecurityException e) {
+				e.printStackTrace();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			this.passwordPswFie.setText(OmegaMySqlGateway.PSW);
+		}
+
+		if (this.options
+		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS)) {
+			this.hostnameTxtFie.setText(this.options
+			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS));
+		} else {
+			this.hostnameTxtFie.setText(OmegaMySqlGateway.HOSTNAME);
+		}
+
+		if (this.options
+		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_PORT)) {
+			this.portTxtFie.setText(this.options
+			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_PORT));
+		} else {
+			this.portTxtFie.setText(OmegaMySqlGateway.PORT);
+		}
+
+		if (this.options
+		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME)) {
+			this.dbNameFie.setText(this.options
+			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME));
+		} else {
+			this.dbNameFie.setText(OmegaMySqlGateway.DB_NAME);
+		}
+	}
+
+	@Override
+	protected void addListeners() {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -70,9 +70,9 @@ import Glacier2.PermissionDeniedException;
 import Ice.ConnectionRefusedException;
 import Ice.DNSException;
 import edu.umassmed.omega.core.OmegaLogFileManager;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaServerInformation;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaServerInformation;
 
 /**
  * Entry point to access the services. Code should be provided to keep those
@@ -757,28 +757,28 @@ public class OmeroGateway extends OmegaGateway {
 	}
 
 	@Override
-	public Double computeSizeT(final Long pixelsID, final int pixelSizeT,
+	public Double computeSizeT(final Long pixelsID, final int sizeT,
 	        final int currentMaxT) {
-		Double sizeT = null;
+		Double physicalSizeT = null;
 		final int maxT = currentMaxT - 1;
 		try {
 			final List<IObject> planeInfoObjects = this.loadPlaneInfo(pixelsID,
 			        0, maxT, 0);
 			if ((planeInfoObjects == null) || (planeInfoObjects.size() == 0))
-				return sizeT;
+				return physicalSizeT;
 
 			final PlaneInfoI pi = (PlaneInfoI) planeInfoObjects.get(0);
 
 			final RDouble tTemp = pi.getDeltaT();
 
 			if (tTemp != null) {
-				sizeT = tTemp.getValue() / pixelSizeT;
+				physicalSizeT = tTemp.getValue() / sizeT;
 			}
 		} catch (final Exception ex) {
 			// TODO handle differently
 			OmegaLogFileManager.handleUncaughtException(ex);
 		}
-		return sizeT;
+		return physicalSizeT;
 	}
 
 	@Override

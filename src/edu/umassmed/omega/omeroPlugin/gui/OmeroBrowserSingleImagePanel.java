@@ -27,6 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.omeroPlugin.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,10 +51,10 @@ public class OmeroBrowserSingleImagePanel extends JPanel {
 		this.imageID = imageID;
 		this.image = image;
 
-		this.setSize(new Dimension(image.getWidth(),
-		        OmegaConstants.THUMBNAIL_SIZE));
-		this.setPreferredSize(new Dimension(image.getWidth(),
-		        OmegaConstants.THUMBNAIL_SIZE));
+		final Dimension singleImagePanelDim = new Dimension(
+		        OmegaConstants.THUMBNAIL_SIZE, OmegaConstants.THUMBNAIL_SIZE);
+		this.setSize(singleImagePanelDim);
+		this.setPreferredSize(singleImagePanelDim);
 
 		this.setToolTipText(imageName);
 	}
@@ -69,36 +70,26 @@ public class OmeroBrowserSingleImagePanel extends JPanel {
 		g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 		        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-		// layout the images
-		g2D.setColor(this.getBackground());
-		g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-		int x = 0;
-		int y = 0;
-		int w = 0;
-		int h = 0;
 		final int width = this.getWidth();
-		int maxY = 0;
-		final int gap = 2;
+		final int height = this.getHeight();
+		// layout the images
+		// g2D.setColor(this.getBackground());
+		g2D.setColor(Color.white);
+		g2D.fillRect(0, 0, width, height);
 
-		h = this.image.getHeight();
-		w = this.image.getWidth();
+		int x = 0, y = 0;
+		final int imgWidth = this.image.getWidth();
+		final int imgHeight = this.image.getHeight();
 
-		if (maxY < h) {
-			maxY = h;
+		if (width > imgWidth) {
+			final int diffW = width - imgWidth;
+			x = diffW / 2;
 		}
-
-		if (x != 0) {
-			if ((x + w) > width) {
-				x = 0;
-				y += maxY;
-				y += gap;
-				maxY = 0;
-			}
+		if (height > imgHeight) {
+			final int diffH = height - imgHeight;
+			y = diffH / 2;
 		}
 
 		g2D.drawImage(this.image, x, y, null);
-		x += w;
-		x += gap;
 	}
 }

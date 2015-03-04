@@ -38,17 +38,19 @@ import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
-import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaTrajectoriesManagerRun;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.OmegaLoadedData;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrackingMeasuresRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 
 public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 
@@ -66,11 +68,8 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 	private final List<OmegaAnalysisRun> loadedAnalysisRuns;
 
 	private OmegaAnalysisRunContainer selectedOmeroElement,
-	        selectedDetectionRun, selectedLinkingRun;
-
-	private OmegaAnalysisRunContainer selectedTrajManagerRun;
-
-	private OmegaAnalysisRunContainer selectedTrajSegRun;
+	        selectedDetectionRun, selectedLinkingRun, selectedTrajRelinkingRun,
+	        selectedTrajSegmentationRun, selectedTrackingMeasuresRun;
 
 	public OmegaDataBrowserPluginPanel(final RootPaneContainer parent,
 	        final OmegaPlugin plugin, final OmegaData omegaData,
@@ -84,8 +83,9 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 		this.selectedOmeroElement = null;
 		this.selectedDetectionRun = null;
 		this.selectedLinkingRun = null;
-		this.selectedTrajManagerRun = null;
-		this.selectedTrajSegRun = null;
+		this.selectedTrajRelinkingRun = null;
+		this.selectedTrajSegmentationRun = null;
+		this.selectedTrackingMeasuresRun = null;
 
 		// this.setPreferredSize(new Dimension(750, 500));
 		this.setLayout(new BorderLayout());
@@ -113,9 +113,9 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 		final JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP,
 		        JTabbedPane.SCROLL_TAB_LAYOUT);
 
-		final GenericPanel trackingBasedAnalysisPanel = new GenericPanel(
+		final GenericPanel trackingAnalysisPanel = new GenericPanel(
 		        this.getParentContainer());
-		trackingBasedAnalysisPanel.setLayout(new GridLayout(1, 5));
+		trackingAnalysisPanel.setLayout(new GridLayout(1, 5));
 
 		this.analysisPanels = new ArrayList<OmegaDataBrowserAnalysisBrowserPanel>();
 
@@ -125,49 +125,52 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 		        OmegaParticleDetectionRun.class, this.selectedOmeroElement,
 		        this.loadedAnalysisRuns);
 		this.analysisPanels.add(spotDetectionPanel);
-		final OmegaDataBrowserAnalysisBrowserPanel trackingPanel = new OmegaDataBrowserAnalysisBrowserPanel(
+		final OmegaDataBrowserAnalysisBrowserPanel spotLinkingPanel = new OmegaDataBrowserAnalysisBrowserPanel(
 		        this.getParentContainer(), this, OmegaParticleLinkingRun.class,
 		        this.selectedDetectionRun, this.loadedAnalysisRuns);
-		this.analysisPanels.add(trackingPanel);
-		final OmegaDataBrowserAnalysisBrowserPanel trajectoriesManagerPanel = new OmegaDataBrowserAnalysisBrowserPanel(
+		this.analysisPanels.add(spotLinkingPanel);
+		final OmegaDataBrowserAnalysisBrowserPanel trajectoriesRelinkingPanel = new OmegaDataBrowserAnalysisBrowserPanel(
 		        this.getParentContainer(), this,
-		        OmegaTrajectoriesManagerRun.class, this.selectedLinkingRun,
+		        OmegaTrajectoriesRelinkingRun.class, this.selectedLinkingRun,
 		        this.loadedAnalysisRuns);
-		this.analysisPanels.add(trajectoriesManagerPanel);
+		this.analysisPanels.add(trajectoriesRelinkingPanel);
 		final OmegaDataBrowserAnalysisBrowserPanel trajectoriesSegmentationPanel = new OmegaDataBrowserAnalysisBrowserPanel(
-		        this.getParentContainer(), this, OmegaAnalysisRun.class,
-		        this.selectedTrajManagerRun, this.loadedAnalysisRuns);
+		        this.getParentContainer(), this,
+		        OmegaTrajectoriesSegmentationRun.class,
+		        this.selectedTrajRelinkingRun, this.loadedAnalysisRuns);
 		this.analysisPanels.add(trajectoriesSegmentationPanel);
-		final OmegaDataBrowserAnalysisBrowserPanel motionAnalysisPanel = new OmegaDataBrowserAnalysisBrowserPanel(
-		        this.getParentContainer(), this, OmegaAnalysisRun.class,
-		        this.selectedTrajSegRun, this.loadedAnalysisRuns);
-		this.analysisPanels.add(motionAnalysisPanel);
+		final OmegaDataBrowserAnalysisBrowserPanel trackingMeasuresPanel = new OmegaDataBrowserAnalysisBrowserPanel(
+		        this.getParentContainer(), this,
+		        OmegaTrackingMeasuresRun.class, this.selectedLinkingRun,
+		        this.loadedAnalysisRuns);
+		this.analysisPanels.add(trackingMeasuresPanel);
+		// final OmegaDataBrowserAnalysisBrowserPanel motionAnalysisPanel = new
+		// OmegaDataBrowserAnalysisBrowserPanel(
+		// this.getParentContainer(), this, OmegaAnalysisRun.class,
+		// this.selectedTrajSegRun, this.loadedAnalysisRuns);
+		// this.analysisPanels.add(motionAnalysisPanel);
 
-		trackingBasedAnalysisPanel.add(spotDetectionPanel);
-		trackingBasedAnalysisPanel.add(trackingPanel);
-		trackingBasedAnalysisPanel.add(trajectoriesManagerPanel);
-		trackingBasedAnalysisPanel.add(trajectoriesSegmentationPanel);
-		trackingBasedAnalysisPanel.add(motionAnalysisPanel);
+		trackingAnalysisPanel.add(spotDetectionPanel);
+		trackingAnalysisPanel.add(spotLinkingPanel);
+		trackingAnalysisPanel.add(trajectoriesRelinkingPanel);
+		trackingAnalysisPanel.add(trajectoriesSegmentationPanel);
+		trackingAnalysisPanel.add(trackingMeasuresPanel);
 
 		final GenericPanel genericAnalysisPanel = new GenericPanel(
 		        this.getParentContainer());
-		genericAnalysisPanel.setLayout(new GridLayout(1, 2));
+		genericAnalysisPanel.setLayout(new GridLayout(1, 1));
 
-		final OmegaDataBrowserAnalysisBrowserPanel snrEstimationPanel = new OmegaDataBrowserAnalysisBrowserPanel(
-		        this.getParentContainer(), this, OmegaAnalysisRun.class,
-		        this.selectedOmeroElement, this.loadedAnalysisRuns);
-		this.analysisPanels.add(snrEstimationPanel);
 		final OmegaDataBrowserAnalysisBrowserPanel statisticalAnalysis = new OmegaDataBrowserAnalysisBrowserPanel(
 		        this.getParentContainer(), this, OmegaAnalysisRun.class,
 		        this.selectedOmeroElement, this.loadedAnalysisRuns);
 		this.analysisPanels.add(statisticalAnalysis);
 
-		genericAnalysisPanel.add(snrEstimationPanel);
 		genericAnalysisPanel.add(statisticalAnalysis);
 
-		final JScrollPane trackigScrollPane = new JScrollPane(
-		        trackingBasedAnalysisPanel);
-		tabbedPane.add("Tracking analysis", trackigScrollPane);
+		final JScrollPane trackingScrollPane = new JScrollPane(
+		        trackingAnalysisPanel);
+		tabbedPane.add("Tracking analysis", trackingScrollPane);
+
 		final JScrollPane genericScrollPane = new JScrollPane(
 		        genericAnalysisPanel);
 		tabbedPane.add("Other analysis", genericScrollPane);
@@ -188,7 +191,8 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 	}
 
 	protected void fireDataChangedEvent() {
-		this.getPlugin().fireEvent(new OmegaDataChangedEvent(this.getPlugin()));
+		this.getPlugin().fireEvent(
+		        new OmegaPluginEventDataChanged(this.getPlugin()));
 	}
 
 	private void addListeners() {
@@ -212,27 +216,36 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 	public void setSelectedSubAnalysisContainer(
 	        final OmegaAnalysisRunContainer analysisRunContainer) {
 		int start = 0;
-		if (analysisRunContainer instanceof OmegaTrajectoriesManagerRun) {
-			this.selectedTrajManagerRun = analysisRunContainer;
+		if (analysisRunContainer instanceof OmegaTrackingMeasuresRun) {
+			this.selectedTrackingMeasuresRun = analysisRunContainer;
+			start = 5;
+		} else if (analysisRunContainer instanceof OmegaTrajectoriesSegmentationRun) {
+			this.selectedTrajSegmentationRun = analysisRunContainer;
+			start = 4;
+		} else if (analysisRunContainer instanceof OmegaTrajectoriesRelinkingRun) {
+			this.selectedTrajRelinkingRun = analysisRunContainer;
 			start = 3;
-			this.selectedTrajSegRun = null;
+			this.selectedTrajSegmentationRun = null;
 		} else if (analysisRunContainer instanceof OmegaParticleLinkingRun) {
 			this.selectedLinkingRun = analysisRunContainer;
 			start = 2;
-			this.selectedTrajManagerRun = null;
-			this.selectedTrajSegRun = null;
+			this.selectedTrajRelinkingRun = null;
+			this.selectedTrajSegmentationRun = null;
+			this.selectedTrackingMeasuresRun = null;
 		} else if (analysisRunContainer instanceof OmegaParticleDetectionRun) {
 			this.selectedDetectionRun = analysisRunContainer;
 			start = 1;
 			this.selectedLinkingRun = null;
-			this.selectedTrajManagerRun = null;
-			this.selectedTrajSegRun = null;
+			this.selectedTrajRelinkingRun = null;
+			this.selectedTrajSegmentationRun = null;
+			this.selectedTrackingMeasuresRun = null;
 		} else {
 			start = 1;
 			this.selectedDetectionRun = null;
 			this.selectedLinkingRun = null;
-			this.selectedTrajManagerRun = null;
-			this.selectedTrajSegRun = null;
+			this.selectedTrajRelinkingRun = null;
+			this.selectedTrajSegmentationRun = null;
+			this.selectedTrackingMeasuresRun = null;
 		}
 
 		switch (start) {
@@ -240,10 +253,15 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 			this.analysisPanels.get(1).updateTree(this.selectedDetectionRun);
 		case 2:
 			this.analysisPanels.get(2).updateTree(this.selectedLinkingRun);
+			// TODO to understand if its working
+			this.analysisPanels.get(4).updateTree(this.selectedLinkingRun);
 		case 3:
-			this.analysisPanels.get(3).updateTree(this.selectedTrajManagerRun);
+			this.analysisPanels.get(3)
+			        .updateTree(this.selectedTrajRelinkingRun);
 		case 4:
-			this.analysisPanels.get(4).updateTree(this.selectedTrajSegRun);
+			// this.analysisPanels.get(4).updateTree(
+			// this.selectedTrajSegmentationRun);
+			// this.analysisPanels.get(5).updateTree(this.selectedTrajSegmentationRun);
 		default:
 		}
 		// this.analysisPanels.get(4).updateTree(this.selectedTrajSegRun);

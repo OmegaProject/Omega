@@ -6,7 +6,7 @@ import java.util.Map;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 
 public class OmeroDataMessageEvent extends OmegaMessageEvent {
 

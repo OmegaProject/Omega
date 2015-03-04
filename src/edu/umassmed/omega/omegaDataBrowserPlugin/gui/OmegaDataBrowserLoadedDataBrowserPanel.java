@@ -42,6 +42,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
 
@@ -50,13 +51,13 @@ import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.OmegaLoadedData;
-import edu.umassmed.omega.dataNew.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.OmegaLoadedData;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaProject;
 
 public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 
@@ -103,6 +104,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 		this.add(this.optionsPanel, BorderLayout.NORTH);
 
 		this.dataTree = new JTree(this.root);
+		this.dataTree.getSelectionModel().setSelectionMode(
+		        TreeSelectionModel.SINGLE_TREE_SELECTION);
 		// this.dataTreeBrowser.setRootVisible(false);
 		final CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
 		this.dataTree.setCellRenderer(renderer);

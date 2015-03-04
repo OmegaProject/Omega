@@ -38,6 +38,7 @@ import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,24 +63,24 @@ import pojos.GroupData;
 import pojos.ImageData;
 import pojos.PixelsData;
 import pojos.ProjectData;
-import edu.umassmed.omega.commons.constants.OmegaEventConstants;
-import edu.umassmed.omega.commons.eventSystem.OmegaDataChangedEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaGatewayEvent;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
-import edu.umassmed.omega.commons.exceptions.OmegaPluginStatusPanelException;
+import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.core.OmegaLogFileManager;
-import edu.umassmed.omega.dataNew.OmegaData;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaElement;
-import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenter;
-import edu.umassmed.omega.dataNew.coreElements.OmegaExperimenterGroup;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
+import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.data.coreElements.OmegaExperimenter;
+import edu.umassmed.omega.data.coreElements.OmegaExperimenterGroup;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.data.coreElements.OmegaProject;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDataWrapper;
@@ -297,7 +298,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-				        OmegaEventConstants.PROPERTY_CONNECTION)) {
+				        OmegaConstantsEvent.PROPERTY_CONNECTION)) {
 					try {
 						OmeroPluginPanel.this.updateVisualizationMenu();
 					} catch (final ServerError e) {
@@ -316,16 +317,22 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 							// TODO Gestire errore
 							e.printStackTrace();
 						}
-						OmeroPluginPanel.this.getPlugin().fireEvent(
-						        new OmegaGatewayEvent(OmeroPluginPanel.this
-						                .getPlugin(),
-						                OmegaGatewayEvent.STATUS_CONNECTED,
-						                experimenter));
+						OmeroPluginPanel.this
+						        .getPlugin()
+						        .fireEvent(
+						                new OmegaPluginEventGateway(
+						                        OmeroPluginPanel.this
+						                                .getPlugin(),
+						                        OmegaPluginEventGateway.STATUS_CONNECTED,
+						                        experimenter));
 					} else {
-						OmeroPluginPanel.this.getPlugin().fireEvent(
-						        new OmegaGatewayEvent(OmeroPluginPanel.this
-						                .getPlugin(),
-						                OmegaGatewayEvent.STATUS_DISCONNECTED));
+						OmeroPluginPanel.this
+						        .getPlugin()
+						        .fireEvent(
+						                new OmegaPluginEventGateway(
+						                        OmeroPluginPanel.this
+						                                .getPlugin(),
+						                        OmegaPluginEventGateway.STATUS_DISCONNECTED));
 					}
 				}
 			}
@@ -377,6 +384,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
+		this.connectionDialog.updateParentContainer(parent);
 		this.browserPanel.updateParentContainer(parent);
 		this.projectPanel.updateParentContainer(parent);
 	}
@@ -630,8 +638,12 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 
 			// Create image
 			if (image == null) {
+				final Date acquisitionDate = new Date(imageData
+				        .getAcquisitionDate().getTime());
+				final Date importedDate = new Date(imageData.getInserted()
+				        .getTime());
 				image = new OmegaImage(imageData.getId(), imageData.getName(),
-				        experimenter, pixelsList);
+				        experimenter, acquisitionDate, importedDate, pixelsList);
 				dataChanged = true;
 			} else {
 				for (final OmegaImagePixels pixels : pixelsList) {
@@ -693,10 +705,9 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 		}
 
 		if (dataChanged) {
-			this.getPlugin()
-			        .fireEvent(
-			                new OmegaDataChangedEvent(this.getPlugin(),
-			                        loadedElements));
+			this.getPlugin().fireEvent(
+			        new OmegaPluginEventDataChanged(this.getPlugin(),
+			                loadedElements));
 		}
 		final List<OmegaImage> loadedImages = this.getLoadedImages();
 		this.projectPanel.updateLoadedElements(loadedImages);
@@ -749,7 +760,7 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		try {
 			this.statusPanel.updateStatus(0, evt.getMessage());
-		} catch (final OmegaPluginStatusPanelException ex) {
+		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
 		}
 		if (evt instanceof OmeroThumbnailMessageEvent) {

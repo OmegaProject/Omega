@@ -68,10 +68,12 @@ public class GenericConfirmationDialog extends GenericDialog {
 
 		this.confirm = new JButton("Confirm");
 		this.confirm.setPreferredSize(OmegaConstants.BUTTON_SIZE);
+		this.confirm.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.confirm);
 
 		this.cancel = new JButton("Cancel");
 		this.cancel.setPreferredSize(OmegaConstants.BUTTON_SIZE);
+		this.cancel.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.cancel);
 
 		this.add(buttonPanel, BorderLayout.SOUTH);

@@ -7,9 +7,9 @@ import java.util.List;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
-import edu.umassmed.omega.dataNew.coreElements.OmegaDataset;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.coreElements.OmegaProject;
+import edu.umassmed.omega.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaProject;
 
 public class OmegaDBLoader extends OmegaDBRunnable {
 
@@ -31,18 +31,31 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		for (final OmegaProject project : this.projectsToLoad) {
 			// Load project
 			projectLoaded++;
-			String msg = "Loading project(s): " + projectLoaded + "/"
-			        + projectsSize;
+			final StringBuffer buf = new StringBuffer();
+			buf.append("<html>Loading progress");
+			buf.append("<br>project(s): ");
+			buf.append(projectLoaded);
+			buf.append(" of ");
+			buf.append(projectsSize);
 			final int datasetsSize = project.getDatasets().size();
+			datasetLoaded = 0;
 			for (final OmegaDataset dataset : project.getDatasets()) {
 				// Load dataset
 				datasetLoaded++;
 				final int imagesSize = dataset.getImages().size();
-				msg += ", dataset(s): " + datasetLoaded + "/" + datasetsSize;
+				buf.append("<br>dataset(s): ");
+				buf.append(datasetLoaded);
+				buf.append(" of ");
+				buf.append(datasetsSize);
+				imageLoaded = 0;
 				for (final OmegaImage image : dataset.getImages()) {
 					imageLoaded++;
-					msg += ", image(s): " + imageLoaded + "/" + imagesSize;
-					this.updateMessage(msg);
+					buf.append("<br>image(s): ");
+					buf.append(imageLoaded);
+					buf.append(" of ");
+					buf.append(imagesSize);
+					buf.append("</html>");
+					this.updateMessage(buf.toString());
 					try {
 						this.getGateway().loadImages(image);
 					} catch (final SQLException ex) {

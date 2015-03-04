@@ -31,8 +31,8 @@ import java.util.List;
 
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
-import edu.umassmed.omega.dataNew.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
 public abstract class OmegaParticleTrackingPlugin extends OmegaAlgorithmPlugin
         implements OmegaLoaderPluginInterface,

@@ -44,6 +44,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,16 +58,17 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import pojos.ImageData;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.eventSystem.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 import edu.umassmed.omega.core.OmegaLogFileManager;
-import edu.umassmed.omega.dataNew.coreElements.OmegaImage;
+import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.data.OmeroDatasetWrapper;
 import edu.umassmed.omega.omeroPlugin.data.OmeroImageWrapper;
@@ -86,7 +89,7 @@ public class OmeroBrowserPanel extends GenericPanel {
 	private final OmeroGateway gateway;
 
 	private JPanel mainPanel;
-	private JRadioButton gridView_butt, listView_butt;
+	private JRadioButton gridView_btt, listView_btt;
 
 	private int numberOfImages;
 	private Dimension panelSize;
@@ -146,14 +149,14 @@ public class OmeroBrowserPanel extends GenericPanel {
 		topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
 		final ButtonGroup group = new ButtonGroup();
-		this.gridView_butt = new JRadioButton("Grid view");
-		this.gridView_butt.setSelected(true);
-		this.listView_butt = new JRadioButton("List view");
-		group.add(this.gridView_butt);
-		group.add(this.listView_butt);
+		this.gridView_btt = new JRadioButton("Grid view");
+		this.gridView_btt.setSelected(true);
+		this.listView_btt = new JRadioButton("List view");
+		group.add(this.gridView_btt);
+		group.add(this.listView_btt);
 
-		topPanel.add(this.gridView_butt);
-		topPanel.add(this.listView_butt);
+		topPanel.add(this.gridView_btt);
+		topPanel.add(this.listView_btt);
 
 		this.add(topPanel, BorderLayout.NORTH);
 
@@ -167,16 +170,15 @@ public class OmeroBrowserPanel extends GenericPanel {
 	}
 
 	private void addListeners() {
-		this.gridView_butt.addActionListener(new ActionListener() {
+		this.gridView_btt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmeroBrowserPanel.this.isListView = false;
-
 				OmeroBrowserPanel.this.checkForResize();
 				OmeroBrowserPanel.this.redrawImagePanels();
 			}
 		});
-		this.listView_butt.addActionListener(new ActionListener() {
+		this.listView_btt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmeroBrowserPanel.this.isListView = true;
@@ -263,28 +265,31 @@ public class OmeroBrowserPanel extends GenericPanel {
 
 	private void createAndAddListHeaderPanel() {
 		final int height = 20;
-		final int width = this.mainPanel.getWidth() - 20;
+		final int width = this.mainPanel.getWidth() - 40;
 		final int usableWidth = width - OmegaConstants.THUMBNAIL_SIZE;
-		final int nameDim = usableWidth - 150 - (50 * 6) - 10;
-		final int dateDim = 150 - 10;
-		final int fieldDim = 50 - 10;
+		final int nameDim = usableWidth - (150 + (50 * 7));
+		final int dateDim = 150;
+		final int checkDim = 50;
+		final int fieldDim = 100;
 
 		final Font font = new Font("Tahoma", 0, 10);
 		final JPanel listHeaderPanel = new JPanel();
-		listHeaderPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		listHeaderPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		// listHeaderPanel.setBackground(Color.white);
-		listHeaderPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
-		final Dimension listHeaderDim = new Dimension(width, height);
-		listHeaderPanel.setSize(listHeaderDim);
-		listHeaderPanel.setPreferredSize(listHeaderDim);
+		// listHeaderPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+		// final Dimension listHeaderDim = new Dimension(width, height);
+		// listHeaderPanel.setSize(listHeaderDim);
+		// listHeaderPanel.setPreferredSize(listHeaderDim);
 
 		final JLabel selectedLbl = new JLabel("Selected");
-		final Dimension selectedLblDim = new Dimension(fieldDim, height);
+		selectedLbl.setHorizontalAlignment(SwingConstants.LEFT);
+		final Dimension selectedLblDim = new Dimension(checkDim, height);
 		selectedLbl.setSize(selectedLblDim);
 		selectedLbl.setPreferredSize(selectedLblDim);
 		selectedLbl.setFont(font);
 
 		final JLabel thumbnailLbl = new JLabel("Thumbnail");
+		thumbnailLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension thumbnailLblDim = new Dimension(
 		        OmegaConstants.THUMBNAIL_SIZE, height);
 		thumbnailLbl.setSize(thumbnailLblDim);
@@ -297,73 +302,63 @@ public class OmeroBrowserPanel extends GenericPanel {
 		nameLbl.setPreferredSize(nameLblDim);
 		nameLbl.setFont(font);
 
-		final JLabel dateLbl = new JLabel("Created");
+		final JLabel dateLbl = new JLabel("Aquired");
+		dateLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension dateLblDim = new Dimension(dateDim, height);
 		dateLbl.setSize(dateLblDim);
 		dateLbl.setPreferredSize(dateLblDim);
 		dateLbl.setFont(font);
 
-		final JLabel sizeXLbl = new JLabel("Size X");
+		final JLabel sizeXYLbl = new JLabel("Sizes XY");
+		sizeXYLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension sizeXLblDim = new Dimension(fieldDim, height);
-		sizeXLbl.setSize(sizeXLblDim);
-		sizeXLbl.setPreferredSize(sizeXLblDim);
-		sizeXLbl.setFont(font);
+		sizeXYLbl.setSize(sizeXLblDim);
+		sizeXYLbl.setPreferredSize(sizeXLblDim);
+		sizeXYLbl.setFont(font);
 
-		final JLabel sizeYLbl = new JLabel("Size Y");
+		final JLabel physicalSizesXYZLbl = new JLabel("Physical sizes XYZ");
+		physicalSizesXYZLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension sizeYLblDim = new Dimension(fieldDim, height);
-		sizeYLbl.setSize(sizeYLblDim);
-		sizeYLbl.setPreferredSize(sizeYLblDim);
-		sizeYLbl.setFont(font);
+		physicalSizesXYZLbl.setSize(sizeYLblDim);
+		physicalSizesXYZLbl.setPreferredSize(sizeYLblDim);
+		physicalSizesXYZLbl.setFont(font);
 
-		final JLabel sizeZLbl = new JLabel("Size Z");
+		final JLabel sizesZTCLbl = new JLabel("Sizes ZTC");
+		sizesZTCLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension sizeZLblDim = new Dimension(fieldDim, height);
-		sizeZLbl.setSize(sizeZLblDim);
-		sizeZLbl.setPreferredSize(sizeZLblDim);
-		sizeZLbl.setFont(font);
-
-		final JLabel sizeTLbl = new JLabel("Size T");
-		final Dimension sizeTLblDim = new Dimension(fieldDim, height);
-		sizeTLbl.setSize(sizeTLblDim);
-		sizeTLbl.setPreferredSize(sizeTLblDim);
-		sizeTLbl.setFont(font);
-
-		final JLabel sizeCLbl = new JLabel("Size C");
-		final Dimension sizeCLblDim = new Dimension(fieldDim, height);
-		sizeCLbl.setSize(sizeCLblDim);
-		sizeCLbl.setPreferredSize(sizeCLblDim);
-		sizeCLbl.setFont(font);
+		sizesZTCLbl.setSize(sizeZLblDim);
+		sizesZTCLbl.setPreferredSize(sizeZLblDim);
+		sizesZTCLbl.setFont(font);
 
 		listHeaderPanel.add(selectedLbl);
 		listHeaderPanel.add(thumbnailLbl);
 		listHeaderPanel.add(nameLbl);
 		listHeaderPanel.add(dateLbl);
-		listHeaderPanel.add(sizeXLbl);
-		listHeaderPanel.add(sizeYLbl);
-		listHeaderPanel.add(sizeZLbl);
-		listHeaderPanel.add(sizeTLbl);
-		listHeaderPanel.add(sizeCLbl);
+		listHeaderPanel.add(sizeXYLbl);
+		listHeaderPanel.add(sizesZTCLbl);
+		listHeaderPanel.add(physicalSizesXYZLbl);
 		this.mainPanel.add(listHeaderPanel);
 	}
 
 	private void createAndAddSingleImageListPanel(
 	        final OmeroThumbnailImageInfo temp) {
-		final int width = this.mainPanel.getWidth() - 20;
+		final int width = this.mainPanel.getWidth() - 40;
 		final int usableWidth = width - OmegaConstants.THUMBNAIL_SIZE;
-		final int nameDim = usableWidth - 150 - (50 * 6) - 10;
-		final int dateDim = 150 - 10;
-		final int fieldDim = 50 - 10;
+		final int nameDim = usableWidth - (150 + (50 * 7));
+		final int dateDim = 150;
+		final int checkDim = 50;
+		final int fieldDim = 100;
 
 		final Font font = new Font("Tahoma", 0, 10);
 		final ImageData imgData = temp.getImage().getImageData();
 		final JPanel imageInfoPanel = new JPanel();
-		imageInfoPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		imageInfoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		// imageInfoPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		imageInfoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		imageInfoPanel.setBackground(Color.white);
-		final int imgWidth = width;
-		final int imgHeight = OmegaConstants.THUMBNAIL_SIZE;
-		final Dimension panelDim = new Dimension(imgWidth, imgHeight);
-		imageInfoPanel.setSize(panelDim);
-		imageInfoPanel.setPreferredSize(panelDim);
+		final int imgHeight = OmegaConstants.THUMBNAIL_SIZE + 40;
+		// final Dimension panelDim = new Dimension(imgWidth, imgHeight);
+		// imageInfoPanel.setSize(panelDim);
+		// imageInfoPanel.setPreferredSize(panelDim);
 
 		// image
 		final OmeroBrowserSingleImagePanel singleImagePanel = new OmeroBrowserSingleImagePanel(
@@ -383,13 +378,14 @@ public class OmeroBrowserPanel extends GenericPanel {
 		        OmegaConstants.OMEGA_DATE_FORMAT);
 		String date = "No date saved";
 		try {
-			final Timestamp ts = imgData.getCreated();
+			final Timestamp ts = imgData.getAcquisitionDate();
 			date = format.format(ts);
 		} catch (final IllegalStateException ex) {
 			// TODO manage ex
-
 		}
+
 		final JLabel dateLbl = new JLabel(date);
+		dateLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 		final Dimension dateLblDim = new Dimension(dateDim, imgHeight);
 		dateLbl.setSize(dateLblDim);
 		dateLbl.setPreferredSize(dateLblDim);
@@ -397,69 +393,67 @@ public class OmeroBrowserPanel extends GenericPanel {
 
 		final String sizeX = String.valueOf(imgData.getDefaultPixels()
 		        .getSizeX());
-		final JLabel sizeXLbl = new JLabel(sizeX);
-		final Dimension sizeXLblDim = new Dimension(fieldDim, imgHeight);
-		sizeXLbl.setSize(sizeXLblDim);
-		sizeXLbl.setPreferredSize(sizeXLblDim);
-		sizeXLbl.setFont(font);
-
 		final String sizeY = String.valueOf(imgData.getDefaultPixels()
 		        .getSizeY());
-		final JLabel sizeYLbl = new JLabel(sizeY);
-		final Dimension sizeYLblDim = new Dimension(fieldDim, imgHeight);
-		sizeYLbl.setSize(sizeYLblDim);
-		sizeYLbl.setPreferredSize(sizeYLblDim);
-		sizeYLbl.setFont(font);
+		final JLabel sizeXYLbl = new JLabel(sizeX + " x " + sizeY);
+		sizeXYLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		final Dimension sizeXYLblDim = new Dimension(fieldDim, imgHeight);
+		sizeXYLbl.setSize(sizeXYLblDim);
+		sizeXYLbl.setPreferredSize(sizeXYLblDim);
+		sizeXYLbl.setFont(font);
 
 		final String sizeZ = String.valueOf(imgData.getDefaultPixels()
 		        .getSizeZ());
-		final JLabel sizeZLbl = new JLabel(sizeZ);
-		final Dimension sizeZLblDim = new Dimension(fieldDim, imgHeight);
-		sizeZLbl.setSize(sizeZLblDim);
-		sizeZLbl.setPreferredSize(sizeZLblDim);
-		sizeZLbl.setFont(font);
-
 		final String sizeT = String.valueOf(imgData.getDefaultPixels()
 		        .getSizeT());
-		final JLabel sizeTLbl = new JLabel(sizeT);
-		final Dimension sizeTLblDim = new Dimension(fieldDim, imgHeight);
-		sizeTLbl.setSize(sizeTLblDim);
-		sizeTLbl.setPreferredSize(sizeTLblDim);
-		sizeTLbl.setFont(font);
-
 		final String sizeC = String.valueOf(imgData.getDefaultPixels()
 		        .getSizeC());
-		final JLabel sizeCLbl = new JLabel(sizeC);
-		final Dimension sizeCLblDim = new Dimension(fieldDim, imgHeight);
-		sizeCLbl.setSize(sizeCLblDim);
-		sizeCLbl.setPreferredSize(sizeZLblDim);
-		sizeCLbl.setFont(font);
+		final JLabel sizeZTCLbl = new JLabel(sizeZ + " x " + sizeT + " x "
+		        + sizeC);
+		sizeZTCLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		final Dimension sizeZTCLblDim = new Dimension(fieldDim, imgHeight);
+		sizeZTCLbl.setSize(sizeZTCLblDim);
+		sizeZTCLbl.setPreferredSize(sizeZTCLblDim);
+		sizeZTCLbl.setFont(font);
+
+		final String physicalSizeX = new BigDecimal(imgData.getDefaultPixels()
+		        .getPixelSizeX()).setScale(2, RoundingMode.HALF_UP).toString();
+		final String physicalSizeY = new BigDecimal(imgData.getDefaultPixels()
+		        .getPixelSizeY()).setScale(2, RoundingMode.HALF_UP).toString();
+		final String physicalSizeZ = new BigDecimal(imgData.getDefaultPixels()
+		        .getPixelSizeZ()).setScale(2, RoundingMode.HALF_UP).toString();
+		final JLabel physicalSizesXYZLbl = new JLabel(physicalSizeX + " x "
+		        + physicalSizeY + " x " + physicalSizeZ);
+		physicalSizesXYZLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		final Dimension physicalSizesXYZLblDim = new Dimension(fieldDim,
+		        imgHeight);
+		physicalSizesXYZLbl.setSize(physicalSizesXYZLblDim);
+		physicalSizesXYZLbl.setPreferredSize(physicalSizesXYZLblDim);
+		physicalSizesXYZLbl.setFont(font);
 
 		// SPT check
-		final JPanel sptCheckPanel = new JPanel();
-		sptCheckPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		sptCheckPanel.setBackground(Color.white);
-		final Dimension sptDim = new Dimension(fieldDim, imgHeight);
-		sptCheckPanel.setSize(sptDim);
-		sptCheckPanel.setPreferredSize(sptDim);
+		final JPanel checkPanel = new JPanel();
+		checkPanel.setLayout(new BorderLayout());
+		checkPanel.setBackground(Color.white);
+		final Dimension checkPanelDim = new Dimension(checkDim, imgHeight);
+		checkPanel.setSize(checkPanelDim);
+		checkPanel.setPreferredSize(checkPanelDim);
 		final JCheckBox checked = new JCheckBox();
 		checked.setBackground(Color.white);
 		// checked.setSelected(omegaData.containsImage(temp.getImageID()));
-		sptCheckPanel.add(checked);
+		checkPanel.add(checked, BorderLayout.CENTER);
 		this.checkboxList.add(checked);
 
 		this.setCheckboxStatus(imageInfoPanel, temp, checked);
 		this.addCheckboxListener(temp, checked);
 
-		imageInfoPanel.add(sptCheckPanel);
+		imageInfoPanel.add(checkPanel);
 		imageInfoPanel.add(singleImagePanel);
 		imageInfoPanel.add(imageNameLbl);
 		imageInfoPanel.add(dateLbl);
-		imageInfoPanel.add(sizeXLbl);
-		imageInfoPanel.add(sizeYLbl);
-		imageInfoPanel.add(sizeZLbl);
-		imageInfoPanel.add(sizeTLbl);
-		imageInfoPanel.add(sizeCLbl);
+		imageInfoPanel.add(sizeXYLbl);
+		imageInfoPanel.add(sizeZTCLbl);
+		imageInfoPanel.add(physicalSizesXYZLbl);
 		this.mainPanel.add(imageInfoPanel);
 	}
 
@@ -479,6 +473,7 @@ public class OmeroBrowserPanel extends GenericPanel {
 		final Dimension d = new Dimension(OmegaConstants.THUMBNAIL_SIZE, 20);
 
 		// image
+
 		final OmeroBrowserSingleImagePanel singleImagePanel = new OmeroBrowserSingleImagePanel(
 		        temp.getImageID(), temp.getImageName(), temp.getBufferedImage());
 
@@ -552,6 +547,18 @@ public class OmeroBrowserPanel extends GenericPanel {
 	/* final OmegaData omegaData */) {
 		// this.imageToBeLoadedList.clear();
 		this.imagesInfo = imageInfo;
+		// TODO refactoring?!
+		if (this.imagesInfo != null) {
+			Collections.sort(this.imagesInfo,
+			        new Comparator<OmeroThumbnailImageInfo>() {
+				        @Override
+				        public int compare(final OmeroThumbnailImageInfo o1,
+				                final OmeroThumbnailImageInfo o2) {
+					        return o1.getImageName().compareTo(
+					                o2.getImageName());
+				        }
+			        });
+		}
 		this.setNumberOfImages();
 		this.checkForResize();
 		this.redrawImagePanels();

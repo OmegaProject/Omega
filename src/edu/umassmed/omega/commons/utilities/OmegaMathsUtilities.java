@@ -3,6 +3,20 @@ package edu.umassmed.omega.commons.utilities;
 import java.util.Arrays;
 
 public class OmegaMathsUtilities {
+
+	public static Double normalize(final double val, final double min,
+	        final double max, final double newMin, final double newMax) {
+		final double v1 = (val - min) * (newMax - newMin);
+		final double v2 = max - min;
+		final double v3 = v1 / v2;
+		return newMin + v3;
+	}
+
+	public static Double normalize(final double val, final double min,
+	        final double max) {
+		return (val - min) / (max - min);
+	}
+
 	public static Double mean(final Double[] values, final Integer from,
 	        final Integer to) {
 		Double sum = 0.0;
@@ -48,7 +62,7 @@ public class OmegaMathsUtilities {
 		return OmegaMathsUtilities.varianceN(values, 0, values.length - 1);
 	}
 
-	public static double varianceN1(final Double[] values, final Integer from,
+	public static Double varianceN1(final Double[] values, final Integer from,
 	        final Integer to) {
 		final Double mean = OmegaMathsUtilities.mean(values, from, to);
 		double sum = 0.0;
@@ -104,6 +118,17 @@ public class OmegaMathsUtilities {
 	}
 
 	// TODO check it again and possibly change neame in a meaningful way
+	/**
+	 * Compute the linear fit of coordinates input array u and v, starting from
+	 * index from and ending at index to
+	 * 
+	 * @param u
+	 * @param v
+	 * @param from
+	 * @param to
+	 * @return an array of double containing, slope, intercepts and correlation
+	 *         coefficient
+	 */
 	public static Double[] linearFit(final Double[] u, final Double[] v,
 	        final Integer from, final Integer to) {
 		final Double u_bar = OmegaMathsUtilities.mean(u, from, to);

@@ -19,8 +19,9 @@ import edu.umassmed.omega.commons.utilities.OmegaFileUtilities;
 
 public class OmegaLogFileManager implements UncaughtExceptionHandler {
 
-	private static boolean debug = true;
+	private OmegaApplication app;
 
+	private static boolean debug = false;
 	private static OmegaLogFileManager instance = null;
 
 	private static final String GENERAL_LOG_NAME = "OmegaLog_";
@@ -36,19 +37,25 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		OmegaLogFileManager.instance = new OmegaLogFileManager();
 	}
 
-	public static void createNewOmegaFileManager(final String workingDirName) {
-		OmegaLogFileManager.instance = new OmegaLogFileManager(workingDirName);
+	public static void createNewOmegaFileManager(final OmegaApplication app,
+	        final String workingDirName) {
+		OmegaLogFileManager.instance = new OmegaLogFileManager(app,
+		        workingDirName);
 	}
 
-	public static OmegaLogFileManager getOmegaLogFileManager() {
+	public static OmegaLogFileManager getOmegaLogFileManager(
+	        final OmegaApplication app) {
+		OmegaLogFileManager.instance.app = app;
 		return OmegaLogFileManager.instance;
 	}
 
 	private OmegaLogFileManager() {
-		this(System.getProperty("user.dir"));
+		this(null, System.getProperty("user.dir"));
 	}
 
-	private OmegaLogFileManager(final String workingDirName) {
+	private OmegaLogFileManager(final OmegaApplication app,
+	        final String workingDirName) {
+		this.app = app;
 		this.logsDir = new File(workingDirName + File.separator + "logs");
 		if (!this.logsDir.exists()) {
 			this.logsDir.mkdir();
@@ -66,7 +73,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 	}
 
-	public static void markNewRun(final List<OmegaPlugin> plugins) {
+	public static void markPluginsNewRun(final List<OmegaPlugin> plugins) {
 		final List<File> files = new ArrayList<>();
 		final List<String> messages = new ArrayList<>();
 		final String msg = "Application started!";
@@ -77,10 +84,19 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			OmegaLogFileManager.instance.pluginLogFileMap.put(plugin, f);
 			files.add(f);
 		}
+		for (final File f : files) {
+			OmegaLogFileManager.instance.appendToLog(f, messages);
+		}
+	}
+
+	public static void markCoreNewRun() {
+		final List<File> files = new ArrayList<>();
+		final List<String> messages = new ArrayList<>();
+		final String msg = "Application started!";
+		messages.add(msg);
 		files.add(OmegaLogFileManager.instance.awtLogFile);
 		files.add(OmegaLogFileManager.instance.generalUnhandledException);
 		files.add(OmegaLogFileManager.instance.generalLogFile);
-
 		for (final File f : files) {
 			OmegaLogFileManager.instance.appendToLog(f, messages);
 		}
@@ -104,6 +120,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
 		}
 	}
 
@@ -123,6 +140,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
 		}
 	}
 
@@ -143,6 +161,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
 		}
 	}
 
@@ -163,6 +182,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
 		}
 	}
 
@@ -192,6 +212,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
 		}
 	}
 
@@ -214,6 +235,13 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
+			OmegaLogFileManager.instance.terminateApplication();
+		}
+	}
+
+	private void terminateApplication() {
+		if (!OmegaLogFileManager.debug) {
+			OmegaLogFileManager.instance.app.quit();
 		}
 	}
 
@@ -221,6 +249,13 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		final String logFileName = OmegaLogFileManager.PLUGIN_LOG_NAME
 		        + plugin.getName().replace(" ", "") + ".log";
 		return new File(this.logsDir.getPath() + File.separator + logFileName);
+	}
+
+	public static void appendToMainLog(final String msg) {
+		final List<String> messages = new ArrayList<>();
+		messages.add(msg);
+		OmegaLogFileManager.instance.appendToLog(
+		        OmegaLogFileManager.instance.generalLogFile, messages);
 	}
 
 	private void appendToLog(final File f, final List<String> messages) {
