@@ -204,13 +204,13 @@ public class OmegaOptionsFileManager {
 			fr.close();
 			return 1;
 		} catch (final FileNotFoundException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			ex.printStackTrace();
 			return -1;
 		} catch (final IOException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			ex.printStackTrace();
 			return -1;
 		} catch (final ParseException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			ex.printStackTrace();
 			return -1;
 		}
 	}

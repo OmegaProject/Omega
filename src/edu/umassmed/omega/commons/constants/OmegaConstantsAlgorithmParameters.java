@@ -12,4 +12,6 @@ public class OmegaConstantsAlgorithmParameters {
 
 	public static final String PARAM_CHANNEL = "Channel";
 	public static final String PARAM_ZSECTION = "Z-section";
+
+	public static final String PARAM_THRESHOLD = "Threshold";
 }

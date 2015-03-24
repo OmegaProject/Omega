@@ -163,6 +163,7 @@ public class SPTRunner implements SPTRunnable {
 				// TODO throw error and skip image or stop thread?
 			}
 
+			// TODO check these data?
 			defaultPixels.getPixelSizeX();
 			defaultPixels.getPixelSizeY();
 			this.gateway.getTotalT(pixelsID, z, t, c);

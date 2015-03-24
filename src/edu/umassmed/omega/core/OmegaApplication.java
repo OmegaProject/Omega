@@ -48,6 +48,7 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleDetection;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleLinking;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleTracking;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsSNR;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesRelinking;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesSegmentation;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
@@ -91,6 +92,7 @@ import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
@@ -110,6 +112,7 @@ import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserPlugin;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
+import edu.umassmed.omega.snrSbalzariniPlugin.SNRPlugin;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTPlugin;
 import edu.umassmed.omega.trackingMeasuresPlugin.TrackingMeasuresPlugin;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TrajectoriesRelinkingPlugin;
@@ -175,6 +178,7 @@ public class OmegaApplication implements OmegaPluginEventListener {
 	private void registerCorePlugins() {
 		this.registerPlugin(new OmeroPlugin());
 		this.registerPlugin(new SPTPlugin());
+		this.registerPlugin(new SNRPlugin());
 		this.registerPlugin(new TrajectoriesRelinkingPlugin());
 		this.registerPlugin(new TrajectoriesSegmentationPlugin());
 		this.registerPlugin(new TrackingMeasuresPlugin());
@@ -401,9 +405,11 @@ public class OmegaApplication implements OmegaPluginEventListener {
 		// TODO separare i parameteri e fare 2 algoSpec diverse
 		// capire se necessario
 
-		final OmegaAnalysisRun analysisRun;
-
-		if (event instanceof OmegaPluginEventResultsTrajectoriesSegmentation) {
+		OmegaAnalysisRun analysisRun;
+		if (event instanceof OmegaPluginEventResultsSNR) {
+			analysisRun = this.handlePluginEventAlgorithmResultsSNR(algoSpec,
+			        event);
+		} else if (event instanceof OmegaPluginEventResultsTrajectoriesSegmentation) {
 			analysisRun = this
 			        .handlePluginEventAlgorithmResultsParticleSegmentationRun(
 			                algoSpec, event);
@@ -431,6 +437,21 @@ public class OmegaApplication implements OmegaPluginEventListener {
 		this.loadedAnalysisRuns.add(analysisRun);
 
 		this.updateGUI(event.getSource(), true);
+	}
+
+	private OmegaAnalysisRun handlePluginEventAlgorithmResultsSNR(
+	        final OmegaAlgorithmSpecification algoSpec,
+	        final OmegaPluginEventAlgorithm event) {
+		final OmegaPluginEventResultsSNR specificEvent = (OmegaPluginEventResultsSNR) event;
+		return new OmegaSNRRun(this.experimenter, algoSpec,
+		        specificEvent.getResultingImageNoise(),
+		        specificEvent.getResultingImageBGR(),
+		        specificEvent.getResultingLocalCenterSignals(),
+		        specificEvent.getResultingLocalMeanSignals(),
+		        specificEvent.getResultingLocalSignalSizes(),
+		        specificEvent.getResultingLocalPeakSignals(),
+		        specificEvent.getResultingLocalNoises(),
+		        specificEvent.getResultingLocalSNRs());
 	}
 
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleSegmentationRun(

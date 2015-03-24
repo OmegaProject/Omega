@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsError;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
 import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
@@ -127,55 +128,13 @@ public class SPTLoader implements SPTRunnable {
 				//
 				// oldPixels = pixels;
 
-				int[] data = null;
-
-				// Manage the right amount of byte per pixels
-				switch (byteWidth) {
-				case 1:
-					// 8 bit image
-					System.out.println("Loading t: " + t + " 8 bit");
-					data = new int[pixels.length];
-					for (int j = 0; j < data.length; j++) {
-						final int b0 = pixels[j] & 0xff;
-						data[j] = b0 << 0;
-					}
-					break;
-				case 2:
-					// 16 bit image
-					System.out.println("Loading t: " + t + " 16 bit");
-					data = new int[pixels.length / 2];
-					for (int j = 0; j < data.length; j++) {
-						final int b0 = pixels[2 * j] & 0xff;
-						final int b1 = pixels[(2 * j) + 1] & 0xff;
-						data[j] = (b0 << 8) | (b1 << 0);
-					}
-					break;
-				case 3:
-					// 24 bit image
-					System.out.println("Loading t: " + t + " 24 bit");
-					data = new int[pixels.length / 3];
-					for (int j = 0; j < data.length; j++) {
-						final int b0 = pixels[3 * j] & 0xff;
-						final int b1 = pixels[(3 * j) + 1] & 0xff;
-						final int b2 = pixels[(3 * j) + 2] & 0xff;
-						data[j] = (b0 << 16) | (b1 << 8) | (b2 << 0);
-					}
-					break;
-				case 4:
-					// 32 bit image
-					System.out.println("Loading t: " + t + " 32 bit");
-					data = new int[pixels.length / 4];
-					for (int j = 0; j < data.length; j++) {
-						final int b0 = pixels[4 * j] & 0xff;
-						final int b1 = pixels[(4 * j) + 1] & 0xff;
-						final int b2 = pixels[(4 * j) + 2] & 0xff;
-						final int b3 = pixels[(4 * j) + 3] & 0xff;
-						data[j] = (b0 << 24) | (b1 << 16) | (b2 << 8)
-						        | (b3 << 0);
-					}
-					break;
+				final Integer[] data = OmegaImageUtilities.convertByteToImage(
+				        byteWidth, pixels);
+				final int[] image = new int[data.length];
+				for (int i = 0; i < data.length; i++) {
+					image[i] = data[i];
 				}
-				SPTDLLInvoker.callLoadImage(data);
+				SPTDLLInvoker.callLoadImage(image);
 			} catch (final Exception ex) {
 				error = true;
 				OmegaLogFileManager.handleUncaughtException(ex);

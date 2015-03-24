@@ -21,7 +21,8 @@ public class OmegaImageRenderingUtilities {
 	private static final int BLUE_MASK = 0x000000ff;
 	/** The RGB masks. */
 	private static final int[] RGB = { OmegaImageRenderingUtilities.RED_MASK,
-	        OmegaImageRenderingUtilities.GREEN_MASK, OmegaImageRenderingUtilities.BLUE_MASK };
+	        OmegaImageRenderingUtilities.GREEN_MASK,
+	        OmegaImageRenderingUtilities.BLUE_MASK };
 
 	/**
 	 * Creates a buffer image from the specified <code>array</code> of integers.
@@ -44,13 +45,15 @@ public class OmegaImageRenderingUtilities {
 		final DataBuffer j2DBuf = new DataBufferInt(buf, sizeX * sizeY);
 
 		final SinglePixelPackedSampleModel sampleModel = new SinglePixelPackedSampleModel(
-		        DataBuffer.TYPE_INT, sizeX, sizeY, sizeX, OmegaImageRenderingUtilities.RGB);
+		        DataBuffer.TYPE_INT, sizeX, sizeY, sizeX,
+		        OmegaImageRenderingUtilities.RGB);
 
 		final WritableRaster raster = new IntegerInterleavedRaster(sampleModel,
 		        j2DBuf, new Point(0, 0));
 
 		final ColorModel colorModel = new DirectColorModel(bits,
-		        OmegaImageRenderingUtilities.RGB[0], OmegaImageRenderingUtilities.RGB[1],
+		        OmegaImageRenderingUtilities.RGB[0],
+		        OmegaImageRenderingUtilities.RGB[1],
 		        OmegaImageRenderingUtilities.RGB[2]);
 		final BufferedImage image = new BufferedImage(colorModel, raster,
 		        false, null);
