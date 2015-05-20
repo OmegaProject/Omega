@@ -19,6 +19,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
@@ -43,8 +44,8 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 	private final GenericTrajectoriesBrowserContainerInterface pluginPanel;
 
 	public GenericTrajectoryInformationPanel(
-	        final RootPaneContainer parentContainer,
-	        final GenericTrajectoriesBrowserContainerInterface pluginPanel) {
+			final RootPaneContainer parentContainer,
+			final GenericTrajectoriesBrowserContainerInterface pluginPanel) {
 		super(parentContainer);
 		this.pluginPanel = pluginPanel;
 		this.oldMainPanelWidth = 0;
@@ -60,8 +61,8 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 	private void createAndAddWidgets() {
 
 		final Dimension btt_dim = new Dimension(
-		        GenericTrajectoryInformationPanel.ARROW_BTT_WIDTH,
-		        GenericTrajectoryInformationPanel.HEIGHT);
+				GenericTrajectoryInformationPanel.ARROW_BTT_WIDTH,
+				GenericTrajectoryInformationPanel.HEIGHT);
 		this.left_btt = new JButton("<");
 		// this.left_btt.setIcon(this.createArrowIcon(SwingConstants.LEFT));
 		this.left_btt.setPreferredSize(btt_dim);
@@ -85,15 +86,15 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 		// TODO sizes
 
 		final Dimension btt2_dim = new Dimension(
-		        GenericTrajectoryInformationPanel.BTT_WIDTH,
-		        GenericTrajectoryInformationPanel.HEIGHT);
-		this.save_btt = new JButton("Save");
+				GenericTrajectoryInformationPanel.BTT_WIDTH,
+				GenericTrajectoryInformationPanel.HEIGHT);
+		this.save_btt = new JButton(OmegaGUIConstants.SAVE_NAME);
 		this.save_btt.setPreferredSize(btt2_dim);
 		this.save_btt.setSize(btt2_dim);
 		this.save_btt.setEnabled(false);
 		this.mainPanel.add(this.save_btt);
 
-		this.editNote_btt = new JButton("Edit notes");
+		this.editNote_btt = new JButton(OmegaGUIConstants.EDIT_NOTES);
 		this.editNote_btt.setPreferredSize(btt2_dim);
 		this.editNote_btt.setSize(btt2_dim);
 		this.editNote_btt.setEnabled(false);
@@ -127,29 +128,29 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				GenericTrajectoryInformationPanel.this
-				        .manageCurrentTrajectoryChange(-1);
+				.manageCurrentTrajectoryChange(-1);
 			}
 		});
 		this.right_btt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				GenericTrajectoryInformationPanel.this
-				        .manageCurrentTrajectoryChange(1);
+				.manageCurrentTrajectoryChange(1);
 			}
 		});
 		this.name_txt.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(final DocumentEvent evt) {
 				GenericTrajectoryInformationPanel.this
-				        .manageNameChanged(GenericTrajectoryInformationPanel.this.name_txt
-				                .getText());
+				.manageNameChanged(GenericTrajectoryInformationPanel.this.name_txt
+						.getText());
 			}
 
 			@Override
 			public void insertUpdate(final DocumentEvent evt) {
 				GenericTrajectoryInformationPanel.this
-				        .manageNameChanged(GenericTrajectoryInformationPanel.this.name_txt
-				                .getText());
+				.manageNameChanged(GenericTrajectoryInformationPanel.this.name_txt
+						.getText());
 			}
 
 			@Override
@@ -168,7 +169,7 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 	private void manageSaveTrajName() {
 		this.save_btt.setEnabled(false);
 		final OmegaTrajectory currentTraj = this.selectedTrajectories
-		        .get(this.currentIndex);
+				.get(this.currentIndex);
 		currentTraj.setName(this.name_txt.getText());
 		currentTraj.setNameChanged(true);
 		this.pluginPanel.handleTrajectoryNameChanged();
@@ -187,15 +188,15 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 
 		this.oldMainPanelWidth = width;
 		final int name_width = (width / 100)
-		        * GenericTrajectoryInformationPanel.NAME_PERC;
+				* GenericTrajectoryInformationPanel.NAME_PERC;
 		final Dimension name_dim = new Dimension(name_width,
-		        GenericTrajectoryInformationPanel.HEIGHT);
+				GenericTrajectoryInformationPanel.HEIGHT);
 		this.name_txt.setPreferredSize(name_dim);
 		this.name_txt.setSize(name_dim);
 
 		final int info_width = width - name_width;
 		final Dimension info_dim = new Dimension(info_width,
-		        GenericTrajectoryInformationPanel.HEIGHT);
+				GenericTrajectoryInformationPanel.HEIGHT);
 		this.info_lbl.setPreferredSize(info_dim);
 		this.info_lbl.setSize(info_dim);
 
@@ -205,7 +206,7 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 
 	private void manageCurrentTrajectoryChange(final int change) {
 		if ((this.selectedTrajectories == null)
-		        || this.selectedTrajectories.isEmpty()) {
+				|| this.selectedTrajectories.isEmpty()) {
 			this.resetLabels();
 			return;
 		}
@@ -220,13 +221,13 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 
 	private void setCurrentTrajectory() {
 		if ((this.selectedTrajectories == null)
-		        || this.selectedTrajectories.isEmpty()) {
+				|| this.selectedTrajectories.isEmpty()) {
 			this.resetLabels();
 			return;
 		}
 
 		final OmegaTrajectory currentTraj = this.selectedTrajectories
-		        .get(this.currentIndex);
+				.get(this.currentIndex);
 		this.name_txt.setText(currentTraj.getName());
 		this.info_lbl.setText(this.createInfoString(currentTraj));
 		this.save_btt.setEnabled(false);
@@ -246,7 +247,7 @@ public class GenericTrajectoryInformationPanel extends GenericPanel {
 	}
 
 	public void setSelectedTrajectories(
-	        final List<OmegaTrajectory> selectedTrajectories) {
+			final List<OmegaTrajectory> selectedTrajectories) {
 		this.selectedTrajectories.clear();
 		if (selectedTrajectories != null) {
 			this.selectedTrajectories.addAll(selectedTrajectories);

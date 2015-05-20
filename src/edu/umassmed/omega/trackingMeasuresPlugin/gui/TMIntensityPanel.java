@@ -43,27 +43,6 @@ public class TMIntensityPanel extends GenericPanel {
 	public static final int OPTION_MEAN = 1;
 	public static final int OPTION_MAX = 2;
 
-	private static final String TIMEPOINTS_PEAK_INTENSITY = "Peak particle intensity";
-	private static final String TIMEPOINTS_MEAN_INTENSITY = "Mean particle intensity";
-	private static final String TIMEPOINTS_BACKGROUND = "Particle background";
-	private static final String TIMEPOINTS_SNR = "Particle SNR";
-
-	private static final String TRACK_MAX_PEAK_INTENSITY = "Max peak intensity";
-	private static final String TRACK_MEAN_PEAK_INTENSITY = "Mean peak intensity";
-	private static final String TRACK_MIN_PEAK_INTENSITY = "Min peak intensity";
-	private static final String TRACK_MAX_MEAN_INTENSITY = "Max mean intensity";
-	private static final String TRACK_MEAN_MEAN_INTENSITY = "Mean mean intensity";
-	private static final String TRACK_MIN_MEAN_INTENSITY = "Min mean intensity";
-	private static final String TRACK_MAX_BACKGROUND = "Max background";
-	private static final String TRACK_MEAN_BACKGROUND = "Mean background";
-	private static final String TRACK_MIN_BACKGROUND = "Min background";
-	private static final String TRACK_MAX_SNR = "Max SNR";
-	private static final String TRACK_MEAN_SNR = "Mean SNR";
-	private static final String TRACK_MIN_SNR = "Min SNR";
-
-	private static final String TIMEPOINTS = "Timepoints";
-	private static final String TRACKS = "Tracks";
-
 	private final TMPluginPanel pluginPanel;
 
 	private JPanel centerPanel;
@@ -116,22 +95,22 @@ public class TMIntensityPanel extends GenericPanel {
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.yAxis_cmb.addItem(TMIntensityPanel.TIMEPOINTS_PEAK_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TIMEPOINTS_MEAN_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TIMEPOINTS_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TIMEPOINTS_SNR);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MAX_PEAK_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MEAN_PEAK_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MIN_PEAK_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MAX_MEAN_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MEAN_MEAN_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MIN_MEAN_INTENSITY);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MAX_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MEAN_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MIN_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MAX_SNR);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MEAN_SNR);
-		this.yAxis_cmb.addItem(TMIntensityPanel.TRACK_MIN_SNR);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_INT_PEAK);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_INT_MEAN);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_INT_BG);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_INT_SNR);
+		this.yAxis_cmb.addItem(TMConstants.MAX_PEAK_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.AVG_PEAK_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.MIN_PEAK_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.MAX_MEAN_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.AVG_MEAN_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.MIN_MEAN_INTENSITY);
+		this.yAxis_cmb.addItem(TMConstants.MAX_BACKGROUND);
+		this.yAxis_cmb.addItem(TMConstants.AVG_BACKGROUND);
+		this.yAxis_cmb.addItem(TMConstants.MIN_BACKGROUND);
+		this.yAxis_cmb.addItem(TMConstants.MAX_SNR);
+		this.yAxis_cmb.addItem(TMConstants.AVG_SNR);
+		this.yAxis_cmb.addItem(TMConstants.MIN_SNR);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -141,15 +120,15 @@ public class TMIntensityPanel extends GenericPanel {
 		xAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.xAxis_cmb.addItem(TMIntensityPanel.TIMEPOINTS);
-		this.xAxis_cmb.addItem(TMIntensityPanel.TRACKS);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TPT);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TRACK);
 		// this.xAxis_cmb.addItem("Segments");
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.xAxis_cmb);
 
-		final JLabel selection_lbl = new JLabel(
-		        "<html>Indicate a range or max<br>for time or tracks</html>");
+		final JLabel selection_lbl = new JLabel(TMConstants.GRAPH_VAL_RANGE);
+		selection_lbl.setToolTipText(TMConstants.GRAPH_VAL_RANGE_TT);
 		selection_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		selection_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(selection_lbl);
@@ -158,20 +137,20 @@ public class TMIntensityPanel extends GenericPanel {
 		this.selection_txt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.selection_txt);
 
-		final JLabel graphType_lbl = new JLabel("Select graph type");
+		final JLabel graphType_lbl = new JLabel(TMConstants.GRAPH_TYPE);
 		graphType_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		graphType_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.graphType_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.graphType_cmb.addItem(TMGraphProducer.LINE_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.BAR_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.HISTOGRAM_GRAPH_LBL);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_LINE);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_BAR);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_HIST);
 		// this.xAxis_cmb.addItem("Segments");
 		this.graphType_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.graphType_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.graphType_cmb);
 
-		this.drawGraph_btt = new JButton("Draw graph");
+		this.drawGraph_btt = new JButton(TMConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.drawGraph_btt);
@@ -254,7 +233,7 @@ public class TMIntensityPanel extends GenericPanel {
 		this.oldYAxisSelection = yAxisSelection;
 		this.oldXAxisSelection = xAxisSelection;
 		this.oldGraphTypeSelection = graphTypeSelection;
-		if (xAxisSelection.equals(TMIntensityPanel.TIMEPOINTS)) {
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
 			this.handleDrawTimepointsChart();
 		} else {
 			this.handleDrawTracksChart();
@@ -263,61 +242,53 @@ public class TMIntensityPanel extends GenericPanel {
 
 	private void handleDrawTimepointsChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMIntensityPanel.TIMEPOINTS_PEAK_INTENSITY)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_PEAK)) {
 			this.handleTimepointsChart(TMIntensityPanel.OPTION_PEAK_SIGNAL);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TIMEPOINTS_MEAN_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_MEAN)) {
 			this.handleTimepointsChart(TMIntensityPanel.OPTION_MEAN_SIGNAL);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TIMEPOINTS_BACKGROUND)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_BG)) {
 			this.handleTimepointsChart(TMIntensityPanel.OPTION_LOCAL_BACKGROUND);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TIMEPOINTS_SNR)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_SNR)) {
 			this.handleTimepointsChart(TMIntensityPanel.OPTION_LOCAL_SNR);
 		}
 	}
 
 	private void handleDrawTracksChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMIntensityPanel.TRACK_MIN_PEAK_INTENSITY)) {
+		if (yAxisSelection.equals(TMConstants.MIN_PEAK_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_PEAK_SIGNAL,
 			        TMIntensityPanel.OPTION_MIN);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MEAN_PEAK_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.AVG_PEAK_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_PEAK_SIGNAL,
 			        TMIntensityPanel.OPTION_MEAN);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MAX_PEAK_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.MAX_PEAK_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_PEAK_SIGNAL,
 			        TMIntensityPanel.OPTION_MAX);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MIN_MEAN_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.MIN_MEAN_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_MEAN_SIGNAL,
 			        TMIntensityPanel.OPTION_MIN);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MEAN_MEAN_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.AVG_MEAN_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_MEAN_SIGNAL,
 			        TMIntensityPanel.OPTION_MEAN);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MAX_MEAN_INTENSITY)) {
+		} else if (yAxisSelection.equals(TMConstants.MAX_MEAN_INTENSITY)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_MEAN_SIGNAL,
 			        TMIntensityPanel.OPTION_MAX);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TRACK_MIN_BACKGROUND)) {
+		} else if (yAxisSelection.equals(TMConstants.MIN_BACKGROUND)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_BACKGROUND,
 			        TMIntensityPanel.OPTION_MIN);
-		} else if (yAxisSelection
-		        .equals(TMIntensityPanel.TRACK_MEAN_BACKGROUND)) {
+		} else if (yAxisSelection.equals(TMConstants.AVG_BACKGROUND)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_BACKGROUND,
 			        TMIntensityPanel.OPTION_MEAN);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TRACK_MAX_BACKGROUND)) {
+		} else if (yAxisSelection.equals(TMConstants.MAX_BACKGROUND)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_BACKGROUND,
 			        TMIntensityPanel.OPTION_MAX);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TRACK_MIN_SNR)) {
+		} else if (yAxisSelection.equals(TMConstants.MIN_SNR)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_SNR,
 			        TMIntensityPanel.OPTION_MIN);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TRACK_MEAN_SNR)) {
+		} else if (yAxisSelection.equals(TMConstants.AVG_SNR)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_SNR,
 			        TMIntensityPanel.OPTION_MEAN);
-		} else if (yAxisSelection.equals(TMIntensityPanel.TRACK_MAX_SNR)) {
+		} else if (yAxisSelection.equals(TMConstants.MAX_SNR)) {
 			this.handleTracksChart(TMIntensityPanel.OPTION_LOCAL_SNR,
 			        TMIntensityPanel.OPTION_MAX);
 		}
@@ -336,23 +307,17 @@ public class TMIntensityPanel extends GenericPanel {
 		        && ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
 		                .equals(graphTypeSelection)))
 			return;
-		if (xAxisSelection.equals(TMIntensityPanel.TIMEPOINTS)) {
-			if (!yAxisSelection
-			        .equals(TMIntensityPanel.TIMEPOINTS_PEAK_INTENSITY)
-			        && !yAxisSelection
-			                .equals(TMIntensityPanel.TIMEPOINTS_MEAN_INTENSITY)
-			        && !yAxisSelection
-			                .equals(TMIntensityPanel.TIMEPOINTS_BACKGROUND)
-			        && !yAxisSelection.equals(TMIntensityPanel.TIMEPOINTS_SNR))
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
+			if (!yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_PEAK)
+			        && !yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_MEAN)
+			        && !yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_BG)
+			        && !yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_SNR))
 				return;
 		} else {
-			if (yAxisSelection
-			        .equals(TMIntensityPanel.TIMEPOINTS_PEAK_INTENSITY)
-			        || yAxisSelection
-			                .equals(TMIntensityPanel.TIMEPOINTS_MEAN_INTENSITY)
-			        || yAxisSelection
-			                .equals(TMIntensityPanel.TIMEPOINTS_BACKGROUND)
-			        || yAxisSelection.equals(TMIntensityPanel.TIMEPOINTS_SNR))
+			if (yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_PEAK)
+			        || yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_MEAN)
+			        || yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_BG)
+			        || yAxisSelection.equals(TMConstants.GRAPH_NAME_INT_SNR))
 				return;
 		}
 		this.drawGraph_btt.setEnabled(true);
@@ -372,10 +337,10 @@ public class TMIntensityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+		        TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+		        TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMIntesityGraphProducer graphProducer = new TMIntesityGraphProducer(
@@ -401,10 +366,10 @@ public class TMIntensityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+		        TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+		        TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMIntesityGraphProducer graphProducer = new TMIntesityGraphProducer(

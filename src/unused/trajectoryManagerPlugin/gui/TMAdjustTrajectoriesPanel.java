@@ -33,14 +33,13 @@ import javax.swing.SwingUtilities;
 
 import unused.trajectoryManagerPlugin.runnable.TBFrameImagesLoader;
 import unused.trajectoryManagerPlugin.runnable.TBLoaderMessage;
-
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;

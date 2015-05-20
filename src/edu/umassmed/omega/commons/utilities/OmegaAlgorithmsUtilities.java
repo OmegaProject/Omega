@@ -17,32 +17,39 @@ import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaAlgorithmsUtilities {
 
-	private static OmegaAlgorithmSpecification DEFAULT_TRACKING_MEASURES_SPEC;
+	public static OmegaAlgorithmSpecification DEFAULT_IMPORTER_SPEC;
+	private static String DEFAULT_IMPORTER_ALGO_NAME = "Omega default tracks importer";
+	private static Double DEFAULT_IMPORTER_ALGO_VERSION = 1.0;
+	private static String DEFAULT_IMPORTER_ALGO_DESC = "Omega default tracks importer";
+	private static Date DEFAULT_IMPORTER_ALGO_DATE = new GregorianCalendar(
+	        2015, 5, 16).getTime();
+
+	public static OmegaAlgorithmSpecification DEFAULT_TRACKING_MEASURES_SPEC;
 	private static String DEFAULT_TRACKING_MEASURES_ALGO_NAME = "Omega default tracking measures";
 	private static Double DEFAULT_TRACKING_MEASURES_ALGO_VERSION = 1.0;
 	private static String DEFAULT_TRACKING_MEASURES_ALGO_DESC = "Omega default tracking measures";
 	private static Date DEFAULT_TRACKING_MEASURES_ALGO_DATE = new GregorianCalendar(
 	        2014, 29, 1).getTime();
 
-	private static OmegaAlgorithmSpecification DEFAULT_SEGMENTATIONS_SPEC;
+	public static OmegaAlgorithmSpecification DEFAULT_SEGMENTATIONS_SPEC;
 	private static String DEFAULT_SEGMENTATION_ALGO_NAME = "Omega default segmentation";
 	private static Double DEFAULT_SEGMENTATION_ALGO_VERSION = 1.0;
 	private static String DEFAULT_SEGMENTATION_ALGO_DESC = "Omega default segmentation";
 	private static Date DEFAULT_SEGMENTATION_ALGO_DATE = new GregorianCalendar(
 	        2014, 12, 1).getTime();
 
-	private static OmegaAlgorithmSpecification DEFAULT_RELINKING_SPEC;
+	public static OmegaAlgorithmSpecification DEFAULT_RELINKING_SPEC;
 	private static String DEFAULT_RELINKING_ALGO_NAME = "Omega default relinking";
 	private static Double DEFAULT_RELINKING_ALGO_VERSION = 1.0;
 	private static String DEFAULT_RELINKING_ALGO_DESC = "Omega default relinking";
 	private static Date DEFAULT_RELINKING_ALGO_DATE = new GregorianCalendar(
 	        2014, 12, 1).getTime();
 
-	private static OmegaPerson DEFAULT_DEVELOPER;
+	public static OmegaPerson DEFAULT_DEVELOPER;
 
 	static {
 		OmegaAlgorithmsUtilities.DEFAULT_DEVELOPER = new OmegaPerson("Alex",
-		        "RIGANO");
+		        "Rigano");
 		final OmegaAlgorithmInformation algoInfoRelinking = new OmegaAlgorithmInformation(
 		        OmegaAlgorithmsUtilities.DEFAULT_RELINKING_ALGO_NAME,
 		        OmegaAlgorithmsUtilities.DEFAULT_RELINKING_ALGO_VERSION,
@@ -67,6 +74,14 @@ public class OmegaAlgorithmsUtilities {
 		        OmegaAlgorithmsUtilities.DEFAULT_TRACKING_MEASURES_ALGO_DATE);
 		OmegaAlgorithmsUtilities.DEFAULT_TRACKING_MEASURES_SPEC = new OmegaAlgorithmSpecification(
 		        algoInfoTrackingMeasures);
+		final OmegaAlgorithmInformation algoInfoTracksImporter = new OmegaAlgorithmInformation(
+		        OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_ALGO_NAME,
+		        OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_ALGO_VERSION,
+		        OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_ALGO_DESC,
+		        OmegaAlgorithmsUtilities.DEFAULT_DEVELOPER,
+		        OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_ALGO_DATE);
+		OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC = new OmegaAlgorithmSpecification(
+		        algoInfoTracksImporter);
 	}
 
 	public static OmegaAlgorithmSpecification getDefaultRelinkingAlgorithmSpecification() {

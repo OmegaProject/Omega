@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -37,7 +37,9 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingConstants;
 
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
@@ -84,21 +86,31 @@ public class OmegaTopPanel extends GenericPanel {
 		for (final Long id : registeredPlugin.keySet()) {
 			final OmegaPlugin plugin = registeredPlugin.get(id);
 			if (plugin instanceof OmegaSNRPlugin) {
-				this.addPluginToCategoryMap("SNR Estimator", id, plugin);
+				this.addPluginToCategoryMap(
+						OmegaGUIConstants.TOPPANEL_PLUGINMENU_SNR_ESTIMATOR,
+				        id, plugin);
 			} else if (plugin instanceof OmegaTrackingMeasuresPlugin) {
-				this.addPluginToCategoryMap("Tracking Measures", id, plugin);
+				this.addPluginToCategoryMap(
+				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_TRACK_MEASURES,
+				        id, plugin);
 			} else if ((plugin instanceof OmegaTrajectoriesRelinkingPlugin)
 			        || (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
-				this.addPluginToCategoryMap("Trajectories Manager", id, plugin);
+				this.addPluginToCategoryMap(
+				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_TRACK_MANAGER,
+				        id, plugin);
 			} else if (plugin instanceof OmegaParticleTrackingPlugin) {
-				this.addPluginToCategoryMap("Single Particle Tracking", id,
-				        plugin);
+				this.addPluginToCategoryMap(
+				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_PARTICLE_TRACKER,
+				        id, plugin);
 			} else if (plugin instanceof OmegaBrowserPlugin) {
-				this.addPluginToCategoryMap("Data Browser", id, plugin);
+				this.addPluginToCategoryMap(
+				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_DATA_BROWSER, id,
+						plugin);
 			} else if (plugin instanceof OmegaLoaderPlugin) {
-				this.addPluginToCategoryMap("Image Selection", id, plugin);
+				this.addPluginToCategoryMap(
+				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_IMAGE_BROWSER,
+				        id, plugin);
 			}
-
 		}
 		this.createAndAddWidgets();
 
@@ -108,11 +120,12 @@ public class OmegaTopPanel extends GenericPanel {
 	public void reinitializeStrings() {
 		for (final String s : this.buttons.keySet()) {
 			final JButton butt = this.buttons.get(s);
-			final String name = OmegaStringUtilities.getHtmlString(s, " ");
+			final String name = OmegaStringUtilities.getHtmlString(s, " ",
+					SwingConstants.CENTER);
 			butt.setText(name);
 		}
 		for (final OmegaPluginLauncherDialog pluginLauncher : this.pluginsLauncher
-		        .values()) {
+				.values()) {
 			pluginLauncher.reinitializeStrings();
 		}
 	}
@@ -125,9 +138,11 @@ public class OmegaTopPanel extends GenericPanel {
 			this.buttons.put(s, butt);
 			this.add(butt);
 
+			final String title = "Select " + s + " plugin to launch";
+
 			this.pluginsLauncher.put(s,
 			        new OmegaPluginLauncherDialog(this.getParentContainer(),
-			                this.pluginsCategories.get(s)));
+			                title, this.pluginsCategories.get(s)));
 		}
 
 		// for (final Long id : registeredPlugin.keySet()) {

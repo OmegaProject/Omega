@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -27,8 +27,10 @@
  *******************************************************************************/
 package edu.umassmed.omega.omegaDataBrowserPlugin.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -48,6 +50,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
 
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
@@ -55,6 +58,7 @@ import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 
@@ -70,11 +74,13 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 
 	private JTree dataTree;
 
+	private GenericAnalysisInformationPanel infoPanel;
+
 	public OmegaDataBrowserAnalysisBrowserPanel(final RootPaneContainer parent,
-	        final OmegaDataBrowserPluginPanel browserPanel,
-	        final Class<? extends OmegaAnalysisRun> clazz,
-	        final OmegaAnalysisRunContainer selectedAnalysisContainer,
-	        final List<OmegaAnalysisRun> loadedAnalysisRun) {
+			final OmegaDataBrowserPluginPanel browserPanel,
+			final Class<? extends OmegaAnalysisRun> clazz,
+			final OmegaAnalysisRunContainer selectedAnalysisContainer,
+			final List<OmegaAnalysisRun> loadedAnalysisRun) {
 		super(parent);
 
 		this.loadedAnalysisRun = loadedAnalysisRun;
@@ -83,12 +89,12 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 		this.clazz = clazz;
 
 		this.root = new DefaultMutableTreeNode();
-		this.root.setUserObject("Loaded data");
+		this.root.setUserObject(OmegaDataBrowserConstants.LOADED_DATA);
 		this.nodeMap = new HashMap<String, OmegaElement>();
 
-		this.setPreferredSize(new Dimension(200, 500));
-		this.setSize(new Dimension(200, 500));
-		this.setLayout(new BorderLayout());
+		this.setPreferredSize(new Dimension(250, 380));
+		// this.setSize(new Dimension(200, 500));
+		this.setLayout(new GridLayout(2, 1));
 		this.createAndAddWidgets();
 		this.addListeners();
 		this.updateTree(selectedAnalysisContainer);
@@ -99,9 +105,12 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 	}
 
 	private void createAndAddWidgets() {
+		final Dimension dim = new Dimension(this.getWidth() - 20,
+				(this.getHeight() - 10) / 2);
+
 		this.dataTree = new JTree(this.root);
 		this.dataTree.getSelectionModel().setSelectionMode(
-		        TreeSelectionModel.SINGLE_TREE_SELECTION);
+				TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		// this.dataTreeBrowser.setRootVisible(false);
 		final CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
@@ -113,65 +122,107 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 		this.dataTree.setEditable(true);
 
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
-		scrollPane.setBorder(new TitledBorder(this.clazz.getSimpleName()
-		        .replace("Omega", "").replace("Run", "")));
+		final String name = this.clazz.getSimpleName().replace("Omega", "")
+		        .replace("Run", "");
+		final char[] tokens = name.toCharArray();
+		final StringBuffer buf = new StringBuffer();
+		for (final char c : tokens) {
+			if (Character.isUpperCase(c)) {
+				buf.append(" ");
+			}
+			buf.append(c);
+		}
+		buf.deleteCharAt(0);
+		scrollPane.setBorder(new TitledBorder(buf.toString()));
+		scrollPane.setPreferredSize(dim);
 
-		this.add(scrollPane, BorderLayout.CENTER);
+		this.add(scrollPane/* , BorderLayout.NORTH */);
+
+		this.infoPanel = new GenericAnalysisInformationPanel(
+		        this.getParentContainer());
+		this.infoPanel.setPreferredSize(dim);
+
+		this.add(this.infoPanel/* , BorderLayout.SOUTH */);
 	}
 
 	public void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent event) {
-				final TreePath path = OmegaDataBrowserAnalysisBrowserPanel.this.dataTree
-				        .getPathForLocation(event.getX(), event.getY());
-				if (path == null)
-					return;
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-				        .getLastPathComponent();
-				final String s = node.toString();
-				final OmegaElement element = OmegaDataBrowserAnalysisBrowserPanel.this.nodeMap
-				        .get(s);
-				if (element instanceof OmegaAnalysisRunContainer) {
-					OmegaDataBrowserAnalysisBrowserPanel.this.browserPanel
-					        .setSelectedSubAnalysisContainer((OmegaAnalysisRunContainer) element);
-				}
+			public void mouseClicked(final MouseEvent evt) {
+				OmegaDataBrowserAnalysisBrowserPanel.this.handleMouseClicked(
+				        evt.getX(), evt.getY());
 			}
 		});
 		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
 			@Override
-			public void treeNodesChanged(final TreeModelEvent event) {
-				final TreePath parent = event.getTreePath();
-				final Object[] children = event.getChildren();
-				final DefaultTreeModel model = (DefaultTreeModel) event
-				        .getSource();
-
-				DefaultMutableTreeNode node = null;
-				CheckBoxNode c = null; // = (CheckBoxNode)node.getUserObject();
-
-				if ((children != null) && (children.length == 1)) {
-					node = (DefaultMutableTreeNode) children[0];
-					c = (CheckBoxNode) node.getUserObject();
-					final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
-					        .getLastPathComponent();
-					model.nodeChanged(n);
-				} else {
-					node = (DefaultMutableTreeNode) model.getRoot();
-					// c = (CheckBoxNode) node.getUserObject();
-				}
-				// model.nodeChanged(node);
-
-				if (c == null)
-					return;
-
-				OmegaDataBrowserAnalysisBrowserPanel.this.updateLoadedAnalysis(
-				        node, c.getStatus());
+			public void treeNodesChanged(final TreeModelEvent evt) {
+				OmegaDataBrowserAnalysisBrowserPanel.this
+				        .handleTreeNodesChanged(
+				                (DefaultTreeModel) evt.getSource(),
+				                evt.getTreePath(), evt.getChildren());
+			}
+		});
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(final ComponentEvent evt) {
+				OmegaDataBrowserAnalysisBrowserPanel.this.handleResize();
 			}
 		});
 	}
 
+	private void handleResize() {
+		final int width = this.getWidth() - 20;
+		final int height = this.getHeight() - 10;
+
+		// this.scrollPane.setPreferredSize(new Dimension(width, height / 2));
+		this.infoPanel.resizePanel(width, height / 2);
+
+		this.revalidate();
+		this.repaint();
+	}
+
+	private void handleMouseClicked(final int x, final int y) {
+		final TreePath path = OmegaDataBrowserAnalysisBrowserPanel.this.dataTree
+				.getPathForLocation(x, y);
+		if (path == null)
+			return;
+		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
+				.getLastPathComponent();
+		final String s = node.toString();
+		final OmegaElement element = OmegaDataBrowserAnalysisBrowserPanel.this.nodeMap
+				.get(s);
+		if (element instanceof OmegaAnalysisRunContainer) {
+			OmegaDataBrowserAnalysisBrowserPanel.this.browserPanel
+			.setSelectedSubAnalysisContainer((OmegaAnalysisRunContainer) element);
+			this.infoPanel.update((OmegaAnalysisRun) element);
+		}
+	}
+
+	private void handleTreeNodesChanged(final DefaultTreeModel model,
+	        final TreePath treePath, final Object[] children) {
+		DefaultMutableTreeNode node = null;
+		CheckBoxNode c = null; // = (CheckBoxNode)node.getUserObject();
+		if ((children != null) && (children.length == 1)) {
+			node = (DefaultMutableTreeNode) children[0];
+			c = (CheckBoxNode) node.getUserObject();
+			final DefaultMutableTreeNode n = (DefaultMutableTreeNode) treePath
+					.getLastPathComponent();
+			model.nodeChanged(n);
+		} else {
+			node = (DefaultMutableTreeNode) model.getRoot();
+			// c = (CheckBoxNode) node.getUserObject();
+		}
+		// model.nodeChanged(node);
+
+		if (c == null)
+			return;
+
+		OmegaDataBrowserAnalysisBrowserPanel.this.updateLoadedAnalysis(node,
+		        c.getStatus());
+	}
+
 	private void updateLoadedAnalysis(final DefaultMutableTreeNode node,
-	        final CheckBoxStatus status) {
+			final CheckBoxStatus status) {
 		final String s = node.toString();
 		final OmegaElement element = this.nodeMap.get(s);
 		if (status == CheckBoxStatus.SELECTED) {
@@ -183,7 +234,7 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 	}
 
 	public void updateTree(
-	        final OmegaAnalysisRunContainer selectedAnalysisContainer) {
+			final OmegaAnalysisRunContainer selectedAnalysisContainer) {
 		this.dataTree.setRootVisible(true);
 
 		String s = null;
@@ -193,16 +244,16 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 		this.nodeMap.clear();
 		if (selectedAnalysisContainer != null) {
 			for (final OmegaAnalysisRun analysisRun : selectedAnalysisContainer
-			        .getAnalysisRuns()) {
+					.getAnalysisRuns()) {
 				if (!this.clazz.isInstance(analysisRun)) {
 					continue;
 				}
 				final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
 				s = "[" + analysisRun.getElementID() + "] "
-				        + analysisRun.getName();
+						+ analysisRun.getName();
 				this.nodeMap.put(s, analysisRun);
 				status = this.loadedAnalysisRun.contains(analysisRun) ? CheckBoxStatus.SELECTED
-				        : CheckBoxStatus.DESELECTED;
+						: CheckBoxStatus.DESELECTED;
 				node.setUserObject(new CheckBoxNode(s, status));
 				this.root.add(node);
 			}

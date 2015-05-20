@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -38,25 +38,34 @@ import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 public class OmegaParticleDetectionRun extends OmegaAnalysisRun {
 
 	private final Map<OmegaFrame, List<OmegaROI>> resultingParticles;
+	private final Map<OmegaROI, Map<String, Object>> resultingParticlesValues;
 
 	public OmegaParticleDetectionRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
-	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles) {
+	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
+			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
 		super(owner, algorithmSpec);
 
 		this.resultingParticles = resultingParticles;
+		this.resultingParticlesValues = resultingParticlesValues;
 	}
 
 	public OmegaParticleDetectionRun(final OmegaExperimenter owner,
 	        final OmegaAlgorithmSpecification algorithmSpec,
 	        final Date timeStamps, final String name,
-	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles) {
+	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
+			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
 		super(owner, algorithmSpec, timeStamps, name);
 
 		this.resultingParticles = resultingParticles;
+		this.resultingParticlesValues = resultingParticlesValues;
 	}
 
 	public Map<OmegaFrame, List<OmegaROI>> getResultingParticles() {
 		return this.resultingParticles;
+	}
+
+	public Map<OmegaROI, Map<String, Object>> getResultingParticlesValues() {
+		return this.resultingParticlesValues;
 	}
 }

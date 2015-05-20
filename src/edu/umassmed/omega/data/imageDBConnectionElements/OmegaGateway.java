@@ -75,7 +75,7 @@ public abstract class OmegaGateway {
 	public abstract void setCompressionLevel(final Long pixelsID,
 	        float compression);
 
-	public abstract double getTotalT(final Long pixelsID, final int z,
+	public abstract double getDeltaT(final Long pixelsID, final int z,
 	        final int t, final int c);
 
 	public abstract int getByteWidth(Long pixelsID);

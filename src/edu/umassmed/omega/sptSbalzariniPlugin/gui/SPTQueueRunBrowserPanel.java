@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -52,6 +52,7 @@ import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.coreElements.OmegaElement;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTQueueRunBrowserPanel extends GenericPanel {
 
@@ -67,13 +68,13 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 	private boolean adjusting = false;
 
 	public SPTQueueRunBrowserPanel(final RootPaneContainer parentContainer,
-	        final SPTPluginPanel sptPanel) {
+			final SPTPluginPanel sptPanel) {
 		super(parentContainer);
 
 		this.sptPanel = sptPanel;
 
 		this.root = new DefaultMutableTreeNode();
-		this.root.setUserObject("Run queue");
+		this.root.setUserObject(SPTConstants.RUN_QUEUE);
 		this.nodeMap = new HashMap<String, OmegaElement>();
 		// this.updateTree(images);
 
@@ -87,7 +88,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 
 		this.dataTree = new JTree(this.root);
 		this.dataTree.getSelectionModel().setSelectionMode(
-		        TreeSelectionModel.SINGLE_TREE_SELECTION);
+				TreeSelectionModel.SINGLE_TREE_SELECTION);
 		// this.dataTreeBrowser.setRootVisible(false);
 		// final CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
 		// this.dataTree.setCellRenderer(renderer);
@@ -100,7 +101,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 		// this.dataTree.setEditable(true);
 
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
-		scrollPane.setBorder(new TitledBorder("Run queue"));
+		scrollPane.setBorder(new TitledBorder(SPTConstants.RUN_QUEUE));
 
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
@@ -110,21 +111,21 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 			@Override
 			public void mouseClicked(final MouseEvent event) {
 				final TreePath path = SPTQueueRunBrowserPanel.this.dataTree
-				        .getPathForLocation(event.getX(), event.getY());
+						.getPathForLocation(event.getX(), event.getY());
 				if (path == null) {
 					SPTQueueRunBrowserPanel.this.sptPanel
-					        .updateSelectedImage(null);
+					.updateSelectedImage(null);
 					SPTQueueRunBrowserPanel.this.deselect();
 					return;
 				}
 				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-				        .getLastPathComponent();
+						.getLastPathComponent();
 				final String s = node.toString();
 				final OmegaElement element = SPTQueueRunBrowserPanel.this.nodeMap
-				        .get(s);
+						.get(s);
 				if (element instanceof OmegaImage) {
 					SPTQueueRunBrowserPanel.this.sptPanel
-					        .updateSelectedImage((OmegaImage) element);
+					.updateSelectedImage((OmegaImage) element);
 				}
 			}
 		});
@@ -137,7 +138,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 				final TreePath parent = event.getTreePath();
 				final Object[] children = event.getChildren();
 				final DefaultTreeModel model = (DefaultTreeModel) event
-				        .getSource();
+						.getSource();
 
 				DefaultMutableTreeNode node;
 				CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
@@ -145,7 +146,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 					node = (DefaultMutableTreeNode) children[0];
 					c = (CheckBoxNode) node.getUserObject();
 					final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
-					        .getLastPathComponent();
+							.getLastPathComponent();
 
 					model.nodeChanged(n);
 				} else {
@@ -169,7 +170,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 	}
 
 	public void updateTree(
-	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess) {
+			final Map<OmegaImage, List<OmegaParameter>> imagesToProcess) {
 		this.dataTree.setRootVisible(true);
 		String s = null;
 		final CheckBoxStatus status = CheckBoxStatus.DESELECTED;

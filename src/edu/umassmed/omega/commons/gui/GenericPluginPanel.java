@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -36,11 +36,12 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.interfaces.GenericPluginPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.core.gui.OmegaGUIFrame;
 
 public abstract class GenericPluginPanel extends GenericPanel implements
         GenericPluginPanelInterface {
@@ -54,7 +55,7 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 
 	private JMenuBar menu;
 	private JMenu fileMenu, windowMenu, help;
-	private JMenuItem quitMItem, toggleWindowMItem;
+	private JMenuItem closeMItem, aboutMItem, toggleWindowMItem;
 
 	public GenericPluginPanel(final RootPaneContainer parent,
 	        final OmegaPlugin plugin, final int index) {
@@ -72,12 +73,16 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 	private void createMenu() {
 		this.menu = new JMenuBar();
 
-		this.fileMenu = new JMenu("File");
-		this.quitMItem = new JMenuItem("Close");
-		this.fileMenu.add(this.quitMItem);
+		this.fileMenu = new JMenu(OmegaGUIConstants.MENU_FILE);
+		this.aboutMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_ABOUT);
+		this.fileMenu.add(this.aboutMItem);
+		this.fileMenu.add(new JSeparator());
+		this.closeMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_CLOSE);
+		this.fileMenu.add(this.closeMItem);
 
-		this.windowMenu = new JMenu("Window");
-		this.toggleWindowMItem = new JMenuItem("Detach window from workspace");
+		this.windowMenu = new JMenu(OmegaGUIConstants.MENU_VIEW);
+		this.toggleWindowMItem = new JMenuItem(
+		        OmegaGUIConstants.MENU_WORKSPACE_DOCK_SINGLE);
 		this.windowMenu.add(this.toggleWindowMItem);
 
 		this.menu.add(this.fileMenu);
@@ -92,9 +97,11 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 	public void setIsAttached(final boolean isAttached) {
 		this.isAttached = isAttached;
 		if (isAttached) {
-			this.toggleWindowMItem.setText("Detach window from workspace");
+			this.toggleWindowMItem
+			        .setText(OmegaGUIConstants.MENU_WORKSPACE_UNDOCK_SINGLE);
 		} else {
-			this.toggleWindowMItem.setText("Attach window to workspace");
+			this.toggleWindowMItem
+			        .setText(OmegaGUIConstants.MENU_WORKSPACE_DOCK_SINGLE);
 		}
 	}
 
@@ -103,7 +110,7 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 	}
 
 	private void addListeners() {
-		this.quitMItem.addActionListener(new ActionListener() {
+		this.closeMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
 				GenericPluginPanel.this.onCloseOperationFromMenu();
@@ -118,12 +125,14 @@ public abstract class GenericPluginPanel extends GenericPanel implements
 				final long newValue = GenericPluginPanel.this.index;
 				if (parent instanceof JFrame) {
 					final JFrame frame = (JFrame) parent;
-					frame.firePropertyChange(OmegaGUIFrame.PROP_TOGGLEWINDOW,
+					frame.firePropertyChange(
+							OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
 					        oldValue, newValue);
 				} else if (parent instanceof JInternalFrame) {
 					final JInternalFrame intFrame = (JInternalFrame) parent;
 					intFrame.firePropertyChange(
-					        OmegaGUIFrame.PROP_TOGGLEWINDOW, oldValue, newValue);
+					        OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
+							oldValue, newValue);
 				}
 			}
 		});

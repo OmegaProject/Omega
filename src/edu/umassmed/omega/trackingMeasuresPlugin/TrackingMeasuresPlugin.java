@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -38,11 +38,11 @@ import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaTrackingMeasuresPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
@@ -62,12 +62,7 @@ public class TrackingMeasuresPlugin extends OmegaTrackingMeasuresPlugin
 
 	@Override
 	public String getName() {
-		return "Tracking Measures";
-	}
-
-	@Override
-	public String getShortName() {
-		return "TM";
+		return "OMEGA Tracking Measures";
 	}
 
 	@Override
@@ -81,7 +76,7 @@ public class TrackingMeasuresPlugin extends OmegaTrackingMeasuresPlugin
 	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TMPluginPanel panel = new TMPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(),
-		        this.getLoadedAnalysisRuns(), index);
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -99,12 +94,12 @@ public class TrackingMeasuresPlugin extends OmegaTrackingMeasuresPlugin
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMPluginPanel specificPanel = (TMPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getLoadedAnalysisRuns());
+					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
 	@Override
-	public void selectImage(final OmegaImage image) {
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMPluginPanel specificPanel = (TMPluginPanel) panel;
 			specificPanel.selectImage(image);
@@ -157,13 +152,8 @@ public class TrackingMeasuresPlugin extends OmegaTrackingMeasuresPlugin
 	}
 
 	@Override
-	public String getAlgorithmName() {
-		return "Tracking Measures";
-	}
-
-	@Override
 	public String getAlgorithmDescription() {
-		return "Default OMEGA tracking measures";
+		return "To be defined";
 	}
 
 	@Override
@@ -183,6 +173,6 @@ public class TrackingMeasuresPlugin extends OmegaTrackingMeasuresPlugin
 
 	@Override
 	public String getDescription() {
-		return "Default OMEGA tracking measures";
+		return "To be defined";
 	}
 }

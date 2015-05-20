@@ -28,10 +28,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.util.ShapeUtilities;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMConstants;
 import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMMotionTypeClassificationPanel;
 
 public class TMMotionTypeClassificationGraphProducer implements Runnable {
@@ -129,7 +130,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareLinearMSDGraph() {
-		final String title = "Linear MSD plot";
+		final String title = TMConstants.GRAPH_MTC_NAME_MSD;
 		final XYSeries serie = new XYSeries(title, false);
 		if (this.muMap.containsKey(this.track)) {
 			final Double[] msd = this.muMap.get(this.track)[2];
@@ -153,8 +154,8 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 			}
 		}
 
-		final NumberAxis xAxis = new NumberAxis("Delta T");
-		final NumberAxis yAxis = new NumberAxis("Linear MSD");
+		final NumberAxis xAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSD_X);
+		final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSD_Y);
 
 		final XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		xySeriesCollection.addSeries(serie);
@@ -179,7 +180,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareLogMSDGraph() {
-		final String title = "Log MSD plot";
+		final String title = TMConstants.GRAPH_MTC_NAME_MSD;
 		final XYSeries serie = new XYSeries(title, false);
 		if (this.logMuMap.containsKey(this.track)) {
 			final Double[] msd = this.logMuMap.get(this.track)[2];
@@ -203,8 +204,8 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 			}
 		}
 
-		final NumberAxis xAxis = new NumberAxis("Log delta T");
-		final NumberAxis yAxis = new NumberAxis("Log MSD");
+		final NumberAxis xAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSD_X);
+		final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSD_Y);
 
 		final XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		xySeriesCollection.addSeries(serie);
@@ -229,7 +230,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareMSSFromLogGraph() {
-		final String title = "Log MSS plot";
+		final String title = TMConstants.GRAPH_MTC_NAME_MSS;
 		final XYSeries serie = new XYSeries(title, false);
 		final XYSeries upperbound = new XYSeries("Upperbound");
 		final XYSeries lowerbound = new XYSeries("Lowerbound");
@@ -261,8 +262,8 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 			}
 		}
 
-		final NumberAxis xAxis = new NumberAxis("Order moment");
-		final NumberAxis yAxis = new NumberAxis("Gamma");
+		final NumberAxis xAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSS_X);
+		final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSS_Y);
 
 		final XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		xySeriesCollection.addSeries(serie);
@@ -303,7 +304,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareMSSGraph() {
-		final String title = "Linear MSS plot";
+		final String title = TMConstants.GRAPH_MTC_NAME_MSS;
 		final XYSeries serie = new XYSeries(title, false);
 		final XYSeries upperbound = new XYSeries("Upperbound");
 		final XYSeries lowerbound = new XYSeries("Lowerbound");
@@ -335,8 +336,8 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 			}
 		}
 
-		final NumberAxis xAxis = new NumberAxis("Order moment");
-		final NumberAxis yAxis = new NumberAxis("Gamma");
+		final NumberAxis xAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSS_X);
+		final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_MTC_LAB_MSS_Y);
 
 		final XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
 		xySeriesCollection.addSeries(serie);
@@ -375,7 +376,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareSMSSvsDFromLogGraph() {
-		final String title = "Log SMSS vs D plot";
+		final String title = TMConstants.GRAPH_MTC_NAME_SMSS_D;
 		// final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		final XYIntervalSeries series = new XYIntervalSeries(
 		        this.track.getName());
@@ -383,7 +384,13 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 		        && this.smssFromLogMap.containsKey(this.track)) {
 			final Double d = this.gammaDFromLogMap.get(this.track)[2][3];
 			final Double smss = this.smssFromLogMap.get(this.track)[0];
-			series.add(d, d - 0.1, d + 0.1, smss, smss - 0.1, smss + 0.1);
+			final double deltaD = d / 3;
+			final double deltaSMSS = smss / 3;
+			final double dMinus = d - deltaD;
+			final double dPlus = d + deltaD;
+			final double smssMinus = smss - deltaSMSS;
+			final double smssPlus = smss + deltaSMSS;
+			series.add(d, dMinus, dPlus, smss, smssMinus, smssPlus);
 		}
 
 		final double partial = 100.0;
@@ -404,9 +411,11 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 			this.completed = 100.0;
 		}
 
-		final NumberAxis numberaxisX = new LogarithmicAxis("D");
+		final NumberAxis numberaxisX = new LogarithmicAxis(
+				TMConstants.GRAPH_MTC_LAB_SMSS_D_X);
 		numberaxisX.setTickUnit(new NumberTickUnit(1));
-		final NumberAxis numberaxisY = new NumberAxis("SMSS");
+		final NumberAxis numberaxisY = new NumberAxis(
+				TMConstants.GRAPH_MTC_LAB_SMSS_D_Y);
 		numberaxisY.setRange(0.0, 1.0);
 		numberaxisY.setTickUnit(new NumberTickUnit(0.1));
 
@@ -450,7 +459,7 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 	}
 
 	private void prepareTrackGraph() {
-		final String title = "Track";
+		final String title = TMConstants.GRAPH_MTC_NAME_TRACK;
 		final double partial = 100.0 / this.track.getLength();
 		final double increase = new BigDecimal(partial).setScale(2,
 		        RoundingMode.HALF_UP).doubleValue();
@@ -490,9 +499,11 @@ public class TMMotionTypeClassificationGraphProducer implements Runnable {
 		}
 		max += 2.5;
 
-		final NumberAxis xAxis = new NumberAxis("X");
+		final NumberAxis xAxis = new NumberAxis(
+				TMConstants.GRAPH_MTC_LAB_TRACK_X);
 		xAxis.setRange(-max, max);
-		final NumberAxis yAxis = new NumberAxis("Y");
+		final NumberAxis yAxis = new NumberAxis(
+				TMConstants.GRAPH_MTC_LAB_TRACK_Y);
 		yAxis.setRange(-max, max);
 
 		final XYSeriesCollection xySeriesCollection = new XYSeriesCollection();

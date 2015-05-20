@@ -58,7 +58,7 @@ import javax.swing.event.ChangeListener;
 import unused.trajectoryManagerPlugin.actions.TMAction;
 import unused.trajectoryManagerPlugin.actions.TMAdjustAction;
 import unused.trajectoryManagerPlugin.actions.TMSegmentAction;
-
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
@@ -73,7 +73,6 @@ import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.commons.utilities.OmegaAnalysisRunContainerUtilities;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;

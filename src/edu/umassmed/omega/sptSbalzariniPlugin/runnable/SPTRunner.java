@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -36,27 +36,30 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTRunner implements SPTRunnable {
 	private static final String RUNNER = "Runner service: ";
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
-	final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories;
-	final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles;
+	private final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories;
+	private final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles;
+	private final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues;
 
 	private final OmegaGateway gateway;
 	private final boolean isDebugMode;
-	private boolean isJobCompleted, isKilled;
+	private boolean isJobCompleted, isTerminated;
 
 	private SPTLoader loader;
 	private SPTWriter writer;
@@ -70,15 +73,16 @@ public class SPTRunner implements SPTRunnable {
 		this.isDebugMode = true;
 
 		this.isJobCompleted = false;
-		this.isKilled = false;
+		this.isTerminated = false;
 
-		this.resultingTrajectories = new HashMap<OmegaImage, List<OmegaTrajectory>>();
-		this.resultingParticles = new HashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingTrajectories = new LinkedHashMap<OmegaImage, List<OmegaTrajectory>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
 	public SPTRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
-	        final OmegaGateway gateway) {
+			final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
+			final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = new LinkedHashMap<>(imagesToProcess);
@@ -88,8 +92,9 @@ public class SPTRunner implements SPTRunnable {
 
 		this.isJobCompleted = false;
 
-		this.resultingTrajectories = new HashMap<OmegaImage, List<OmegaTrajectory>>();
-		this.resultingParticles = new HashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingTrajectories = new LinkedHashMap<OmegaImage, List<OmegaTrajectory>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
 	@Override
@@ -131,7 +136,7 @@ public class SPTRunner implements SPTRunnable {
 	private void normalModeRun() {
 		for (final OmegaImage image : this.imagesToProcess.keySet()) {
 			final List<OmegaParameter> parameters = this.imagesToProcess
-			        .get(image);
+					.get(image);
 			// while (it.hasNext()) {
 			// final ImageDataHandler imageDataHandler = it.next();
 
@@ -152,44 +157,65 @@ public class SPTRunner implements SPTRunnable {
 
 			final int x = defaultPixels.getSizeX();
 			final int y = defaultPixels.getSizeY();
-			final int z = defaultPixels.getSelectedZ();
 			final int t = defaultPixels.getSizeT();
-			final int c = defaultPixels.getSelectedC();
 
 			if (t < 2) {
 				// TODO throw error and skip image or stop thread?
 			}
-			if ((c == 0) || (c > 1)) {
-				// TODO throw error and skip image or stop thread?
-			}
+			// if ((c == 0) || (c > 1)) {
+			// TODO throw error and skip image or stop thread?
+			// }
 
 			// TODO check these data?
-			defaultPixels.getPixelSizeX();
-			defaultPixels.getPixelSizeY();
-			this.gateway.getTotalT(pixelsID, z, t, c);
+			// defaultPixels.getPixelSizeX();
+			// defaultPixels.getPixelSizeY();
+			// this.gateway.getDeltaT(pixelsID, z, t, c);
+
+			// PARAM
+			Integer minPoints = null;
+			Integer z = null, c = null;
+			String radius = null, cutoff = null, percentile = null, displacement = null, linkrange = null;
+			for (int i = 0; i < parameters.size(); i++) {
+				final OmegaParameter param = parameters.get(i);
+				if (param.getName() == SPTConstants.PARAM_MINPOINTS) {
+					minPoints = (Integer) param.getValue();
+				} else if (param.getName() == SPTConstants.PARAM_RADIUS) {
+					radius = param.getStringValue();
+				} else if (param.getName() == SPTConstants.PARAM_CUTOFF) {
+					cutoff = param.getStringValue();
+				} else if (param.getName() == SPTConstants.PARAM_PERCENTILE) {
+					percentile = param.getStringValue();
+				} else if (param.getName() == SPTConstants.PARAM_DISPLACEMENT) {
+					displacement = param.getStringValue();
+				} else if (param.getName() == SPTConstants.PARAM_LINKRANGE) {
+					linkrange = param.getStringValue();
+				} else if (param.getName() == SPTConstants.PARAM_ZSECTION) {
+					z = (int) param.getValue();
+				} else if (param.getName() == SPTConstants.PARAM_CHANNEL) {
+					c = (int) param.getValue();
+				} else
+					return;
+			}
+
+			if ((radius == null) || (cutoff == null) || (percentile == null)
+					|| (displacement == null) || (linkrange == null))
+				// TODO ERROR
+				return;
+
+			if ((z == null) || (c == null))
+				// TODO ERROR
+				return;
 
 			boolean dllInit = true;
-			int minPoints = -1;
 			try {
 				// init the Runner
 				SPTDLLInvoker.callInitRunner();
 
-				for (int i = 0; i < parameters.size(); i++) {
-					final OmegaParameter param = parameters.get(i);
-
-					if (param.getName() == "minPoints") {
-						minPoints = (Integer) param.getValue();
-					} else {
-						final String value = param.getStringValue();
-						if (value != "") {
-							SPTDLLInvoker.callSetParameter("p" + i, value);
-						} else {
-							// TODO throw error
-						}
-
-					}
-				}
-
+				SPTDLLInvoker.callSetParameter("p0", radius);
+				SPTDLLInvoker.callSetParameter("p1", cutoff);
+				SPTDLLInvoker.callSetParameter("p2", percentile);
+				SPTDLLInvoker.callSetParameter("p3", displacement);
+				SPTDLLInvoker.callSetParameter("p4", linkrange);
 				SPTDLLInvoker.callSetParameter("p5", String.valueOf(t));
 				SPTDLLInvoker.callSetParameter("p6", String.valueOf(x));
 				SPTDLLInvoker.callSetParameter("p7", String.valueOf(y));
@@ -199,17 +225,17 @@ public class SPTRunner implements SPTRunnable {
 
 				// Max val
 				final int bits = (int) Math.pow(2,
-				        this.gateway.getByteWidth(pixelsID) * 8);
+						this.gateway.getByteWidth(pixelsID) * 8);
 
 				SPTDLLInvoker
-				        .callSetParameter("p9", String.format("%s.", bits));
+				.callSetParameter("p9", String.format("%s.", bits));
 				// SPTDLLInvoker.callSetParameter("p9", "255.");
 
 				// set the minimun number of points
 				// SPTDLLInvoker.callSetMinPoints(minPoints);
 
 				this.updateStatusSync(SPTRunner.RUNNER
-				        + " correctly initialized.", false);
+						+ " correctly initialized.", false);
 
 				// start the Runner
 				SPTDLLInvoker.callStartRunner();
@@ -220,7 +246,7 @@ public class SPTRunner implements SPTRunnable {
 
 			if (!dllInit) {
 				this.updateStatusSync(SPTRunner.RUNNER
-				        + " unable to initialize dll.", false);
+						+ " unable to initialize dll.", false);
 				return;
 			}
 			// TODO update panel with running image name and other available
@@ -235,7 +261,7 @@ public class SPTRunner implements SPTRunnable {
 
 			// load the images into the SPT DLL
 			this.loader = new SPTLoader(this.displayerPanel, image, z, c,
-			        this.gateway);
+					this.gateway);
 			final Thread loaderT = new Thread(this.loader);
 			loaderT.setName(this.loader.getClass().getSimpleName());
 			OmegaLogFileManager.registerAsExceptionHandlerOnThread(loaderT);
@@ -251,10 +277,10 @@ public class SPTRunner implements SPTRunnable {
 			threads.add(writerT);
 
 			while (!this.loader.isJobCompleted()
-			        || !this.writer.isJobCompleted()) {
+					|| !this.writer.isJobCompleted()) {
 				this.updateStatusSync(SPTRunner.RUNNER + " waiting results.",
-				        false);
-				if (this.isKilled)
+						false);
+				if (this.isTerminated)
 					return;
 			}
 
@@ -264,6 +290,7 @@ public class SPTRunner implements SPTRunnable {
 			if (trackList != null) {
 				final List<OmegaTrajectory> tracks = (List<OmegaTrajectory>) trackList;
 				int counter = 0;
+				final Map<OmegaROI, Map<String, Object>> values = new LinkedHashMap<OmegaROI, Map<String, Object>>();
 				for (final OmegaTrajectory track : tracks) {
 					track.setName(track.getName() + "_" + counter);
 					// System.out.println("Track: " + track.getName());
@@ -283,12 +310,23 @@ public class SPTRunner implements SPTRunnable {
 						}
 						framePoints.add(point);
 						particles.put(frame, framePoints);
+
+						final OmegaParticle p = (OmegaParticle) point;
+						final float m0 = Float
+						        .valueOf(String.valueOf(p.getM0()));
+						final float m2 = Float
+						        .valueOf(String.valueOf(p.getM2()));
+						final Map<String, Object> particleValues = new LinkedHashMap<String, Object>();
+						particleValues.put("m0", m0);
+						particleValues.put("m2", m2);
+						values.put(point, particleValues);
 					}
 					if (track.getLength() < minPoints) {
 						continue;
 					}
 					trajectories.add(track);
 				}
+				this.resultingParticlesValues.put(image, values);
 				this.resultingParticles.put(image, particles);
 				this.resultingTrajectories.put(image, trajectories);
 			} else {
@@ -378,8 +416,12 @@ public class SPTRunner implements SPTRunnable {
 		return this.resultingTrajectories;
 	}
 
-	public void kill() {
-		this.isKilled = true;
+	public Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> getImageResultingParticlesValues() {
+		return this.resultingParticlesValues;
+	}
+
+	public void terminate() {
+		this.isTerminated = true;
 		this.loader.kill();
 		this.writer.kill();
 	}
@@ -390,8 +432,8 @@ public class SPTRunner implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTRunner.this.displayerPanel
-					        .updateMessageStatus(new SPTMessageEvent(msg,
-					                SPTRunner.this, ended));
+					.updateMessageStatus(new SPTMessageEvent(msg,
+							SPTRunner.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -406,8 +448,8 @@ public class SPTRunner implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTRunner.this.displayerPanel
-				        .updateMessageStatus(new SPTMessageEvent(msg,
-				                SPTRunner.this, ended));
+				.updateMessageStatus(new SPTMessageEvent(msg,
+						SPTRunner.this, ended));
 			}
 		});
 	}

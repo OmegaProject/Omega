@@ -43,6 +43,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+
 public class OmegaOptionsFileManager {
 	private static String WORKING_DIR_FILE_IDENT = "Omega current working directory";
 	private static String CONFIG_FILE_IDENT = "Omega configuration file";

@@ -25,10 +25,11 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMConstants;
 import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMMobilityPanel;
 
 public class TMMobilityGraphProducer extends TMGraphProducer {
@@ -48,18 +49,18 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 	private ChartPanel graphPanel;
 
 	public TMMobilityGraphProducer(
-	        final TMMobilityPanel mobilityPanel,
-	        final int graphType,
-	        final int mobilityOption,
-	        final boolean isTimepointsGraph,
-	        final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final Map<OmegaTrajectory, List<Double>> distanceMap,
-	        final Map<OmegaTrajectory, List<Double>> displacementMap,
-	        final Map<OmegaTrajectory, Double> maxDisplacementMap,
-	        final Map<OmegaTrajectory, Integer> totalTimeTraveledMap,
-	        final Map<OmegaTrajectory, List<Double>> confinementRatioMap,
-	        final Map<OmegaTrajectory, List<Double[]>> anglesAndDirectionalChangesMap) {
+			final TMMobilityPanel mobilityPanel,
+			final int graphType,
+			final int mobilityOption,
+			final boolean isTimepointsGraph,
+			final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final Map<OmegaTrajectory, List<Double>> distanceMap,
+			final Map<OmegaTrajectory, List<Double>> displacementMap,
+			final Map<OmegaTrajectory, Double> maxDisplacementMap,
+			final Map<OmegaTrajectory, Integer> totalTimeTraveledMap,
+			final Map<OmegaTrajectory, List<Double>> confinementRatioMap,
+			final Map<OmegaTrajectory, List<Double[]>> anglesAndDirectionalChangesMap) {
 		super(graphType, segmentsMap);
 		this.mobilityPanel = mobilityPanel;
 		this.mobilityOption = mobilityOption;
@@ -88,25 +89,25 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 		String title;
 		switch (this.mobilityOption) {
 		case TMMobilityPanel.OPTION_DISPLACEMENT:
-			title = "Total net displacement";
+			title = TMConstants.GRAPH_NAME_TOT_DISP;
 			break;
 		case TMMobilityPanel.OPTION_MAX_DISPLACEMENT:
-			title = "Max displacement";
+			title = TMConstants.GRAPH_NAME_MAX_DISP;
 			break;
 		case TMMobilityPanel.OPTION_TOTAL_TIME_TRAVELED:
-			title = "Total time traveled";
+			title = TMConstants.GRAPH_NAME_TOT_TIME;
 			break;
 		case TMMobilityPanel.OPTION_CONFINEMENT_RATIO:
-			title = "Confinement ratio";
+			title = TMConstants.GRAPH_NAME_CONFRATIO;
 			break;
 		case TMMobilityPanel.OPTION_LOCAL_ANGLES:
-			title = "Local angles";
+			title = TMConstants.GRAPH_NAME_ANGLES;
 			break;
 		case TMMobilityPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
-			title = "Local directional changes";
+			title = TMConstants.GRAPH_NAME_ANGLES_LOCAL;
 			break;
 		default:
-			title = "Total distance traveled";
+			title = TMConstants.GRAPH_NAME_TOT_DIST;
 		}
 		return title;
 	}
@@ -115,23 +116,25 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 		String yAxisTitle;
 		switch (this.mobilityOption) {
 		case TMMobilityPanel.OPTION_DISPLACEMENT:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_TOT_DISP;
+			break;
 		case TMMobilityPanel.OPTION_MAX_DISPLACEMENT:
-			yAxisTitle = "Displacement";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_MAX_DISP;
 			break;
 		case TMMobilityPanel.OPTION_TOTAL_TIME_TRAVELED:
-			yAxisTitle = "Time";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_TOT_TIME;
 			break;
 		case TMMobilityPanel.OPTION_CONFINEMENT_RATIO:
-			yAxisTitle = "Ratio";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_CONFRATIO;
 			break;
 		case TMMobilityPanel.OPTION_LOCAL_ANGLES:
-			yAxisTitle = "Angle";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_ANGLES;
 			break;
 		case TMMobilityPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
-			yAxisTitle = "Directional change";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_ANGLES_LOCAL;
 			break;
 		default:
-			yAxisTitle = "Distance";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_TOT_DIST;
 		}
 		return yAxisTitle;
 	}
@@ -186,7 +189,7 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 		}
 		final double partial = 100.0 / this.getSegmentsMap().keySet().size();
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		final CategoryItemRenderer renderer = this.getTracksRenderer();
 		final List<Double> histValues = new ArrayList<>();
 		for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -214,7 +217,8 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 			((HistogramDataset) dataset).addSeries(title, data, data.length);
 		}
 
-		final CategoryAxis xAxis = new CategoryAxis("Tracks");
+		final CategoryAxis xAxis = new CategoryAxis(
+				TMConstants.GRAPH_LAB_X_TRACK);
 		final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
 
 		// renderer.setSeriesFillPaint(0, Color.black);
@@ -223,8 +227,8 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
 			chart = ChartFactory.createHistogram(title, this.getYAxisTitle(),
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+					TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+					PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
@@ -253,9 +257,9 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 			dataset = new DefaultCategoryDataset();
 		}
 		final double partial = 100.0 / (this.maxT * this.getSegmentsMap()
-		        .keySet().size());
+				.keySet().size());
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		for (Integer t = 0; t < this.maxT; t++) {
 			final List<Double> histValues = new ArrayList<>();
 			for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -304,14 +308,15 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 
 		Map<String, Map<Integer, Boolean>> renderingMap = null;
 		if ((dataset instanceof CategoryDataset)
-		        && (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
+				&& (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
 			renderingMap = this
-			        .createRenderingMap((DefaultCategoryDataset) dataset);
+					.createRenderingMap((DefaultCategoryDataset) dataset);
 		}
 		final CategoryItemRenderer renderer = this
-		        .getTimepointsRenderer(renderingMap);
+				.getTimepointsRenderer(renderingMap);
 
-		final CategoryAxis xAxis = new CategoryAxis("Timepoints");
+		final CategoryAxis xAxis = new CategoryAxis(
+				TMConstants.GRAPH_LAB_X_TIME);
 		// xAxis.setTickUnit(new NumberTickUnit(1.0));
 		final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
 
@@ -320,8 +325,8 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
 			chart = ChartFactory.createHistogram(title, this.getYAxisTitle(),
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+					TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+					PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
@@ -346,8 +351,8 @@ public class TMMobilityGraphProducer extends TMGraphProducer {
 				@Override
 				public void run() {
 					TMMobilityGraphProducer.this.mobilityPanel.updateStatus(
-					        TMMobilityGraphProducer.this.getCompleted(), ended,
-					        TMMobilityGraphProducer.this.graphPanel);
+							TMMobilityGraphProducer.this.getCompleted(), ended,
+							TMMobilityGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {

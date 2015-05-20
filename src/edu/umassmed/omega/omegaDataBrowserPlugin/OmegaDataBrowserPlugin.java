@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -41,7 +41,7 @@ import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
 public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
-        OmegaDataDisplayerPluginInterface {
+OmegaDataDisplayerPluginInterface {
 
 	private OmegaDataBrowserPluginPanel panel;
 
@@ -51,17 +51,17 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 
 	@Override
 	public String getName() {
-		return "OMEGA data browser";
+		return OmegaDataBrowserConstants.PLUGIN_NAME;
 	}
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 
 		final OmegaData omegaData = this.getMainData();
 		final OmegaLoadedData loadedData = this.getLoadedData();
 		final List<OmegaAnalysisRun> loadedAnalysisRuns = this
-		        .getLoadedAnalysisRuns();
+				.getLoadedAnalysisRuns();
 		if (omegaData == null)
 			throw new OmegaCoreExceptionPluginMissingData(this);
 
@@ -69,7 +69,7 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 		// TODO loadedAnalysisRuns exception
 
 		this.panel = new OmegaDataBrowserPluginPanel(parent, this, omegaData,
-		        loadedData, loadedAnalysisRuns, index);
+				loadedData, loadedAnalysisRuns, index);
 
 		return this.panel;
 	}
@@ -88,6 +88,6 @@ public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
 
 	@Override
 	public String getDescription() {
-		return "Default OMEGA data browser";
+		return OmegaDataBrowserConstants.PLUGIN_DESC;
 	}
 }

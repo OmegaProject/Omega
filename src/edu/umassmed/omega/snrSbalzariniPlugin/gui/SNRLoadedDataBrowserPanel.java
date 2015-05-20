@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -54,6 +54,7 @@ import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
 import edu.umassmed.omega.data.coreElements.OmegaElement;
+import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRLoadedDataBrowserPanel extends GenericPanel {
 
@@ -69,13 +70,13 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 	private boolean adjusting = false;
 
 	public SNRLoadedDataBrowserPanel(final RootPaneContainer parentContainer,
-	        final SNRPluginPanel snrPanel) {
+			final SNRPluginPanel snrPanel) {
 		super(parentContainer);
 
 		this.snrPanel = snrPanel;
 
 		this.root = new DefaultMutableTreeNode();
-		this.root.setUserObject("Loaded data");
+		this.root.setUserObject(SNRConstants.LOADED_DATA);
 		this.nodeMap = new HashMap<String, OmegaElement>();
 		// this.updateTree(images);
 
@@ -89,7 +90,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 
 		this.dataTree = new JTree(this.root);
 		this.dataTree.getSelectionModel().setSelectionMode(
-		        TreeSelectionModel.SINGLE_TREE_SELECTION);
+				TreeSelectionModel.SINGLE_TREE_SELECTION);
 		// this.dataTreeBrowser.setRootVisible(false);
 		// final CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
 		// this.dataTree.setCellRenderer(renderer);
@@ -102,7 +103,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 		// this.dataTree.setEditable(true);
 
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
-		scrollPane.setBorder(new TitledBorder("Loaded data"));
+		scrollPane.setBorder(new TitledBorder(SNRConstants.LOADED_DATA));
 
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
@@ -112,7 +113,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 			@Override
 			public void mouseClicked(final MouseEvent event) {
 				SNRLoadedDataBrowserPanel.this.handleMouseClick(event
-				        .getPoint());
+						.getPoint());
 			}
 		});
 		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
@@ -121,41 +122,41 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 				final TreePath parent = event.getTreePath();
 				final Object[] children = event.getChildren();
 				final DefaultTreeModel model = (DefaultTreeModel) event
-				        .getSource();
+						.getSource();
 				SNRLoadedDataBrowserPanel.this.handleTreeNodeChanged(parent,
-				        children, model);
+						children, model);
 			}
 		});
 	}
 
 	private void handleMouseClick(final Point clickP) {
 		final TreePath path = this.dataTree.getPathForLocation(clickP.x,
-		        clickP.y);
+				clickP.y);
 		if (path == null) {
 			this.snrPanel.updateSelectedParticleDetectionRun(null);
 			this.deselect();
 			return;
 		}
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-		        .getLastPathComponent();
+				.getLastPathComponent();
 		final String s = node.toString();
 		final OmegaElement element = this.nodeMap.get(s);
 		if (element instanceof OmegaParticleDetectionRun) {
 			this.snrPanel
-			        .updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
+			.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
 		} else if (element instanceof OmegaSNRRun) {
 			final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
-			        .getParent();
+					.getParent();
 			final String parentString = parentNode.toString();
 			final OmegaElement parentElement = this.nodeMap.get(parentString);
 			this.snrPanel
-			        .updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) parentElement);
+			.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) parentElement);
 			this.snrPanel.updateSelectedSNRRun((OmegaSNRRun) element);
 		}
 	}
 
 	private void handleTreeNodeChanged(final TreePath parent,
-	        final Object[] children, final DefaultTreeModel model) {
+			final Object[] children, final DefaultTreeModel model) {
 		if (this.adjusting)
 			return;
 		this.adjusting = true;
@@ -166,7 +167,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 			node = (DefaultMutableTreeNode) children[0];
 			c = (CheckBoxNode) node.getUserObject();
 			final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
-			        .getLastPathComponent();
+					.getLastPathComponent();
 
 			model.nodeChanged(n);
 		} else {
@@ -202,7 +203,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 				}
 				final DefaultMutableTreeNode particleDetRunNode = new DefaultMutableTreeNode();
 				s = "[" + analysisRun.getElementID() + "] "
-				        + analysisRun.getName();
+						+ analysisRun.getName();
 				this.nodeMap.put(s, analysisRun);
 				// status = this.loadedData.containsImage(image) ?
 				// CheckBoxStatus.SELECTED
@@ -210,7 +211,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 				particleDetRunNode.setUserObject(new CheckBoxNode(s, status));
 
 				for (final OmegaAnalysisRun innerAnalysisRun : analysisRun
-				        .getAnalysisRuns()) {
+						.getAnalysisRuns()) {
 					if (!(innerAnalysisRun instanceof OmegaSNRRun)) {
 						continue;
 					}
@@ -224,7 +225,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 					s = "[" + snrRun.getElementID() + "] " + snrRun.getName();
 					this.nodeMap.put(s, snrRun);
 					snrAnalysisRunNode
-					        .setUserObject(new CheckBoxNode(s, status));
+					.setUserObject(new CheckBoxNode(s, status));
 					particleDetRunNode.add(snrAnalysisRunNode);
 				}
 

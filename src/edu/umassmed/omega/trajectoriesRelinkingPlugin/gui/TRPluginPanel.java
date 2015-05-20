@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -41,6 +41,7 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,8 +51,10 @@ import javax.swing.RootPaneContainer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesRelinking;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
@@ -66,34 +69,36 @@ import edu.umassmed.omega.commons.gui.GenericTrajectoryInformationPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.actions.RelinkingAction;
 
 public class TRPluginPanel extends GenericPluginPanel implements
-        GenericTrajectoriesBrowserContainerInterface {
+GenericTrajectoriesBrowserContainerInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
 	private final OmegaGateway gateway;
 
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
-	        trajectoriesRelinking_cmb;
+	trajectoriesRelinking_cmb;
 	private JButton save_btt, undo_btt, redo_btt, cancel_btt;
 	private boolean popImages, popParticles, popTrajectories, popTrajRelinking,
-	        isHandlingEvent;
+	isHandlingEvent;
 
 	private JMenu tr_mn;
 	private JMenuItem save_itm, undo_itm, redo_itm, cancel_itm,
-	        preferences_itm;
+	preferences_itm;
 
 	private ActionListener save_al, undo_al, redo_al, cancel_al;
 
@@ -105,12 +110,11 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	private GenericTrajectoryInformationPanel currentTrajInfoPanel;
 
 	private List<OmegaImage> images;
-
-	private OmegaImage selectedImage;
-
+	private OrphanedAnalysisContainer orphanedAnalysis;
+	private OmegaAnalysisRunContainer selectedImage;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private final Map<OmegaAnalysisRun, List<RelinkingAction>> actions,
-	        cancelledActions;
+	cancelledActions;
 	private final List<OmegaTrajectory> currentlyModifiedTrajectories;
 
 	final List<OmegaParticleDetectionRun> particleDetectionRuns;
@@ -119,12 +123,16 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	private OmegaParticleLinkingRun selectedParticleLinkingRun;
 	final List<OmegaTrajectoriesRelinkingRun> trajRelinkingRuns;
 	private OmegaTrajectoriesRelinkingRun selectedTrajRelinkingRun,
-	        startingPointTrajRelinkingRun;
+	startingPointTrajRelinkingRun;
+
+	private JPanel topPanel;
+	private JMenuItem hideDataSelection_mItm;
 
 	public TRPluginPanel(final RootPaneContainer parent,
-	        final OmegaPlugin plugin, final OmegaGateway gateway,
-	        final List<OmegaImage> images,
-	        final List<OmegaAnalysisRun> analysisRuns, final int index) {
+			final OmegaPlugin plugin, final OmegaGateway gateway,
+			final List<OmegaImage> images,
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
 
 		this.gateway = gateway;
@@ -143,6 +151,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.currentlyModifiedTrajectories = new ArrayList<>();
 
 		this.images = images;
+		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
 
 		this.popImages = false;
@@ -164,68 +173,102 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	private void createMenu() {
-		final JMenuBar menu = super.getMenu();
+		final JMenuBar menuBar = super.getMenu();
+		for (int i = 0; i < menuBar.getMenuCount(); i++) {
+			final JMenu menu = menuBar.getMenu(i);
+			if (!menu.getText().equals(OmegaGUIConstants.MENU_VIEW)) {
+				continue;
+			}
+			this.hideDataSelection_mItm = new JMenuItem(
+					OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+			menu.add(this.hideDataSelection_mItm);
+		}
 
-		this.tr_mn = new JMenu("Edit");
+		this.tr_mn = new JMenu(TRConstants.EDIT);
 
-		this.save_itm = new JMenuItem("Save");
+		this.save_itm = new JMenuItem(TRConstants.SAVE);
 		this.tr_mn.add(this.save_itm);
 
-		this.undo_itm = new JMenuItem("Undo last action");
+		this.undo_itm = new JMenuItem(TRConstants.UNDO);
 		this.tr_mn.add(this.undo_itm);
 		this.undo_itm.setEnabled(false);
 
-		this.redo_itm = new JMenuItem("Redo last action");
+		this.redo_itm = new JMenuItem(TRConstants.REDO);
 		this.tr_mn.add(this.redo_itm);
 		this.redo_itm.setEnabled(false);
 
-		this.cancel_itm = new JMenuItem("Cancel all actions");
+		this.cancel_itm = new JMenuItem(TRConstants.CANCEL_ALL);
 		this.tr_mn.add(this.cancel_itm);
 		this.cancel_itm.setEnabled(false);
 
 		// this.preferences_itm = new JMenuItem("Preferences");
 		// this.tr_mn.add(this.preferences_itm);
 
-		menu.add(this.tr_mn);
+		menuBar.add(this.tr_mn);
 	}
 
 	private void createAndAddWidgets() {
-		final JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(4, 1));
+		this.topPanel = new JPanel();
+		this.topPanel.setLayout(new GridLayout(4, 1));
+
+		final JPanel p1 = new JPanel();
+		p1.setLayout(new BorderLayout());
+		final JLabel lbl1 = new JLabel(TRConstants.SELECT_IMAGE);
+		lbl1.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p1.add(lbl1, BorderLayout.WEST);
 		this.images_cmb = new JComboBox<String>();
 		this.images_cmb.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.images_cmb.setEnabled(false);
-		topPanel.add(this.images_cmb);
+		p1.add(this.images_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p1);
 
+		final JPanel p2 = new JPanel();
+		p2.setLayout(new BorderLayout());
+		final JLabel lbl2 = new JLabel(TRConstants.SELECT_TRACKS_SPOT);
+		lbl2.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p2.add(lbl2, BorderLayout.WEST);
 		this.particles_cmb = new JComboBox<String>();
 		this.particles_cmb
-		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.particles_cmb.setEnabled(false);
-		topPanel.add(this.particles_cmb);
+		p2.add(this.particles_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p2);
 
+		final JPanel p3 = new JPanel();
+		p3.setLayout(new BorderLayout());
+		final JLabel lbl3 = new JLabel(TRConstants.SELECT_TRACKS_LINKING);
+		lbl3.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p3.add(lbl3, BorderLayout.WEST);
 		this.trajectories_cmb = new JComboBox<String>();
 		this.trajectories_cmb
-		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectories_cmb.setEnabled(false);
-		topPanel.add(this.trajectories_cmb);
+		p3.add(this.trajectories_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p3);
 
+		final JPanel p4 = new JPanel();
+		p4.setLayout(new BorderLayout());
+		final JLabel lbl4 = new JLabel(TRConstants.SELECT_TRACKS_ADJ);
+		lbl4.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p4.add(lbl4, BorderLayout.WEST);
 		this.trajectoriesRelinking_cmb = new JComboBox<String>();
 		this.trajectoriesRelinking_cmb
-		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesRelinking_cmb.setEnabled(false);
-		topPanel.add(this.trajectoriesRelinking_cmb);
+		p4.add(this.trajectoriesRelinking_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p4);
 
-		this.add(topPanel, BorderLayout.NORTH);
+		this.add(this.topPanel, BorderLayout.NORTH);
 
 		this.tabbedPane = new JTabbedPane();
 
 		this.tbPanel = new GenericTrajectoriesBrowserPanel(
-		        this.getParentContainer(), this, this.gateway, true, true);
-		this.tabbedPane.add("Browser", this.tbPanel);
+				this.getParentContainer(), this, this.gateway, true, true);
+		this.tabbedPane.add(TRConstants.BROWSER_TABNAME, this.tbPanel);
 
 		this.trPanel = new TRPanel(this.getParentContainer(), this,
-		        this.gateway);
-		this.tabbedPane.add("Relinking", this.trPanel);
+				this.gateway);
+		this.tabbedPane.add(TRConstants.EDITOR_TABNAME, this.trPanel);
 
 		this.add(this.tabbedPane, BorderLayout.CENTER);
 
@@ -236,30 +279,30 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		bottomSubPanel.setLayout(new BorderLayout());
 
 		this.currentTrajInfoPanel = new GenericTrajectoryInformationPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 		bottomSubPanel.add(this.currentTrajInfoPanel, BorderLayout.NORTH);
 
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 
-		this.save_btt = new JButton("Save");
+		this.save_btt = new JButton(TRConstants.SAVE);
 		this.save_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.save_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.save_btt);
 
-		this.undo_btt = new JButton("Undo");
+		this.undo_btt = new JButton(TRConstants.UNDO);
 		this.undo_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.undo_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.undo_btt);
 		this.undo_btt.setEnabled(false);
 
-		this.redo_btt = new JButton("Redo");
+		this.redo_btt = new JButton(TRConstants.REDO);
 		this.redo_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.redo_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.redo_btt);
 		this.redo_btt.setEnabled(false);
 
-		this.cancel_btt = new JButton("Cancel");
+		this.cancel_btt = new JButton(TRConstants.CANCEL_ALL);
 		this.cancel_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.cancel_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.cancel_btt);
@@ -306,17 +349,38 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			}
 		});
 		this.save_btt.addActionListener(this
-		        .getSaveNewAllActionsActionListener());
+				.getSaveNewAllActionsActionListener());
 		this.undo_btt.addActionListener(this.getUndoLastActionActionListener());
 		this.redo_btt.addActionListener(this.getRedoLastActionActionListener());
 		this.cancel_btt.addActionListener(this
-		        .getCancelAllActionsActionListener());
+				.getCancelAllActionsActionListener());
 		this.save_itm.addActionListener(this
-		        .getSaveNewAllActionsActionListener());
+				.getSaveNewAllActionsActionListener());
 		this.undo_itm.addActionListener(this.getUndoLastActionActionListener());
 		this.redo_itm.addActionListener(this.getRedoLastActionActionListener());
 		this.cancel_itm.addActionListener(this
-		        .getCancelAllActionsActionListener());
+				.getCancelAllActionsActionListener());
+		this.hideDataSelection_mItm.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				TRPluginPanel.this.handleHideDataSelection();
+			}
+		});
+	}
+
+	private void handleHideDataSelection() {
+		if (this.hideDataSelection_mItm.getText().equals(
+				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
+			this.remove(this.topPanel);
+			this.hideDataSelection_mItm
+			.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+		} else {
+			this.add(this.topPanel, BorderLayout.NORTH);
+			this.hideDataSelection_mItm
+			.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+		}
+		this.revalidate();
+		this.repaint();
 	}
 
 	private void activateNeededButton() {
@@ -392,16 +456,17 @@ public class TRPluginPanel extends GenericPluginPanel implements
 
 	private void saveAllActions() {
 		final StringBuffer buf = new StringBuffer();
-		buf.append("Do you want to save all actual changes in a new analysis?");
+		buf.append(TRConstants.SAVE_CONFIRM_MSG);
 
 		final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
-		        this.getParentContainer(), "Save changes", buf.toString(), true);
+				this.getParentContainer(), TRConstants.SAVE_CONFIRM,
+				buf.toString(), true);
 		dialog.setVisible(true);
 		if (!dialog.getConfirmation())
 			return;
 
 		final List<OmegaTrajectory> resultingTrajectories = new ArrayList<OmegaTrajectory>(
-		        this.currentlyModifiedTrajectories);
+				this.currentlyModifiedTrajectories);
 
 		OmegaTrajectoriesRelinkingRun currentModification = this.selectedTrajRelinkingRun;
 		if (currentModification == null) {
@@ -409,12 +474,12 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		}
 
 		final OmegaPluginEvent event = new OmegaPluginEventResultsTrajectoriesRelinking(
-		        this.getPlugin(), this.selectedParticleLinkingRun,
-		        resultingTrajectories);
+				this.getPlugin(), this.selectedParticleLinkingRun,
+				resultingTrajectories);
 		this.markActionsApplied(currentModification);
 		this.getPlugin().fireEvent(event);
 		final OmegaTrajectoriesRelinkingRun newRelinking = this.trajRelinkingRuns
-		        .get(this.trajRelinkingRuns.size() - 1);
+				.get(this.trajRelinkingRuns.size() - 1);
 		this.trajectoriesRelinking_cmb.setSelectedItem(newRelinking.getName());
 	}
 
@@ -426,9 +491,9 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			currentModification = this.startingPointTrajRelinkingRun;
 		}
 		final List<RelinkingAction> actionList = actions
-		        .get(currentModification);
+				.get(currentModification);
 		final RelinkingAction lastAction = actionList
-		        .get(actionList.size() - 1);
+				.get(actionList.size() - 1);
 		actionList.remove(lastAction);
 		if (actionList.isEmpty()) {
 			actions.remove(currentModification);
@@ -451,8 +516,8 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.setEnableRedo(true);
 		this.updateCurrentModifiedTrajectories(currentModification);
 		this.updateSelectedTrajectories(this.tbPanel,
-		        lastAction.getModifiedTrajectories(),
-		        lastAction.getOriginalTrajectories());
+				lastAction.getModifiedTrajectories(),
+				lastAction.getOriginalTrajectories());
 		this.updateTrajectories(this.currentlyModifiedTrajectories, false);
 		this.sendEventTrajectories(this.currentlyModifiedTrajectories, false);
 	}
@@ -465,9 +530,9 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			currentModification = this.startingPointTrajRelinkingRun;
 		}
 		final List<RelinkingAction> cancelledActionList = cancelledActions
-		        .get(currentModification);
+				.get(currentModification);
 		final RelinkingAction lastAction = cancelledActionList
-		        .get(cancelledActionList.size() - 1);
+				.get(cancelledActionList.size() - 1);
 		cancelledActionList.remove(lastAction);
 		if (cancelledActionList.isEmpty()) {
 			cancelledActions.remove(currentModification);
@@ -492,18 +557,18 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.setEnableCancel(true);
 		this.updateCurrentModifiedTrajectories(currentModification);
 		this.updateSelectedTrajectories(this.tbPanel,
-		        lastAction.getOriginalTrajectories(),
-		        lastAction.getModifiedTrajectories());
+				lastAction.getOriginalTrajectories(),
+				lastAction.getModifiedTrajectories());
 		this.updateTrajectories(this.currentlyModifiedTrajectories, false);
 	}
 
 	private void cancelAllActions() {
 		final StringBuffer buf = new StringBuffer();
-		buf.append("Do you want to cancel all actual changes?");
+		buf.append(TRConstants.CANCEL_CONFIRM_MSG);
 
 		final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
-		        this.getParentContainer(), "Cancel all changes",
-		        buf.toString(), true);
+				this.getParentContainer(), TRConstants.CANCEL_CONFIRM,
+				buf.toString(), true);
 		dialog.setVisible(true);
 		if (!dialog.getConfirmation())
 			return;
@@ -514,7 +579,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		final Map<OmegaAnalysisRun, List<RelinkingAction>> actions = this.actions;
 		final Map<OmegaAnalysisRun, List<RelinkingAction>> cancelledActions = this.cancelledActions;
 		cancelledActions.put(currentModification,
-		        actions.get(currentModification));
+				actions.get(currentModification));
 		actions.remove(currentModification);
 		this.resetStartingPointAndCurrentModification();
 		this.setEnableUndo(false);
@@ -522,8 +587,8 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.setEnableRedo(true);
 		this.updateCurrentModifiedTrajectories(currentModification);
 		this.updateSelectedTrajectories(this.tbPanel,
-		        this.tbPanel.getSelectedTrajectories(),
-		        new ArrayList<OmegaTrajectory>());
+				this.tbPanel.getSelectedTrajectories(),
+				new ArrayList<OmegaTrajectory>());
 		this.updateTrajectories(this.currentlyModifiedTrajectories, false);
 		this.sendEventTrajectories(this.currentlyModifiedTrajectories, false);
 	}
@@ -531,7 +596,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	private void markActionsApplied(final OmegaParticleLinkingRun analysisRun) {
 		if (this.actions.containsKey(analysisRun)) {
 			final List<RelinkingAction> actionList = this.actions
-			        .get(analysisRun);
+					.get(analysisRun);
 			for (final RelinkingAction action : actionList) {
 				action.setHasBeenApplied(true);
 			}
@@ -554,18 +619,19 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	private void updateSelectedTrajectories(
-	        final GenericTrajectoriesBrowserPanel panel,
-	        final List<OmegaTrajectory> toRemove,
-	        final List<OmegaTrajectory> toAdd) {
+			final GenericTrajectoriesBrowserPanel panel,
+			final List<OmegaTrajectory> toRemove,
+			final List<OmegaTrajectory> toAdd) {
 		final int index = panel.removeTrajectoriesFromSelection(toRemove);
 		panel.addTrajectoriesToSelection(toAdd, index);
 	}
 
 	protected void mergeTrajectories(final OmegaTrajectory from,
-	        final OmegaTrajectory to) {
+			final OmegaTrajectory to) {
 		final OmegaTrajectory newTraj = new OmegaTrajectory(from.getLength()
-		        + to.getLength());
-		newTraj.setName(from.getName() + "_M_" + to.getName());
+				+ to.getLength());
+		newTraj.setName(from.getName() + TRConstants.MERGE_APPENDIX
+				+ to.getName());
 		newTraj.addROIs(from.getROIs());
 		newTraj.addROIs(to.getROIs());
 
@@ -594,10 +660,10 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	protected void splitTrajectory(final OmegaTrajectory from,
-	        final int particleIndex) {
+			final int particleIndex) {
 		final int newTrajLength = from.getLength() - particleIndex;
 		final OmegaTrajectory newTraj1 = new OmegaTrajectory(particleIndex);
-		newTraj1.setName(from.getName() + "_S1");
+		newTraj1.setName(from.getName() + TRConstants.SPLIT_APPENDIX_1);
 		newTraj1.setColor(from.getColor());
 		for (int i = 0; i < particleIndex; i++) {
 			final OmegaROI roi = from.getROIs().get(i);
@@ -605,7 +671,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		}
 
 		final OmegaTrajectory newTraj2 = new OmegaTrajectory(newTrajLength);
-		newTraj2.setName(from.getName() + "_S2");
+		newTraj2.setName(from.getName() + TRConstants.SPLIT_APPENDIX_2);
 		// newTraj2.setColor(from.getColor());
 		for (int i = particleIndex; i < from.getLength(); i++) {
 			final OmegaROI roi = from.getROIs().get(i);
@@ -667,9 +733,15 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.resetTrajectories();
 			return;
 		}
-		this.selectedImage = this.images.get(index);
-		this.tbPanel.setImage(this.selectedImage);
-		this.trPanel.setImage(this.selectedImage);
+		if ((this.images == null) || (index > this.images.size())) {
+			this.selectedImage = this.orphanedAnalysis;
+			this.tbPanel.setImage(null);
+			this.trPanel.setImage(null);
+		} else {
+			this.selectedImage = this.images.get(index);
+			this.tbPanel.setImage((OmegaImage) this.selectedImage);
+			this.trPanel.setImage((OmegaImage) this.selectedImage);
+		}
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionImage();
 		}
@@ -691,7 +763,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			return;
 		}
 		this.selectedParticleDetectionRun = this.particleDetectionRuns
-		        .get(index);
+				.get(index);
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionParticleDetectionRun();
 		}
@@ -713,10 +785,10 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.fireEventSelectionParticleLinkingRun();
 		}
 		final OmegaParameter radius = this.selectedParticleLinkingRun
-		        .getAlgorithmSpec().getParameter(
-		                OmegaConstantsAlgorithmParameters.PARAM_RADIUS);
+				.getAlgorithmSpec().getParameter(
+						OmegaConstantsAlgorithmParameters.PARAM_RADIUS);
 		if ((radius != null)
-		        && radius.getClazz().equals(Integer.class.getName())) {
+				&& radius.getClazz().equals(Integer.class.getName())) {
 			this.setRadius((int) radius.getValue());
 		}
 
@@ -763,29 +835,29 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.activateNeededButton();
 
 		this.updateSelectedTrajectories(this.tbPanel,
-		        this.tbPanel.getSelectedTrajectories(),
-		        new ArrayList<OmegaTrajectory>());
+				this.tbPanel.getSelectedTrajectories(),
+				new ArrayList<OmegaTrajectory>());
 		if (this.selectedTrajRelinkingRun == null) {
 			this.updateTrajectories(this.currentlyModifiedTrajectories, false);
 			this.sendEventTrajectories(this.currentlyModifiedTrajectories,
-			        false);
+					false);
 		} else {
 			this.updateTrajectories(
-			        this.selectedTrajRelinkingRun.getResultingTrajectories(),
-			        false);
+					this.selectedTrajRelinkingRun.getResultingTrajectories(),
+					false);
 			this.sendEventTrajectories(
-			        this.selectedTrajRelinkingRun.getResultingTrajectories(),
-			        false);
+					this.selectedTrajRelinkingRun.getResultingTrajectories(),
+					false);
 		}
 	}
 
 	private void updateCurrentModifiedTrajectories(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		// TODO maybe to refactor
 		// think to move the actual analysis Run selection inside here
 		this.currentlyModifiedTrajectories.clear();
 		this.currentlyModifiedTrajectories.addAll(analysisRun
-		        .getResultingTrajectories());
+				.getResultingTrajectories());
 
 		final Map<OmegaAnalysisRun, List<RelinkingAction>> actions = this.actions;
 
@@ -795,9 +867,9 @@ public class TRPluginPanel extends GenericPluginPanel implements
 					continue;
 				}
 				this.currentlyModifiedTrajectories.removeAll(action
-				        .getOriginalTrajectories());
+						.getOriginalTrajectories());
 				this.currentlyModifiedTrajectories.addAll(action
-				        .getModifiedTrajectories());
+						.getModifiedTrajectories());
 			}
 		}
 
@@ -825,7 +897,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateSelectedInformation(
-	        final List<OmegaTrajectory> trajectories) {
+			final List<OmegaTrajectory> trajectories) {
 		this.currentTrajInfoPanel.setSelectedTrajectories(trajectories);
 	}
 
@@ -836,7 +908,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-	        final boolean selection) {
+			final boolean selection) {
 		// TODO modify to keep changes if needed
 		this.tbPanel.updateTrajectories(trajectories, selection);
 		// TODO refactoring
@@ -847,15 +919,17 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			// this.updateSegmentTrajectories(trajectories);
 		} else {
 			final List<OmegaTrajectory> selectedTraj = this.tbPanel
-			        .getSelectedTrajectories();
+					.getSelectedTrajectories();
 			this.trPanel.updateTrajectories(selectedTraj, selection);
 		}
 	}
 
 	public void updateCombos(final List<OmegaImage> images,
-	        final List<OmegaAnalysisRun> analysisRuns) {
+	        final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns) {
 		this.isHandlingEvent = true;
 		this.images = images;
+		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
 
 		this.populateImagesCombo();
@@ -866,19 +940,24 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		this.popImages = true;
 		this.images_cmb.removeAllItems();
 		this.selectedImage = null;
-
-		if ((this.images == null) || this.images.isEmpty()) {
+		this.images_cmb.setSelectedIndex(-1);
+		if (((this.images == null) || this.images.isEmpty())
+		        && this.orphanedAnalysis.isEmpty()) {
 			this.images_cmb.setEnabled(false);
 			this.populateParticlesCombo();
 			this.repaint();
+			this.popImages = false;
 			return;
 		}
 
 		this.images_cmb.setEnabled(true);
 
-		for (final OmegaImage image : this.images) {
-			this.images_cmb.addItem(image.getName());
+		if (this.images != null) {
+			for (final OmegaImage image : this.images) {
+				this.images_cmb.addItem(image.getName());
+			}
 		}
+		this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
 		this.popImages = false;
 
 		if (this.images_cmb.getItemCount() > 0) {
@@ -898,13 +977,14 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.particles_cmb.setEnabled(false);
 			this.populateTrajectoriesCombo();
 			this.resetTrajectories();
+			this.popParticles = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedImage.getAnalysisRuns().contains(analysisRun)
-			        && (analysisRun instanceof OmegaParticleDetectionRun)) {
+					&& (analysisRun instanceof OmegaParticleDetectionRun)) {
 				this.particleDetectionRuns
-				        .add((OmegaParticleDetectionRun) analysisRun);
+				.add((OmegaParticleDetectionRun) analysisRun);
 				this.particles_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -912,6 +992,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.particles_cmb.setEnabled(false);
 			this.populateTrajectoriesCombo();
 			this.resetTrajectories();
+			this.popParticles = false;
 			return;
 		}
 
@@ -935,13 +1016,14 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.trajectories_cmb.setEnabled(false);
 			this.populateTrajectoriesRelinkingCombo();
 			this.resetTrajectories();
+			this.popTrajectories = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedParticleDetectionRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+					analysisRun)) {
 				this.particleLinkingRuns
-				        .add((OmegaParticleLinkingRun) analysisRun);
+				.add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -949,6 +1031,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			this.trajectories_cmb.setEnabled(false);
 			this.populateTrajectoriesRelinkingCombo();
 			this.resetTrajectories();
+			this.popTrajectories = false;
 			return;
 		}
 
@@ -970,22 +1053,24 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		if (this.selectedParticleLinkingRun == null) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.resetTrajectories();
+			this.popTrajRelinking = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedParticleLinkingRun.getAnalysisRuns().contains(
-			        analysisRun)
-			        && (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
+					analysisRun)
+					&& (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
 				this.trajRelinkingRuns
-				        .add((OmegaTrajectoriesRelinkingRun) analysisRun);
+				.add((OmegaTrajectoriesRelinkingRun) analysisRun);
 				this.trajectoriesRelinking_cmb.addItem(analysisRun.getName());
 			}
 		}
 		this.trajectoriesRelinking_cmb
-		        .addItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		.addItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
 		if (this.trajRelinkingRuns.isEmpty()) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.resetTrajectories();
+			this.popTrajRelinking = false;
 			return;
 		}
 
@@ -1000,19 +1085,19 @@ public class TRPluginPanel extends GenericPluginPanel implements
 
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleDetectionRun);
+				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleLinkingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleLinkingRun);
+				this.getPlugin(), this.selectedParticleLinkingRun);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -1020,34 +1105,41 @@ public class TRPluginPanel extends GenericPluginPanel implements
 		// TODO if selected traj is null OmegaApplication is not able to
 		// recognize it
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedTrajRelinkingRun);
+				this.getPlugin(), this.selectedTrajRelinkingRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionCurrentTrajectoriesRelinkingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionTrajectoriesRelinkingRun(
-		        this.getPlugin(), this.startingPointTrajRelinkingRun,
-		        this.currentlyModifiedTrajectories);
+				this.getPlugin(), this.startingPointTrajRelinkingRun,
+				this.currentlyModifiedTrajectories);
 		this.getPlugin().fireEvent(event);
 	}
 
 	protected void fireEventTrajectories(
-	        final List<OmegaTrajectory> trajectories, final boolean selection) {
+			final List<OmegaTrajectory> trajectories, final boolean selection) {
 		// TODO modified as needed
 		final OmegaPluginEvent event = new OmegaPluginEventTrajectories(
-		        this.getPlugin(), trajectories, selection);
+				this.getPlugin(), trajectories, selection);
 		this.getPlugin().fireEvent(event);
 	}
 
-	public void selectImage(final OmegaImage image) {
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
-		final int index = this.images.indexOf(image);
-		this.images_cmb.setSelectedIndex(index);
+		int index = -1;
+		if (this.images != null) {
+			index = this.images.indexOf(image);
+		}
+		if (index == -1) {
+			this.images_cmb.setSelectedItem(this.images_cmb.getItemCount());
+		} else {
+			this.images_cmb.setSelectedIndex(index);
+		}
 		this.isHandlingEvent = false;
 	}
 
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.particleDetectionRuns.indexOf(analysisRun);
 		this.particles_cmb.setSelectedIndex(index);
@@ -1055,7 +1147,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectParticleLinkingRun(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.particleLinkingRuns.indexOf(analysisRun);
 		this.trajectories_cmb.setSelectedIndex(index);
@@ -1063,7 +1155,7 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectTrajectoriesRelinkingRun(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.trajRelinkingRuns.indexOf(analysisRun);
 		this.trajectoriesRelinking_cmb.setSelectedIndex(index);
@@ -1071,15 +1163,15 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectCurrentTrajectoriesRelinkingRun(
-	        final OmegaAnalysisRun analysisRun) {
+			final OmegaAnalysisRun analysisRun) {
 		this.selectedTrajRelinkingRun = (OmegaTrajectoriesRelinkingRun) analysisRun;
 		this.trajectoriesRelinking_cmb
-		        .setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		.setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
 		// this.updateCurrentModifiedTrajectories((OmegaTrajectoriesRelinkingRun)
 		// analysisRun);
 		this.updateSelectedTrajectories(this.tbPanel,
-		        this.tbPanel.getSelectedTrajectories(),
-		        new ArrayList<OmegaTrajectory>());
+				this.tbPanel.getSelectedTrajectories(),
+				new ArrayList<OmegaTrajectory>());
 		this.updateTrajectories(this.currentlyModifiedTrajectories, false);
 	}
 
@@ -1090,8 +1182,8 @@ public class TRPluginPanel extends GenericPluginPanel implements
 
 	@Override
 	public void sendEventTrajectories(
-	        final List<OmegaTrajectory> selectedTrajectories,
-	        final boolean selected) {
+			final List<OmegaTrajectory> selectedTrajectories,
+			final boolean selected) {
 		if (selected) {
 			this.trPanel.updateTrajectories(selectedTrajectories, false);
 		}
@@ -1115,15 +1207,15 @@ public class TRPluginPanel extends GenericPluginPanel implements
 	}
 
 	private void setStartingPointAndCurrentModification(
-	        final OmegaTrajectoriesRelinkingRun relinkingRun) {
+			final OmegaTrajectoriesRelinkingRun relinkingRun) {
 		this.startingPointTrajRelinkingRun = relinkingRun;
 		this.trajectoriesRelinking_cmb
-		        .setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		.setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
 	}
 
 	private void resetStartingPointAndCurrentModification() {
 		final int index = this.trajRelinkingRuns
-		        .indexOf(this.startingPointTrajRelinkingRun);
+				.indexOf(this.startingPointTrajRelinkingRun);
 		this.trajectoriesRelinking_cmb.setSelectedIndex(index);
 	}
 }

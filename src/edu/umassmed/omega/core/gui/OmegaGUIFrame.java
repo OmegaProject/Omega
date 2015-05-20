@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -47,23 +47,27 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.data.OmegaLoadedData;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
@@ -71,11 +75,7 @@ public class OmegaGUIFrame extends JFrame {
 
 	private static final long serialVersionUID = -4775204088456661307L;
 
-	public static double SPLIT_PERCENT = 0.75;
-	public static int SPLITPANEL_LEFT = 0;
-	public static int SPLITPANEL_RIGHT = 1;
-	public static String PROP_PLUGIN = "PluginSelected";
-	public static String PROP_TOGGLEWINDOW = "ToggleWindow";
+	private static double SPLIT_PERCENT = 0.75;
 
 	private final OmegaApplication omegaApp;
 
@@ -88,11 +88,12 @@ public class OmegaGUIFrame extends JFrame {
 	private final OmegaDBPreferencesFrame omegaDbPrefFrame;
 
 	private JMenuBar menu;
-	private JMenu fileMenu, windowsMenu, omegaDbMenu;
-	private JMenuItem quitMItem;
-	private JMenuItem attachEdetachAllWindows;
-	private JMenuItem omegaDbOptionsMItem, omegaDbSaveMItem, omegaDbLoadMItem,
-	        omegaDbUpdateTrajectoriesMItem;
+	private JMenu fileMenu, viewMenu, editMenu;
+	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem, aboutMItem,
+	quitMItem;
+	private JMenuItem tracksImporterMItem;
+	private JMenuItem sepUnifyInterfaceMItem;
+	private JMenuItem omegaDbOptionsMItem, omegaDbUpdateTrajectoriesMItem;
 
 	private JSplitPane mainSplitPane;
 
@@ -164,32 +165,48 @@ public class OmegaGUIFrame extends JFrame {
 
 	private void createMenu() {
 		this.menu = new JMenuBar();
-
-		this.fileMenu = new JMenu("File");
-		this.quitMItem = new JMenuItem("Quit");
+		this.fileMenu = new JMenu(OmegaGUIConstants.MENU_FILE);
+		this.tracksImporterMItem = new JMenuItem(
+				OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS);
+		this.tracksImporterMItem
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
+		this.fileMenu.add(this.tracksImporterMItem);
+		this.fileMenu.add(new JSeparator());
+		this.omegaDbLoadMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_LOAD);
+		this.omegaDbLoadMItem
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_LOAD_TT);
+		this.fileMenu.add(this.omegaDbLoadMItem);
+		this.omegaDbSaveMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_SAVE);
+		this.omegaDbSaveMItem
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_SAVE_TT);
+		this.fileMenu.add(this.omegaDbSaveMItem);
+		this.fileMenu.add(new JSeparator());
+		this.aboutMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_ABOUT);
+		this.fileMenu.add(this.aboutMItem);
+		this.fileMenu.add(new JSeparator());
+		this.quitMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_QUIT);
 		this.fileMenu.add(this.quitMItem);
 
-		this.windowsMenu = new JMenu("Window");
-		this.attachEdetachAllWindows = new JMenuItem("Detach all windows");
-		this.windowsMenu.add(this.attachEdetachAllWindows);
-
-		this.omegaDbMenu = new JMenu("Omega DB Options");
-		this.omegaDbOptionsMItem = new JMenuItem("Connection preferences");
-		this.omegaDbLoadMItem = new JMenuItem("Load analysis");
-		this.omegaDbSaveMItem = new JMenuItem("Save analysis");
+		this.editMenu = new JMenu(OmegaGUIConstants.MENU_EDIT);
+		this.omegaDbOptionsMItem = new JMenuItem(
+				OmegaGUIConstants.MENU_EDIT_DB_PREF);
 		this.omegaDbUpdateTrajectoriesMItem = new JMenuItem(
 		        "Update trajectories");
-		this.omegaDbMenu.add(this.omegaDbOptionsMItem);
-		this.omegaDbMenu.add(this.omegaDbLoadMItem);
-		this.omegaDbMenu.add(this.omegaDbSaveMItem);
-		this.omegaDbMenu.add(this.omegaDbUpdateTrajectoriesMItem);
+		this.editMenu.add(this.omegaDbOptionsMItem);
+		this.editMenu.add(this.omegaDbUpdateTrajectoriesMItem);
+
+		this.viewMenu = new JMenu(OmegaGUIConstants.MENU_VIEW);
+		this.sepUnifyInterfaceMItem = new JMenuItem(
+				OmegaGUIConstants.MENU_VIEW_SEPARATE);
+		this.viewMenu.add(this.sepUnifyInterfaceMItem);
 
 		final JMenu workspaceMenu = this.workspacePanel.getMenu();
+		this.viewMenu.add(workspaceMenu);
 
 		this.menu.add(this.fileMenu);
-		this.menu.add(workspaceMenu);
-		this.menu.add(this.windowsMenu);
-		this.menu.add(this.omegaDbMenu);
+		// this.menu.add(workspaceMenu);
+		this.menu.add(this.viewMenu);
+		this.menu.add(this.editMenu);
 	}
 
 	private void addListeners() {
@@ -209,21 +226,44 @@ public class OmegaGUIFrame extends JFrame {
 				        OmegaGUIFrame.this.handleSplitChange(source.getSize());
 			        }
 		        });
+		this.tracksImporterMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.showTracksImporter();
+			}
+		});
+		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.loadAnalysis();
+			}
+		});
+		this.omegaDbSaveMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.saveAnalysis();
+			}
+		});
+		this.aboutMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.handleAbout();
+			}
+		});
 		this.quitMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.quit();
+				OmegaGUIFrame.this.handleQuit();
 			}
 		});
-
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent e) {
-				OmegaGUIFrame.this.quit();
+				OmegaGUIFrame.this.handleQuit();
 			}
 		});
 
-		this.attachEdetachAllWindows.addActionListener(new ActionListener() {
+		this.sepUnifyInterfaceMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				if (OmegaGUIFrame.this.isAttached) {
@@ -237,7 +277,8 @@ public class OmegaGUIFrame extends JFrame {
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(OmegaGUIFrame.PROP_PLUGIN)) {
+				if (evt.getPropertyName().equals(
+						OmegaGUIConstants.EVENT_PROPERTY_PLUGIN)) {
 					final OmegaPlugin plugin = OmegaGUIFrame.this.omegaApp
 					        .getPlugin((long) evt.getNewValue());
 					OmegaGUIFrame.this.pluginSelected = (long) evt
@@ -251,18 +292,6 @@ public class OmegaGUIFrame extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmegaGUIFrame.this.showOmegaDBPreferencesPanel();
-			}
-		});
-		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.loadAnalysis();
-			}
-		});
-		this.omegaDbSaveMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.saveAnalysis();
 			}
 		});
 		this.omegaDbUpdateTrajectoriesMItem
@@ -393,7 +422,7 @@ public class OmegaGUIFrame extends JFrame {
 		// this.leftScrollPane.remove(this.workspacePanel);
 		// this.rightScrollPane.remove(this.sidePanel);
 
-		this.attachEdetachAllWindows.setText("Attach all windows");
+		this.sepUnifyInterfaceMItem.setText(OmegaGUIConstants.MENU_VIEW_UNIFY);
 		final GenericFrame sideFrame = new GenericFrame(this, this.sidePanel,
 		        "Sidebar", this.getSideFramePosition(),
 		        this.sidePanel.getSize());
@@ -422,7 +451,8 @@ public class OmegaGUIFrame extends JFrame {
 		this.mainSplitPane.setLeftComponent(this.workspacePanel);
 		this.mainSplitPane.setRightComponent(this.sidePanel);
 
-		this.attachEdetachAllWindows.setText("Detach all windows");
+		this.sepUnifyInterfaceMItem
+		        .setText(OmegaGUIConstants.MENU_VIEW_SEPARATE);
 
 		for (final JFrame frame : this.separatedFrames) {
 			frame.getContentPane().removeAll();
@@ -461,7 +491,11 @@ public class OmegaGUIFrame extends JFrame {
 		this.isAttached = tof;
 	}
 
-	public void quit() {
+	public void handleAbout() {
+
+	}
+
+	public void handleQuit() {
 		this.omegaDbPrefFrame.setVisible(false);
 		this.omegaApp.saveOptions();
 		this.dispose();
@@ -469,9 +503,11 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void updateGUI(final OmegaLoadedData loadedData,
+			final OrphanedAnalysisContainer orphanedAnalysis,
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
-		this.sidePanel.updateGUI(loadedData, loadedAnalysisRuns, gateway);
+		this.sidePanel.updateGUI(loadedData, orphanedAnalysis,
+		        loadedAnalysisRuns, gateway);
 	}
 
 	public OmegaDBServerInformation getOmegaDBServerInformation() {
@@ -491,7 +527,11 @@ public class OmegaGUIFrame extends JFrame {
 		this.sidePanel.updateTrajectories(trajectories, selection);
 	}
 
-	public void selectImage(final OmegaImage image) {
+	public void updateParticles(final List<OmegaROI> particles) {
+		this.sidePanel.updateParticles(particles);
+	}
+
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.sidePanel.selectImage(image);
 	}
 

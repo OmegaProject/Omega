@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -34,8 +34,8 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
@@ -161,36 +161,22 @@ public class SNRRunner implements SNRRunnable {
 				break;
 			}
 
-			final Long pixelsID = pixels.getElementID();
-
-			pixels.getSizeX();
-			pixels.getSizeY();
-			final int z = pixels.getSelectedZ();
 			final int t = pixels.getSizeT();
-			final int c = pixels.getSelectedC();
 
 			if (t < 2) {
 				// TODO throw error and skip image or stop thread?
 			}
-			if ((c == 0) || (c > 1)) {
-				// TODO throw error and skip image or stop thread?
-			}
-
-			// TODO needed ?
-			pixels.getPixelSizeX();
-			pixels.getPixelSizeY();
-			this.gateway.getTotalT(pixelsID, z, t, c);
 
 			Integer radius = null;
 			Double threshold = null;
 			for (int i = 0; i < parameters.size(); i++) {
 				final OmegaParameter param = parameters.get(i);
-
 				if (param.getName() == SNRConstants.PARAM_RADIUS) {
 					radius = (Integer) param.getValue();
 				} else if (param.getName() == SNRConstants.PARAM_THRESHOLD) {
 					threshold = (Double) param.getValue();
-				}
+				} else
+					return;
 			}
 
 			for (final OmegaFrame frame : particles.keySet()) {

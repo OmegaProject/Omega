@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -36,14 +36,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
@@ -54,19 +60,22 @@ import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
 import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class TMPluginPanel extends GenericPluginPanel implements
-        GenericTrajectoriesBrowserContainerInterface {
+GenericTrajectoriesBrowserContainerInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -81,18 +90,18 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	private GenericStatusPanel statusPanel;
 
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
-	        trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
-	        trackingMeasures_cmb;
+	trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
+	trackingMeasures_cmb;
 	private boolean popImages, popParticles, popTrajectories, popTrajRelinking,
-	        popTrajSegmentation, popTrackingMeasures;
+	popTrajSegmentation, popTrackingMeasures;
 
 	private boolean isHandlingEvent;
 
 	private JTabbedPane tabbedPane;
 
 	private List<OmegaImage> images;
-	private OmegaImage selectedImage;
-
+	private OrphanedAnalysisContainer orphanedAnalysis;
+	private OmegaAnalysisRunContainer selectedImage;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
 	final List<OmegaParticleDetectionRun> particleDetectionRuns;
@@ -106,10 +115,14 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	final List<OmegaTrackingMeasuresRun> trackingMeasuresRuns;
 	private OmegaTrackingMeasuresRun selectedTrackingMeasuresRun;
 
+	private JPanel topPanel;
+	private JMenuItem hideDataSelection_mItm;
+
 	public TMPluginPanel(final RootPaneContainer parent,
-	        final OmegaPlugin plugin, final OmegaGateway gateway,
-	        final List<OmegaImage> images,
-	        final List<OmegaAnalysisRun> analysisRuns, final int index) {
+			final OmegaPlugin plugin, final OmegaGateway gateway,
+			final List<OmegaImage> images,
+	        final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
 
 		this.gateway = gateway;
@@ -127,6 +140,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		this.selectedTrackingMeasuresRun = null;
 
 		this.images = images;
+		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
 
 		this.popImages = false;
@@ -139,7 +153,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 		this.setPreferredSize(new Dimension(750, 500));
 		this.setLayout(new BorderLayout());
-		// this.createMenu();
+		this.createMenu();
 		this.createAndAddWidgets();
 		// this.loadedDataBrowserPanel.updateTree(images);
 
@@ -148,75 +162,125 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		this.populateImagesCombo();
 	}
 
+	private void createMenu() {
+		final JMenuBar menuBar = this.getMenu();
+		for (int i = 0; i < menuBar.getMenuCount(); i++) {
+			final JMenu menu = menuBar.getMenu(i);
+			if (!menu.getText().equals(OmegaGUIConstants.MENU_VIEW)) {
+				continue;
+			}
+			this.hideDataSelection_mItm = new JMenuItem(
+					OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+			menu.add(this.hideDataSelection_mItm);
+		}
+	}
+
 	private void createAndAddWidgets() {
 		// this.segmentPreferencesDialog = new TSSegmentPreferencesDialog(this,
 		// this.getParentContainer(), this.segmTypesList);
 
-		final JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(6, 1));
+		this.topPanel = new JPanel();
+		this.topPanel.setLayout(new GridLayout(6, 1));
+
+		final JPanel p1 = new JPanel();
+		p1.setLayout(new BorderLayout());
+		final JLabel lbl1 = new JLabel(TRConstants.SELECT_IMAGE);
+		lbl1.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p1.add(lbl1, BorderLayout.WEST);
 		this.images_cmb = new JComboBox<String>();
 		this.images_cmb.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.images_cmb.setEnabled(false);
-		topPanel.add(this.images_cmb);
+		p1.add(this.images_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p1);
 
+		final JPanel p2 = new JPanel();
+		p2.setLayout(new BorderLayout());
+		final JLabel lbl2 = new JLabel(TRConstants.SELECT_TRACKS_SPOT);
+		lbl2.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p2.add(lbl2, BorderLayout.WEST);
 		this.particles_cmb = new JComboBox<String>();
 		this.particles_cmb
 		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.particles_cmb.setEnabled(false);
-		topPanel.add(this.particles_cmb);
+		p2.add(this.particles_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p2);
 
+		final JPanel p3 = new JPanel();
+		p3.setLayout(new BorderLayout());
+		final JLabel lbl3 = new JLabel(TRConstants.SELECT_TRACKS_LINKING);
+		lbl3.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p3.add(lbl3, BorderLayout.WEST);
 		this.trajectories_cmb = new JComboBox<String>();
 		this.trajectories_cmb
 		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectories_cmb.setEnabled(false);
-		topPanel.add(this.trajectories_cmb);
+		p3.add(this.trajectories_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p3);
 
+		final JPanel p4 = new JPanel();
+		p4.setLayout(new BorderLayout());
+		final JLabel lbl4 = new JLabel(TRConstants.SELECT_TRACKS_ADJ);
+		lbl4.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p4.add(lbl4, BorderLayout.WEST);
 		this.trajectoriesRelinking_cmb = new JComboBox<String>();
 		this.trajectoriesRelinking_cmb
 		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesRelinking_cmb.setEnabled(false);
-		topPanel.add(this.trajectoriesRelinking_cmb);
+		p4.add(this.trajectoriesRelinking_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p4);
 
+		final JPanel p5 = new JPanel();
+		p5.setLayout(new BorderLayout());
+		final JLabel lbl5 = new JLabel(TRConstants.SELECT_TRACKS_SEGM);
+		lbl5.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p5.add(lbl5, BorderLayout.WEST);
 		this.trajectoriesSegmentation_cmb = new JComboBox<String>();
 		this.trajectoriesSegmentation_cmb
 		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesSegmentation_cmb.setEnabled(false);
-		topPanel.add(this.trajectoriesSegmentation_cmb);
+		p5.add(this.trajectoriesSegmentation_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p5);
 
+		final JPanel p6 = new JPanel();
+		p6.setLayout(new BorderLayout());
+		final JLabel lbl6 = new JLabel(TRConstants.SELECT_TRACK_MEASURES);
+		lbl6.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		p6.add(lbl6, BorderLayout.WEST);
 		this.trackingMeasures_cmb = new JComboBox<String>();
 		this.trackingMeasures_cmb
 		        .setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trackingMeasures_cmb.setEnabled(false);
-		topPanel.add(this.trackingMeasures_cmb);
+		p6.add(this.trackingMeasures_cmb, BorderLayout.CENTER);
+		this.topPanel.add(p6);
 
-		this.add(topPanel, BorderLayout.NORTH);
+		this.add(this.topPanel, BorderLayout.NORTH);
 
 		this.tabbedPane = new JTabbedPane();
 
+		this.tbPanel = new GenericTrajectoriesBrowserPanel(
+				this.getParentContainer(), this, this.gateway, true, true);
+		this.tabbedPane.add(TMConstants.TAB_TRACK_BROWSER, this.tbPanel);
+
 		this.intensityPanel = new TMIntensityPanel(this.getParentContainer(),
-		        this, null);
-		this.tabbedPane.add("Intensity", this.intensityPanel);
+				this, null);
+		this.tabbedPane.add(TMConstants.TAB_INTENSITY, this.intensityPanel);
 
 		this.mobilityPanel = new TMMobilityPanel(this.getParentContainer(),
-		        this, null);
-		this.tabbedPane.add("Mobility", this.mobilityPanel);
+				this, null);
+		this.tabbedPane.add(TMConstants.TAB_MOBILITY, this.mobilityPanel);
 
 		this.velocityPanel = new TMVelocityPanel(this.getParentContainer(),
-		        this, null);
-		this.tabbedPane.add("Velocity", this.velocityPanel);
+				this, null);
+		this.tabbedPane.add(TMConstants.TAB_VELOCITY, this.velocityPanel);
 
 		this.diffusivityPanel = new TMDiffusivityPanel(
-		        this.getParentContainer(), this, null);
-		this.tabbedPane.add("Diffusivity", this.diffusivityPanel);
+				this.getParentContainer(), this, null);
+		this.tabbedPane.add(TMConstants.TAB_DIFFUSIVITY, this.diffusivityPanel);
 
 		this.motionTypeClassificationPanel = new TMMotionTypeClassificationPanel(
-		        this.getParentContainer(), this, null);
-		this.tabbedPane.add("Motion Type Classification",
-		        this.motionTypeClassificationPanel);
-
-		this.tbPanel = new GenericTrajectoriesBrowserPanel(
-		        this.getParentContainer(), this, this.gateway, true, true);
-		this.tabbedPane.add("Track browser", this.tbPanel);
+				this.getParentContainer(), this, null);
+		this.tabbedPane.add(TMConstants.TAB_MTCLASS,
+				this.motionTypeClassificationPanel);
 
 		this.add(this.tabbedPane, BorderLayout.CENTER);
 
@@ -261,18 +325,39 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			}
 		});
 		this.trajectoriesSegmentation_cmb
-		        .addActionListener(new ActionListener() {
-			        @Override
-			        public void actionPerformed(final ActionEvent e) {
-				        TMPluginPanel.this.selectTrajectoriesSegmentationRun();
-			        }
-		        });
+		.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				TMPluginPanel.this.selectTrajectoriesSegmentationRun();
+			}
+		});
 		this.trackingMeasures_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				TMPluginPanel.this.selectTrackingMeasuresRun();
 			}
 		});
+		this.hideDataSelection_mItm.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				TMPluginPanel.this.handleHideDataSelection();
+			}
+		});
+	}
+
+	private void handleHideDataSelection() {
+		if (this.hideDataSelection_mItm.getText().equals(
+		        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
+			this.remove(this.topPanel);
+			this.hideDataSelection_mItm
+			        .setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+		} else {
+			this.add(this.topPanel, BorderLayout.NORTH);
+			this.hideDataSelection_mItm
+			        .setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+		}
+		this.revalidate();
+		this.repaint();
 	}
 
 	private void selectImage() {
@@ -285,22 +370,28 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			// this.resetTrajectories();
 			return;
 		}
-		this.selectedImage = this.images.get(index);
-		this.tbPanel.setImage(this.selectedImage);
-		this.intensityPanel.setMaximumT(this.selectedImage.getDefaultPixels()
-		        .getSizeT());
-		this.mobilityPanel.setMaximumT(this.selectedImage.getDefaultPixels()
-		        .getSizeT());
-		this.velocityPanel.setMaximumT(this.selectedImage.getDefaultPixels()
-		        .getSizeT());
-		this.diffusivityPanel.setMaximumT(this.selectedImage.getDefaultPixels()
-		        .getSizeT());
-		this.motionTypeClassificationPanel.setMaximumT(this.selectedImage
-		        .getDefaultPixels().getSizeT());
-		this.motionTypeClassificationPanel.setImageWidth(this.selectedImage
-		        .getDefaultPixels().getSizeX());
-		this.motionTypeClassificationPanel.setImageHeight(this.selectedImage
-		        .getDefaultPixels().getSizeY());
+		if ((this.images == null) || (index > this.images.size())) {
+			this.selectedImage = this.orphanedAnalysis;
+			this.tbPanel.setImage(null);
+		} else {
+			this.selectedImage = this.images.get(index);
+			this.tbPanel.setImage((OmegaImage) this.selectedImage);
+			final OmegaImage selectedImage = (OmegaImage) this.selectedImage;
+			this.intensityPanel.setMaximumT(selectedImage.getDefaultPixels()
+					.getSizeT());
+			this.mobilityPanel.setMaximumT(selectedImage.getDefaultPixels()
+					.getSizeT());
+			this.velocityPanel.setMaximumT(selectedImage.getDefaultPixels()
+					.getSizeT());
+			this.diffusivityPanel.setMaximumT(selectedImage.getDefaultPixels()
+					.getSizeT());
+			this.motionTypeClassificationPanel.setMaximumT(selectedImage
+					.getDefaultPixels().getSizeT());
+			this.motionTypeClassificationPanel.setImageWidth(selectedImage
+					.getDefaultPixels().getSizeX());
+			this.motionTypeClassificationPanel.setImageHeight(selectedImage
+					.getDefaultPixels().getSizeY());
+		}
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionPluginImage();
 		}
@@ -319,7 +410,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			return;
 		}
 		this.selectedParticleDetectionRun = this.particleDetectionRuns
-		        .get(index);
+				.get(index);
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionPluginParticleDetectionRun();
 		}
@@ -342,7 +433,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			this.fireEventSelectionParticleLinkingRun();
 		}
 		this.selectedParticleLinkingRun.getAlgorithmSpec().getParameter(
-		        OmegaConstantsAlgorithmParameters.PARAM_RADIUS);
+				OmegaConstantsAlgorithmParameters.PARAM_RADIUS);
 		// if ((radius != null)
 		// && radius.getClazz().equals(Integer.class.getName())) {
 		// this.setRadius((int) radius.getValue());
@@ -374,6 +465,35 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		// this.tbPanel
 		// .updateTrajectories(this.selectedTrajRelinkingRun
 		// .getResultingTrajectories(), false);
+
+		// TODO maybe has to be moved after the rework
+		if (this.selectedImage instanceof OrphanedAnalysisContainer) {
+			int maxT = 0;
+			int maxX = 0, maxY = 0;
+			for (final OmegaTrajectory track : this.selectedTrajRelinkingRun
+					.getResultingTrajectories()) {
+				if (maxT < track.getLength()) {
+					maxT = track.getLength();
+				}
+				for (final OmegaROI roi : track.getROIs()) {
+					final int x = (int) (roi.getX() + 1);
+					final int y = (int) (roi.getY() + 1);
+					if (maxX < x) {
+						maxX = x;
+					}
+					if (maxY < y) {
+						maxY = y;
+					}
+				}
+			}
+			this.intensityPanel.setMaximumT(maxT);
+			this.mobilityPanel.setMaximumT(maxT);
+			this.velocityPanel.setMaximumT(maxT);
+			this.diffusivityPanel.setMaximumT(maxT);
+			this.motionTypeClassificationPanel.setMaximumT(maxT);
+			this.motionTypeClassificationPanel.setImageWidth(maxX);
+			this.motionTypeClassificationPanel.setImageHeight(maxY);
+		}
 	}
 
 	private void selectTrajectoriesSegmentationRun() {
@@ -386,26 +506,26 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 		if (index < this.trajSegmentationRuns.size()) {
 			this.selectedTrajSegmentationRun = this.trajSegmentationRuns
-			        .get(index);
+					.get(index);
 		}
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionTrajectoriesSegmentationRun();
 		}
 
 		this.tbPanel
-		        .updateTrajectories(this.selectedTrajRelinkingRun
-		                .getResultingTrajectories(), false);
+		.updateTrajectories(this.selectedTrajRelinkingRun
+				.getResultingTrajectories(), false);
 		this.intensityPanel.setSegmentsMap(this.selectedTrajSegmentationRun
-		        .getResultingSegments());
+				.getResultingSegments());
 		this.mobilityPanel.setSegmentsMap(this.selectedTrajSegmentationRun
-		        .getResultingSegments());
+				.getResultingSegments());
 		this.velocityPanel.setSegmentsMap(this.selectedTrajSegmentationRun
-		        .getResultingSegments());
+				.getResultingSegments());
 		this.diffusivityPanel.setSegmentsMap(this.selectedTrajSegmentationRun
-		        .getResultingSegments());
+				.getResultingSegments());
 		this.motionTypeClassificationPanel
-		        .setSegmentsMap(this.selectedTrajSegmentationRun
-		                .getResultingSegments());
+		.setSegmentsMap(this.selectedTrajSegmentationRun
+				.getResultingSegments());
 	}
 
 	private void selectTrackingMeasuresRun() {
@@ -418,22 +538,22 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 		if (index < this.trackingMeasuresRuns.size()) {
 			this.selectedTrackingMeasuresRun = this.trackingMeasuresRuns
-			        .get(index);
+					.get(index);
 		}
 		if (!this.isHandlingEvent) {
 			// this.fireEventSelectionTrajectoriesSegmentationRun();
 		}
 
 		this.intensityPanel
-		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.mobilityPanel
-		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.velocityPanel
-		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.diffusivityPanel
-		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.motionTypeClassificationPanel
-		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 	}
 
 	@Override
@@ -452,9 +572,11 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateCombos(final List<OmegaImage> images,
-	        final List<OmegaAnalysisRun> analysisRuns) {
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns) {
 		this.isHandlingEvent = true;
 		this.images = images;
+		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
 
 		this.populateImagesCombo();
@@ -465,19 +587,23 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		this.popImages = true;
 		this.images_cmb.removeAllItems();
 		this.selectedImage = null;
-
-		if ((this.images == null) || this.images.isEmpty()) {
+		this.images_cmb.setSelectedIndex(-1);
+		if (((this.images == null) || this.images.isEmpty())
+		        && this.orphanedAnalysis.isEmpty()) {
 			this.images_cmb.setEnabled(false);
 			this.populateParticlesCombo();
-			// this.resetTrajectories();
+			this.popImages = false;
 			return;
 
 		}
 		this.images_cmb.setEnabled(true);
 
-		for (final OmegaImage image : this.images) {
-			this.images_cmb.addItem(image.getName());
+		if (this.images != null) {
+			for (final OmegaImage image : this.images) {
+				this.images_cmb.addItem(image.getName());
+			}
 		}
+		this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
 		this.popImages = false;
 
 		if (this.images_cmb.getItemCount() > 0) {
@@ -497,15 +623,15 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		if ((this.selectedImage == null)) {
 			this.particles_cmb.setEnabled(false);
 			this.populateTrajectoriesCombo();
-			// this.resetTrajectories();
+			this.popParticles = false;
 			return;
 		}
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedImage.getAnalysisRuns().contains(analysisRun)
-			        && (analysisRun instanceof OmegaParticleDetectionRun)) {
+					&& (analysisRun instanceof OmegaParticleDetectionRun)) {
 				this.particleDetectionRuns
-				        .add((OmegaParticleDetectionRun) analysisRun);
+				.add((OmegaParticleDetectionRun) analysisRun);
 				this.particles_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -513,7 +639,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		if (this.particleDetectionRuns.isEmpty()) {
 			this.particles_cmb.setEnabled(false);
 			this.populateTrajectoriesCombo();
-			// this.resetTrajectories();
+			this.popParticles = false;
 			return;
 		}
 
@@ -543,9 +669,9 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedParticleDetectionRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+					analysisRun)) {
 				this.particleLinkingRuns
-				        .add((OmegaParticleLinkingRun) analysisRun);
+				.add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -553,7 +679,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			this.trajectories_cmb.setEnabled(false);
 			this.populateTrajectoriesRelinkingCombo();
 			this.populateTrackingMeasuresCombo();
-			// this.resetTrajectories();
+			this.popTrajectories = false;
 			return;
 		}
 
@@ -576,23 +702,23 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		if (this.selectedParticleLinkingRun == null) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.populateTrajectoriesSegmentationCombo();
-			// this.resetTrajectories();
+			this.popTrajRelinking = false;
 			return;
 		}
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedParticleLinkingRun.getAnalysisRuns().contains(
-			        analysisRun)
-			        && (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
+					analysisRun)
+					&& (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
 				this.trajRelinkingRuns
-				        .add((OmegaTrajectoriesRelinkingRun) analysisRun);
+				.add((OmegaTrajectoriesRelinkingRun) analysisRun);
 				this.trajectoriesRelinking_cmb.addItem(analysisRun.getName());
 			}
 		}
 		if (this.trajRelinkingRuns.isEmpty()) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.populateTrajectoriesSegmentationCombo();
-			// this.resetTrajectories();
+			this.popTrajRelinking = false;
 			return;
 		}
 
@@ -613,28 +739,28 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		this.selectedTrajSegmentationRun = null;
 		if (this.selectedTrajRelinkingRun == null) {
 			this.trajectoriesSegmentation_cmb.setEnabled(false);
-			// this.resetTrajectories();
+			// this.populateTrackingMeasuresCombo();
+			this.popTrajSegmentation = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedTrajRelinkingRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+					analysisRun)) {
 				this.trajSegmentationRuns
-				        .add((OmegaTrajectoriesSegmentationRun) analysisRun);
+				.add((OmegaTrajectoriesSegmentationRun) analysisRun);
 				this.trajectoriesSegmentation_cmb
-				        .addItem(analysisRun.getName());
+				.addItem(analysisRun.getName());
 			}
 		}
-		this.trajectoriesSegmentation_cmb
-		        .addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		if (this.trajSegmentationRuns.isEmpty()) {
 			this.trajectoriesSegmentation_cmb.setEnabled(false);
-			// this.resetTrajectories();
+			// this.populateTrackingMeasuresCombo();
+			this.popTrajSegmentation = false;
 			return;
 		}
 
 		this.popTrajSegmentation = false;
-		if (this.trajectoriesSegmentation_cmb.getItemCount() > 1) {
+		if (this.trajectoriesSegmentation_cmb.getItemCount() > 0) {
 			this.trajectoriesSegmentation_cmb.setEnabled(true);
 			this.trajectoriesSegmentation_cmb.setSelectedIndex(0);
 		} else {
@@ -650,21 +776,21 @@ public class TMPluginPanel extends GenericPluginPanel implements
 		this.selectedTrackingMeasuresRun = null;
 		if (this.selectedParticleLinkingRun == null) {
 			this.trackingMeasures_cmb.setEnabled(false);
-			// this.resetTrajectories();
+			this.popTrackingMeasures = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedParticleLinkingRun.getAnalysisRuns().contains(
-			        analysisRun)
-			        && (analysisRun instanceof OmegaTrackingMeasuresRun)) {
+					analysisRun)
+					&& (analysisRun instanceof OmegaTrackingMeasuresRun)) {
 				this.trackingMeasuresRuns
-				        .add((OmegaTrackingMeasuresRun) analysisRun);
+				.add((OmegaTrackingMeasuresRun) analysisRun);
 				this.trackingMeasures_cmb.addItem(analysisRun.getName());
 			}
 		}
 		if (this.trackingMeasuresRuns.isEmpty()) {
 			this.trackingMeasures_cmb.setEnabled(false);
-			// this.resetTrajectories();
+			this.popTrackingMeasures = false;
 			return;
 		}
 
@@ -679,51 +805,58 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 	private void fireEventSelectionPluginImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionPluginParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleDetectionRun);
+				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleLinkingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleLinkingRun);
+				this.getPlugin(), this.selectedParticleLinkingRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionTrajectoriesRelinkingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedTrajRelinkingRun);
+				this.getPlugin(), this.selectedTrajRelinkingRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionTrajectoriesSegmentationRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedTrajSegmentationRun);
+				this.getPlugin(), this.selectedTrajSegmentationRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	protected void fireEventTrajectories(
-	        final List<OmegaTrajectory> trajectories, final boolean selection) {
+			final List<OmegaTrajectory> trajectories, final boolean selection) {
 		// TODO modified as needed
 		final OmegaPluginEvent event = new OmegaPluginEventTrajectories(
-		        this.getPlugin(), trajectories, selection);
+				this.getPlugin(), trajectories, selection);
 		this.getPlugin().fireEvent(event);
 	}
 
-	public void selectImage(final OmegaImage image) {
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
-		final int index = this.images.indexOf(image);
-		this.images_cmb.setSelectedIndex(index);
+		int index = -1;
+		if (this.images != null) {
+			index = this.images.indexOf(image);
+		}
+		if (index == -1) {
+			this.images_cmb.setSelectedItem(this.images_cmb.getItemCount());
+		} else {
+			this.images_cmb.setSelectedIndex(index);
+		}
 		this.isHandlingEvent = false;
 	}
 
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.particleDetectionRuns.indexOf(analysisRun);
 		this.particles_cmb.setSelectedIndex(index);
@@ -731,7 +864,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectParticleLinkingRun(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.particleLinkingRuns.indexOf(analysisRun);
 		this.trajectories_cmb.setSelectedIndex(index);
@@ -739,7 +872,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectTrajectoriesRelinkingRun(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.trajRelinkingRuns.indexOf(analysisRun);
 		this.trajectoriesRelinking_cmb.setSelectedIndex(index);
@@ -747,7 +880,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectTrajectoriesSegmentationRun(
-	        final OmegaTrajectoriesSegmentationRun analysisRun) {
+			final OmegaTrajectoriesSegmentationRun analysisRun) {
 		this.isHandlingEvent = true;
 		final int index = this.trajSegmentationRuns.indexOf(analysisRun);
 		this.trajectoriesSegmentation_cmb.setSelectedIndex(index);
@@ -755,11 +888,11 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectCurrentTrajectoriesSegmentationRun(
-	        final OmegaAnalysisRun analysisRun) {
+			final OmegaAnalysisRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.selectedTrajSegmentationRun = (OmegaTrajectoriesSegmentationRun) analysisRun;
 		this.trajectoriesSegmentation_cmb
-		        .setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		this.isHandlingEvent = false;
 	}
 
@@ -774,15 +907,15 @@ public class TMPluginPanel extends GenericPluginPanel implements
 
 	@Override
 	public void sendEventTrajectories(
-	        final List<OmegaTrajectory> selectedTrajectories,
-	        final boolean selected) {
+			final List<OmegaTrajectory> selectedTrajectories,
+			final boolean selected) {
 		if (selected) {
 			this.intensityPanel.setSelectedTrajectories(selectedTrajectories);
 			this.mobilityPanel.setSelectedTrajectories(selectedTrajectories);
 			this.velocityPanel.setSelectedTrajectories(selectedTrajectories);
 			this.diffusivityPanel.setSelectedTrajectories(selectedTrajectories);
 			this.motionTypeClassificationPanel
-			        .setSelectedTrajectories(selectedTrajectories);
+			.setSelectedTrajectories(selectedTrajectories);
 		}
 		// intensityPanel.updateTrajectories(selectedTrajectories);
 		this.fireEventTrajectories(selectedTrajectories, selected);
@@ -800,7 +933,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-	        final boolean selection) {
+			final boolean selection) {
 		// TODO modify to keep changes if needed
 		this.tbPanel.updateTrajectories(trajectories, selection);
 		// TODO refactoring ?
@@ -810,7 +943,7 @@ public class TMPluginPanel extends GenericPluginPanel implements
 			this.velocityPanel.setSelectedTrajectories(trajectories);
 			this.diffusivityPanel.setSelectedTrajectories(trajectories);
 			this.motionTypeClassificationPanel
-			        .setSelectedTrajectories(trajectories);
+			.setSelectedTrajectories(trajectories);
 		}
 	}
 }

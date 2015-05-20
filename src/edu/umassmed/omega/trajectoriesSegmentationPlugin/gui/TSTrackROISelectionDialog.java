@@ -26,6 +26,7 @@ import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSTrackROISelectionDialog extends GenericDialog {
 	private static final long serialVersionUID = -4055355735984837884L;
@@ -38,7 +39,7 @@ public class TSTrackROISelectionDialog extends GenericDialog {
 
 	public TSTrackROISelectionDialog(final RootPaneContainer parentContainer,
 	        final List<OmegaROI> availableROIs) {
-		super(parentContainer, "Select ROI", true);
+		super(parentContainer, TSConstants.ROI_SELECT_DIALOG, true);
 
 		this.roi = null;
 		this.availableROIs = availableROIs;
@@ -67,8 +68,7 @@ public class TSTrackROISelectionDialog extends GenericDialog {
 
 	@Override
 	protected void createAndAddWidgets() {
-		final JLabel lbl = new JLabel(
-		        "Multiple ROI at that position, select the one you want to use:");
+		final JLabel lbl = new JLabel(TSConstants.ROI_SELECT_DIALOG_MSG);
 		this.add(lbl, BorderLayout.NORTH);
 
 		this.list = new JList<>();
@@ -79,7 +79,7 @@ public class TSTrackROISelectionDialog extends GenericDialog {
 
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		this.ok_btt = new JButton("Ok");
+		this.ok_btt = new JButton(TSConstants.ROI_SELECT_OK);
 		this.ok_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.ok_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		buttonPanel.add(this.ok_btt);
@@ -124,11 +124,11 @@ public class TSTrackROISelectionDialog extends GenericDialog {
 				final String y = new BigDecimal(String.valueOf(roi.getY()))
 				        .setScale(2, RoundingMode.HALF_UP).toString();
 				final StringBuffer buf = new StringBuffer();
-				buf.append("FrameIndex: ");
+				buf.append(TSConstants.ROI_SELECT_FRAMEINDEX);
 				buf.append(roi.getFrameIndex() + 1);
-				buf.append(" X: ");
+				buf.append(TSConstants.ROI_SELECT_X);
 				buf.append(x);
-				buf.append(" Y: ");
+				buf.append(TSConstants.ROI_SELECT_Y);
 				buf.append(y);
 				return buf.toString();
 			}

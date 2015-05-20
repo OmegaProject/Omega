@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -29,7 +29,6 @@ package edu.umassmed.omega.sptSbalzariniPlugin;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.RootPaneContainer;
@@ -44,7 +43,7 @@ import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sptSbalzariniPlugin.gui.SPTPluginPanel;
 
 public class SPTPlugin extends OmegaParticleTrackingPlugin implements
-        OmegaDataDisplayerPluginInterface {
+OmegaDataDisplayerPluginInterface {
 
 	public SPTPlugin() {
 		super(1);
@@ -56,17 +55,13 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public String getAlgorithmDescription() {
-		return "Algorithm desc";
-	}
-
-	@Override
-	public String getAlgorithmName() {
-		return "Single particle tracking by Ivo Sbalzarini";
+		return SPTConstants.PLUGIN_ALGO_DESC;
 	}
 
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
-		return new OmegaPerson("Ivo", "Sbalzarini");
+		return new OmegaPerson(SPTConstants.PLUGIN_AUTHOR_FIRSTNAME,
+		        SPTConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -76,17 +71,12 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public Date getAlgorithmPublicationDate() {
-		return new GregorianCalendar(1996, 4, 7).getTime();
+		return SPTConstants.PLUGIN_PUBL;
 	}
 
 	@Override
 	public String getName() {
-		return "Single Particle Tracking";
-	}
-
-	@Override
-	public String getShortName() {
-		return "SPT";
+		return SPTConstants.PLUGIN_NAME;
 	}
 
 	@Override
@@ -104,9 +94,9 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SPTPluginPanel panel = new SPTPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(), index);
+				this.getGateway(), this.getLoadedImages(), index);
 		return panel;
 	}
 
@@ -129,6 +119,6 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public String getDescription() {
-		return "Single particle tracker optimized for WINDOWS";
+		return SPTConstants.PLUGIN_DESC;
 	}
 }

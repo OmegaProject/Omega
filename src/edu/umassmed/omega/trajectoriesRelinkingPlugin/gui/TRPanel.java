@@ -16,6 +16,7 @@ import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class TRPanel extends GenericTrajectoriesBrowserPanel {
 
@@ -49,8 +50,8 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 	}
 
 	private void createPopupMenu() {
-		this.splitTrajMenuItem = new JMenuItem("Split trajectory");
-		this.mergeTrajMenuItem = new JMenuItem("Merge trajectories");
+		this.splitTrajMenuItem = new JMenuItem(TRConstants.SPLIT_ACTION);
+		this.mergeTrajMenuItem = new JMenuItem(TRConstants.MERGE_ACTION);
 	}
 
 	private void addListeners() {
@@ -154,9 +155,9 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 		}
 		this.getMenu().add(new JSeparator());
 		if (!this.isMerging) {
-			this.mergeTrajMenuItem.setText("Merge trajectories start");
+			this.mergeTrajMenuItem.setText(TRConstants.MERGE_ACTION_START);
 		} else {
-			this.mergeTrajMenuItem.setText("Merge trajectories end");
+			this.mergeTrajMenuItem.setText(TRConstants.MERGE_ACTION_END);
 		}
 		if (this.previousParticle != null) {
 			if ((this.nextParticle == null) && (frameIndex < super.getSizeT())) {
@@ -249,16 +250,16 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 			final int traj2Length = selectedTraj.getLength();
 
 			final StringBuffer buf = new StringBuffer();
-			buf.append("<html>Trajectories ");
+			buf.append(TRConstants.MERGE_CONFIRM_MSG1);
 			buf.append(traj1Index);
-			buf.append(" and ");
+			buf.append(TRConstants.CONFIRM_MSG_AND);
 			buf.append(traj2Index);
-			buf.append(" will be merged.<br>");
-			buf.append("Resulting trajectory will contain ");
+			buf.append(TRConstants.MERGE_CONFIRM_MSG2);
+			buf.append(TRConstants.MERGE_CONFIRM_MSG3);
 			buf.append(traj1Length + traj2Length);
-			buf.append(" elements</html>");
+			buf.append(TRConstants.MERGE_CONFIRM_MSG4);
 
-			if (!this.showConfirmationDialog("Merge trajectories confirmation",
+			if (!this.showConfirmationDialog(TRConstants.MERGE_CONFIRM,
 			        buf.toString()))
 				return;
 
@@ -306,16 +307,17 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 		        trajName.length());
 
 		final StringBuffer buf = new StringBuffer();
-		buf.append("<html>Trajectory ");
+		buf.append(TRConstants.SPLIT_CONFIRM_MSG1);
 		buf.append(trajIndex);
-		buf.append(" will be split.<br>");
-		buf.append("Resulting trajectories will contain respectively ");
+		buf.append(TRConstants.SPLIT_CONFIRM_MSG2);
 		buf.append(actualParticleIndex);
-		buf.append(" and ");
+		buf.append(TRConstants.SPLIT_CONFIRM_MSG3);
+		buf.append(actualParticleIndex);
+		buf.append(TRConstants.CONFIRM_MSG_AND);
 		buf.append(newTrajLength);
-		buf.append(" elements</html>");
+		buf.append(TRConstants.SPLIT_CONFIRM_MSG4);
 
-		if (!this.showConfirmationDialog("Split trajectory confirmation",
+		if (!this.showConfirmationDialog(TRConstants.SPLIT_CONFIRM,
 		        buf.toString()))
 			return;
 

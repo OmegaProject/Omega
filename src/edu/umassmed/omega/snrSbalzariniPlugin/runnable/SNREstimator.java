@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -35,10 +35,10 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
 import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
@@ -106,7 +106,7 @@ public class SNREstimator implements SNRRunnable {
 
 		final int byteWidth = this.gateway.getByteWidth(pixelsID);
 		final byte[] pixels = this.gateway.getImageData(pixelsID, z, t, c);
-		final Integer[] image = OmegaImageUtilities.convertByteToImage(
+		final Integer[] image = OmegaImageUtilities.convertByteToIntegerImage(
 		        byteWidth, pixels);
 		// data = OmegaImageUtilities.normalizeImage(data);
 

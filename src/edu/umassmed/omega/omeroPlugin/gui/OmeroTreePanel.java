@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -54,13 +54,13 @@ import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
 import pojos.DatasetData;
 import pojos.ExperimenterData;
 import pojos.ProjectData;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.omeroPlugin.OmeroGateway;
@@ -112,7 +112,7 @@ public class OmeroTreePanel extends GenericPanel {
 		// List<ImageData>>();
 
 		this.root = new DefaultMutableTreeNode();
-		this.root.setUserObject("Loaded data");
+		this.root.setUserObject(OmeroPluginGUIConstants.TREE_TITLE);
 		this.nodeMap = new HashMap<String, OmeroDataWrapper>();
 
 		this.setLayout(new BorderLayout());
@@ -143,7 +143,8 @@ public class OmeroTreePanel extends GenericPanel {
 		this.dataTree.setEditable(true);
 
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
-		scrollPane.setBorder(new TitledBorder("Loaded data"));
+		scrollPane.setBorder(new TitledBorder(
+				OmeroPluginGUIConstants.TREE_TITLE));
 
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
@@ -323,7 +324,7 @@ public class OmeroTreePanel extends GenericPanel {
 	public void addExperimenterData(final ExperimenterData experimenterData)
 	        throws ServerError {
 		this.pluginPanel.updateMessageStatus(new OmegaMessageEvent(
-		        "Loading projects and datasets"));
+		        OmeroPluginGUIConstants.LOADING_PROJECT_AND_DATASET));
 		final OmeroListPanelProjectAndDatasetLoader loader = new OmeroListPanelProjectAndDatasetLoader(
 		        this.pluginPanel, this.gateway, experimenterData);
 		final Thread t = new Thread(loader);

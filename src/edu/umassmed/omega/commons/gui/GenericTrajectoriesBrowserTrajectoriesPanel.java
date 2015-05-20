@@ -15,9 +15,9 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.runnable.TBROIThumbnailLoader;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;

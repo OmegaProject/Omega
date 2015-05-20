@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -32,19 +32,23 @@ import java.util.List;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSNRRunPluginInterface;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
 public abstract class OmegaSNRPlugin extends OmegaAlgorithmPlugin implements
         OmegaLoaderPluginInterface, OmegaImageConsumerPluginInterface,
+        OmegaOrphanedAnalysisConsumerPluginInterface,
         OmegaLoadedAnalysisConsumerPluginInterface,
         OmegaSelectParticleDetectionRunPluginInterface,
         OmegaSelectSNRRunPluginInterface {
 
 	private OmegaGateway gateway;
+	private OrphanedAnalysisContainer orphanedAnalysis;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private List<OmegaImage> loadedImages;
 
@@ -56,6 +60,8 @@ public abstract class OmegaSNRPlugin extends OmegaAlgorithmPlugin implements
 		super(maxNumOfPanels);
 
 		this.gateway = null;
+		this.loadedAnalysisRuns = null;
+		this.orphanedAnalysis = null;
 		this.loadedImages = null;
 	}
 
@@ -88,5 +94,16 @@ public abstract class OmegaSNRPlugin extends OmegaAlgorithmPlugin implements
 	@Override
 	public List<OmegaAnalysisRun> getLoadedAnalysisRuns() {
 		return this.loadedAnalysisRuns;
+	}
+
+	@Override
+	public void setOrphanedAnalysis(
+			final OrphanedAnalysisContainer orphanedAnalysis) {
+		this.orphanedAnalysis = orphanedAnalysis;
+	}
+
+	@Override
+	public OrphanedAnalysisContainer getOrphanedAnalysis() {
+		return this.orphanedAnalysis;
 	}
 }

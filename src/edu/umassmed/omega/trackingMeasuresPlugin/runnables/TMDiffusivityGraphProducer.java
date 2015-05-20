@@ -25,10 +25,11 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMConstants;
 import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMDiffusivityPanel;
 
 public class TMDiffusivityGraphProducer extends TMGraphProducer {
@@ -110,21 +111,42 @@ public class TMDiffusivityGraphProducer extends TMGraphProducer {
 		String title = "";
 		switch (this.diffusivityOption) {
 		case TMDiffusivityPanel.OPTION_TRACK_SLOPE_MSS:
-			title = "Slope MSS";
+			title = TMConstants.GRAPH_NAME_MSS;
 			break;
 		case TMDiffusivityPanel.OPTION_TRACK_D:
-			title = "Diffusion coefficent (order 2)";
+			title = TMConstants.GRAPH_NAME_DIFF;
 			break;
 		case TMDiffusivityPanel.OPTION_TRACK_ERROR_D:
-			title = "Error D";
+			title = TMConstants.GRAPH_NAME_UNCERT_D;
 			break;
 		case TMDiffusivityPanel.OPTION_TRACK_ERROR_SMSS:
-			title = "Error SMSS";
+			title = TMConstants.GRAPH_NAME_UNCERT_SMSS;
 			break;
 		default:
-			title = "Slope log MSD (order 2)";
+			title = TMConstants.GRAPH_NAME_MSD;
 		}
 		return title;
+	}
+
+	private String getYAxisTitle() {
+		String yAxisTitle;
+		switch (this.diffusivityOption) {
+		case TMDiffusivityPanel.OPTION_TRACK_SLOPE_MSS:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_MSS;
+			break;
+		case TMDiffusivityPanel.OPTION_TRACK_D:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_DIFF;
+			break;
+		case TMDiffusivityPanel.OPTION_TRACK_ERROR_D:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_UNCERT_D;
+			break;
+		case TMDiffusivityPanel.OPTION_TRACK_ERROR_SMSS:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_UNCERT_SMSS;
+			break;
+		default:
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_MSD;
+		}
+		return yAxisTitle;
 	}
 
 	@Override
@@ -197,16 +219,18 @@ public class TMDiffusivityGraphProducer extends TMGraphProducer {
 			((HistogramDataset) dataset).addSeries(title, data, data.length);
 		}
 
-		final CategoryAxis xAxis = new CategoryAxis("Tracks");
-		final NumberAxis yAxis = new NumberAxis(title);
+		final CategoryAxis xAxis = new CategoryAxis(
+				TMConstants.GRAPH_LAB_X_TRACK);
+		final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
 
 		// renderer.setSeriesFillPaint(0, Color.black);
 		Plot plot = null;
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
-			chart = ChartFactory.createHistogram(title, title, "Frequency",
-			        histDataset, PlotOrientation.VERTICAL, true, true, true);
+			chart = ChartFactory.createHistogram(title, title,
+			        TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+			        PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
@@ -292,7 +316,8 @@ public class TMDiffusivityGraphProducer extends TMGraphProducer {
 		final CategoryItemRenderer renderer = this
 		        .getTimepointsRenderer(renderingMap);
 
-		final CategoryAxis xAxis = new CategoryAxis("Timepoints");
+		final CategoryAxis xAxis = new CategoryAxis(
+				TMConstants.GRAPH_LAB_X_TIME);
 		// xAxis.setTickUnit(new NumberTickUnit(1.0));
 		final NumberAxis yAxis = new NumberAxis(title);
 
@@ -300,8 +325,9 @@ public class TMDiffusivityGraphProducer extends TMGraphProducer {
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
-			chart = ChartFactory.createHistogram(title, title, "Frequency",
-			        histDataset, PlotOrientation.VERTICAL, true, true, true);
+			chart = ChartFactory.createHistogram(title, title,
+			        TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+			        PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;

@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -32,10 +32,14 @@ import java.io.File;
 import javax.swing.JTextField;
 
 public class GenericTextFieldValidable extends JTextField {
+
+	private static final long serialVersionUID = 360914584051708067L;
+
 	public static final int CONTENT_NOVALIDATION = -1;
 
 	public static final int CONTENT_INT = 0;
 	public static final int CONTENT_DOUBLE = 1;
+	public static final int CONTENT_FLOAT = 2;
 
 	public static final int CONTENT_FILE = 10;
 	public static final int CONTENT_FOLDER = 11;
@@ -48,6 +52,7 @@ public class GenericTextFieldValidable extends JTextField {
 		case CONTENT_FOLDER:
 		case CONTENT_INT:
 		case CONTENT_DOUBLE:
+		case CONTENT_FLOAT:
 			this.content = content;
 			break;
 		default:
@@ -67,6 +72,9 @@ public class GenericTextFieldValidable extends JTextField {
 		case CONTENT_DOUBLE:
 			error.append("double");
 			break;
+		case CONTENT_FLOAT:
+			error.append("float");
+			break;
 		case CONTENT_FILE:
 			error.append("folder");
 			break;
@@ -83,6 +91,8 @@ public class GenericTextFieldValidable extends JTextField {
 			return this.isContentInt();
 		case CONTENT_DOUBLE:
 			return this.isContentDouble();
+		case CONTENT_FLOAT:
+			return this.isContentFloat();
 		case CONTENT_FILE:
 			return this.isContentFile();
 		case CONTENT_FOLDER:
@@ -106,6 +116,16 @@ public class GenericTextFieldValidable extends JTextField {
 		final String s = this.getText();
 		try {
 			Double.parseDouble(s);
+			return true;
+		} catch (final NumberFormatException ex) {
+			return false;
+		}
+	}
+
+	private boolean isContentFloat() {
+		final String s = this.getText();
+		try {
+			Float.parseFloat(s);
 			return true;
 		} catch (final NumberFormatException ex) {
 			return false;

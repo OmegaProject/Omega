@@ -40,14 +40,6 @@ public class TMDiffusivityPanel extends GenericPanel {
 	public static final int OPTION_TRACK_ERROR_D = 3;
 	public static final int OPTION_TRACK_ERROR_SMSS = 4;
 
-	private static final String TRACK_SLOPE_LOG_MSD = "Slope log MSD";
-	private static final String TRACK_SLOPE_MSS = "Slope MSS";
-	private static final String TRACK_DIFFUSION_COEFF = "Diffusion coefficent";
-	private static final String TRACK_ERROR_D = "Error D";
-	private static final String TRACK_ERROR_SMSS = "Error SMSS";
-
-	private static final String TRACKS = "Tracks";
-
 	private final TMPluginPanel pluginPanel;
 
 	private JPanel centerPanel;
@@ -103,11 +95,11 @@ public class TMDiffusivityPanel extends GenericPanel {
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.yAxis_cmb.addItem(TMDiffusivityPanel.TRACK_SLOPE_LOG_MSD);
-		this.yAxis_cmb.addItem(TMDiffusivityPanel.TRACK_SLOPE_MSS);
-		this.yAxis_cmb.addItem(TMDiffusivityPanel.TRACK_DIFFUSION_COEFF);
-		this.yAxis_cmb.addItem(TMDiffusivityPanel.TRACK_ERROR_SMSS);
-		this.yAxis_cmb.addItem(TMDiffusivityPanel.TRACK_ERROR_D);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_MSD);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_MSS);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_DIFF);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_UNCERT_SMSS);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_UNCERT_D);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -117,14 +109,14 @@ public class TMDiffusivityPanel extends GenericPanel {
 		xAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.xAxis_cmb.addItem(TMDiffusivityPanel.TRACKS);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TRACK);
 		// this.xAxis_cmb.addItem("Segments");
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.xAxis_cmb);
 
-		final JLabel selection_lbl = new JLabel(
-		        "<html>Indicate a range or max<br>for time or tracks</html>");
+		final JLabel selection_lbl = new JLabel(TMConstants.GRAPH_VAL_RANGE);
+		selection_lbl.setToolTipText(TMConstants.GRAPH_VAL_RANGE_TT);
 		selection_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		selection_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(selection_lbl);
@@ -133,20 +125,20 @@ public class TMDiffusivityPanel extends GenericPanel {
 		this.selection_txt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.selection_txt);
 
-		final JLabel graphType_lbl = new JLabel("Select graph type");
+		final JLabel graphType_lbl = new JLabel(TMConstants.GRAPH_TYPE);
 		graphType_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		graphType_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.graphType_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.graphType_cmb.addItem(TMGraphProducer.LINE_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.BAR_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.HISTOGRAM_GRAPH_LBL);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_LINE);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_BAR);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_HIST);
 		// this.xAxis_cmb.addItem("Segments");
 		this.graphType_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.graphType_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.graphType_cmb);
 
-		this.drawGraph_btt = new JButton("Draw graph");
+		this.drawGraph_btt = new JButton(TMConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.drawGraph_btt);
@@ -228,7 +220,7 @@ public class TMDiffusivityPanel extends GenericPanel {
 			return;
 		this.oldYAxisSelection = yAxisSelection;
 		this.oldXAxisSelection = xAxisSelection;
-		if (xAxisSelection.equals(TMDiffusivityPanel.TRACKS)) {
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TRACK)) {
 			this.handleDrawTracksChart();
 		} else {
 			// this.handleDrawTimepointsChart();
@@ -242,16 +234,15 @@ public class TMDiffusivityPanel extends GenericPanel {
 
 	private void handleDrawTracksChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMDiffusivityPanel.TRACK_SLOPE_LOG_MSD)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_MSD)) {
 			this.handleTracksChart(TMDiffusivityPanel.OPTION_TRACK_SLOPE_LOG_MSD);
-		} else if (yAxisSelection.equals(TMDiffusivityPanel.TRACK_SLOPE_MSS)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_MSS)) {
 			this.handleTracksChart(TMDiffusivityPanel.OPTION_TRACK_SLOPE_MSS);
-		} else if (yAxisSelection
-		        .equals(TMDiffusivityPanel.TRACK_DIFFUSION_COEFF)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_DIFF)) {
 			this.handleTracksChart(TMDiffusivityPanel.OPTION_TRACK_D);
-		} else if (yAxisSelection.equals(TMDiffusivityPanel.TRACK_ERROR_SMSS)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_UNCERT_SMSS)) {
 			this.handleTracksChart(TMDiffusivityPanel.OPTION_TRACK_ERROR_SMSS);
-		} else if (yAxisSelection.equals(TMDiffusivityPanel.TRACK_ERROR_D)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_UNCERT_D)) {
 			this.handleTracksChart(TMDiffusivityPanel.OPTION_TRACK_ERROR_D);
 		}
 	}
@@ -265,7 +256,7 @@ public class TMDiffusivityPanel extends GenericPanel {
 		        && ((this.oldXAxisSelection != null) && this.oldXAxisSelection
 		                .equals(xAxisSelection)))
 			return;
-		if (xAxisSelection.equals(TMDiffusivityPanel.TRACKS)) {
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TRACK)) {
 			//
 		} else {
 			//
@@ -286,10 +277,10 @@ public class TMDiffusivityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMDiffusivityGraphProducer graphProducer = new TMDiffusivityGraphProducer(
@@ -322,10 +313,10 @@ public class TMDiffusivityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMDiffusivityGraphProducer graphProducer = new TMDiffusivityGraphProducer(

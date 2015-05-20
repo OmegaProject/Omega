@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -38,30 +38,39 @@ import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaPluginEventResultsParticleTracking extends
-        OmegaPluginEventAlgorithm {
+OmegaPluginEventAlgorithm {
 
 	private final Map<OmegaFrame, List<OmegaROI>> resultingParticles;
+	private final Map<OmegaROI, Map<String, Object>> resultingParticlesValues;
 	private final List<OmegaTrajectory> resultingTrajectories;
 
 	public OmegaPluginEventResultsParticleTracking(final OmegaElement element,
-	        final List<OmegaParameter> params,
-	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
-	        final List<OmegaTrajectory> resultingTrajectories) {
-		this(null, element, params, resultingParticles, resultingTrajectories);
+			final List<OmegaParameter> params,
+			final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
+			final List<OmegaTrajectory> resultingTrajectories,
+	        final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
+		this(null, element, params, resultingParticles, resultingTrajectories,
+		        resultingParticlesValues);
 	}
 
 	public OmegaPluginEventResultsParticleTracking(final OmegaPlugin source,
-	        final OmegaElement element, final List<OmegaParameter> params,
-	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
-	        final List<OmegaTrajectory> resultingTrajectories) {
+			final OmegaElement element, final List<OmegaParameter> params,
+			final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
+			final List<OmegaTrajectory> resultingTrajectories,
+	        final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
 		super(source, element, params);
 
 		this.resultingParticles = resultingParticles;
+		this.resultingParticlesValues = resultingParticlesValues;
 		this.resultingTrajectories = resultingTrajectories;
 	}
 
 	public Map<OmegaFrame, List<OmegaROI>> getResultingParticles() {
 		return this.resultingParticles;
+	}
+
+	public Map<OmegaROI, Map<String, Object>> getResultingParticlesValues() {
+		return this.resultingParticlesValues;
 	}
 
 	public List<OmegaTrajectory> getResultingTrajectories() {

@@ -25,11 +25,12 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMConstants;
 import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMIntensityPanel;
 
 public class TMIntesityGraphProducer extends TMGraphProducer {
@@ -48,13 +49,13 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 	private ChartPanel graphPanel;
 
 	public TMIntesityGraphProducer(final TMIntensityPanel intensityPanel,
-	        final int graphType, final int peakMeanBgSnrOption,
-	        final int minMeanMaxOption, final int maxT,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final Map<OmegaTrajectory, Double[]> peakSignalMap,
-	        final Map<OmegaTrajectory, Double[]> meanSignalMap,
-	        final Map<OmegaTrajectory, Double[]> localBackgroundMap,
-	        final Map<OmegaTrajectory, Double[]> localSNRMap) {
+			final int graphType, final int peakMeanBgSnrOption,
+			final int minMeanMaxOption, final int maxT,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final Map<OmegaTrajectory, Double[]> peakSignalMap,
+			final Map<OmegaTrajectory, Double[]> meanSignalMap,
+			final Map<OmegaTrajectory, Double[]> localBackgroundMap,
+			final Map<OmegaTrajectory, Double[]> localSNRMap) {
 		super(graphType, segmentsMap);
 		this.intensityPanel = intensityPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
@@ -70,8 +71,8 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 	}
 
 	public TMIntesityGraphProducer(final TMIntensityPanel intensityPanel,
-	        final int graphType, final int peakMeanBgSnrOption, final int maxT,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final int graphType, final int peakMeanBgSnrOption, final int maxT,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		super(graphType, segmentsMap);
 		this.intensityPanel = intensityPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
@@ -122,7 +123,7 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 			title += "SNR";
 			break;
 		default:
-			title += "Peak Intensity";
+			title += TMConstants.GRAPH_NAME_INT_PEAK;
 		}
 		return title;
 	}
@@ -173,7 +174,7 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 		}
 		final double partial = 100.0 / this.getSegmentsMap().keySet().size();
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		final CategoryItemRenderer renderer = this.getTracksRenderer();
 		final List<Double> histValues = new ArrayList<>();
 		for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -200,18 +201,18 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 			((HistogramDataset) dataset).addSeries(title, data, data.length);
 		}
 
-		final CategoryAxis xAxis = new CategoryAxis("Tracks");
-		final NumberAxis yAxis = new NumberAxis("Image values");
-
 		Plot plot = null;
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
-			chart = ChartFactory.createHistogram(title, "Image values",
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+			chart = ChartFactory.createHistogram(title,
+			        TMConstants.GRAPH_LAB_Y_INT, TMConstants.GRAPH_LAB_Y_FREQ,
+			        histDataset, PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
+			final CategoryAxis xAxis = new CategoryAxis(
+			        TMConstants.GRAPH_LAB_X_TRACK);
+			final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_LAB_Y_INT);
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
 			plot = new CategoryPlot(catDataset, xAxis, yAxis, renderer);
 			chart = new JFreeChart(title, plot);
@@ -238,9 +239,9 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 			dataset = new DefaultCategoryDataset();
 		}
 		final double partial = 100.0 / (this.maxT * this.getSegmentsMap()
-		        .keySet().size());
+				.keySet().size());
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		for (Integer t = 0; t < this.maxT; t++) {
 			final List<Double> histValues = new ArrayList<>();
 			for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -289,26 +290,26 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 
 		Map<String, Map<Integer, Boolean>> renderingMap = null;
 		if ((dataset instanceof CategoryDataset)
-		        && (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
+				&& (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
 			renderingMap = this
-			        .createRenderingMap((DefaultCategoryDataset) dataset);
+					.createRenderingMap((DefaultCategoryDataset) dataset);
 		}
 		final CategoryItemRenderer renderer = this
-		        .getTimepointsRenderer(renderingMap);
-
-		final CategoryAxis xAxis = new CategoryAxis("Timepoints");
-		// xAxis.setTickUnit(new NumberTickUnit(1.0));
-		final NumberAxis yAxis = new NumberAxis("Image values");
+				.getTimepointsRenderer(renderingMap);
 
 		Plot plot = null;
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
-			chart = ChartFactory.createHistogram(title, "Image values",
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+			chart = ChartFactory.createHistogram(title,
+					TMConstants.GRAPH_LAB_Y_INT, TMConstants.GRAPH_LAB_Y_FREQ,
+					histDataset, PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
+			final CategoryAxis xAxis = new CategoryAxis(
+					TMConstants.GRAPH_LAB_X_TIME);
+			// xAxis.setTickUnit(new NumberTickUnit(1.0));
+			final NumberAxis yAxis = new NumberAxis(TMConstants.GRAPH_LAB_Y_INT);
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
 			plot = new CategoryPlot(catDataset, xAxis, yAxis, renderer);
 			chart = new JFreeChart(title, plot);
@@ -331,8 +332,8 @@ public class TMIntesityGraphProducer extends TMGraphProducer {
 				@Override
 				public void run() {
 					TMIntesityGraphProducer.this.intensityPanel.updateStatus(
-					        TMIntesityGraphProducer.this.getCompleted(), ended,
-					        TMIntesityGraphProducer.this.graphPanel);
+							TMIntesityGraphProducer.this.getCompleted(), ended,
+							TMIntesityGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {

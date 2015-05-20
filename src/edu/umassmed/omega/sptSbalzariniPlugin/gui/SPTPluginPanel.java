@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -49,6 +49,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleTracking;
@@ -58,7 +59,6 @@ import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
@@ -185,7 +185,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		scrollPaneRun
 		        .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-		this.tabPanel.add("Algorithm Run", scrollPaneRun);
+		this.tabPanel.add(SPTConstants.RUN_DEFINITION, scrollPaneRun);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
@@ -203,9 +203,9 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 
 		this.processRealTime_butt = new JButton("Process in real time");
 		this.processRealTime_butt.setEnabled(false);
-		buttonsPanel.add(this.processRealTime_butt);
+		// buttonsPanel.add(this.processRealTime_butt);
 
-		this.processBatch_butt = new JButton("Process in background");
+		this.processBatch_butt = new JButton(SPTConstants.EXECUTE_BUTTON);
 		buttonsPanel.add(this.processBatch_butt);
 
 		this.setProcessButtonsEnabled(false);
@@ -293,6 +293,8 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			        .getImageResultingParticles();
 			final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = this.sptRunner
 			        .getImageResultingTrajectories();
+			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sptRunner
+					.getImageResultingParticlesValues();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
@@ -301,9 +303,12 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 				        .get(image);
 				final List<OmegaTrajectory> trajectories = resultingTrajectories
 				        .get(image);
+				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
+				        .get(image);
+				// TODO additional value to complete
 				final OmegaPluginEventResultsParticleTracking particleTrackingEvt = new OmegaPluginEventResultsParticleTracking(
 				        this.getPlugin(), image, params, particles,
-				        trajectories);
+				        trajectories, particlesValues);
 
 				this.imagesToProcess.remove(image);
 				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);

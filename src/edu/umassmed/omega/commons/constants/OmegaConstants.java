@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -32,7 +32,12 @@ import java.awt.Dimension;
 
 import javax.swing.UIDefaults;
 
+import edu.umassmed.omega.data.coreElements.OmegaExperimenter;
+
 public class OmegaConstants {
+
+	public final static OmegaExperimenter OMEGA_DEFAULT_EXPERIMENTER = new OmegaExperimenter(
+	        -1, "Default", "Experimenter");
 
 	// ***BUILD AND INFO
 	public final static String OMEGA_TITLE = "OMEGA pre beta release";
@@ -57,6 +62,7 @@ public class OmegaConstants {
 	public final static Dimension BUTTON_SIZE = new Dimension(120, 20);
 	public final static Dimension BUTTON_SIZE_LARGE = new Dimension(180, 20);
 	public final static Dimension TEXT_SIZE = new Dimension(200, 20);
+	public final static Dimension LARGE_TEXT_SIZE = new Dimension(300, 20);
 
 	// COMBO BOX
 	public final static int COMBOBOX_MAX_OPTIONS = 5;
@@ -73,7 +79,7 @@ public class OmegaConstants {
 
 	// ***COLORS***
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public final static Color getDefaultSelectionBackgroundColor() {
@@ -82,7 +88,7 @@ public class OmegaConstants {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public final static Color getDefaultSelectionForegroundColor() {

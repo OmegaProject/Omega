@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -63,6 +63,7 @@ import pojos.GroupData;
 import pojos.ImageData;
 import pojos.PixelsData;
 import pojos.ProjectData;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
@@ -72,7 +73,6 @@ import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.OmegaData;
 import edu.umassmed.omega.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.data.coreElements.OmegaElement;
@@ -154,13 +154,15 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 	private void createMenu() {
 		final JMenuBar menu = super.getMenu();
 
-		this.connectionMenu = new JMenu("Connection");
-		this.connectMItem = new JMenuItem("Manage server connection");
+		this.connectionMenu = new JMenu(OmeroPluginGUIConstants.MENU_CONNECTION);
+		this.connectMItem = new JMenuItem(
+				OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
 		this.connectionMenu.add(this.connectMItem);
 
+		this.loadableUserMenu = new JMenu(
+				OmeroPluginGUIConstants.MENU_BROWSE_GROUPS);
 		this.notLoggedVisualMItem = new JMenuItem(
-		        "Login to load visualization option");
-		this.loadableUserMenu = new JMenu("Laboratories/Users");
+		        OmeroPluginGUIConstants.MENU_BROWSE_GROUPS_NOT_CONNECTED);
 		this.loadableUserMenu.add(this.notLoggedVisualMItem);
 
 		menu.add(this.connectionMenu);
@@ -251,14 +253,16 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 
-		this.loadImages_butt = new JButton("Load");
+		this.loadImages_butt = new JButton(
+		        OmeroPluginGUIConstants.CONNECTION_DIALOG_LOAD);
 		buttonPanel.add(this.loadImages_butt);
 
 		// this.loadAndSelectImages_butt = new
 		// JButton("Load and select images");
 		// buttonPanel.add(this.loadAndSelectImages_butt);
 
-		this.close_butt = new JButton("Close");
+		this.close_butt = new JButton(
+		        OmeroPluginGUIConstants.CONNECTION_DIALOG_SAVE);
 		buttonPanel.add(this.close_butt);
 
 		bottomPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -631,8 +635,9 @@ public class OmeroPluginPanel extends GenericPluginPanel implements
 				final int defaultZ = this.gateway.getDefaultZ(pixelsData
 				        .getId());
 				pixels.setSelectedZ(defaultZ);
-				final int defaultC = pixelsData.getSizeC() - 1;
-				pixels.setSelectedC(defaultC);
+				for (int i = 0; i < pixelsData.getSizeC(); i++) {
+					pixels.setSelectedC(i, true);
+				}
 				pixelsList.add(pixels);
 			}
 

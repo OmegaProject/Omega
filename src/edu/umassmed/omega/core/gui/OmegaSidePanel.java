@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -49,7 +49,9 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
@@ -57,16 +59,18 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTraj
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventTrajectories;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionLoadedElementNotFound;
+import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericImageCanvas;
 import edu.umassmed.omega.commons.gui.GenericPanel;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.OmegaLoadedData;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.data.coreElements.OmegaElement;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
@@ -87,7 +91,7 @@ public class OmegaSidePanel extends GenericPanel {
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
 
-	private OmegaElementInformationsPanel infoPanel;
+	private GenericElementInformationPanel infoPanel;
 	private OmegaElementRenderingPanel renderingPanel;
 	private OmegaElementOverlaysPanel overlaysPanel;
 
@@ -98,6 +102,7 @@ public class OmegaSidePanel extends GenericPanel {
 
 	private boolean isAttached, isHandlingEvent;
 
+	private OrphanedAnalysisContainer orphanedAnalysis;
 	private OmegaLoadedData loadedData;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
@@ -126,16 +131,16 @@ public class OmegaSidePanel extends GenericPanel {
 
 	private void createAndAddWidgets() {
 		final Dimension btt_dim = OmegaConstants.BUTTON_SIZE;
-		this.border = new TitledBorder("No item selected");
+		this.border = new TitledBorder(OmegaGUIConstants.SIDEPANEL_NO_DETAILS);
 
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		this.scale1on1_btt = new JButton("Scale 1:1");
+		this.scale1on1_btt = new JButton(OmegaGUIConstants.SIDEPANEL_SCALE_ONE);
 		this.scale1on1_btt.setPreferredSize(btt_dim);
 		this.scale1on1_btt.setSize(btt_dim);
 
-		this.scaleToFit_btt = new JButton("Scale to fit");
+		this.scaleToFit_btt = new JButton(OmegaGUIConstants.SIDEPANEL_SCALE_FIT);
 		this.scaleToFit_btt.setPreferredSize(btt_dim);
 		this.scaleToFit_btt.setSize(btt_dim);
 
@@ -152,24 +157,27 @@ public class OmegaSidePanel extends GenericPanel {
 		this.tabPane = new JTabbedPane(SwingConstants.TOP,
 		        JTabbedPane.WRAP_TAB_LAYOUT);
 
-		this.infoPanel = new OmegaElementInformationsPanel(
+		this.infoPanel = new GenericElementInformationPanel(
 		        this.getParentContainer());
 		this.resizeInfoPanel();
 		// final JScrollPane infoScrollPane = new JScrollPane(this.infoPanel);
-		this.tabPane.add("Information", this.infoPanel);
+		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_GENERAL,
+				this.infoPanel);
 
 		this.renderingPanel = new OmegaElementRenderingPanel(
 		        this.getParentContainer(), this);
 		// final JScrollPane renderingScrollPane = new JScrollPane(
 		// this.renderingPanel);
-		this.tabPane.add("Rendering settings", this.renderingPanel);
+		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_VIEWOPTIONS,
+				this.renderingPanel);
 
 		this.overlaysPanel = new OmegaElementOverlaysPanel(
 		        this.getParentContainer(), this);
 		// final JScrollPane imageOverlayScrollPane = new JScrollPane(
 		// this.overlaysPanel);
 		this.resizeOverlaysPanel();
-		this.tabPane.add("Tracks", this.overlaysPanel);
+		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_TRACKS,
+				this.overlaysPanel);
 
 		this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		this.splitPane.setBorder(this.border);
@@ -194,7 +202,8 @@ public class OmegaSidePanel extends GenericPanel {
 		this.arrowRight_btt.setSize(dim);
 		this.arrowLeft_btt.setEnabled(false);
 
-		this.selected_lbl = new JLabel("No item selected");
+		this.selected_lbl = new JLabel(
+		        OmegaGUIConstants.SIDEPANEL_NO_ITEM_SELECTED);
 		this.selected_lbl.setHorizontalAlignment(SwingConstants.CENTER);
 
 		bottomPanel.add(this.arrowLeft_btt, BorderLayout.WEST);
@@ -366,14 +375,14 @@ public class OmegaSidePanel extends GenericPanel {
 
 	private void setCurrentElementLabel() {
 		final StringBuffer buf = new StringBuffer();
-		final int size = this.loadedData.getLoadedDataSize();
-		if (this.itemIndex != -1) {
-			buf.append("Item selected: ");
+		if ((this.itemIndex != -1) && (this.loadedData != null)) {
+			final int size = this.loadedData.getLoadedDataSize();
+			buf.append(OmegaGUIConstants.SIDEPANEL_ITEM_SELECTED);
 			buf.append(this.itemIndex);
 			buf.append("/");
 			buf.append(size);
 		} else {
-			buf.append("No item selected");
+			buf.append(OmegaGUIConstants.SIDEPANEL_NO_ITEM_SELECTED);
 		}
 		this.selected_lbl.setText(buf.toString());
 		this.selected_lbl.revalidate();
@@ -399,8 +408,7 @@ public class OmegaSidePanel extends GenericPanel {
 		if (index > 0) {
 			OmegaElement element = null;
 			try {
-				element = OmegaSidePanel.this.loadedData.getElement(index);
-
+				element = this.loadedData.getElement(index);
 			} catch (final OmegaCoreExceptionLoadedElementNotFound ex) {
 				OmegaLogFileManager.handleCoreException(ex);
 				// TODO should i do something here?
@@ -414,6 +422,10 @@ public class OmegaSidePanel extends GenericPanel {
 				}
 			}
 			this.updateCurrentElement(element);
+		} else if (index == 0) {
+			// TODO handle orphaned analyses case
+			// How do I retrieve them? I have only loaded data here
+			this.updateCurrentElement(this.orphanedAnalysis);
 		} else {
 			this.updateCurrentElement(null);
 		}
@@ -428,33 +440,33 @@ public class OmegaSidePanel extends GenericPanel {
 		final OmegaImagePixels oldPixels = this.canvas.getImagePixels();
 		OmegaImagePixels pixels = null;
 		if (element == null) {
-			this.setBorderTitle("No item selected");
+			this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_NO_DETAILS);
 			pixels = null;
 		} else {
 			if (element instanceof OmegaProject) {
-				this.setBorderTitle("Selected project");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_PROJECT_DETAILS);
 				pixels = null;
 			} else if (element instanceof OmegaDataset) {
-				this.setBorderTitle("Selected dataset");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_DATASET_DETAILS);
 				pixels = null;
 			} else if (element instanceof OmegaImage) {
-				this.setBorderTitle("Selected image");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_IMAGE_DETAILS);
 				final OmegaImage image = (OmegaImage) element;
 				pixels = image.getDefaultPixels();
 				this.updateDisplayableElements(image, this.loadedAnalysisRuns);
 			} else if (element instanceof OmegaImagePixels) {
-				this.setBorderTitle("Selected pixels");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_PIXELS_DETAILS);
 				pixels = (OmegaImagePixels) element;
 			} else if (element instanceof OmegaFrame) {
-				this.setBorderTitle("Selected frame");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_FRAME_DETAILS);
 				final OmegaFrame frame = (OmegaFrame) element;
 				frame.getIndex();
 				pixels = null;
 			} else {
 				// TODO manage exception
 				System.out
-				        .println("OmegaElementImagePanel: update case not supported");
-				this.setBorderTitle("No valid selected");
+				.println("OmegaElementImagePanel: update case not supported");
+				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_NO_DETAILS);
 				pixels = null;
 			}
 		}
@@ -477,10 +489,12 @@ public class OmegaSidePanel extends GenericPanel {
 	}
 
 	public void updateGUI(final OmegaLoadedData loadedData,
+			final OrphanedAnalysisContainer orphanedAnalysis,
 	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
 	        final OmegaGateway gateway) {
 		this.isHandlingEvent = true;
 		this.loadedData = loadedData;
+		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = loadedAnalysisRuns;
 		this.canvas.setGateway(gateway);
 		final int dataSize = loadedData.getLoadedDataSize();
@@ -554,14 +568,20 @@ public class OmegaSidePanel extends GenericPanel {
 		frame.sendCoreEvent(event);
 	}
 
-	public void selectImage(final OmegaImage image) {
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
-		try {
-			this.itemIndex = this.loadedData.getElementIndex(image);
+		if (image instanceof OrphanedAnalysisContainer) {
+			this.itemIndex = 0;
 			this.manageItemChanged();
-		} catch (final OmegaCoreExceptionLoadedElementNotFound ex) {
-			OmegaLogFileManager.handleCoreException(ex);
-			// TODO should I do something here?
+		} else {
+			try {
+				this.itemIndex = this.loadedData
+				        .getElementIndex((OmegaElement) image);
+				this.manageItemChanged();
+			} catch (final OmegaCoreExceptionLoadedElementNotFound ex) {
+				OmegaLogFileManager.handleCoreException(ex);
+				// TODO should I do something here?
+			}
 		}
 		this.isHandlingEvent = false;
 	}
@@ -633,12 +653,8 @@ public class OmegaSidePanel extends GenericPanel {
 		return this.canvas.getCurrentT();
 	}
 
-	public void setActiveChannel(final int channel, final boolean active) {
-		this.canvas.setActiveChannel(channel, active);
-	}
-
-	public void setSelectedC(final int c) {
-		this.canvas.setSelectedC(c);
+	public void setActiveChannel(final int channel, final boolean isActive) {
+		this.canvas.setActiveChannel(channel, isActive);
 	}
 
 	public void setParticles(final List<OmegaROI> particles) {
@@ -675,6 +691,10 @@ public class OmegaSidePanel extends GenericPanel {
 		this.canvas.updateTrajectories(trajectories, selection);
 	}
 
+	public void updateParticles(final List<OmegaROI> particles) {
+		this.canvas.setParticles(particles);
+	}
+
 	private OmegaGUIFrame getOmegaGUIFrame() {
 		final RootPaneContainer parent = this.getParentContainer();
 		OmegaGUIFrame frame = null;
@@ -694,5 +714,9 @@ public class OmegaSidePanel extends GenericPanel {
 
 	public void setShowTrajectoriesOnlyUpToT(final boolean enabled) {
 		this.canvas.setShowTrajectoriesOnlyUpToT(enabled);
+	}
+
+	public void setShowTrajectoriesOnlyStartingAtT(final boolean enabled) {
+		this.canvas.setShowTrajectoriesOnlyStartingAtT(enabled);
 	}
 }

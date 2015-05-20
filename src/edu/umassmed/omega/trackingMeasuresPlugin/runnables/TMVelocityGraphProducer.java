@@ -25,10 +25,11 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMConstants;
 import edu.umassmed.omega.trackingMeasuresPlugin.gui.TMVelocityPanel;
 
 public class TMVelocityGraphProducer extends TMGraphProducer {
@@ -45,12 +46,12 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 	private ChartPanel graphPanel;
 
 	public TMVelocityGraphProducer(final TMVelocityPanel velocityPanel,
-	        final int graphType, final int velocityOption, final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final Map<OmegaTrajectory, List<Double>> localSpeedMap,
-	        final Map<OmegaTrajectory, List<Double>> localVelocityMap,
-	        final Map<OmegaTrajectory, Double> meanSpeedMap,
-	        final Map<OmegaTrajectory, Double> meanVelocityMap) {
+			final int graphType, final int velocityOption, final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final Map<OmegaTrajectory, List<Double>> localSpeedMap,
+			final Map<OmegaTrajectory, List<Double>> localVelocityMap,
+			final Map<OmegaTrajectory, Double> meanSpeedMap,
+			final Map<OmegaTrajectory, Double> meanVelocityMap) {
 		super(graphType, segmentsMap);
 		this.velocityPanel = velocityPanel;
 		this.velocityOption = velocityOption;
@@ -92,16 +93,16 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 		String title;
 		switch (this.velocityOption) {
 		case TMVelocityPanel.OPTION_LOCAL_VELOCITY:
-			title = "Local velocity";
+			title = TMConstants.GRAPH_NAME_VEL_LOCAL;
 			break;
 		case TMVelocityPanel.OPTION_MEAN_SPEED:
-			title = "Mean speed";
+			title = TMConstants.GRAPH_NAME_SPEED;
 			break;
 		case TMVelocityPanel.OPTION_MEAN_VELOCITY:
-			title = "Mean velocity";
+			title = TMConstants.GRAPH_NAME_VEL;
 			break;
 		default:
-			title = "Local speed";
+			title = TMConstants.GRAPH_NAME_SPEED_LOCAL;
 		}
 		return title;
 	}
@@ -111,10 +112,10 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 		switch (this.velocityOption) {
 		case TMVelocityPanel.OPTION_LOCAL_VELOCITY:
 		case TMVelocityPanel.OPTION_MEAN_VELOCITY:
-			yAxisTitle = "Velocity";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_VEL;
 			break;
 		default:
-			yAxisTitle = "Speed";
+			yAxisTitle = TMConstants.GRAPH_LAB_Y_SPEED;
 		}
 		return yAxisTitle;
 	}
@@ -152,7 +153,7 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 		}
 		final double partial = 100.0 / this.getSegmentsMap().keySet().size();
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		final CategoryItemRenderer renderer = this.getTracksRenderer();
 		final List<Double> histValues = new ArrayList<>();
 		for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -179,19 +180,19 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 			((HistogramDataset) dataset).addSeries(title, data, data.length);
 		}
 
-		final CategoryAxis xAxis = new CategoryAxis("Tracks");
-		final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
-
 		// renderer.setSeriesFillPaint(0, Color.black);
 		Plot plot = null;
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
 			chart = ChartFactory.createHistogram(title, this.getYAxisTitle(),
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+					TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+			        PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
+			final CategoryAxis xAxis = new CategoryAxis(
+			        TMConstants.GRAPH_LAB_X_TRACK);
+			final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
 			plot = new CategoryPlot(catDataset, xAxis, yAxis, renderer);
 			chart = new JFreeChart(title, plot);
@@ -218,9 +219,9 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 			dataset = new DefaultCategoryDataset();
 		}
 		final double partial = 100.0 / (this.maxT * this.getSegmentsMap()
-		        .keySet().size());
+				.keySet().size());
 		final double increase = new BigDecimal(partial).setScale(2,
-		        RoundingMode.HALF_UP).doubleValue();
+				RoundingMode.HALF_UP).doubleValue();
 		for (Integer t = 0; t < this.maxT; t++) {
 			final List<Double> histValues = new ArrayList<>();
 			for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
@@ -268,26 +269,26 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 
 		Map<String, Map<Integer, Boolean>> renderingMap = null;
 		if ((dataset instanceof CategoryDataset)
-		        && (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
+				&& (this.getGraphType() == TMGraphProducer.LINE_GRAPH)) {
 			renderingMap = this
-			        .createRenderingMap((DefaultCategoryDataset) dataset);
+					.createRenderingMap((DefaultCategoryDataset) dataset);
 		}
 		final CategoryItemRenderer renderer = this
-		        .getTimepointsRenderer(renderingMap);
-
-		final CategoryAxis xAxis = new CategoryAxis("Timepoints");
-		// xAxis.setTickUnit(new NumberTickUnit(1.0));
-		final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
+				.getTimepointsRenderer(renderingMap);
 
 		Plot plot = null;
 		JFreeChart chart = null;
 		if (dataset instanceof HistogramDataset) {
 			final HistogramDataset histDataset = (HistogramDataset) dataset;
 			chart = ChartFactory.createHistogram(title, this.getYAxisTitle(),
-			        "Frequency", histDataset, PlotOrientation.VERTICAL, true,
-			        true, true);
+					TMConstants.GRAPH_LAB_Y_FREQ, histDataset,
+					PlotOrientation.VERTICAL, true, true, true);
 			plot = chart.getPlot();
 		} else {
+			final CategoryAxis xAxis = new CategoryAxis(
+					TMConstants.GRAPH_LAB_X_TIME);
+			// xAxis.setTickUnit(new NumberTickUnit(1.0));
+			final NumberAxis yAxis = new NumberAxis(this.getYAxisTitle());
 			final DefaultCategoryDataset catDataset = (DefaultCategoryDataset) dataset;
 			plot = new CategoryPlot(catDataset, xAxis, yAxis, renderer);
 			chart = new JFreeChart(title, plot);
@@ -310,8 +311,8 @@ public class TMVelocityGraphProducer extends TMGraphProducer {
 				@Override
 				public void run() {
 					TMVelocityGraphProducer.this.velocityPanel.updateStatus(
-					        TMVelocityGraphProducer.this.getCompleted(), ended,
-					        TMVelocityGraphProducer.this.graphPanel);
+							TMVelocityGraphProducer.this.getCompleted(), ended,
+							TMVelocityGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {

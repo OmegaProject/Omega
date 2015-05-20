@@ -31,10 +31,10 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsError;
 import edu.umassmed.omega.commons.utilities.OmegaClassLoaderUtilities;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 
 public class SPTDLLInvoker {
 	// native methods

@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -34,11 +34,12 @@ import java.awt.Graphics;
 import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
+import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Utilities;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 
 public class OmegaStringUtilities {
 
@@ -126,7 +127,7 @@ public class OmegaStringUtilities {
 
 	/**
 	 * Returns a splitted String[] from a String.
-	 * 
+	 *
 	 * @param strLine
 	 * @param separator
 	 * @return
@@ -141,9 +142,18 @@ public class OmegaStringUtilities {
 		return null;
 	}
 
-	public static String getHtmlString(final String text, final String separator) {
+	public static String getHtmlString(final String text,
+	        final String separator, final int align) {
 		final StringBuffer buf = new StringBuffer();
-		buf.append("<html><div style=\"text-align:center\">");
+		buf.append("<html><div style=\"text-align:");
+		if (align == SwingConstants.TRAILING) {
+			buf.append("right");
+		} else if (align == SwingConstants.LEADING) {
+			buf.append("left");
+		} else {
+			buf.append("center");
+		}
+		buf.append("\">");
 		final String[] tokens = text.split(separator);
 		for (int i = 0; i < tokens.length; i++) {
 			final StringBuffer currentBuf = new StringBuffer();
@@ -159,7 +169,6 @@ public class OmegaStringUtilities {
 
 	public static String getHtmlMultiLineString(final String text,
 	        final String separator, final JComponent comp) {
-		System.out.println();
 		final StringBuffer buf = new StringBuffer();
 		buf.append("<html><div style=\"text-align:center\">");
 		final Dimension dim = comp.getSize();

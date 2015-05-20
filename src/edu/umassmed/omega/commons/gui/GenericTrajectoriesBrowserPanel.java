@@ -27,6 +27,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEventTBLoader;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
@@ -154,10 +155,11 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 
 	private void createPopupMenu() {
 		this.tbMenu = new JPopupMenu();
-		this.showParticles_itm = new JMenuItem("Show spots thumbnail");
+		this.showParticles_itm = new JMenuItem(
+				OmegaGUIConstants.TRACK_BROWSER_HIDE_SPOT_THUMB);
 		this.generateRandomColors_itm = new JMenuItem(
-		        "Generate random trajectories colors");
-		this.chooseColor_itm = new JMenuItem("Choose trajectory color");
+		        OmegaGUIConstants.RANDOM_COLORS);
+		this.chooseColor_itm = new JMenuItem(OmegaGUIConstants.CHOSE_COLOR);
 	}
 
 	private void addListeners() {
@@ -331,8 +333,8 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 		final StringBuffer buf = new StringBuffer();
 		int frameIndex = -1;
 		if (this.selectedTraj != null) {
-			buf.append("Trajectory ");
-			buf.append(this.trajectories.indexOf(this.selectedTraj) + 1);
+			buf.append("Track ");
+			buf.append(this.selectedTraj.getName());
 			if (this.selectedParticle != null) {
 				frameIndex = this.selectedParticle.getFrameIndex() + 1;
 				buf.append(" - Frame ");
@@ -344,6 +346,7 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 			this.tbMenu.add(new JSeparator());
 		}
 		this.tbMenu.add(this.showParticles_itm);
+		this.tbMenu.add(new JSeparator());
 		this.tbMenu.add(this.generateRandomColors_itm);
 		if (this.selectedTraj != null) {
 			this.tbMenu.add(this.chooseColor_itm);
@@ -356,10 +359,12 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 
 	private void handleShowSpotsThumbnail() {
 		if (this.isSpotsEnabled) {
-			this.showParticles_itm.setText("Show spots thumbnail");
+			this.showParticles_itm
+			.setText(OmegaGUIConstants.TRACK_BROWSER_SHOW_SPOT_THUMB);
 			this.isSpotsEnabled = !this.isSpotsEnabled;
 		} else {
-			this.showParticles_itm.setText("Hide spots thumbnail");
+			this.showParticles_itm
+			.setText(OmegaGUIConstants.TRACK_BROWSER_HIDE_SPOT_THUMB);
 			this.isSpotsEnabled = !this.isSpotsEnabled;
 		}
 		this.repaint();
@@ -368,9 +373,8 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 	private void handleGenerateRandomColors() {
 		final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
 		        this.getParentContainer(),
-		        "Random colors generation confirmation",
-		        "Do you want do generate new random colors for the trajectories?",
-		        true);
+				OmegaGUIConstants.TRACK_RANDOM_COLOR_CONFIRM,
+		        OmegaGUIConstants.TRACK_RANDOM_COLOR_CONFIRM_MSG, true);
 		dialog.setVisible(true);
 		if (!dialog.getConfirmation())
 			return;
@@ -388,20 +392,21 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 
 	private void handlePickSingleColor() {
 		final StringBuffer buf1 = new StringBuffer();
-		buf1.append("Choose color for trajectory ");
+		buf1.append(OmegaGUIConstants.TRACK_CHOSE_COLOR_DIALOG_MSG);
 		buf1.append(this.selectedTraj.getName());
 
 		final Color c = OmegaColorManagerUtilities.openPaletteColor(this,
 		        buf1.toString(), this.selectedTraj.getColor());
 
 		final StringBuffer buf2 = new StringBuffer();
-		buf2.append("Do you want to color trajectory ");
+		buf2.append(OmegaGUIConstants.TRACK_CHOSE_COLOR_CONFIRM_MSG);
 		buf2.append(this.selectedTraj.getName());
 		buf2.append("?");
 
 		final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
-		        this.getParentContainer(), "Choose single color confirmation",
-		        buf2.toString(), true);
+		        this.getParentContainer(),
+		        OmegaGUIConstants.TRACK_CHOSE_COLOR_CONFIRM, buf2.toString(),
+		        true);
 		dialog.setVisible(true);
 		if (!dialog.getConfirmation())
 			return;
@@ -420,6 +425,15 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 	        final boolean selection) {
+		if (this.img == null) {
+			int maxT = -1;
+			for (final OmegaTrajectory traj : trajectories) {
+				if (maxT < traj.getLength()) {
+					maxT = traj.getLength();
+				}
+			}
+			this.sizeT = maxT;
+		}
 		if (selection) {
 			this.resetClickReferences();
 			this.selectedTrajectories.clear();
@@ -507,7 +521,7 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 
 	public void setImage(final OmegaImage image) {
 		if (image == null) {
-			this.sizeT = 0;
+			this.sizeT = -1;
 			this.tbHeaderPanel.setPhysicalSizeT(null);
 		} else {
 			this.img = image;
@@ -519,7 +533,6 @@ public class GenericTrajectoriesBrowserPanel extends GenericPanel implements
 			this.tbLabelsPanel.setHasPhysicalSizeT(physicalSizeT != null);
 		}
 		this.tbTrajectoriesPanel.setImage(image);
-
 	}
 
 	@Override

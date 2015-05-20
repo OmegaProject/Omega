@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -28,7 +28,6 @@
 package edu.umassmed.omega.trajectoriesRelinkingPlugin;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.RootPaneContainer;
@@ -39,10 +38,10 @@ import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
@@ -62,12 +61,7 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public String getName() {
-		return "Trajectories Relinking";
-	}
-
-	@Override
-	public String getShortName() {
-		return "TR";
+		return TRConstants.PLUGIN_NAME;
 	}
 
 	@Override
@@ -81,7 +75,7 @@ public class TrajectoriesRelinkingPlugin extends
 	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TRPluginPanel panel = new TRPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(),
-		        this.getLoadedAnalysisRuns(), index);
+		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -99,7 +93,7 @@ public class TrajectoriesRelinkingPlugin extends
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getLoadedAnalysisRuns());
+					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
@@ -113,7 +107,7 @@ public class TrajectoriesRelinkingPlugin extends
 	}
 
 	@Override
-	public void selectImage(final OmegaImage image) {
+	public void selectImage(final OmegaAnalysisRunContainer image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectImage(image);
@@ -157,13 +151,8 @@ public class TrajectoriesRelinkingPlugin extends
 	}
 
 	@Override
-	public String getAlgorithmName() {
-		return "Trajectories Relinking";
-	}
-
-	@Override
 	public String getAlgorithmDescription() {
-		return "Default OMEGA trajectories relinking";
+		return TRConstants.PLUGIN_ALGO_DESC;
 	}
 
 	@Override
@@ -178,11 +167,11 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public Date getAlgorithmPublicationDate() {
-		return new GregorianCalendar(2014, 12, 1).getTime();
+		return TRConstants.PLUGIN_PUBL;
 	}
 
 	@Override
 	public String getDescription() {
-		return "Default OMEGA trajectories relinking";
+		return TRConstants.PLUGIN_DESC;
 	}
 }

@@ -18,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericSpinner;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
@@ -33,11 +34,11 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	private static final float COMPRESSION = 0.5f;
 
 	private JPanel sizesPanel, optionsPanel, channelsPanel, tLabelsPanel,
-	        zLabelsPanel;
+	zLabelsPanel;
 	private JSpinner zControl_spi, tControl_spi;
 	private JSlider zControl_sli, tControl_sli;
 	private JLabel zControlSize_lbl, tControlSize_lbl,
-	        zControlPhysicalSize_lbl, tControlPhysicalSize_lbl;
+	zControlPhysicalSize_lbl, tControlPhysicalSize_lbl;
 	private JCheckBox compressed;
 	private int channelsNumber;
 	private JCheckBox[] channels;
@@ -49,7 +50,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	private boolean isHandlingEvent;
 
 	public OmegaElementRenderingPanel(final RootPaneContainer parent,
-	        final OmegaSidePanel sidePanel) {
+			final OmegaSidePanel sidePanel) {
 		super(parent);
 
 		this.sidePanel = sidePanel;
@@ -77,7 +78,8 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 		final JPanel zPanel = new JPanel();
 		zPanel.setLayout(new GridLayout(2, 1));
-		zPanel.setBorder(new TitledBorder("Z sections"));
+		zPanel.setBorder(new TitledBorder(
+		        OmegaGUIConstants.SIDEPANEL_RENDERING_Z));
 
 		this.zControl_sli = new JSlider();
 		this.zControl_sli.setMinimum(0);
@@ -106,7 +108,8 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 		final JPanel tPanel = new JPanel();
 		tPanel.setLayout(new GridLayout(2, 1));
-		tPanel.setBorder(new TitledBorder("Timepoints"));
+		tPanel.setBorder(new TitledBorder(
+		        OmegaGUIConstants.SIDEPANEL_RENDERING_T));
 
 		this.tControl_sli = new JSlider();
 		this.tControl_sli.setMinimum(0);
@@ -139,9 +142,12 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 		// compressed panel
 		this.optionsPanel = new JPanel();
+		this.optionsPanel.setBorder(new TitledBorder(
+		        OmegaGUIConstants.SIDEPANEL_RENDERING_OPTIONS));
 		this.optionsPanel.setLayout(new GridLayout(1, 1));
 
-		this.compressed = new JCheckBox("Compressed Image");
+		this.compressed = new JCheckBox(
+		        OmegaGUIConstants.SIDEPANEL_RENDERING_IMAGE_COMPRESSION);
 		this.compressed.setSelected(false);
 		this.compressed.setEnabled(false);
 
@@ -176,7 +182,11 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	 * Builds the channel component.
 	 */
 	private void createChannelsPane(final int n) {
+		this.remove(this.channelsPanel);
 		this.channelsPanel.removeAll();
+		// this.channelsPanel.revalidate();
+		// this.channelsPanel.repaint();
+		this.channelsPanel.setBorder(null);
 		this.channelsPanel.setLayout(new GridLayout(n, 1));
 		this.channels = new JCheckBox[n];
 
@@ -194,9 +204,17 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 			this.channelsPanel.add(this.channels[i]);
 		}
+		if (this.channelsPanel.getComponentCount() > 0) {
+			this.channelsPanel.setBorder(new TitledBorder(
+					OmegaGUIConstants.SIDEPANEL_RENDERING_C));
+		}
 
-		this.channelsPanel.validate();
-		this.channelsPanel.repaint();
+		final Dimension channelsDim = new Dimension(
+		        this.channelsPanel.getWidth(), 50 * n);
+		this.channelsPanel.setPreferredSize(channelsDim);
+		this.channelsPanel.setSize(channelsDim);
+
+		this.add(this.channelsPanel);
 	}
 
 	private ChangeListener getSliderListener() {
@@ -245,13 +263,13 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 	private void handleSpinner(final JSpinner spinner) {
 		if (!spinner.isEnabled() || !this.validateSpinner(spinner)
-		        || this.isHandlingEvent)
+				|| this.isHandlingEvent)
 			return;
 		final int z = (int) this.zControl_spi.getValue();
 		final int t = (int) this.tControl_spi.getValue();
 		final String[] sizesLbls = this.createSizesStrings(z, t);
 		final String[] physicalSizesLbls = this
-		        .createPhysicalSizesStrings(z, t);
+				.createPhysicalSizesStrings(z, t);
 		if (t == 0) {
 			// TODO handle error if needed
 			System.out.println("ERROR");
@@ -287,7 +305,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		final int t = this.tControl_sli.getValue();
 		final String[] sizesLbls = this.createSizesStrings(z, t);
 		final String[] physicalSizesLbls = this
-		        .createPhysicalSizesStrings(z, t);
+				.createPhysicalSizesStrings(z, t);
 		if (t == 0) {
 			// TODO handle error if needed
 			System.out.println("ERROR");
@@ -334,7 +352,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		this.physicalSizeY = pixels.getPixelSizeY();
 		this.physicalSizeZ = pixels.getPixelSizeZ();
 		this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
-		        this.currentMaximumTValue);
+				this.currentMaximumTValue);
 
 		final int defaultZ = gateway.getDefaultZ(id);
 		final int defaultT = gateway.getDefaultT(id);
@@ -345,24 +363,24 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		this.tControl_spi.setValue(defaultT + 1);
 
 		String[] sizesLbl = this.createSizesStrings(this.currentMaximumZValue,
-		        this.currentMaximumTValue);
+				this.currentMaximumTValue);
 		String[] physicalSizesLbl = this.createSizesStrings(
-		        this.currentMaximumZValue, this.currentMaximumTValue);
+				this.currentMaximumZValue, this.currentMaximumTValue);
 
 		Dimension lblDim = this.computeAndSetNeededDimension(
-		        this.zControlSize_lbl, this.tControlSize_lbl, sizesLbl[0],
-		        sizesLbl[1]);
+				this.zControlSize_lbl, this.tControlSize_lbl, sizesLbl[0],
+				sizesLbl[1]);
 		this.zControlSize_lbl.setMinimumSize(lblDim);
 		this.tControlSize_lbl.setMinimumSize(lblDim);
 		lblDim = this.computeAndSetNeededDimension(
-		        this.zControlPhysicalSize_lbl, this.tControlPhysicalSize_lbl,
-		        physicalSizesLbl[0], physicalSizesLbl[1]);
+				this.zControlPhysicalSize_lbl, this.tControlPhysicalSize_lbl,
+				physicalSizesLbl[0], physicalSizesLbl[1]);
 		this.zControlPhysicalSize_lbl.setMinimumSize(lblDim);
 		this.tControlPhysicalSize_lbl.setMinimumSize(lblDim);
 
 		sizesLbl = this.createSizesStrings(defaultZ + 1, defaultT + 1);
 		physicalSizesLbl = this.createPhysicalSizesStrings(defaultZ + 1,
-		        defaultT + 1);
+				defaultT + 1);
 		this.zControlSize_lbl.setText(sizesLbl[0]);
 		this.tControlSize_lbl.setText(sizesLbl[1]);
 		this.zControlPhysicalSize_lbl.setText(physicalSizesLbl[0]);
@@ -383,11 +401,11 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	}
 
 	private Dimension computeAndSetNeededDimension(final JLabel lbl1,
-	        final JLabel lbl2, final String s1, final String s2) {
+			final JLabel lbl2, final String s1, final String s2) {
 		final Dimension lbl1Dim = OmegaStringUtilities.getStringSize(
-		        lbl1.getGraphics(), lbl2.getFont(), s1);
+				lbl1.getGraphics(), lbl2.getFont(), s1);
 		final Dimension lbl2Dim = OmegaStringUtilities.getStringSize(
-		        lbl2.getGraphics(), lbl2.getFont(), s2);
+				lbl2.getGraphics(), lbl2.getFont(), s2);
 		Dimension lblDim = null;
 		if (lbl1Dim.width > lbl2Dim.width) {
 			lblDim = lbl1Dim;
@@ -460,7 +478,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 			buf.append(String.format("%.2f", this.physicalSizeZ * z));
 			buf.append("/");
 			buf.append(String.format("%.2f", this.physicalSizeZ
-			        * this.currentMaximumZValue));
+					* this.currentMaximumZValue));
 			buf.append(" ");
 			buf.append(OmegaConstantsMathSymbols.MU);
 			buf.append("m)");
@@ -472,7 +490,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 			buf.append(String.format("%.2f", this.physicalSizeT * t));
 			buf.append("/");
 			buf.append(String.format("%.2f", this.physicalSizeT
-			        * this.currentMaximumTValue));
+					* this.currentMaximumTValue));
 			buf.append(" s)");
 		}
 		sizes[1] = buf.toString();
@@ -483,29 +501,24 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	 * Set or unset a channel.
 	 */
 	private void setActiveChannels() {
-		int c = 0;
 		for (int i = 0; i < this.channelsNumber; i++) {
-			final boolean active = this.channels[i].isSelected();
-			this.sidePanel.setActiveChannel(i, active);
-			if (active) {
-				c++;
-			}
+			final boolean isActive = this.channels[i].isSelected();
+			this.sidePanel.setActiveChannel(i, isActive);
 		}
-		this.sidePanel.setSelectedC(c);
 		this.sidePanel.render();
 	}
 
 	public void resizePanel(final int width, final int height) {
 		final Dimension sizesDim = new Dimension(width,
-		        this.sizesPanel.getHeight());
+				this.sizesPanel.getHeight());
 		this.sizesPanel.setPreferredSize(sizesDim);
 		this.sizesPanel.setSize(sizesDim);
 		final Dimension optionsDim = new Dimension(width,
-		        this.optionsPanel.getHeight());
+				this.optionsPanel.getHeight());
 		this.optionsPanel.setPreferredSize(optionsDim);
 		this.optionsPanel.setSize(optionsDim);
 		final Dimension channelsDim = new Dimension(width,
-		        this.channelsPanel.getHeight());
+				this.channelsPanel.getHeight());
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
 	}

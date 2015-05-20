@@ -33,11 +33,11 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsError;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
@@ -128,7 +128,7 @@ public class SPTLoader implements SPTRunnable {
 				//
 				// oldPixels = pixels;
 
-				final Integer[] data = OmegaImageUtilities.convertByteToImage(
+				final Integer[] data = OmegaImageUtilities.convertByteToIntegerImage(
 				        byteWidth, pixels);
 				final int[] image = new int[data.length];
 				for (int i = 0; i < data.length; i++) {

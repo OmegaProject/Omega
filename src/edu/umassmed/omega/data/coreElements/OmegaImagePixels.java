@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -36,7 +36,7 @@ import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
 
 public class OmegaImagePixels extends OmegaElement implements
-        OmegaAnalysisRunContainer {
+OmegaAnalysisRunContainer {
 
 	private OmegaImage image;
 
@@ -44,69 +44,20 @@ public class OmegaImagePixels extends OmegaElement implements
 
 	private final int sizeX, sizeY, sizeZ, sizeC, sizeT;
 
-	private final double pixelSizeX, pixelSizeY, pixelSizeZ;
+	private double pixelSizeX, pixelSizeY, pixelSizeZ;
 
 	private int selectedZ;
 
-	private int selectedC;
+	private final boolean[] selectedC;
 
 	private final Map<Integer, Map<Integer, List<OmegaFrame>>> frames;
 
 	private final List<OmegaAnalysisRun> analysisRuns;
 
-	public OmegaImagePixels(final Long elementID, final String pixelsType) {
-		super(elementID);
-
-		this.image = null;
-
-		this.pixelsType = pixelsType;
-
-		this.sizeX = -1;
-		this.sizeY = -1;
-		this.sizeZ = -1;
-		this.sizeC = -1;
-		this.sizeT = -1;
-
-		this.pixelSizeX = -1;
-		this.pixelSizeY = -1;
-		this.pixelSizeZ = -1;
-
-		this.selectedZ = -1;
-		this.selectedC = -1;
-
-		this.frames = new LinkedHashMap<>();
-		this.analysisRuns = new ArrayList<>();
-	}
-
 	public OmegaImagePixels(final Long elementID, final String pixelsType,
-	        final int sizeX, final int sizeY, final int sizeZ) {
-		super(elementID);
-
-		this.image = null;
-
-		this.pixelsType = pixelsType;
-
-		this.sizeX = sizeX;
-		this.sizeY = sizeY;
-		this.sizeZ = sizeZ;
-
-		this.sizeC = -1;
-		this.sizeT = -1;
-
-		this.pixelSizeX = -1;
-		this.pixelSizeY = -1;
-		this.pixelSizeZ = -1;
-
-		this.selectedZ = -1;
-		this.selectedC = -1;
-
-		this.frames = new LinkedHashMap<>();
-		this.analysisRuns = new ArrayList<>();
-	}
-
-	public OmegaImagePixels(final Long elementID, final String pixelsType,
-	        final int sizeX, final int sizeY, final int sizeZ, final int sizeC,
-	        final int sizeT) {
+			final int sizeX, final int sizeY, final int sizeZ, final int sizeC,
+			final int sizeT, final double pixelSizeX, final double pixelSizeY,
+			final double pixelSizeZ) {
 		super(elementID);
 
 		this.image = null;
@@ -118,34 +69,7 @@ public class OmegaImagePixels extends OmegaElement implements
 		this.sizeZ = sizeZ;
 
 		this.sizeC = sizeC;
-		this.sizeT = sizeT;
-
-		this.pixelSizeX = -1;
-		this.pixelSizeY = -1;
-		this.pixelSizeZ = -1;
-
-		this.selectedZ = -1;
-		this.selectedC = -1;
-
-		this.frames = new LinkedHashMap<>();
-		this.analysisRuns = new ArrayList<>();
-	}
-
-	public OmegaImagePixels(final Long elementID, final String pixelsType,
-	        final int sizeX, final int sizeY, final int sizeZ, final int sizeC,
-	        final int sizeT, final double pixelSizeX, final double pixelSizeY,
-	        final double pixelSizeZ) {
-		super(elementID);
-
-		this.image = null;
-
-		this.pixelsType = pixelsType;
-
-		this.sizeX = sizeX;
-		this.sizeY = sizeY;
-		this.sizeZ = sizeZ;
-
-		this.sizeC = sizeC;
+		this.selectedC = new boolean[sizeC];
 		this.sizeT = sizeT;
 
 		if (pixelSizeX == 0) {
@@ -165,7 +89,9 @@ public class OmegaImagePixels extends OmegaElement implements
 		}
 
 		this.selectedZ = -1;
-		this.selectedC = -1;
+		for (int i = 0; i < sizeC; i++) {
+			this.selectedC[i] = false;
+		}
 
 		this.frames = new LinkedHashMap<>();
 		this.analysisRuns = new ArrayList<>();
@@ -207,12 +133,24 @@ public class OmegaImagePixels extends OmegaElement implements
 		return this.pixelSizeX;
 	}
 
+	public void setPixelSizeX(final double sizeX) {
+		this.pixelSizeX = sizeX;
+	}
+
 	public double getPixelSizeY() {
 		return this.pixelSizeY;
 	}
 
+	public void setPixelSizeY(final double sizeY) {
+		this.pixelSizeY = sizeY;
+	}
+
 	public double getPixelSizeZ() {
 		return this.pixelSizeZ;
+	}
+
+	public void setPixelSizeZ(final double sizeZ) {
+		this.pixelSizeZ = sizeZ;
 	}
 
 	public List<OmegaFrame> getFrames(final Integer c, final Integer z) {
@@ -231,7 +169,7 @@ public class OmegaImagePixels extends OmegaElement implements
 	}
 
 	public void addFrames(final Integer c, final Integer z,
-	        final List<OmegaFrame> frames) {
+			final List<OmegaFrame> frames) {
 		List<OmegaFrame> frameList = null;
 		Map<Integer, List<OmegaFrame>> subMap = null;
 		if (this.frames.containsKey(c)) {
@@ -252,7 +190,7 @@ public class OmegaImagePixels extends OmegaElement implements
 	}
 
 	public void addFrame(final Integer c, final Integer z,
-	        final OmegaFrame frame) {
+			final OmegaFrame frame) {
 		List<OmegaFrame> frameList = null;
 		Map<Integer, List<OmegaFrame>> subMap = null;
 		if (this.frames.containsKey(c)) {
@@ -344,11 +282,11 @@ public class OmegaImagePixels extends OmegaElement implements
 		this.selectedZ = newZ;
 	}
 
-	public int getSelectedC() {
+	public boolean[] getSelectedC() {
 		return this.selectedC;
 	}
 
-	public void setSelectedC(final int newC) {
-		this.selectedC = newC;
+	public void setSelectedC(final int index, final boolean isActive) {
+		this.selectedC[index] = isActive;
 	}
 }

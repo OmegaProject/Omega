@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.core.OmegaApplication;
-import edu.umassmed.omega.core.OmegaLogFileManager;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
 
 public abstract class OmegaDBRunnable implements Runnable {

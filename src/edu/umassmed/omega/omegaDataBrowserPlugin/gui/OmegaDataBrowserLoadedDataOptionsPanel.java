@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -32,6 +32,7 @@ import javax.swing.JCheckBox;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserLoadedDataOptionsPanel extends GenericPanel {
 
@@ -48,7 +49,8 @@ public class OmegaDataBrowserLoadedDataOptionsPanel extends GenericPanel {
 	}
 
 	public void createAndAddWidgets() {
-		this.autoSelectRelatives = new JCheckBox("Auto select parents/children");
+		this.autoSelectRelatives = new JCheckBox(
+		        OmegaDataBrowserConstants.TREE_AUTO_SELECTION_OPTION);
 
 		this.add(this.autoSelectRelatives);
 	}

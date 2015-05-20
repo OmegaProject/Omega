@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.commons.utilities;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 
 public class OmegaClassLoaderUtilities {
 

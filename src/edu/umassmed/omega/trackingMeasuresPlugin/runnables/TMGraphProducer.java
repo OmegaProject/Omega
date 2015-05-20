@@ -24,10 +24,6 @@ public abstract class TMGraphProducer implements Runnable {
 	public final static int BAR_GRAPH = 1;
 	public final static int HISTOGRAM_GRAPH = 2;
 
-	public final static String LINE_GRAPH_LBL = "Line";
-	public final static String BAR_GRAPH_LBL = "Bar";
-	public final static String HISTOGRAM_GRAPH_LBL = "Bar histogram";
-
 	private CategoryItemRenderer categoryItemRenderer;
 	private CategoryItemRenderer xyLineAndShapeRenderer;
 
@@ -39,7 +35,7 @@ public abstract class TMGraphProducer implements Runnable {
 	private final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap;
 
 	public TMGraphProducer(final int graphType,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.segmentsMap = segmentsMap;
 
 		this.isTerminated = false;
@@ -53,7 +49,7 @@ public abstract class TMGraphProducer implements Runnable {
 
 	/**
 	 * Category Item renderer that is drawing item based on track color
-	 * 
+	 *
 	 * @return
 	 */
 	public CategoryItemRenderer getTracksRenderer() {
@@ -80,9 +76,9 @@ public abstract class TMGraphProducer implements Runnable {
 			@Override
 			public Paint getItemPaint(final int row, final int column) {
 				final String name = (String) this.getPlot().getDataset()
-				        .getColumnKey(column);
+						.getColumnKey(column);
 				for (final OmegaTrajectory track : TMGraphProducer.this.segmentsMap
-				        .keySet()) {
+						.keySet()) {
 					if (track.getName().equals(name))
 						return track.getColor();
 				}
@@ -133,13 +129,13 @@ public abstract class TMGraphProducer implements Runnable {
 	/**
 	 * Line and Shape renderer that is drawing dashed line between between
 	 * missing timepoints and solid line in other cases
-	 * 
+	 *
 	 * @param renderingMap
-	 * 
+	 *
 	 * @return
 	 */
 	public CategoryItemRenderer getTimepointsRenderer(
-	        final Map<String, Map<Integer, Boolean>> renderingMap) {
+			final Map<String, Map<Integer, Boolean>> renderingMap) {
 		if (this.xyLineAndShapeRenderer == null) {
 			switch (this.graphType) {
 			case BAR_GRAPH:
@@ -157,17 +153,17 @@ public abstract class TMGraphProducer implements Runnable {
 	}
 
 	private void createTimepointsBarRenderer(
-	        final Map<String, Map<Integer, Boolean>> renderingMap) {
+			final Map<String, Map<Integer, Boolean>> renderingMap) {
 		this.xyLineAndShapeRenderer = new BarRenderer() {
 			private static final long serialVersionUID = -4868788326156259962L;
 
 			@Override
 			public boolean getItemVisible(final int series, final int item) {
 				final DefaultCategoryDataset dataset = (DefaultCategoryDataset) this
-				        .getPlot().getDataset();
+						.getPlot().getDataset();
 				final String name = (String) dataset.getRowKey(series);
 				final Map<Integer, Boolean> renderingList = renderingMap
-				        .get(name);
+						.get(name);
 				if (!renderingList.containsKey(item))
 					return false;
 				final boolean bool = renderingList.get(item);
@@ -177,9 +173,9 @@ public abstract class TMGraphProducer implements Runnable {
 			@Override
 			public Paint getSeriesPaint(final int series) {
 				final String trackName = (String) this.getPlot().getDataset()
-				        .getRowKey(series);
+						.getRowKey(series);
 				for (final OmegaTrajectory track : TMGraphProducer.this.segmentsMap
-				        .keySet()) {
+						.keySet()) {
 					if (track.getName().equals(trackName))
 						return track.getColor();
 				}
@@ -196,7 +192,7 @@ public abstract class TMGraphProducer implements Runnable {
 	}
 
 	private void createTimepointsLineRenderer(
-	        final Map<String, Map<Integer, Boolean>> renderingMap) {
+			final Map<String, Map<Integer, Boolean>> renderingMap) {
 		this.xyLineAndShapeRenderer = new DefaultCategoryItemRenderer() {
 			private static final long serialVersionUID = 1071820316920620277L;
 
@@ -232,10 +228,10 @@ public abstract class TMGraphProducer implements Runnable {
 			@Override
 			public boolean getItemShapeVisible(final int series, final int item) {
 				final DefaultCategoryDataset dataset = (DefaultCategoryDataset) this
-				        .getPlot().getDataset();
+						.getPlot().getDataset();
 				final String name = (String) dataset.getRowKey(series);
 				final Map<Integer, Boolean> renderingList = renderingMap
-				        .get(name);
+						.get(name);
 				if (!renderingList.containsKey(item))
 					return false;
 				final boolean bool = renderingList.get(item);
@@ -248,13 +244,13 @@ public abstract class TMGraphProducer implements Runnable {
 					return new BasicStroke(1.0f);
 
 				final DefaultCategoryDataset dataset = (DefaultCategoryDataset) this
-				        .getPlot().getDataset();
+						.getPlot().getDataset();
 				final String name = (String) dataset.getRowKey(row);
 				final Map<Integer, Boolean> renderingList = renderingMap
-				        .get(name);
+						.get(name);
 
 				if (!renderingList.containsKey(column)
-				        || !renderingList.containsKey(column - 1))
+						|| !renderingList.containsKey(column - 1))
 					return new BasicStroke(1.0f);
 
 				final Boolean bool1 = renderingList.get(column);
@@ -262,8 +258,8 @@ public abstract class TMGraphProducer implements Runnable {
 
 				if (!bool1 || !bool2)
 					return new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-					        BasicStroke.JOIN_MITER, 1.0f, new float[] { 5.0f,
-					                5.0f }, 0.0f);
+							BasicStroke.JOIN_MITER, 1.0f, new float[] { 5.0f,
+							5.0f }, 0.0f);
 				else
 					return new BasicStroke(1.0f);
 			}
@@ -271,9 +267,9 @@ public abstract class TMGraphProducer implements Runnable {
 			@Override
 			public Paint getSeriesPaint(final int series) {
 				final String trackName = (String) this.getPlot().getDataset()
-				        .getRowKey(series);
+						.getRowKey(series);
 				for (final OmegaTrajectory track : TMGraphProducer.this.segmentsMap
-				        .keySet()) {
+						.keySet()) {
 					if (track.getName().equals(trackName))
 						return track.getColor();
 				}
@@ -291,7 +287,7 @@ public abstract class TMGraphProducer implements Runnable {
 	protected abstract Double getValue(OmegaTrajectory track, OmegaROI roi);
 
 	protected Map<String, Map<Integer, Boolean>> createRenderingMap(
-	        final DefaultCategoryDataset catDataset) {
+			final DefaultCategoryDataset catDataset) {
 		final Map<String, Map<Integer, Boolean>> renderingMap = new LinkedHashMap<>();
 		for (final OmegaTrajectory track : this.getSegmentsMap().keySet()) {
 			final String name = track.getName();

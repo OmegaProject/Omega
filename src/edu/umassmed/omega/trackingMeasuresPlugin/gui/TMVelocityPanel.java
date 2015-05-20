@@ -39,15 +39,6 @@ public class TMVelocityPanel extends GenericPanel {
 	public static final int OPTION_MEAN_SPEED = 2;
 	public static final int OPTION_MEAN_VELOCITY = 3;
 
-	private static final String TIMEPOINTS_LOCAL_SPEED = "Local speeds";
-	private static final String TIMEPOINTS_LOCAL_VELOCITY = "Local velocities";
-
-	private static final String TRACK_MEAN_SPEED = "Mean speed";
-	private static final String TRACK_MEAN_VELOCITY = "Mean velocity";
-
-	private static final String TIMEPOINTS = "Timepoints";
-	private static final String TRACKS = "Tracks";
-
 	private final TMPluginPanel pluginPanel;
 
 	private JPanel centerPanel;
@@ -69,8 +60,8 @@ public class TMVelocityPanel extends GenericPanel {
 	private TMVelocityGraphProducer graphProducer;
 
 	public TMVelocityPanel(final RootPaneContainer parent,
-	        final TMPluginPanel pluginPanel,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final TMPluginPanel pluginPanel,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		super(parent);
 
 		this.pluginPanel = pluginPanel;
@@ -102,10 +93,10 @@ public class TMVelocityPanel extends GenericPanel {
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.yAxis_cmb.addItem(TMVelocityPanel.TIMEPOINTS_LOCAL_SPEED);
-		this.yAxis_cmb.addItem(TMVelocityPanel.TIMEPOINTS_LOCAL_VELOCITY);
-		this.yAxis_cmb.addItem(TMVelocityPanel.TRACK_MEAN_SPEED);
-		this.yAxis_cmb.addItem(TMVelocityPanel.TRACK_MEAN_VELOCITY);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_SPEED_LOCAL);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_VEL_LOCAL);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_SPEED);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_VEL);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -115,15 +106,15 @@ public class TMVelocityPanel extends GenericPanel {
 		xAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.xAxis_cmb.addItem(TMVelocityPanel.TIMEPOINTS);
-		this.xAxis_cmb.addItem(TMVelocityPanel.TRACKS);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TPT);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TRACK);
 		// this.xAxis_cmb.addItem("Segments");
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.xAxis_cmb);
 
-		final JLabel selection_lbl = new JLabel(
-		        "<html>Indicate a range or max<br>for time or tracks</html>");
+		final JLabel selection_lbl = new JLabel(TMConstants.GRAPH_VAL_RANGE);
+		selection_lbl.setToolTipText(TMConstants.GRAPH_VAL_RANGE_TT);
 		selection_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		selection_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(selection_lbl);
@@ -132,20 +123,20 @@ public class TMVelocityPanel extends GenericPanel {
 		this.selection_txt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.selection_txt);
 
-		final JLabel graphType_lbl = new JLabel("Select graph type");
+		final JLabel graphType_lbl = new JLabel(TMConstants.GRAPH_TYPE);
 		graphType_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		graphType_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.graphType_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.graphType_cmb.addItem(TMGraphProducer.LINE_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.BAR_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.HISTOGRAM_GRAPH_LBL);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_LINE);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_BAR);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_HIST);
 		// this.xAxis_cmb.addItem("Segments");
 		this.graphType_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.graphType_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.graphType_cmb);
 
-		this.drawGraph_btt = new JButton("Draw graph");
+		this.drawGraph_btt = new JButton(TMConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.drawGraph_btt);
@@ -199,7 +190,7 @@ public class TMVelocityPanel extends GenericPanel {
 			return;
 		final int height = this.getHeight() - 20;
 		final int width = this.getWidth()
-		        - OmegaConstants.BUTTON_SIZE_LARGE.width - 20;
+				- OmegaConstants.BUTTON_SIZE_LARGE.width - 20;
 		int size = height;
 		if (height > width) {
 			size = width;
@@ -219,15 +210,15 @@ public class TMVelocityPanel extends GenericPanel {
 		final String xAxisSelection = (String) this.xAxis_cmb.getSelectedItem();
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
 		final String graphTypeSelection = (String) this.graphType_cmb
-		        .getSelectedItem();
+				.getSelectedItem();
 		if ((this.segmentsMap == null) || this.segmentsMap.isEmpty()
-		        || (xAxisSelection == null) || (yAxisSelection == null)
-		        || (graphTypeSelection == null)
-		        || (this.selectedTrackingMeasuresRun == null))
+				|| (xAxisSelection == null) || (yAxisSelection == null)
+				|| (graphTypeSelection == null)
+				|| (this.selectedTrackingMeasuresRun == null))
 			return;
 		this.oldYAxisSelection = yAxisSelection;
 		this.oldXAxisSelection = xAxisSelection;
-		if (xAxisSelection.equals(TMVelocityPanel.TIMEPOINTS)) {
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
 			this.handleDrawTimepointsChart();
 		} else {
 			this.handleDrawTracksChart();
@@ -236,19 +227,18 @@ public class TMVelocityPanel extends GenericPanel {
 
 	private void handleDrawTimepointsChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMVelocityPanel.TIMEPOINTS_LOCAL_SPEED)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_SPEED_LOCAL)) {
 			this.handleTimepointsChart(TMVelocityPanel.OPTION_LOCAL_SPEED);
-		} else if (yAxisSelection
-		        .equals(TMVelocityPanel.TIMEPOINTS_LOCAL_VELOCITY)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_VEL_LOCAL)) {
 			this.handleTimepointsChart(TMVelocityPanel.OPTION_LOCAL_VELOCITY);
 		}
 	}
 
 	private void handleDrawTracksChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMVelocityPanel.TRACK_MEAN_SPEED)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_SPEED)) {
 			this.handleTracksChart(TMVelocityPanel.OPTION_MEAN_SPEED);
-		} else if (yAxisSelection.equals(TMVelocityPanel.TRACK_MEAN_VELOCITY)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_VEL)) {
 			this.handleTracksChart(TMVelocityPanel.OPTION_MEAN_VELOCITY);
 		}
 	}
@@ -258,23 +248,21 @@ public class TMVelocityPanel extends GenericPanel {
 		final String xAxisSelection = (String) this.xAxis_cmb.getSelectedItem();
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
 		final String graphTypeSelection = (String) this.graphType_cmb
-		        .getSelectedItem();
+				.getSelectedItem();
 		if (((this.oldYAxisSelection != null) && this.oldYAxisSelection
-		        .equals(yAxisSelection))
-		        && ((this.oldXAxisSelection != null) && this.oldXAxisSelection
-		                .equals(xAxisSelection))
-		        && ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
-		                .equals(graphTypeSelection)))
+				.equals(yAxisSelection))
+				&& ((this.oldXAxisSelection != null) && this.oldXAxisSelection
+						.equals(xAxisSelection))
+						&& ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
+								.equals(graphTypeSelection)))
 			return;
-		if (xAxisSelection.equals(TMVelocityPanel.TIMEPOINTS)) {
-			if (yAxisSelection.equals(TMVelocityPanel.TRACK_MEAN_SPEED)
-			        || yAxisSelection
-			                .equals(TMVelocityPanel.TRACK_MEAN_VELOCITY))
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
+			if (yAxisSelection.equals(TMConstants.GRAPH_NAME_SPEED)
+					|| yAxisSelection.equals(TMConstants.GRAPH_NAME_VEL))
 				return;
 		} else {
-			if (yAxisSelection.equals(TMVelocityPanel.TIMEPOINTS_LOCAL_SPEED)
-			        || yAxisSelection
-			                .equals(TMVelocityPanel.TIMEPOINTS_LOCAL_VELOCITY))
+			if (yAxisSelection.equals(TMConstants.GRAPH_NAME_SPEED_LOCAL)
+					|| yAxisSelection.equals(TMConstants.GRAPH_NAME_VEL_LOCAL))
 				return;
 		}
 		this.drawGraph_btt.setEnabled(true);
@@ -293,19 +281,19 @@ public class TMVelocityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMVelocityGraphProducer graphProducer = new TMVelocityGraphProducer(
-		        this, graphType, velocityOption, this.maxT,
-		        selectedSegmentsMap,
-		        this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
-		        this.selectedTrackingMeasuresRun.getLocalVelocityResults(),
-		        this.selectedTrackingMeasuresRun.getMeanSpeedResults(),
-		        this.selectedTrackingMeasuresRun.getMeanVelocityResults());
+				this, graphType, velocityOption, this.maxT,
+				selectedSegmentsMap,
+				this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
+				this.selectedTrackingMeasuresRun.getLocalVelocityResults(),
+				this.selectedTrackingMeasuresRun.getMeanSpeedResults(),
+				this.selectedTrackingMeasuresRun.getMeanVelocityResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 
@@ -322,24 +310,24 @@ public class TMVelocityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMVelocityGraphProducer graphProducer = new TMVelocityGraphProducer(
-		        this, graphType, velocityOption, this.maxT,
-		        selectedSegmentsMap,
-		        this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
-		        this.selectedTrackingMeasuresRun.getLocalVelocityResults(),
-		        this.selectedTrackingMeasuresRun.getMeanSpeedResults(),
-		        this.selectedTrackingMeasuresRun.getMeanVelocityResults());
+				this, graphType, velocityOption, this.maxT,
+				selectedSegmentsMap,
+				this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
+				this.selectedTrackingMeasuresRun.getLocalVelocityResults(),
+				this.selectedTrackingMeasuresRun.getMeanSpeedResults(),
+				this.selectedTrackingMeasuresRun.getMeanVelocityResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 
 	private void launchGraphProducerThread(
-	        final TMVelocityGraphProducer graphProducer) {
+			final TMVelocityGraphProducer graphProducer) {
 		if ((this.t != null) && this.t.isAlive()) {
 			this.graphProducer.terminate();
 		}
@@ -354,7 +342,7 @@ public class TMVelocityPanel extends GenericPanel {
 	}
 
 	public void setSegmentsMap(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.segmentsMap = segmentsMap;
 		// this.handleChangeChart();
 		this.handleDrawChart();
@@ -368,7 +356,7 @@ public class TMVelocityPanel extends GenericPanel {
 	}
 
 	public void setSelectedTrajectories(
-	        final List<OmegaTrajectory> selectedTrajectories) {
+			final List<OmegaTrajectory> selectedTrajectories) {
 		this.selectedTrajectories.clear();
 		this.selectedTrajectories.addAll(selectedTrajectories);
 		// this.handleChangeXChart();
@@ -376,12 +364,12 @@ public class TMVelocityPanel extends GenericPanel {
 	}
 
 	public void updateSelectedTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresRun trackingMeasuresRun) {
+			final OmegaTrackingMeasuresRun trackingMeasuresRun) {
 		this.selectedTrackingMeasuresRun = trackingMeasuresRun;
 	}
 
 	public void updateStatus(final double completed, final boolean ended,
-	        final ChartPanel graphPanel) {
+			final ChartPanel graphPanel) {
 		if (ended) {
 			this.graphPanel = graphPanel;
 			this.handleComponentResized();
@@ -394,9 +382,9 @@ public class TMVelocityPanel extends GenericPanel {
 			this.repaint();
 		} else {
 			final String completedS = new BigDecimal(completed).setScale(2,
-			        RoundingMode.HALF_UP).toString();
+					RoundingMode.HALF_UP).toString();
 			this.pluginPanel
-			        .updateStatus("Graph " + completedS + " completed.");
+			.updateStatus("Graph " + completedS + " completed.");
 		}
 	}
 }

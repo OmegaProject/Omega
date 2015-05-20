@@ -42,17 +42,6 @@ public class TMMobilityPanel extends GenericPanel {
 	public static final int OPTION_LOCAL_ANGLES = 5;
 	public static final int OPTION_LOCAL_DIRECTIONAL_CHANGES = 6;
 
-	private static final String TOTAL_DISTANCE_TRAVELED = "Total distance traveled";
-	private static final String TOTAL_NET_DISPLACEMENT = "Total net displacement";
-	private static final String MAX_DISPLACEMENT = "Max displacement";
-	private static final String TOTAL_TIME_TRAVELED = "Total time traveled";
-	private static final String CONFINEMENT_RATIO = "Confinement ratio";
-	private static final String LOCAL_ANGLES = "Local angles";
-	private static final String LOCAL_DIRECTION_CHANGES = "Local directional changes";
-
-	private static final String TIMEPOINTS = "Timepoints";
-	private static final String TRACKS = "Tracks";
-
 	private final TMPluginPanel pluginPanel;
 
 	private JPanel centerPanel;
@@ -105,13 +94,13 @@ public class TMMobilityPanel extends GenericPanel {
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.yAxis_cmb.addItem(TMMobilityPanel.TOTAL_DISTANCE_TRAVELED);
-		this.yAxis_cmb.addItem(TMMobilityPanel.TOTAL_NET_DISPLACEMENT);
-		this.yAxis_cmb.addItem(TMMobilityPanel.MAX_DISPLACEMENT);
-		this.yAxis_cmb.addItem(TMMobilityPanel.TOTAL_TIME_TRAVELED);
-		this.yAxis_cmb.addItem(TMMobilityPanel.CONFINEMENT_RATIO);
-		this.yAxis_cmb.addItem(TMMobilityPanel.LOCAL_ANGLES);
-		this.yAxis_cmb.addItem(TMMobilityPanel.LOCAL_DIRECTION_CHANGES);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_TOT_DIST);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_TOT_DISP);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_MAX_DISP);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_TOT_TIME);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_CONFRATIO);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_ANGLES);
+		this.yAxis_cmb.addItem(TMConstants.GRAPH_NAME_ANGLES_LOCAL);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -121,15 +110,15 @@ public class TMMobilityPanel extends GenericPanel {
 		xAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.xAxis_cmb.addItem(TMMobilityPanel.TIMEPOINTS);
-		this.xAxis_cmb.addItem(TMMobilityPanel.TRACKS);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TPT);
+		this.xAxis_cmb.addItem(TMConstants.GRAPH_LAB_X_TRACK);
 		// this.xAxis_cmb.addItem("Segments");
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.xAxis_cmb);
 
-		final JLabel selection_lbl = new JLabel(
-		        "<html>Indicate a range or max<br>for time or tracks</html>");
+		final JLabel selection_lbl = new JLabel(TMConstants.GRAPH_VAL_RANGE);
+		selection_lbl.setToolTipText(TMConstants.GRAPH_VAL_RANGE_TT);
 		selection_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		selection_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(selection_lbl);
@@ -138,20 +127,20 @@ public class TMMobilityPanel extends GenericPanel {
 		this.selection_txt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.selection_txt);
 
-		final JLabel graphType_lbl = new JLabel("Select graph type");
+		final JLabel graphType_lbl = new JLabel(TMConstants.GRAPH_TYPE);
 		graphType_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		graphType_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(xAxis_lbl);
 		this.graphType_cmb = new GenericComboBox<>(this.getParentContainer());
-		this.graphType_cmb.addItem(TMGraphProducer.LINE_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.BAR_GRAPH_LBL);
-		this.graphType_cmb.addItem(TMGraphProducer.HISTOGRAM_GRAPH_LBL);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_LINE);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_BAR);
+		this.graphType_cmb.addItem(TMConstants.GRAPH_TYPE_HIST);
 		// this.xAxis_cmb.addItem("Segments");
 		this.graphType_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.graphType_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.graphType_cmb);
 
-		this.drawGraph_btt = new JButton("Draw graph");
+		this.drawGraph_btt = new JButton(TMConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.drawGraph_btt);
@@ -233,7 +222,7 @@ public class TMMobilityPanel extends GenericPanel {
 		this.oldYAxisSelection = yAxisSelection;
 		this.oldXAxisSelection = xAxisSelection;
 		this.oldGraphTypeSelection = graphTypeSelection;
-		if (xAxisSelection.equals(TMMobilityPanel.TIMEPOINTS)) {
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
 			this.handleDrawTimepointsChart();
 		} else {
 			this.handleDrawTracksChart();
@@ -242,33 +231,30 @@ public class TMMobilityPanel extends GenericPanel {
 
 	private void handleDrawTimepointsChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMMobilityPanel.TOTAL_DISTANCE_TRAVELED)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_DIST)) {
 			this.handleTimepointsChart(TMMobilityPanel.OPTION_DISTANCE);
-		} else if (yAxisSelection
-		        .equals(TMMobilityPanel.TOTAL_NET_DISPLACEMENT)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_DISP)) {
 			this.handleTimepointsChart(TMMobilityPanel.OPTION_DISPLACEMENT);
-		} else if (yAxisSelection.equals(TMMobilityPanel.CONFINEMENT_RATIO)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_CONFRATIO)) {
 			this.handleTimepointsChart(TMMobilityPanel.OPTION_CONFINEMENT_RATIO);
-		} else if (yAxisSelection.equals(TMMobilityPanel.LOCAL_ANGLES)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_ANGLES)) {
 			this.handleTimepointsChart(TMMobilityPanel.OPTION_LOCAL_ANGLES);
-		} else if (yAxisSelection
-		        .equals(TMMobilityPanel.LOCAL_DIRECTION_CHANGES)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_ANGLES_LOCAL)) {
 			this.handleTimepointsChart(TMMobilityPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES);
 		}
 	}
 
 	private void handleDrawTracksChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
-		if (yAxisSelection.equals(TMMobilityPanel.TOTAL_DISTANCE_TRAVELED)) {
+		if (yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_DIST)) {
 			this.handleTracksChart(TMMobilityPanel.OPTION_DISTANCE);
-		} else if (yAxisSelection
-		        .equals(TMMobilityPanel.TOTAL_NET_DISPLACEMENT)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_DISP)) {
 			this.handleTracksChart(TMMobilityPanel.OPTION_DISPLACEMENT);
-		} else if (yAxisSelection.equals(TMMobilityPanel.MAX_DISPLACEMENT)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_MAX_DISP)) {
 			this.handleTracksChart(TMMobilityPanel.OPTION_MAX_DISPLACEMENT);
-		} else if (yAxisSelection.equals(TMMobilityPanel.TOTAL_TIME_TRAVELED)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_TIME)) {
 			this.handleTracksChart(TMMobilityPanel.OPTION_TOTAL_TIME_TRAVELED);
-		} else if (yAxisSelection.equals(TMMobilityPanel.CONFINEMENT_RATIO)) {
+		} else if (yAxisSelection.equals(TMConstants.GRAPH_NAME_CONFRATIO)) {
 			this.handleTracksChart(TMMobilityPanel.OPTION_CONFINEMENT_RATIO);
 		}
 	}
@@ -286,15 +272,14 @@ public class TMMobilityPanel extends GenericPanel {
 		        && ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
 		                .equals(graphTypeSelection)))
 			return;
-		if (xAxisSelection.equals(TMMobilityPanel.TIMEPOINTS)) {
-			if (yAxisSelection.equals(TMMobilityPanel.MAX_DISPLACEMENT)
-			        || yAxisSelection
-			                .equals(TMMobilityPanel.TOTAL_TIME_TRAVELED))
+		if (xAxisSelection.equals(TMConstants.GRAPH_LAB_X_TPT)) {
+			if (yAxisSelection.equals(TMConstants.GRAPH_NAME_MAX_DISP)
+			        || yAxisSelection.equals(TMConstants.GRAPH_NAME_TOT_TIME))
 				return;
 		} else {
-			if (yAxisSelection.equals(TMMobilityPanel.LOCAL_ANGLES)
+			if (yAxisSelection.equals(TMConstants.GRAPH_NAME_ANGLES)
 			        || yAxisSelection
-			                .equals(TMMobilityPanel.LOCAL_DIRECTION_CHANGES))
+			                .equals(TMConstants.GRAPH_NAME_ANGLES_LOCAL))
 				return;
 		}
 		this.drawGraph_btt.setEnabled(true);
@@ -313,10 +298,10 @@ public class TMMobilityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMMobilityGraphProducer graphProducer = new TMMobilityGraphProducer(
@@ -345,10 +330,10 @@ public class TMMobilityPanel extends GenericPanel {
 		}
 		int graphType = TMGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.BAR_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_BAR)) {
 			graphType = TMGraphProducer.BAR_GRAPH;
 		} else if (this.graphType_cmb.getSelectedItem().equals(
-		        TMGraphProducer.HISTOGRAM_GRAPH_LBL)) {
+				TMConstants.GRAPH_TYPE_HIST)) {
 			graphType = TMGraphProducer.HISTOGRAM_GRAPH;
 		}
 		final TMMobilityGraphProducer graphProducer = new TMMobilityGraphProducer(

@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -28,7 +28,6 @@
 package edu.umassmed.omega.snrSbalzariniPlugin;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.swing.RootPaneContainer;
 
@@ -55,17 +54,13 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 
 	@Override
 	public String getAlgorithmDescription() {
-		return "Algorithm desc";
-	}
-
-	@Override
-	public String getAlgorithmName() {
-		return "SNR Estimator by Ivo Sbalzarini";
+		return SNRConstants.PLUGIN_ALGO_DESC;
 	}
 
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
-		return new OmegaPerson("Ivo", "Sbalzarini");
+		return new OmegaPerson(SNRConstants.PLUGIN_AUTHOR_FIRSTNAME,
+				SNRConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -75,17 +70,17 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 
 	@Override
 	public Date getAlgorithmPublicationDate() {
-		return new GregorianCalendar(1996, 4, 7).getTime();
+		return SNRConstants.PLUGIN_PUBL;
 	}
 
 	@Override
 	public String getName() {
-		return "Signle to noise ratio estimator";
+		return SNRConstants.PLUGIN_NAME;
 	}
 
 	@Override
 	public String getShortName() {
-		return "SNR Estimator";
+		return SNRConstants.PLUGIN_SHORTNAME;
 	}
 
 	@Override
@@ -99,7 +94,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SNRPluginPanel panel = new SNRPluginPanel(parent, this,
 		        this.getGateway(), this.getLoadedImages(),
-		        this.getLoadedAnalysisRuns(), index);
+		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -117,13 +112,13 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SNRPluginPanel specificPanel = (SNRPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getLoadedAnalysisRuns());
+			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
 	@Override
 	public String getDescription() {
-		return "SNR Estimator";
+		return SNRConstants.PLUGIN_DESC;
 	}
 
 	@Override

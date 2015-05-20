@@ -27,7 +27,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.omeroPlugin;
 
-import edu.umassmed.omega.core.OmegaLogFileManager;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 
 /**
  * Keeps the services alive.

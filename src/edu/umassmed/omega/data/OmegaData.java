@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -32,6 +32,7 @@ import java.util.List;
 
 import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.data.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.data.coreElements.OmegaExperimenterGroup;
@@ -47,6 +48,7 @@ public class OmegaData {
 	private final List<OmegaExperimenter> experimenters;
 	private final List<OmegaExperimenterGroup> groups;
 	private final List<OmegaSegmentationTypes> segmTypesList;
+	private final OrphanedAnalysisContainer orphanedAnalysis;
 
 	public OmegaData() {
 		this.projects = new ArrayList<OmegaProject>();
@@ -55,6 +57,19 @@ public class OmegaData {
 		this.segmTypesList = new ArrayList<OmegaSegmentationTypes>();
 		this.segmTypesList.add(OmegaSegmentationTypes
 		        .getDefaultSegmentationTypes());
+		this.orphanedAnalysis = new OrphanedAnalysisContainer();
+	}
+
+	public OrphanedAnalysisContainer getOrphanedContainer() {
+		return this.orphanedAnalysis;
+	}
+
+	public List<OmegaAnalysisRun> getOrphanedAnalyses() {
+		return this.orphanedAnalysis.getAnalysisRuns();
+	}
+
+	public void addOrphanedAnalysis(final OmegaAnalysisRun analysisRun) {
+		this.orphanedAnalysis.addAnalysisRun(analysisRun);
 	}
 
 	private void checkSegmentationTypesListConsistency() {
@@ -135,21 +150,6 @@ public class OmegaData {
 
 	public void addExperimenterGroup(final OmegaExperimenterGroup group) {
 		this.groups.add(group);
-	}
-
-	public void mergeData(final OmegaData omegaDataToMerge) {
-		// TODO rivedere questo punto in modo da evitare di caricare roba gia
-		// caricata
-		// TODO capire se necessario o meno
-		for (final OmegaProject project : omegaDataToMerge.projects) {
-			this.addProjectIfNotLoaded(project);
-		}
-		for (final OmegaExperimenter experimenter : omegaDataToMerge.experimenters) {
-			this.addExperimenterIfNotLoaded(experimenter);
-		}
-		for (final OmegaExperimenterGroup group : omegaDataToMerge.groups) {
-			this.addExperimenterGroupIfNotLoaded(group);
-		}
 	}
 
 	public boolean containsExperimenterGroup(final long id) {

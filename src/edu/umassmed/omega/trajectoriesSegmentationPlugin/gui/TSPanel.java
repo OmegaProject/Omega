@@ -29,14 +29,11 @@ import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationType;
 import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSPanel extends GenericPanel {
 
 	private static final long serialVersionUID = -6876397782525067201L;
-	private static final String SELECTION_FIRST_MOTION = "Spots";
-	private static final String SELECTION_FIRST_SPOTS = "Motion type";
-
-	private static final String ACTUAL_SEGM = "Current selection: ";
 
 	private final TSPluginPanel pluginPanel;
 
@@ -100,12 +97,12 @@ public class TSPanel extends GenericPanel {
 		final JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		this.scaleToFit_btt = new JButton("Scale to fit");
+		this.scaleToFit_btt = new JButton(TSConstants.SCALE_FIT);
 		this.scaleToFit_btt.setPreferredSize(btt_dim);
 		this.scaleToFit_btt.setSize(btt_dim);
 		optionsPanel.add(this.scaleToFit_btt);
 
-		this.scale1on1_btt = new JButton("Scale 1:1");
+		this.scale1on1_btt = new JButton(TSConstants.SCALE_ONE);
 		this.scale1on1_btt.setPreferredSize(btt_dim);
 		this.scale1on1_btt.setSize(btt_dim);
 		optionsPanel.add(this.scale1on1_btt);
@@ -114,27 +111,31 @@ public class TSPanel extends GenericPanel {
 		// this.autoscale_cbox.setSelected(true);
 		// optionsPanel.add(this.autoscale_cbox);
 
-		this.selectStart_btt = new JButton("Select tracks start");
+		this.selectStart_btt = new JButton(TSConstants.SELECT_TRACK_START);
+		this.selectStart_btt.setToolTipText(TSConstants.SELECT_TRACK_START_MS);
 		this.selectStart_btt.setPreferredSize(btt_dim);
 		this.selectStart_btt.setSize(btt_dim);
 		optionsPanel.add(this.selectStart_btt);
 
-		this.selectEnd_btt = new JButton("Select tracks end");
+		this.selectEnd_btt = new JButton(TSConstants.SELECT_TRACK_END);
+		this.selectEnd_btt.setToolTipText(TSConstants.SELECT_TRACK_END_MS);
 		this.selectEnd_btt.setPreferredSize(btt_dim);
 		this.selectEnd_btt.setSize(btt_dim);
 		optionsPanel.add(this.selectEnd_btt);
 
-		this.reset_btt = new JButton("Reset selection");
+		this.reset_btt = new JButton(TSConstants.SELECT_RESET);
+		this.reset_btt.setToolTipText(TSConstants.SELECT_RESET_MS);
 		this.reset_btt.setPreferredSize(btt_dim);
 		this.reset_btt.setSize(btt_dim);
 		optionsPanel.add(this.reset_btt);
 
-		final JLabel lbl = new JLabel("Select: ");
+		final JLabel lbl = new JLabel(TSConstants.SELECT);
 		optionsPanel.add(lbl);
 
 		this.segmOn_cb = new JComboBox<String>();
-		this.segmOn_cb.addItem(TSPanel.SELECTION_FIRST_SPOTS);
-		this.segmOn_cb.addItem(TSPanel.SELECTION_FIRST_MOTION);
+		this.segmOn_cb.setToolTipText(TSConstants.SELECT_FIRST_MS);
+		this.segmOn_cb.addItem(TSConstants.SELECT_FIRST_SPOTS);
+		this.segmOn_cb.addItem(TSConstants.SELECT_FIRST_MOTION);
 		optionsPanel.add(this.segmOn_cb);
 
 		this.radioButtonPanel = new JPanel();
@@ -150,7 +151,8 @@ public class TSPanel extends GenericPanel {
 
 		this.add(this.mainPanel, BorderLayout.CENTER);
 
-		this.segment_lbl = new JLabel(TSPanel.ACTUAL_SEGM + " none.");
+		this.segment_lbl = new JLabel(TSConstants.ACTUAL_SEGM
+		        + TSConstants.SELECT_NONE);
 		this.add(this.segment_lbl, BorderLayout.SOUTH);
 	}
 
@@ -265,9 +267,9 @@ public class TSPanel extends GenericPanel {
 		if (this.segmentationEnded) {
 			if (this.isSegmentOnSpotsSelection()) {
 				final StringBuffer buf = new StringBuffer();
-				buf.append(TSPanel.ACTUAL_SEGM);
+				buf.append(TSConstants.ACTUAL_SEGM);
 				buf.append(segmName);
-				buf.append(".");
+				buf.append(TSConstants.SELECT_PUNCT);
 				s = buf.toString();
 			}
 		} else {
@@ -277,7 +279,8 @@ public class TSPanel extends GenericPanel {
 				s = s.replace(oldSegmName, segmName);
 			} else {
 				s = this.segment_lbl.getText();
-				s = s.replace("From", segmName + " from");
+				s = s.replace(TSConstants.SELECT_FROM_UPPER, segmName
+						+ TSConstants.SELECT_FROM_LOWER);
 			}
 		}
 		this.updateSegmentationStatus(s);
@@ -316,20 +319,29 @@ public class TSPanel extends GenericPanel {
 		if (segmentationResults == null)
 			return;
 		for (final OmegaTrajectory traj : segmentationResults.keySet()) {
-			// final TSSingleTrajectoryPanel panel = new
-			// TSSingleTrajectoryPanel(
-			// this.getParentContainer(), this.pluginPanel,
-			// this.sizeX, this.sizeY, this.pixelSizeX,
-			// this.pixelSizeY, traj);
+			int sizeX = this.sizeX;
+			int sizeY = this.sizeY;
+			if ((sizeX == -1) && (sizeY == -1)) {
+				for (final OmegaROI roi : traj.getROIs()) {
+					final int x = (int) (roi.getX() + 1);
+					final int y = (int) (roi.getY() + 1);
+					if (sizeX < x) {
+						sizeX = x;
+					}
+					if (sizeY < y) {
+						sizeY = y;
+					}
+				}
+			}
 			final TSTrackPanel panel = new TSTrackPanel(
-			        this.getParentContainer(), this.pluginPanel, this.sizeX,
-			        this.sizeY, this.pixelSizeX, this.pixelSizeY, traj,
+			        this.getParentContainer(), this.pluginPanel, sizeX, sizeY,
+			        this.pixelSizeX, this.pixelSizeY, traj,
 			        segmentationResults.get(traj));
 			// final JScrollPane scrollPane = new JScrollPane(panel);
 			this.segmentTrajectoryPanels.add(panel);
 			// this.segmentTrajectoryScrollPane.add(scrollPane);
 			// TODO find a way to name panels
-			final String s = "Segment Trajectory " + traj.getName();
+			final String s = TSConstants.SEGMENT_CONFIRM + traj.getName();
 			// this.mainPanel.add(s, scrollPane);
 			this.mainPanel.add(s, panel);
 			// panel.setTrajectory(traj);
@@ -397,33 +409,34 @@ public class TSPanel extends GenericPanel {
 		singleTrajPanel.resetSegmentation();
 		this.segmentationEnded = false;
 		final StringBuffer buf = new StringBuffer();
-		buf.append(TSPanel.ACTUAL_SEGM);
+		buf.append(TSConstants.ACTUAL_SEGM);
 		buf.append(this.segmentationName.toLowerCase());
-		buf.append(".");
+		buf.append(TSConstants.SELECT_PUNCT);
 		this.updateSegmentationStatus(buf.toString());
 	}
 
 	public void selectStartingROI(final OmegaROI startingROI) {
 		this.segmentationEnded = false;
 		final StringBuffer buf = new StringBuffer();
-		buf.append(TSPanel.ACTUAL_SEGM);
+		buf.append(TSConstants.ACTUAL_SEGM);
 		if (this.isSegmentOnSpotsSelection()) {
 			buf.append(this.segmentationName);
-			buf.append(" from ");
+			buf.append(TSConstants.SELECT_FROM_LOWER_SPACE);
 		} else {
-			buf.append("From ");
+			buf.append(TSConstants.SELECT_FROM_UPPER_SPACE);
 		}
 		buf.append(startingROI.getFrameIndex() + 1);
-		buf.append(".");
+		buf.append(TSConstants.SELECT_PUNCT);
 		this.updateSegmentationStatus(buf.toString());
 	}
 
 	public void selectEndingROI(final OmegaROI endingROI) {
 		final StringBuffer buf = new StringBuffer();
-		buf.append(this.segment_lbl.getText().replace(".", ""));
-		buf.append(" to ");
+		buf.append(this.segment_lbl.getText().replace(TSConstants.SELECT_PUNCT,
+		        ""));
+		buf.append(TSConstants.SELECT_TO_LOWER_SPACE);
 		buf.append(endingROI.getFrameIndex() + 1);
-		buf.append(".");
+		buf.append(TSConstants.SELECT_PUNCT);
 		this.updateSegmentationStatus(buf.toString());
 	}
 
@@ -434,6 +447,8 @@ public class TSPanel extends GenericPanel {
 	}
 
 	public void setImage(final OmegaImage image) {
+		if (image == null)
+			return;
 		final OmegaImagePixels pixels = image.getDefaultPixels();
 		this.pixelSizeX = pixels.getPixelSizeX();
 		this.pixelSizeY = pixels.getPixelSizeY();
@@ -459,7 +474,7 @@ public class TSPanel extends GenericPanel {
 
 	public boolean isSegmentOnSpotsSelection() {
 		final String segmOn = (String) this.segmOn_cb.getSelectedItem();
-		if (segmOn.equals(TSPanel.SELECTION_FIRST_SPOTS))
+		if (segmOn.equals(TSConstants.SELECT_FIRST_SPOTS))
 			return true;
 		return false;
 	}
