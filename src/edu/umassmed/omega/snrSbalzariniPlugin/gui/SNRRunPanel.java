@@ -39,14 +39,14 @@ import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRRunPanel extends GenericPanel {
@@ -179,5 +179,12 @@ public class SNRRunPanel extends GenericPanel {
 	public void setFieldsEnalbed(final boolean enabled) {
 		this.radius_txtField.setEnabled(enabled);
 		this.threshold_txtField.setEnabled(enabled);
+	}
+
+	@Override
+	public void updateParentContainer(final RootPaneContainer parent) {
+		super.updateParentContainer(parent);
+		this.analysisInfoPanel.updateParentContainer(parent);
+		this.elementInfoPanel.updateParentContainer(parent);
 	}
 }

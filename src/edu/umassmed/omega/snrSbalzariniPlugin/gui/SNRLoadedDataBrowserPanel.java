@@ -40,20 +40,19 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
-
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRLoadedDataBrowserPanel extends GenericPanel {
@@ -116,7 +115,7 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 						.getPoint());
 			}
 		});
-		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
+		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent event) {
 				final TreePath parent = event.getTreePath();
@@ -125,6 +124,21 @@ public class SNRLoadedDataBrowserPanel extends GenericPanel {
 						.getSource();
 				SNRLoadedDataBrowserPanel.this.handleTreeNodeChanged(parent,
 						children, model);
+			}
+
+			@Override
+			public void treeNodesInserted(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeNodesRemoved(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeStructureChanged(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
 			}
 		});
 	}

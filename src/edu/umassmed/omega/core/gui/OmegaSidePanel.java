@@ -52,6 +52,24 @@ import javax.swing.border.TitledBorder;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
@@ -63,26 +81,10 @@ import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericImageCanvas;
 import edu.umassmed.omega.commons.gui.GenericPanel;
-import edu.umassmed.omega.data.OmegaLoadedData;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
-import edu.umassmed.omega.data.coreElements.OmegaDataset;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.coreElements.OmegaProject;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.interfaces.GenericImageCanvasContainer;
 
-public class OmegaSidePanel extends GenericPanel {
+public class OmegaSidePanel extends GenericPanel implements
+        GenericImageCanvasContainer {
 
 	private static final long serialVersionUID = -4565126277733287950L;
 
@@ -560,6 +562,7 @@ public class OmegaSidePanel extends GenericPanel {
 		frame.sendCoreEvent(event);
 	}
 
+	@Override
 	public void sendCoreEventTrajectories(
 	        final List<OmegaTrajectory> trajectories, final boolean selection) {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
@@ -569,6 +572,8 @@ public class OmegaSidePanel extends GenericPanel {
 	}
 
 	public void selectImage(final OmegaAnalysisRunContainer image) {
+		if (image == null)
+			return;
 		this.isHandlingEvent = true;
 		if (image instanceof OrphanedAnalysisContainer) {
 			this.itemIndex = 0;
@@ -684,6 +689,7 @@ public class OmegaSidePanel extends GenericPanel {
 		this.canvas.updateParentContainer(parent);
 		this.overlaysPanel.updateParentContainer(parent);
 		this.renderingPanel.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,

@@ -3,21 +3,21 @@ package edu.umassmed.omega.core.runnables;
 import java.sql.SQLException;
 import java.util.List;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.coreElements.OmegaDataset;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaProject;
 
 public class OmegaDBSaver extends OmegaDBWriter {
 
 	private final List<OmegaProject> projectsToSave;
 
 	public OmegaDBSaver(final OmegaApplication omegaApp,
-	        final OmegaMySqlGateway gateway, final GenericMessageDialog dialog,
-	        final List<OmegaProject> projects) {
+			final OmegaMySqlGateway gateway, final GenericMessageDialog dialog,
+			final List<OmegaProject> projects) {
 		super(omegaApp, gateway, dialog);
 		this.projectsToSave = projects;
 	}
@@ -58,10 +58,10 @@ public class OmegaDBSaver extends OmegaDBWriter {
 					buf.append("</html>");
 					this.updateMessage(buf.toString());
 					for (final OmegaAnalysisRun analysisRun : image
-					        .getAnalysisRuns()) {
+							.getAnalysisRuns()) {
 						try {
 							this.getGateway().saveAnalysisRun(image,
-							        analysisRun);
+									analysisRun);
 							this.saveInnerAnalysis(analysisRun);
 						} catch (final SQLException ex) {
 							this.setErrorOccured();
@@ -75,11 +75,11 @@ public class OmegaDBSaver extends OmegaDBWriter {
 	}
 
 	private void saveInnerAnalysis(final OmegaAnalysisRun analysisRun)
-	        throws SQLException {
+			throws SQLException {
 		for (final OmegaAnalysisRun innerAnalysisRun : analysisRun
-		        .getAnalysisRuns()) {
+				.getAnalysisRuns()) {
 			final Integer id = new Integer(analysisRun.getElementID()
-			        .toString());
+					.toString());
 			this.getGateway().saveAnalysisRun(id, innerAnalysisRun);
 			this.saveInnerAnalysis(innerAnalysisRun);
 		}

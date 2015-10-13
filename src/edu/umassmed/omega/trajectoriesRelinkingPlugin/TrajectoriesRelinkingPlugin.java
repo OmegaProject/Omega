@@ -32,24 +32,24 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.gui.TRPluginPanel;
 
 public class TrajectoriesRelinkingPlugin extends
-        OmegaTrajectoriesRelinkingPlugin implements
-        OmegaDataDisplayerPluginInterface {
+OmegaTrajectoriesRelinkingPlugin implements
+OmegaDataDisplayerPluginInterface {
 
 	public TrajectoriesRelinkingPlugin() {
 		super(1);
@@ -65,6 +65,11 @@ public class TrajectoriesRelinkingPlugin extends
 	}
 
 	@Override
+	public String getShortName() {
+		return TRConstants.PLUGIN_SNAME;
+	}
+
+	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 
@@ -72,10 +77,10 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TRPluginPanel panel = new TRPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(),
-		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+				this.getGateway(), this.getLoadedImages(),
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -93,13 +98,13 @@ public class TrajectoriesRelinkingPlugin extends
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
+			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-	        final boolean selection) {
+			final boolean selection) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.updateTrajectories(trajectories, selection);
@@ -116,7 +121,7 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);
@@ -125,7 +130,7 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public void selectParticleLinkingRun(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectParticleLinkingRun(analysisRun);
@@ -134,7 +139,7 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public void selectTrajectoriesRelinkingRun(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
@@ -143,7 +148,7 @@ public class TrajectoriesRelinkingPlugin extends
 
 	@Override
 	public void selectCurrentTrajectoriesRelinkingRun(
-	        final OmegaAnalysisRun analysisRun) {
+			final OmegaAnalysisRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectCurrentTrajectoriesRelinkingRun(analysisRun);

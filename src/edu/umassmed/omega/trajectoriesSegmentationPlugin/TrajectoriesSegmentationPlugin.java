@@ -32,26 +32,26 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.gui.TSPluginPanel;
 
 public class TrajectoriesSegmentationPlugin extends
-OmegaTrajectoriesSegmentationPlugin implements
-OmegaDataDisplayerPluginInterface {
+        OmegaTrajectoriesSegmentationPlugin implements
+        OmegaDataDisplayerPluginInterface {
 
 	public TrajectoriesSegmentationPlugin() {
 		super(1);
@@ -67,6 +67,11 @@ OmegaDataDisplayerPluginInterface {
 	}
 
 	@Override
+	public String getShortName() {
+		return TSConstants.PLUGIN_SNAME;
+	}
+
+	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 
@@ -74,7 +79,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void updateSegmentationTypesList(
-			final List<OmegaSegmentationTypes> segmTypesList) {
+	        final List<OmegaSegmentationTypes> segmTypesList) {
 		this.setSegmentationTypesList(segmTypesList);
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
@@ -84,11 +89,11 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-			final int index) throws OmegaCoreExceptionPluginMissingData {
+	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TSPluginPanel panel = new TSPluginPanel(parent, this,
-				this.getGateway(), this.getLoadedImages(),
-				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(),
-				this.getSegmentationTypesList(), index);
+		        this.getGateway(), this.getLoadedImages(),
+		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(),
+		        this.getSegmentationTypesList(), index);
 		return panel;
 	}
 
@@ -106,13 +111,13 @@ OmegaDataDisplayerPluginInterface {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
+			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-			final boolean selection) {
+	        final boolean selection) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.updateTrajectories(trajectories, selection);
@@ -129,7 +134,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectParticleDetectionRun(
-			final OmegaParticleDetectionRun analysisRun) {
+	        final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);
@@ -138,7 +143,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectParticleLinkingRun(
-			final OmegaParticleLinkingRun analysisRun) {
+	        final OmegaParticleLinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectParticleLinkingRun(analysisRun);
@@ -147,7 +152,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectTrajectoriesRelinkingRun(
-			final OmegaTrajectoriesRelinkingRun analysisRun) {
+	        final OmegaTrajectoriesRelinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
@@ -156,7 +161,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectTrajectoriesSegmentationRun(
-			final OmegaTrajectoriesSegmentationRun analysisRun) {
+	        final OmegaTrajectoriesSegmentationRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectTrajectoriesSegmentationRun(analysisRun);
@@ -165,7 +170,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectCurrentTrajectoriesSegmentationRun(
-			final OmegaAnalysisRun analysisRun) {
+	        final OmegaAnalysisRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectCurrentTrajectoriesSegmentationRun(analysisRun);

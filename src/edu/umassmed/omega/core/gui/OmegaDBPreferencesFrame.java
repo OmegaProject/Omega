@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -44,11 +44,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
 
 public class OmegaDBPreferencesFrame extends GenericDialog {
 
@@ -76,7 +76,7 @@ public class OmegaDBPreferencesFrame extends GenericDialog {
 		// this.gateway = gateway;
 
 		this.options = parent
-		        .getGeneralOptions(OmegaDBPreferencesFrame.CATEGORY);
+				.getGeneralOptions(OmegaDBPreferencesFrame.CATEGORY);
 		this.populateFields();
 
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -159,50 +159,47 @@ public class OmegaDBPreferencesFrame extends GenericDialog {
 
 	public OmegaDBServerInformation getOmegaDBServerInformation() {
 		final String hostname = OmegaDBPreferencesFrame.this.hostnameTxtFie
-		        .getText();
+				.getText();
 		final String portS = OmegaDBPreferencesFrame.this.portTxtFie.getText();
 		final String dbName = OmegaDBPreferencesFrame.this.dbNameFie.getText();
 
 		OmegaDBServerInformation serverInfo = null;
-		if (portS.length() == 0) {
-			serverInfo = new OmegaDBServerInformation(hostname, dbName);
-		} else {
-			final Integer port = Integer.valueOf(portS);
-			serverInfo = new OmegaDBServerInformation(hostname, port, dbName);
-		}
+		final Integer port = Integer.valueOf(portS);
+		serverInfo = new OmegaDBServerInformation(hostname, port, dbName);
+
 		this.saveServerInfoOptions(hostname, portS, dbName);
 		return serverInfo;
 	}
 
 	public OmegaLoginCredentials getOmegaDBLoginCredentials() {
 		final String username = OmegaDBPreferencesFrame.this.usernameTxtFie
-		        .getText();
+				.getText();
 		final String password = String
-		        .valueOf(OmegaDBPreferencesFrame.this.passwordPswFie
-		                .getPassword());
+				.valueOf(OmegaDBPreferencesFrame.this.passwordPswFie
+						.getPassword());
 		final OmegaLoginCredentials loginCred = new OmegaLoginCredentials(
-		        username, password);
+				username, password);
 		this.saveLoginCredsOptions(username, password);
 		return loginCred;
 	}
 
 	public void saveServerInfoOptions(final String hostname, final String port,
-	        final String dbName) {
+			final String dbName) {
 		final Map<String, String> options = new LinkedHashMap<String, String>();
 		if (OmegaDBPreferencesFrame.this.saveServerInfo.isSelected()) {
 			options.put(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS, hostname);
 			if (!port.isEmpty()) {
 				options.put(OmegaDBPreferencesFrame.OPTION_SERVER_PORT,
-				        OmegaDBPreferencesFrame.this.portTxtFie.getText());
+						OmegaDBPreferencesFrame.this.portTxtFie.getText());
 			}
 			options.put(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME, dbName);
 		}
 		this.parent
-		        .addGeneralOptions(OmegaDBPreferencesFrame.CATEGORY, options);
+		.addGeneralOptions(OmegaDBPreferencesFrame.CATEGORY, options);
 	}
 
 	public void saveLoginCredsOptions(final String username,
-	        final String password) {
+			final String password) {
 		final Map<String, String> options = new LinkedHashMap<String, String>();
 		if (OmegaDBPreferencesFrame.this.saveLoginInfo.isSelected()) {
 			options.put(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME, username);
@@ -216,28 +213,28 @@ public class OmegaDBPreferencesFrame extends GenericDialog {
 			}
 			if (loginPsw != null) {
 				options.put(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD,
-				        loginPsw);
+						loginPsw);
 			}
 		}
 		this.parent
-		        .addGeneralOptions(OmegaDBPreferencesFrame.CATEGORY, options);
+		.addGeneralOptions(OmegaDBPreferencesFrame.CATEGORY, options);
 	}
 
 	private void populateFields() {
 		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME)) {
+				.containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME)) {
 			this.usernameTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME));
+					.get(OmegaDBPreferencesFrame.OPTION_LOGIN_USERNAME));
 		} else {
 			this.usernameTxtFie.setText(OmegaMySqlGateway.USER);
 		}
 		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD)) {
+				.containsKey(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD)) {
 			final String psw = this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD);
+					.get(OmegaDBPreferencesFrame.OPTION_LOGIN_PASSWORD);
 			try {
 				this.passwordPswFie.setText(OmegaDataEncryptionUtilities
-				        .decrypt(psw));
+						.decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
@@ -249,25 +246,25 @@ public class OmegaDBPreferencesFrame extends GenericDialog {
 		}
 
 		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS)) {
+				.containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS)) {
 			this.hostnameTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS));
+					.get(OmegaDBPreferencesFrame.OPTION_SERVER_ADRESS));
 		} else {
 			this.hostnameTxtFie.setText(OmegaMySqlGateway.HOSTNAME);
 		}
 
 		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_PORT)) {
+				.containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_PORT)) {
 			this.portTxtFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_PORT));
+					.get(OmegaDBPreferencesFrame.OPTION_SERVER_PORT));
 		} else {
 			this.portTxtFie.setText(OmegaMySqlGateway.PORT);
 		}
 
 		if (this.options
-		        .containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME)) {
+				.containsKey(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME)) {
 			this.dbNameFie.setText(this.options
-			        .get(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME));
+					.get(OmegaDBPreferencesFrame.OPTION_SERVER_DB_NAME));
 		} else {
 			this.dbNameFie.setText(OmegaMySqlGateway.DB_NAME);
 		}

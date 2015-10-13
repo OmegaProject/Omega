@@ -35,13 +35,13 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRRunner implements SNRRunnable {
@@ -89,9 +89,9 @@ public class SNRRunner implements SNRRunnable {
 	}
 
 	public SNRRunner(
-	        final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess,
-	        final OmegaGateway gateway) {
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
+			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess,
+			final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 
 		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
@@ -148,12 +148,12 @@ public class SNRRunner implements SNRRunnable {
 
 	private void normalModeRun() {
 		for (final OmegaParticleDetectionRun spotDetRun : this.particlesToProcess
-		        .keySet()) {
+				.keySet()) {
 			final List<OmegaParameter> parameters = this.particlesToProcess
-			        .get(spotDetRun);
+					.get(spotDetRun);
 
 			final Map<OmegaFrame, List<OmegaROI>> particles = spotDetRun
-			        .getResultingParticles();
+					.getResultingParticles();
 
 			OmegaImagePixels pixels = null;
 			for (final OmegaFrame frame : particles.keySet()) {
@@ -182,8 +182,8 @@ public class SNRRunner implements SNRRunnable {
 			for (final OmegaFrame frame : particles.keySet()) {
 				final List<OmegaROI> rois = particles.get(frame);
 				final SNREstimator estimator = new SNREstimator(
-				        this.displayerPanel, this.gateway, frame, rois, radius,
-				        threshold);
+						this.displayerPanel, this.gateway, frame, rois, radius,
+						threshold);
 				final Thread thread = new Thread(estimator);
 				this.workers.put(thread, estimator);
 				thread.start();
@@ -208,7 +208,7 @@ public class SNRRunner implements SNRRunnable {
 				workersCounter++;
 				completed += increase;
 				this.updateStatusSync(SNRRunner.RUNNER + " " + completed
-				        + " completed.", false);
+						+ " completed.", false);
 				if (this.isTerminated)
 					return;
 			}
@@ -233,11 +233,11 @@ public class SNRRunner implements SNRRunnable {
 			final Map<OmegaROI, Double> localSNRs = new LinkedHashMap<>();
 			for (final Thread thread : this.workersCompleted.keySet()) {
 				final SNREstimator estimator = this.workersCompleted
-				        .get(thread);
+						.get(thread);
 				imageBGRMap.put(estimator.getFrame(),
-				        estimator.getImageBackground());
+						estimator.getImageBackground());
 				imageNoiseMap.put(estimator.getFrame(),
-				        estimator.getImageNoise());
+						estimator.getImageNoise());
 				localCenterSignals.putAll(estimator.getLocalCenterSignals());
 				localMeanSignals.putAll(estimator.getLocalMeanSignals());
 				localSignalSizes.putAll(estimator.getLocalSignalSizes());
@@ -249,7 +249,7 @@ public class SNRRunner implements SNRRunnable {
 			this.resultingImageBGR.put(spotDetRun, imageBGRMap);
 			this.resultingImageNoise.put(spotDetRun, imageNoiseMap);
 			this.resultingLocalCenterSignals
-			        .put(spotDetRun, localCenterSignals);
+			.put(spotDetRun, localCenterSignals);
 			this.resultingLocalMeanSignals.put(spotDetRun, localMeanSignals);
 			this.resultingLocalSignalSizes.put(spotDetRun, localSignalSizes);
 			this.resultingLocalPeakSignals.put(spotDetRun, localPeakSignals);
@@ -315,8 +315,8 @@ public class SNRRunner implements SNRRunnable {
 				@Override
 				public void run() {
 					SNRRunner.this.displayerPanel
-					        .updateMessageStatus(new SNRMessageEvent(msg,
-					                SNRRunner.this, ended));
+					.updateMessageStatus(new SNRMessageEvent(msg,
+							SNRRunner.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException ex) {
@@ -331,8 +331,8 @@ public class SNRRunner implements SNRRunnable {
 			@Override
 			public void run() {
 				SNRRunner.this.displayerPanel
-				        .updateMessageStatus(new SNRMessageEvent(msg,
-				                SNRRunner.this, ended));
+				.updateMessageStatus(new SNRMessageEvent(msg,
+						SNRRunner.this, ended));
 			}
 		});
 	}

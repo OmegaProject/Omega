@@ -33,17 +33,17 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
 import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sptSbalzariniPlugin.gui.SPTPluginPanel;
 
 public class SPTPlugin extends OmegaParticleTrackingPlugin implements
-OmegaDataDisplayerPluginInterface {
+        OmegaDataDisplayerPluginInterface {
 
 	public SPTPlugin() {
 		super(1);
@@ -61,7 +61,7 @@ OmegaDataDisplayerPluginInterface {
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
 		return new OmegaPerson(SPTConstants.PLUGIN_AUTHOR_FIRSTNAME,
-		        SPTConstants.PLUGIN_AUTHOR_LASTNAME);
+				SPTConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -80,6 +80,11 @@ OmegaDataDisplayerPluginInterface {
 	}
 
 	@Override
+	public String getShortName() {
+		return SPTConstants.PLUGIN_SNAME;
+	}
+
+	@Override
 	public List<OperatingSystemEnum> getSupportedPlatforms() {
 		final List<OperatingSystemEnum> supportedPlatforms = new ArrayList<OperatingSystemEnum>();
 		supportedPlatforms.add(OperatingSystemEnum.WIN);
@@ -94,9 +99,9 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-			final int index) throws OmegaCoreExceptionPluginMissingData {
+	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SPTPluginPanel panel = new SPTPluginPanel(parent, this,
-				this.getGateway(), this.getLoadedImages(), index);
+		        this.getGateway(), this.getLoadedImages(), index);
 		return panel;
 	}
 

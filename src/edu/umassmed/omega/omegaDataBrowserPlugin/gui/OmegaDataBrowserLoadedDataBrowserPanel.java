@@ -42,27 +42,26 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
-
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.data.OmegaData;
-import edu.umassmed.omega.data.OmegaLoadedData;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.coreElements.OmegaDataset;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaProject;
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
@@ -145,13 +144,28 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 						evt.getX(), evt.getY());
 			}
 		});
-		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
+		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent evt) {
 				OmegaDataBrowserLoadedDataBrowserPanel.this
 				        .handleTreeNodesChanged(
 						(DefaultTreeModel) evt.getSource(),
 				                evt.getTreePath(), evt.getChildren());
+			}
+
+			@Override
+			public void treeNodesInserted(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeNodesRemoved(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeStructureChanged(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
 			}
 		});
 		this.addComponentListener(new ComponentAdapter() {
@@ -306,7 +320,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel {
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
-		this.optionsPanel.updateParentContainer(this.getParentContainer());
+		this.optionsPanel.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
 	}
 
 	// private List<TreePath> getExpandedPaths(final TreePath currentPath) {

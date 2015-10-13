@@ -28,11 +28,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationType;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
 
 public class TSSegmentPreferencesDialog extends GenericDialog {
 

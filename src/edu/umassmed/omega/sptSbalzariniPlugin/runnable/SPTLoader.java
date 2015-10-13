@@ -36,12 +36,12 @@ import javax.swing.SwingUtilities;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
 public class SPTLoader implements SPTRunnable {
 	private static final String RUNNER = "Loader service: ";

@@ -2,7 +2,7 @@ package edu.umassmed.omega.trajectoriesRelinkingPlugin.actions;
 
 import java.util.List;
 
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
 public class RelinkingAction {
 	private final List<OmegaTrajectory> originalTrajs, modifiedTrajs;

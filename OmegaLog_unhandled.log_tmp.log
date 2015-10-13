@@ -1,0 +1,2697 @@
+# 2015-09-21_11-15-AM
+Application started!
+
+# 2015-09-21_11-10-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_11-08-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_11-07-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_11-05-AM
+Application started!
+
+# 2015-09-21_11-01-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_11-01-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-58-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-58-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-56-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-55-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-53-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-51-AM
+Application started!
+
+# 2015-09-21_10-28-AM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.updateStatus(TMIGraphProducer.java:157)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.run(TMIGraphProducer.java:76)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel.updateStatus(TMIGraphPanel.java:435)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer$1.run(TMIGraphProducer.java:160)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-27-AM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.updateStatus(TMIGraphProducer.java:157)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.run(TMIGraphProducer.java:76)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel.updateStatus(TMIGraphPanel.java:435)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer$1.run(TMIGraphProducer.java:160)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-19-AM
+Application started!
+
+# 2015-09-18_05-32-PM
+Application started!
+
+# 2015-09-18_05-01-PM
+Exception in thread: TBROIThumbnailLoader
+java.lang.OutOfMemoryError : Java heap space
+java.awt.image.DataBufferByte.<init>(DataBufferByte.java:92)
+java.awt.image.ComponentSampleModel.createDataBuffer(ComponentSampleModel.java:445)
+java.awt.image.Raster.createWritableRaster(Raster.java:941)
+javax.imageio.ImageTypeSpecifier.createBufferedImage(ImageTypeSpecifier.java:1074)
+javax.imageio.ImageReader.getDestination(ImageReader.java:2892)
+com.sun.imageio.plugins.jpeg.JPEGImageReader.readInternal(JPEGImageReader.java:1071)
+com.sun.imageio.plugins.jpeg.JPEGImageReader.read(JPEGImageReader.java:1039)
+javax.imageio.ImageIO.read(ImageIO.java:1448)
+javax.imageio.ImageIO.read(ImageIO.java:1352)
+edu.umassmed.omega.commons.runnable.TBROIThumbnailLoader.run(TBROIThumbnailLoader.java:60)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_04-46-PM
+Application started!
+
+# 2015-09-18_04-36-PM
+Application started!
+
+# 2015-09-18_03-25-PM
+Application started!
+
+# 2015-09-18_01-45-PM
+Exception in thread: SDRunner2
+java.lang.ExceptionInInitializerError : null
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.IllegalArgumentException : Invalid service: org.scijava.event.DefaultEventService
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:280)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NoClassDefFoundError : org/bushe/swing/event/EventSubscriber
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.Class.getDeclaredConstructors0(Native Method)
+java.lang.Class.privateGetDeclaredConstructors(Class.java:2663)
+java.lang.Class.getConstructor0(Class.java:3067)
+java.lang.Class.newInstance(Class.java:408)
+org.scijava.service.ServiceHelper.createServiceRecursively(ServiceHelper.java:302)
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:269)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.ClassNotFoundException : org.bushe.swing.event.EventSubscriber
+java.net.URLClassLoader$1.run(URLClassLoader.java:372)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.Class.getDeclaredConstructors0(Native Method)
+java.lang.Class.privateGetDeclaredConstructors(Class.java:2663)
+java.lang.Class.getConstructor0(Class.java:3067)
+java.lang.Class.newInstance(Class.java:408)
+org.scijava.service.ServiceHelper.createServiceRecursively(ServiceHelper.java:302)
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:269)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_01-41-PM
+Application started!
+
+# 2015-09-18_01-29-PM
+Application started!
+
+# 2015-09-18_01-22-PM
+Exception in thread: SDRunner2
+java.lang.NoClassDefFoundError : net/imglib2/RealInterval
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:23)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.ClassNotFoundException : net.imglib2.RealInterval
+java.net.URLClassLoader$1.run(URLClassLoader.java:372)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:23)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_01-18-PM
+Application started!
+
+# 2015-09-18_01-07-PM
+Application started!
+
+# 2015-09-18_01-04-PM
+Application started!
+
+# 2015-09-18_01-03-PM
+Application started!
+
+# 2015-09-04_11-38-AM
+Application started!
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrow# 2015-09-21_10-58-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-58-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-58-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-56-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-55-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ThumbnailStoreDelM.close(_ThumbnailStoreDelM.java:74)
+omero.api.ThumbnailStorePrxHelper.close(ThumbnailStorePrxHelper.java:356)
+omero.api.ThumbnailStorePrxHelper.close(ThumbnailStorePrxHelper.java:318)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:573)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-12-AM
+Application started!
+
+# 2015-09-03_03-38-PM
+Application started!
+
+# 2015-09-03_03-37-PM
+Application started!
+
+# 2015-09-03_03-35-PM
+Application started!
+
+# 2015-09-03_03-34-PM
+Application started!
+
+# 2015-09-03_03-33-PM
+Application started!
+
+# 2015-09-03_03-33-PM
+Application started!
+
+# 2015-09-03_03-30-PM
+Application started!
+
+# 2015-09-03_03-25-PM
+Application started!
+
+# 2015-09-03_03-04-PM
+Exception in thread: AWT-EventQueue-0
+omero.ClientError : Obtained null object proxy
+omero.client.createSession(client.java:736)
+edu.umassmed.omega.omeroCommons.OmeroGateway.connect(OmeroGateway.java:308)
+edu.umassmed.omega.omeroPlugin.gui.OmeroConnectionDialog$1.actionPerformed(OmeroConnectionDialog.java:216)
+javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2022)
+javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2346)
+javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:402)
+javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:259)
+javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:252)
+java.awt.Component.processMouseEvent(Component.java:6525)
+javax.swing.JComponent.processMouseEvent(JComponent.java:3321)
+java.awt.Component.processEvent(Component.java:6290)
+java.awt.Container.processEvent(Container.java:2234)
+java.awt.Component.dispatchEventImpl(Component.java:4881)
+java.awt.Container.dispatchEventImpl(Container.java:2292)
+java.awt.Component.dispatchEvent(Component.java:4703)
+java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4898)
+java.awt.LightweightDispatcher.processMouseEvent(Container.java:4533)
+java.awt.LightweightDispatcher.dispatchEvent(Container.java:4462)
+java.awt.Container.dispatchEventImpl(Container.java:2278)
+java.awt.Window.dispatchEventImpl(Window.java:2739)
+java.awt.Component.dispatchEvent(Component.java:4703)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:746)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:86)
+java.awt.EventQueue$4.run(EventQueue.java:719)
+java.awt.EventQueue$4.run(EventQueue.java:717)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:716)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-03_03-03-PM
+Application started!
+
+# 2015-09-03_11-58-AM
+Application started!
+
+# 2015-09-03_11-58-AM
+Application started!
+
+# 2015-09-03_11-53-AM
+Application started!
+
+# 2015-09-03_11-50-AM
+Exception in thread: main
+java.lang.Error : Unresolved compilation problems: 
+	The import edu.umassmed.omega.omeroCommons cannot be resolved
+	OmeroGateway cannot be resolved to a type
+	The constructor OmeroPluginPanel(RootPaneContainer, OmeroPlugin, OmeroGateway, OmegaData, int) refers to the missing type OmeroGateway
+	OmeroGateway cannot be resolved to a type
+
+edu.umassmed.omega.omeroPlugin.OmeroPlugin.<init>(OmeroPlugin.java:37)
+edu.umassmed.omega.core.OmegaApplication.registerCorePlugins(OmegaApplication.java:209)
+edu.umassmed.omega.core.OmegaApplication.<init>(OmegaApplication.java:194)
+edu.umassmed.omega.core.OmegaApplication.main(OmegaApplication.java:1037)
+
+# 2015-09-03_11-50-AM
+Application started!
+
+# 2015-08-20_05-08-PM
+Application started!
+
+# 2015-08-20_04-57-PM
+Application started!
+
+# 2015-08-20_04-53-PM
+Application started!
+
+# 2015-08-20_03-16-PM
+Application started!
+
+# 2015-08-20_02-47-PM
+Application started!
+
+# 2015-08-19_05-25-PM
+Application started!
+
+# 2015-08-19_04-55-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResizeepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-53-AM
+Exception in thread: VelocityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.updateStatus(TMVGraphProducer.java:135)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer.run(TMVGraphProducer.java:70)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel.updateStatus(TMVGraphPanel.java:383)
+edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable.TMVGraphProducer$1.run(TMVGraphProducer.java:138)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-51-AM
+Application started!
+
+# 2015-09-21_10-28-AM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.updateStatus(TMIGraphProducer.java:157)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.run(TMIGraphProducer.java:76)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel.updateStatus(TMIGraphPanel.java:435)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer$1.run(TMIGraphProducer.java:160)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-27-AM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.updateStatus(TMIGraphProducer.java:157)
+edu.umassmed.omega.commons.runnable.StatsGraphProducer.prepareTimepointsGraph(StatsGraphProducer.java:584)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer.run(TMIGraphProducer.java:76)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel.updateStatus(TMIGraphPanel.java:435)
+edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer$1.run(TMIGraphProducer.java:160)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-21_10-19-AM
+Application started!
+
+# 2015-09-18_05-32-PM
+Application started!
+
+# 2015-09-18_05-01-PM
+Exception in thread: TBROIThumbnailLoader
+java.lang.OutOfMemoryError : Java heap space
+java.awt.image.DataBufferByte.<init>(DataBufferByte.java:92)
+java.awt.image.ComponentSampleModel.createDataBuffer(ComponentSampleModel.java:445)
+java.awt.image.Raster.createWritableRaster(Raster.java:941)
+javax.imageio.ImageTypeSpecifier.createBufferedImage(ImageTypeSpecifier.java:1074)
+javax.imageio.ImageReader.getDestination(ImageReader.java:2892)
+com.sun.imageio.plugins.jpeg.JPEGImageReader.readInternal(JPEGImageReader.java:1071)
+com.sun.imageio.plugins.jpeg.JPEGImageReader.read(JPEGImageReader.java:1039)
+javax.imageio.ImageIO.read(ImageIO.java:1448)
+javax.imageio.ImageIO.read(ImageIO.java:1352)
+edu.umassmed.omega.commons.runnable.TBROIThumbnailLoader.run(TBROIThumbnailLoader.java:60)
+javad(TMDMotionTypeClassificationGraphPanel.java:118)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:252)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-54-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResized(TMDMotionTypeClassificationGraphPanel.java:118)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:252)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-52-PM
+Application started!
+
+# 2015-08-19_04-31-PM
+Application started!
+
+# 2015-08-19_04-22-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResized(TMDMotionTypeClassificationGraphPanel.java:112)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(Unknown Source)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-14-PM
+Application started!
+
+# 2015-08-17_11-25-AM
+Application started!
+
+# 2015-08-17_08-04-AM
+Application started!
+
+# 2015-08-17_01-32-AM
+Application started!
+
+# 2015-08-17_01-22-AM
+Application started!
+
+# 2015-08-17_01-15-AM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:620)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:131)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:212)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:624)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-17_01-15-AM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.u.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_04-46-PM
+Application started!
+
+# 2015-09-18_04-36-PM
+Application started!
+
+# 2015-09-18_03-25-PM
+Application started!
+
+# 2015-09-18_01-45-PM
+Exception in thread: SDRunner2
+java.lang.ExceptionInInitializerError : null
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.IllegalArgumentException : Invalid service: org.scijava.event.DefaultEventService
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:280)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NoClassDefFoundError : org/bushe/swing/event/EventSubscriber
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.Class.getDeclaredConstructors0(Native Method)
+java.lang.Class.privateGetDeclaredConstructors(Class.java:2663)
+java.lang.Class.getConstructor0(Class.java:3067)
+java.lang.Class.newInstance(Class.java:408)
+org.scijava.service.ServiceHelper.createServiceRecursively(ServiceHelper.java:302)
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:269)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.ClassNotFoundException : org.bushe.swing.event.EventSubscriber
+java.net.URLClassLoader$1.run(URLClassLoader.java:372)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.Class.getDeclaredConstructors0(Native Method)
+java.lang.Class.privateGetDeclaredConstructors(Class.java:2663)
+java.lang.Class.getConstructor0(Class.java:3067)
+java.lang.Class.newInstance(Class.java:408)
+org.scijava.service.ServiceHelper.createServiceRecursively(ServiceHelper.java:302)
+org.scijava.service.ServiceHelper.createExactService(ServiceHelper.java:269)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:231)
+org.scijava.service.ServiceHelper.loadService(ServiceHelper.java:194)
+org.scijava.service.ServiceHelper.loadServices(ServiceHelper.java:166)
+org.scijava.Context.<init>(Context.java:267)
+org.scijava.Context.<init>(Context.java:224)
+org.scijava.Context.<init>(Context.java:163)
+org.scijava.Context.<init>(Context.java:149)
+net.imagej.ImageJ.<init>(ImageJ.java:79)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:25)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_01-41-PM
+Application started!
+
+# 2015-09-18_01-29-PM
+Application started!
+
+# 2015-09-18_01-22-PM
+Exception in thread: SDRunner2
+java.lang.NoClassDefFoundError : net/imglib2/RealInterval
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:23)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.ClassNotFoundExceptionpdateStatus(TMDMotionTypeClassificationGraphProducer.java:620)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:131)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:212)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:624)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-17_01-00-AM
+Application started!
+
+# 2015-08-17_12-17-AM
+Application started!
+
+# 2015-08-16_11-56-PM
+Application started!
+
+# 2015-08-16_11-40-PM
+Application started!
+
+# 2015-08-16_11-18-PM
+Application started!
+
+# 2015-08-16_11-11-PM
+Application started!
+
+# 2015-08-16_11-03-PM
+Application started!
+
+# 2015-08-16_10-50-PM
+Application started!
+
+# 2015-08-16_04-23-AM
+Application started!
+
+# 2015-08-16_04-03-AM
+Application started!
+
+# 2015-08-16_03-55-AM
+Application started!
+
+# 2015-08-16_03-28-AM
+Application started!
+
+# 2015-08-16_03-14-AM
+Application started!
+
+# 2015-08-15_09-49-PM
+Application started!
+
+# 2015-08-10_02-09-PM
+Application started!
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:328)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:3 : net.imglib2.RealInterval
+java.net.URLClassLoader$1.run(URLClassLoader.java:372)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+java.lang.ClassLoader.defineClass1(Native Method)
+java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+java.net.URLClassLoader.defineClass(URLClassLoader.java:455)
+java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+java.net.URLClassLoader$1.run(URLClassLoader.java:367)
+java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+java.security.AccessController.doPrivileged(Native Method)
+java.net.URLClassLoader.findClass(URLClassLoader.java:360)
+java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+edu.umassmed.omega.omeroImageJ.OmeroImageJUtilities.<clinit>(OmeroImageJUtilities.java:23)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.normalModeRun(SDRunner2.java:202)
+edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2.run(SDRunner2.java:130)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-18_01-18-PM
+Application started!
+
+# 2015-09-18_01-07-PM
+Application started!
+
+# 2015-09-18_01-04-PM
+Application started!
+
+# 2015-09-18_01-03-PM
+Application started!
+
+# 2015-09-04_11-38-AM
+Application started!
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxH36)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ServiceFactoryDelM.createThumbnailStore(_ServiceFactoryDelM.java:473)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1698)
+omero.api.ServiceFactoryPrxHelper.createThumbnailStore(ServiceFactoryPrxHelper.java:1670)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailService(OmeroGateway.java:175)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:545)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+java.lang.IndexOutOfBoundsException : Index: 0, Size: 0
+java.util.ArrayList.rangeCheck(ArrayList.java:653)
+java.util.ArrayList.get(ArrayList.java:429)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:136)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-38-AM
+Exception in thread: OmeroBrowerPanelImageLoader
+Ice.ConnectionLostException : null
+IceInternal.Outgoing.invoke(Outgoing.java:158)
+omero.api._ThumbnailStoreDelM.close(_ThumbnailStoreDelM.java:74)
+omero.api.ThumbnailStorePrxHelper.close(ThumbnailStorePrxHelper.java:356)
+omero.api.ThumbnailStorePrxHelper.close(ThumbnailStorePrxHelper.java:318)
+edu.umassmed.omega.omeroCommons.OmeroGateway.getThumbnailSet(OmeroGateway.java:573)
+edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader.run(OmeroBrowerPanelImageLoader.java:133)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-09-04_11-12-AM
+Application started!
+
+# 2015-09-03_03-38-PM
+Application started!
+
+# 2015-09-03_03-37-PM
+Application started!
+
+# 2015-09-03_03-35-PM
+Application started!
+
+# 2015-09-03_03-34-PM
+Application started!
+
+# 2015-09-03_03-33-PM
+Application started!
+
+# 2015-09-03_03-33-PM
+Application started!
+
+# 2015-09-03_03-30-PM
+Application started!
+
+# 2015-09-03_03-25-PM
+Application started!
+
+# 2015-09-03_03-04-PM
+Exception in thread: AWT-EventQueue-0
+omero.ClientError : Obtained null object proxy
+omero.client.createSession(client.java:736)
+edu.umassmed.omega.omeroCommons.OmeroGateway.connect(OmeroGateway.java:308)
+edu.umassmed.omega.omeroPlugin.gui.OmeroConnectionDialog$1.actionPerformed(OmeroConnectionDialog.java:216)
+javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2022)
+javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2346)
+javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:402)
+javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:259)
+javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:252)
+java.awt.Component.processMouseEvent(Component.java:6525)
+javax.swing.JComponent.processMouseEvent(JComponent.java:3321)
+java.awt.Component.processEvent(Component.java:6290)
+java.awt.Container.processEvent(Container.java:2234)
+java.awt.Component.dispatchEventImpl(Component.java:4881)
+java.awt.Container.dispatchEventImpl(Container.java:2292)
+java.awt.Component.dispatchEvent(Component.java:4703)
+java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4898)
+java.awt.LightweightDispatcher.processMouseEvent(Container.java:4533)
+java.awt.LightweightDispatcher.dispatchEvent(Container.java:4462)
+java.awt.Container.dispatchEventImpl(Container.java:2278)
+java.awt.Window.dispatchEventImpl(Window.java:2739)
+java.awt.Component.dispatchEvent(Component.java:4703)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:746)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:86)
+java.awt.EventQueue$4.run(EventQueue.java:719)
+java.awt.EventQueue$4.run(EventQueue.java:717)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:716)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-09-03_03-03-PM
+Application started!
+
+# 2015-09-03_11-58-AM
+Application started!
+
+# 2015-09-03_11-58-AM
+Application started!
+
+# 2015-09-03_11-53-AM
+Application started!
+
+# 2015-09-03_11-50-AM
+Exception in thread: main
+java.lang.Error : Unresolved compilation problems: 
+	The import edu.umassmed.omega.omeroCommons cannot be resolved
+	OmeroGateway cannot be resolved to a type
+	The constructor OmeroPluginPanel(RootPaneContainer, OmeroPlugin, OmeroGateway, OmegaData, int) refers to the missing type OmeroGateway
+	OmeroGateway cannot be resolved to a type
+
+edu.umassmed.omega.omeroPlugin.OmeroPlugin.<init>(OmeroPlugin.java:37)
+edu.umassmed.omega.core.OmegaApplication.registerCorePlugins(OmegaApplication.java:209)
+edu.umassmed.omega.core.OmegaApplication.<init>(OmegaApplication.java:194)
+edu.umassmed.omega.core.OmegaApplication.main(OmegaApplication.java:1037)
+
+# 2015-09-03_11-50-AM
+Application started!
+
+# 2015-08-20_05-08-PM
+Application started!
+
+# 2015-08-20_04-57-PM
+Application started!
+
+# 2015-08-20_04-53-PM
+Application started!
+
+# 2015-08-20_03-16-PM
+Application started!
+
+# 2015-08-20_02-47-PM
+Application started!
+
+# 2015-08-19_05-25-PM
+Application started!
+
+# 2015-08-19_04-55-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResized(TMDMotionTypeClassificationGraphPanel.java:118)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:252)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-54-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResized(TMDMotionTypeClassificationGraphPanel.java:118)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:252)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-52-PM
+Application started!
+
+# 2015-08-19_04-31-PM
+Application started!
+
+# 2015-08-19_04-22-PM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:655)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:166)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.handleComponentResized(TMDMotionTypeClassificationGraphPanel.java:112)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(Unknown Source)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:659)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-19_04-14-PM
+Application started!
+
+# 2015-08-17_11-25-AM
+Application started!
+
+# 2015-08-17_08-04-AM
+Application started!
+
+# 2015-08-17_01-32-AM
+Application started!
+
+# 2015-08-17_01-22-AM
+Application started!
+
+# 2015-08-17_01-15-AM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:620)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:131)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:212)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:624)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-17_01-15-AM
+Exception in thread: MotionTypeGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.updateStatus(TMDMotionTypeClassificationGraphProducer.java:620)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer.run(TMDMotionTypeClassificationGraphProducer.java:131)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+java.awt.Container.addImpl(Container.java:1091)
+java.awt.Container.add(Container.java:415)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel.updateStatus(TMDMotionTypeClassificationGraphPanel.java:212)
+edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer$1.run(TMDMotionTypeClassificationGraphProducer.java:624)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-17_01-00-AM
+Application started!
+
+# 2015-08-17_12-17-AM
+Application started!
+
+# 2015-08-16_11-56-PM
+Application started!
+
+# 2015-08-16_11-40-PM
+Application started!
+
+# 2015-08-16_11-18-PM
+Application started!
+
+# 2015-08-16_11-11-PM
+Application started!
+
+# 2015-08-16_11-03-PM
+Application started!
+
+# 2015-08-16_10-50-PM
+Application started!
+
+# 2015-08-16_04-23-AM
+Application started!
+
+# 2015-08-16_04-03-AM
+Application started!
+
+# 2015-08-16_03-55-AM
+Application started!
+
+# 2015-08-16_03-28-AM
+Application started!
+
+# 2015-08-16_03-14-AM
+Application started!
+
+# 2015-08-15_09-49-PM
+Application started!
+
+# 2015-08-10_02-09-PM
+Application started!
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:328)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:75)
+java.awt.EventQueue.dispatchEvent(EventQueue.java:714)
+java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:201)
+java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
+# 2015-08-10_02-08-PM
+Exception in thread: IntensityGraphProducer
+java.lang.reflect.InvocationTargetException : null
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1307)
+java.awt.EventQueue.invokeAndWait(EventQueue.java:1282)
+javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1348)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.updateStatus(SIGraphProducer.java:333)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.prepareTimepointsGraph(SIGraphProducer.java:289)
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer.run(SIGraphProducer.java:96)
+java.lang.Thread.run(Thread.java:745)
+Caused by: 
+java.lang.NullPointerException : null
+edu.umassmed.omega.statsIntensityPlugin.runnable.SIGraphProducer$1.run(SIGraphProducer.java:336)
+java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:301)
+java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
+java.awt.EventQueue.access$400(EventQueue.java:97)
+java.awt.EventQueue$3.run(EventQueue.java:697)
+java.awt.EventQueue$3.run(EventQueue.java:691)
+java.security.AccessController.doPrivileged(Native Method)
+java.security.ProtectionDomain$1.doIntersectionPrivileg

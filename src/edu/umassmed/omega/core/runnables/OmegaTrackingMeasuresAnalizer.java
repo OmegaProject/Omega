@@ -5,35 +5,40 @@ import java.util.List;
 import java.util.Map;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
 import edu.umassmed.omega.core.OmegaApplication;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaTrackingMeasuresAnalizer implements Runnable {
 
 	private final OmegaApplication omegaApp;
-	private final OmegaParticleLinkingRun particleLinkingRun;
+	private final OmegaTrajectoriesSegmentationRun segmentationRun;
 
-	private final OmegaIntensityAnalizer intensityAnalizer;
-	private final OmegaMobilityAnalizer mobilityAnalizer;
-	private final OmegaVelocityAnalizer velocityAnalizer;
-	private final OmegaDiffusivityAnalizer diffusivityAnalizer;
+	private final OmegaIntensityAnalyzer intensityAnalizer;
+	private final OmegaMobilityAnalyzer mobilityAnalizer;
+	private final OmegaVelocityAnalyzer velocityAnalizer;
+	private final OmegaDiffusivityAnalyzer diffusivityAnalizer;
 
 	public OmegaTrackingMeasuresAnalizer(final OmegaApplication omegaApp,
-	        final OmegaParticleLinkingRun particleLinkingRun, final int tMax,
-			final boolean hasIntensities) {
+	        final OmegaTrajectoriesSegmentationRun segmentationRun,
+	        final int tMax, final boolean hasIntensities) {
 		this.omegaApp = omegaApp;
-		this.particleLinkingRun = particleLinkingRun;
-		final List<OmegaTrajectory> trajectories = particleLinkingRun
-		        .getResultingTrajectories();
+		this.segmentationRun = segmentationRun;
+		final Map<OmegaTrajectory, List<OmegaSegment>> segments = segmentationRun
+		        .getResultingSegments();
 		if (hasIntensities) {
-			this.intensityAnalizer = new OmegaIntensityAnalizer(trajectories);
+			this.intensityAnalizer = new OmegaIntensityAnalyzer(segments);
 		} else {
 			this.intensityAnalizer = null;
 		}
-		this.mobilityAnalizer = new OmegaMobilityAnalizer(tMax, trajectories);
-		this.velocityAnalizer = new OmegaVelocityAnalizer(tMax, trajectories);
-		this.diffusivityAnalizer = new OmegaDiffusivityAnalizer(trajectories);
+		this.mobilityAnalizer = new OmegaMobilityAnalyzer(tMax, segments);
+		this.velocityAnalizer = new OmegaVelocityAnalyzer(tMax, segments);
+		this.diffusivityAnalizer = new OmegaDiffusivityAnalyzer(segments);
 	}
 
 	@Override
@@ -68,10 +73,10 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 			OmegaLogFileManager.handleCoreException(ex);
 		}
 
-		Map<OmegaTrajectory, Double[]> peakSignals = null;
-		Map<OmegaTrajectory, Double[]> meanSignals = null;
-		Map<OmegaTrajectory, Double[]> localBackgrounds = null;
-		Map<OmegaTrajectory, Double[]> localSNRs = null;
+		Map<OmegaSegment, Double[]> peakSignals = null;
+		Map<OmegaSegment, Double[]> meanSignals = null;
+		Map<OmegaSegment, Double[]> localBackgrounds = null;
+		Map<OmegaSegment, Double[]> localSNRs = null;
 		if (this.intensityAnalizer != null) {
 			peakSignals = this.intensityAnalizer.getPeakSignalsResults();
 			meanSignals = this.intensityAnalizer.getMeanSignalsResults();
@@ -79,14 +84,14 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 			        .getLocalBackgroundsResults();
 			localSNRs = this.intensityAnalizer.getLocalSNRsResults();
 		} else {
-			peakSignals = new LinkedHashMap<OmegaTrajectory, Double[]>();
-			meanSignals = new LinkedHashMap<OmegaTrajectory, Double[]>();
-			localBackgrounds = new LinkedHashMap<OmegaTrajectory, Double[]>();
-			localSNRs = new LinkedHashMap<OmegaTrajectory, Double[]>();
+			peakSignals = new LinkedHashMap<OmegaSegment, Double[]>();
+			meanSignals = new LinkedHashMap<OmegaSegment, Double[]>();
+			localBackgrounds = new LinkedHashMap<OmegaSegment, Double[]>();
+			localSNRs = new LinkedHashMap<OmegaSegment, Double[]>();
 		}
 		// TODO to be changed somehow
 		this.omegaApp.updateTrackingMeasuresAnalizerResults(
-		        this.particleLinkingRun, peakSignals, meanSignals,
+		        this.segmentationRun, peakSignals, meanSignals,
 		        localBackgrounds, localSNRs,
 		        this.mobilityAnalizer.getDistancesResults(),
 		        this.mobilityAnalizer.getDisplacementsResults(),

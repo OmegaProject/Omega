@@ -23,9 +23,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSTrackROISelectionDialog extends GenericDialog {

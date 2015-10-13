@@ -22,8 +22,8 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.GenericPanel;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 
 public class TSTrackDisplayPanel extends GenericPanel {
 

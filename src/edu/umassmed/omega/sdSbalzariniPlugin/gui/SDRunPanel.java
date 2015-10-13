@@ -34,6 +34,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -42,12 +43,12 @@ import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
@@ -59,7 +60,7 @@ public class SDRunPanel extends GenericPanel {
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
 
 	private GenericTextFieldValidable radius_txtField, cutoff_txtField,
-	percentile_txtField, zSection_txtField;
+	        percentile_txtField, zSection_txtField;
 
 	private JPanel additionaParamPanel, channelsPanel;
 	private JCheckBox[] channels;
@@ -84,9 +85,9 @@ public class SDRunPanel extends GenericPanel {
 
 	private void createAndAddWidgets() {
 		this.infoPanel = new GenericElementInformationPanel(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.infoPanel.setBorder(new TitledBorder(
-				OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
+		        OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
 		this.add(this.infoPanel);
 
 		final JPanel additionalParamPanel = this.createAdditionalParamPanel();
@@ -112,7 +113,7 @@ public class SDRunPanel extends GenericPanel {
 		radius_lbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		radiusPanel.add(radius_lbl);
 		this.radius_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.radius_txtField.setPreferredSize(SDRunPanel.VALUE_FIELDS_DIM);
 		radiusPanel.add(this.radius_txtField);
 		paramDetectionPanel.add(radiusPanel);
@@ -124,7 +125,7 @@ public class SDRunPanel extends GenericPanel {
 		cutoff_lbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		cutoffPanel.add(cutoff_lbl);
 		this.cutoff_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.cutoff_txtField.setPreferredSize(SDRunPanel.VALUE_FIELDS_DIM);
 		cutoffPanel.add(this.cutoff_txtField);
 		paramDetectionPanel.add(cutoffPanel);
@@ -133,11 +134,11 @@ public class SDRunPanel extends GenericPanel {
 		final JPanel percentilePanel = new JPanel();
 		percentilePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel percentile_lbl = new JLabel(SDConstants.PARAM_PERCENTILE
-				+ ":");
+		        + ":");
 		percentile_lbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		percentilePanel.add(percentile_lbl);
 		this.percentile_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.percentile_txtField.setPreferredSize(SDRunPanel.VALUE_FIELDS_DIM);
 		percentilePanel.add(this.percentile_txtField);
 		paramDetectionPanel.add(percentilePanel);
@@ -145,7 +146,7 @@ public class SDRunPanel extends GenericPanel {
 		final JPanel percentileAbsPanel = new JPanel();
 		percentileAbsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel percentileAbs_lbl = new JLabel(
-				SDConstants.PARAM_PERCENTILE_ABS + ":");
+		        SDConstants.PARAM_PERCENTILE_ABS + ":");
 		percentileAbs_lbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		percentileAbsPanel.add(percentileAbs_lbl);
 		this.percAbs_checkBox = new JCheckBox();
@@ -165,7 +166,8 @@ public class SDRunPanel extends GenericPanel {
 		mainPanel.setBorder(new TitledBorder(SDConstants.PARAMETER_ADVANCED));
 
 		this.additionaParamPanel = new JPanel();
-		this.additionaParamPanel.setLayout(new GridLayout(2, 1));
+		this.additionaParamPanel.setLayout(new BoxLayout(
+		        this.additionaParamPanel, BoxLayout.Y_AXIS));
 
 		final JPanel zSectionPanel = new JPanel();
 		zSectionPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
@@ -173,7 +175,7 @@ public class SDRunPanel extends GenericPanel {
 		zSectionLbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		zSectionPanel.add(zSectionLbl);
 		this.zSection_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.zSection_txtField.setPreferredSize(SDRunPanel.VALUE_FIELDS_DIM);
 		zSectionPanel.add(this.zSection_txtField);
 		this.maxSection_lbl = new JLabel("/ NA");
@@ -196,8 +198,10 @@ public class SDRunPanel extends GenericPanel {
 	private void createChannelsPane(final int n, final boolean[] selC) {
 		this.additionaParamPanel.remove(this.channelsPanel);
 		this.channelsPanel.removeAll();
-		for (final JCheckBox checkBox : this.channels) {
-			this.group.remove(checkBox);
+		if (this.channels != null) {
+			for (final JCheckBox checkBox : this.channels) {
+				this.group.remove(checkBox);
+			}
 		}
 		// this.channelsPanel.revalidate();
 		// this.channelsPanel.repaint();
@@ -215,7 +219,7 @@ public class SDRunPanel extends GenericPanel {
 		}
 
 		final Dimension channelsDim = new Dimension(
-				this.channelsPanel.getWidth(), 50 * n);
+		        this.channelsPanel.getWidth(), 50 * n);
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
 
@@ -224,8 +228,8 @@ public class SDRunPanel extends GenericPanel {
 
 	public boolean areParametersValidated() {
 		return this.radius_txtField.isContentValidated()
-				&& this.cutoff_txtField.isContentValidated()
-				&& this.percentile_txtField.isContentValidated();
+		        && this.cutoff_txtField.isContentValidated()
+		        && this.percentile_txtField.isContentValidated();
 	}
 
 	public String[] getParametersError() {
@@ -235,19 +239,19 @@ public class SDRunPanel extends GenericPanel {
 		}
 		if (!this.radius_txtField.isContentValidated()) {
 			errors[0] = SDConstants.PARAM_RADIUS + ": "
-					+ this.radius_txtField.getError();
+			        + this.radius_txtField.getError();
 		}
 		if (!this.cutoff_txtField.isContentValidated()) {
 			errors[1] = SDConstants.PARAM_CUTOFF + ": "
-					+ this.cutoff_txtField.getError();
+			        + this.cutoff_txtField.getError();
 		}
 		if (!this.percentile_txtField.isContentValidated()) {
 			errors[2] = SDConstants.PARAM_PERCENTILE + ": "
-					+ this.percentile_txtField.getError();
+			        + this.percentile_txtField.getError();
 		}
 		if (!this.zSection_txtField.isContentValidated()) {
 			errors[3] = SDConstants.PARAM_ZSECTION + ": "
-					+ this.zSection_txtField.getError();
+			        + this.zSection_txtField.getError();
 		}
 
 		return errors;
@@ -258,7 +262,7 @@ public class SDRunPanel extends GenericPanel {
 
 		final int selZ = image.getDefaultPixels().getSelectedZ();
 		this.zSection_txtField.setText(String.valueOf(selZ));
-		final int z = image.getDefaultPixels().getSizeZ();
+		final int z = image.getDefaultPixels().getSizeZ() - 1;
 		this.maxSection_lbl.setText("/ " + z);
 
 		final boolean[] selC = image.getDefaultPixels().getSelectedC();
@@ -309,12 +313,12 @@ public class SDRunPanel extends GenericPanel {
 		final double cutoff = Double.valueOf(this.cutoff_txtField.getText());
 		params.add(new OmegaParameter(SDConstants.PARAM_CUTOFF, cutoff));
 		final float percentile = Float.valueOf(this.percentile_txtField
-				.getText());
+		        .getText());
 		params.add(new OmegaParameter(SDConstants.PARAM_PERCENTILE, percentile));
 
 		final boolean percentileAbs = this.percAbs_checkBox.isSelected();
 		params.add(new OmegaParameter(SDConstants.PARAM_PERCENTILE_ABS,
-				percentileAbs));
+		        percentileAbs));
 		final int section = Integer.valueOf(this.zSection_txtField.getText());
 		params.add(new OmegaParameter(SDConstants.PARAM_ZSECTION, section));
 		int channel = 0;
@@ -338,5 +342,11 @@ public class SDRunPanel extends GenericPanel {
 		for (final JCheckBox chan : this.channels) {
 			chan.setEnabled(enabled);
 		}
+	}
+
+	@Override
+	public void updateParentContainer(final RootPaneContainer parent) {
+		super.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
 	}
 }

@@ -37,15 +37,15 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaParticle;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTRunner implements SPTRunnable {

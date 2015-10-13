@@ -61,6 +61,17 @@ import javax.swing.event.ChangeListener;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsSNR;
@@ -72,17 +83,6 @@ import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRMessageEvent;
 import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRRunner;
@@ -504,7 +504,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.queueRunBrowserPanel.updateTree(null);
 			return;
 		}
-		if ((this.images == null) || (index > this.images.size())) {
+		if ((this.images == null) || (index >= this.images.size())) {
 			this.selectedImage = this.orphanedAnalysis;
 		} else {
 			this.selectedImage = this.images.get(index);
@@ -539,6 +539,9 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
+		this.loadedDataBrowserPanel.updateParentContainer(parent);
+		this.queueRunBrowserPanel.updateParentContainer(parent);
+		this.runPanel.updateParentContainer(parent);
 	}
 
 	@Override

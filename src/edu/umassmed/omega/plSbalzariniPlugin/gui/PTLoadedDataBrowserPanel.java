@@ -40,21 +40,19 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
-
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 
 public class PTLoadedDataBrowserPanel extends GenericPanel {
@@ -116,7 +114,7 @@ public class PTLoadedDataBrowserPanel extends GenericPanel {
 				PTLoadedDataBrowserPanel.this.handleMouseClick(event.getPoint());
 			}
 		});
-		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
+		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent event) {
 				final TreePath parent = event.getTreePath();
@@ -125,6 +123,21 @@ public class PTLoadedDataBrowserPanel extends GenericPanel {
 				        .getSource();
 				PTLoadedDataBrowserPanel.this.handleTreeNodeChanged(parent,
 				        children, model);
+			}
+
+			@Override
+			public void treeNodesInserted(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeNodesRemoved(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeStructureChanged(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
 			}
 		});
 	}
@@ -213,21 +226,22 @@ public class PTLoadedDataBrowserPanel extends GenericPanel {
 
 				for (final OmegaAnalysisRun innerAnalysisRun : analysisRun
 				        .getAnalysisRuns()) {
-					if (!(innerAnalysisRun instanceof OmegaSNRRun)) {
+					if (!(innerAnalysisRun instanceof OmegaParticleLinkingRun)) {
 						continue;
 					}
-					final OmegaSNRRun snrRun = (OmegaSNRRun) innerAnalysisRun;
+					final OmegaParticleLinkingRun linkingRun = (OmegaParticleLinkingRun) innerAnalysisRun;
 					// TODO pensare se questo e' il sistema migliore per
 					// verificare il corretto funzionamento!
-					if (!this.plPanel.checkIfThisAlgorithm(snrRun)) {
+					if (!this.plPanel.checkIfThisAlgorithm(linkingRun)) {
 						continue;
 					}
-					final DefaultMutableTreeNode snrAnalysisRunNode = new DefaultMutableTreeNode();
-					s = "[" + snrRun.getElementID() + "] " + snrRun.getName();
-					this.nodeMap.put(s, snrRun);
-					snrAnalysisRunNode
-					        .setUserObject(new CheckBoxNode(s, status));
-					particleDetRunNode.add(snrAnalysisRunNode);
+					final DefaultMutableTreeNode linkingAnalysisRunNode = new DefaultMutableTreeNode();
+					s = "[" + linkingRun.getElementID() + "] "
+					        + linkingRun.getName();
+					this.nodeMap.put(s, linkingRun);
+					linkingAnalysisRunNode.setUserObject(new CheckBoxNode(s,
+					        status));
+					particleDetRunNode.add(linkingAnalysisRunNode);
 				}
 
 				this.root.add(particleDetRunNode);

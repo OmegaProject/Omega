@@ -47,10 +47,10 @@ public class SNRConstants {
 
 	public static final String PLUGIN_AUTHOR_FIRSTNAME = "Ivo";
 	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
-	public static final String PLUGIN_SHORTNAME = "SNR Estimator";
-	public static final String PLUGIN_NAME = "Signal to noise ratio estimator";
-	public static final String PLUGIN_DESC = "SNR Desc";
-	public static final String PLUGIN_ALGO_DESC = "SNR Algo Desc";
+	public static final String PLUGIN_SHORTNAME = "MOSAIC SE";
+	public static final String PLUGIN_NAME = "MOSAIC SNR Estimator";
+	public static final String PLUGIN_DESC = "To be defined";
+	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 	        .getTime();
 }

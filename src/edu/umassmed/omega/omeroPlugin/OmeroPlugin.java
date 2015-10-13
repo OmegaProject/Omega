@@ -29,11 +29,12 @@ package edu.umassmed.omega.omeroPlugin;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.OmegaData;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import edu.umassmed.omega.data.OmegaData;
+import edu.umassmed.omega.omeroCommons.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
 
 public class OmeroPlugin extends OmegaLoaderPlugin {
@@ -48,7 +49,12 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public String getName() {
-		return OmeroCostants.PLUGIN_NAME;
+		return OmeroConstants.PLUGIN_NAME;
+	}
+
+	@Override
+	public String getShortName() {
+		return OmeroConstants.PLUGIN_SNAME;
 	}
 
 	@Override
@@ -75,6 +81,6 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 
 	@Override
 	public String getDescription() {
-		return OmeroCostants.PLUGIN_DESC;
+		return OmeroConstants.PLUGIN_DESC;
 	}
 }

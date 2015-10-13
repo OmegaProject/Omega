@@ -28,12 +28,12 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSTrackPanel extends GenericPanel {

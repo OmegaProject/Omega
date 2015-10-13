@@ -31,18 +31,18 @@ import java.util.Date;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaSNRPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.snrSbalzariniPlugin.gui.SNRPluginPanel;
 
 public class SNRPlugin extends OmegaSNRPlugin implements
-        OmegaDataDisplayerPluginInterface {
+OmegaDataDisplayerPluginInterface {
 
 	public SNRPlugin() {
 		super(1);
@@ -60,7 +60,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
 		return new OmegaPerson(SNRConstants.PLUGIN_AUTHOR_FIRSTNAME,
-				SNRConstants.PLUGIN_AUTHOR_LASTNAME);
+		        SNRConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -91,10 +91,10 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SNRPluginPanel panel = new SNRPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(),
-		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+				this.getGateway(), this.getLoadedImages(),
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -112,7 +112,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SNRPluginPanel specificPanel = (SNRPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
+					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
@@ -123,7 +123,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 
 	@Override
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SNRPluginPanel specificPanel = (SNRPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);

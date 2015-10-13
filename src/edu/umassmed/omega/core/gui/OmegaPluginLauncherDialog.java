@@ -46,7 +46,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 	private final GenericAlgorithmDetailsDialog algoInfoDialog;
 
 	public OmegaPluginLauncherDialog(final RootPaneContainer parent,
-			final String title, final Map<Long, ? extends OmegaPlugin> plugins) {
+	        final String title, final Map<Long, ? extends OmegaPlugin> plugins) {
 		super(parent, title, false);
 
 		this.plugins = plugins;
@@ -55,12 +55,12 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 		this.pluginLauncherbuttons = new LinkedHashMap<>();
 		this.detailsButtons = new LinkedHashMap<>();
 		final Dimension dialogDim = new Dimension(
-				OmegaPluginLauncherDialog.DIALOG_WIDTH + 30, 440);
+		        OmegaPluginLauncherDialog.DIALOG_WIDTH + 30, 440);
 		this.setPreferredSize(dialogDim);
 		this.setSize(dialogDim);
-		final int requiredHeight = plugins.size() * 160;
+		final int requiredHeight = (plugins.size() * 160) + 30;
 		final Dimension panelDim = new Dimension(
-				OmegaPluginLauncherDialog.DIALOG_WIDTH, requiredHeight);
+		        OmegaPluginLauncherDialog.DIALOG_WIDTH, requiredHeight);
 		this.mainPanel.setPreferredSize(panelDim);
 		this.mainPanel.setSize(panelDim);
 
@@ -89,7 +89,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 
 	private void populateMainPanel() {
 		final Dimension pluginDim = new Dimension(
-				OmegaPluginLauncherDialog.DIALOG_WIDTH, 160);
+		        OmegaPluginLauncherDialog.DIALOG_WIDTH, 160);
 		final Dimension buttDim = new Dimension(120, 120);
 		for (final Long id : this.plugins.keySet()) {
 			final JPanel pluginPanel = new JPanel();
@@ -134,7 +134,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 				final JPanel buttPanel = new JPanel();
 				buttPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 				final JButton detail_btt = new JButton(
-						OmegaGUIConstants.ALGORITHM_INFORMATION);
+				        OmegaGUIConstants.ALGORITHM_INFORMATION);
 				detail_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 				detail_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 				buttPanel.add(detail_btt);
@@ -165,25 +165,25 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						OmegaPluginLauncherDialog.this
-						.handleShowAlgoDetails(id);
+						        .handleShowAlgoDetails(id);
 					}
 				});
 			}
 			final JButton pluginLauncher_btt = this.pluginLauncherbuttons
-					.get(id);
+			        .get(id);
 			pluginLauncher_btt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent evt) {
 					final RootPaneContainer parentContainer = OmegaPluginLauncherDialog.this
-							.getParentContainer();
+					        .getParentContainer();
 					if (parentContainer instanceof JFrame) {
 						final JFrame frame = (JFrame) parentContainer;
 						frame.firePropertyChange(
-								OmegaGUIConstants.EVENT_PROPERTY_PLUGIN, -1, id);
+						        OmegaGUIConstants.EVENT_PROPERTY_PLUGIN, -1, id);
 					} else {
 						final JInternalFrame intFrame = (JInternalFrame) parentContainer;
 						intFrame.firePropertyChange(
-								OmegaGUIConstants.EVENT_PROPERTY_PLUGIN, -1, id);
+						        OmegaGUIConstants.EVENT_PROPERTY_PLUGIN, -1, id);
 					}
 					OmegaPluginLauncherDialog.this.setVisible(false);
 				}
@@ -193,8 +193,9 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 
 	private void handleShowAlgoDetails(final Long id) {
 		final OmegaPlugin plugin = this.plugins.get(id);
-		this.algoInfoDialog.updateAlgorithmInformation(((OmegaAlgorithmPlugin) plugin)
-		        .getAlgorithmInformation());
+		this.algoInfoDialog
+		        .updateAlgorithmInformation(((OmegaAlgorithmPlugin) plugin)
+		                .getAlgorithmInformation());
 		this.algoInfoDialog.setVisible(true);
 	}
 
@@ -208,13 +209,13 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 		for (final JButton butt : this.buttons) {
 			final String s = butt.getText();
 			final String name = OmegaStringUtilities.getHtmlString(s, " ",
-			        SwingConstants.CENTER);
+					SwingConstants.CENTER);
 			butt.setText(name);
 		}
 		for (final JLabel lbl : this.descriptions) {
 			final String s = lbl.getText();
 			final String desc = OmegaStringUtilities.getHtmlString(s, " ",
-			        SwingConstants.LEADING);
+					SwingConstants.LEADING);
 			lbl.setText(desc);
 		}
 	}

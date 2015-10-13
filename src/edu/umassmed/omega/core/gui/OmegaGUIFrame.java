@@ -52,24 +52,24 @@ import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.core.OmegaApplication;
-import edu.umassmed.omega.data.OmegaLoadedData;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaDBServerInformation;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaGUIFrame extends JFrame {
 
@@ -191,7 +191,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.omegaDbOptionsMItem = new JMenuItem(
 				OmegaGUIConstants.MENU_EDIT_DB_PREF);
 		this.omegaDbUpdateTrajectoriesMItem = new JMenuItem(
-		        "Update trajectories");
+		        "Update Trajectories");
 		this.editMenu.add(this.omegaDbOptionsMItem);
 		this.editMenu.add(this.omegaDbUpdateTrajectoriesMItem);
 

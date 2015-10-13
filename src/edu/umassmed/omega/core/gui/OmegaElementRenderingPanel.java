@@ -2,11 +2,11 @@ package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,13 +19,13 @@ import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.gui.GenericScrollPane;
 import edu.umassmed.omega.commons.gui.GenericSpinner;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 
-public class OmegaElementRenderingPanel extends GenericPanel {
+public class OmegaElementRenderingPanel extends GenericScrollPane {
 
 	private static final long serialVersionUID = 9110497839969472234L;
 
@@ -34,7 +34,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	private static final float COMPRESSION = 0.5f;
 
 	private JPanel sizesPanel, optionsPanel, channelsPanel, tLabelsPanel,
-	zLabelsPanel;
+	zLabelsPanel, renderingPanel;
 	private JSpinner zControl_spi, tControl_spi;
 	private JSlider zControl_sli, tControl_sli;
 	private JLabel zControlSize_lbl, tControlSize_lbl,
@@ -64,14 +64,19 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 
 		this.isHandlingEvent = false;
 
-		this.setLayout(new FlowLayout());
-
 		this.createAndAddWidgets();
 
 		this.addListeners();
 	}
 
 	private void createAndAddWidgets() {
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+
+		this.renderingPanel = new JPanel();
+		this.renderingPanel.setLayout(new BoxLayout(this.renderingPanel,
+				BoxLayout.Y_AXIS));
+
 		// sliders panel
 		this.sizesPanel = new JPanel();
 		this.sizesPanel.setLayout(new GridLayout(2, 1));
@@ -138,7 +143,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		this.sizesPanel.add(zPanel);
 		this.sizesPanel.add(tPanel);
 
-		this.add(this.sizesPanel);
+		this.renderingPanel.add(this.sizesPanel);
 
 		// compressed panel
 		this.optionsPanel = new JPanel();
@@ -152,13 +157,18 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		this.compressed.setEnabled(false);
 
 		this.optionsPanel.add(this.compressed);
-		this.add(this.optionsPanel);
+		this.renderingPanel.add(this.optionsPanel);
 
 		// channels panel
 		this.channelsPanel = new JPanel();
 		this.channelsPanel.setLayout(new GridLayout(1, 1));
 
-		this.add(this.channelsPanel);
+		this.renderingPanel.add(this.channelsPanel);
+
+		mainPanel.add(this.renderingPanel, BorderLayout.NORTH);
+		mainPanel.add(new JLabel(), BorderLayout.CENTER);
+
+		this.setViewportView(mainPanel);
 	}
 
 	private void addListeners() {
@@ -182,7 +192,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 	 * Builds the channel component.
 	 */
 	private void createChannelsPane(final int n) {
-		this.remove(this.channelsPanel);
+		this.renderingPanel.remove(this.channelsPanel);
 		this.channelsPanel.removeAll();
 		// this.channelsPanel.revalidate();
 		// this.channelsPanel.repaint();
@@ -214,7 +224,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
 
-		this.add(this.channelsPanel);
+		this.renderingPanel.add(this.channelsPanel);
 	}
 
 	private ChangeListener getSliderListener() {
@@ -348,9 +358,9 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 		// get the physicalSizeZ and the physicalSizeT of the image in order to
 		// display them in the sliders cache the double values, so when the user
 		// moves the slider only the strings are re-calculated
-		this.physicalSizeX = pixels.getPixelSizeX();
-		this.physicalSizeY = pixels.getPixelSizeY();
-		this.physicalSizeZ = pixels.getPixelSizeZ();
+		this.physicalSizeX = pixels.getPhysicalSizeX();
+		this.physicalSizeY = pixels.getPhysicalSizeY();
+		this.physicalSizeZ = pixels.getPhysicalSizeZ();
 		this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
 				this.currentMaximumTValue);
 
@@ -455,6 +465,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 			this.addRenderingControl();
 			// this.addOverlayControl();
 		}
+		this.resizePanel(this.getWidth(), this.getHeight());
 	}
 
 	private String[] createSizesStrings(final int z, final int t) {
@@ -521,5 +532,7 @@ public class OmegaElementRenderingPanel extends GenericPanel {
 				this.channelsPanel.getHeight());
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
+		this.revalidate();
+		this.repaint();
 	}
 }

@@ -42,13 +42,13 @@ import mosaic.core.particleLinking.ParticleLinker;
 import mosaic.core.particleLinking.ParticleLinkerBestOnePerm;
 import mosaic.core.particleLinking.ParticleLinkerHun;
 import mosaic.core.particleLinking.linkerOptions;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 
 public class PLRunner implements PLRunnable {
@@ -110,16 +110,21 @@ public class PLRunner implements PLRunnable {
 
 		if (this.isDebugMode) {
 			this.debugModeRun();
+			this.isJobCompleted = true;
 		} else {
-			this.normalModeRun();
+			try {
+				this.normalModeRun();
+				this.isJobCompleted = true;
+			} catch (final Exception e) {
+				e.printStackTrace();
+				this.isJobCompleted = false;
+			}
 		}
-
-		this.isJobCompleted = true;
 
 		this.updateStatusAsync(PLRunner.RUNNER + " ended.", true);
 	}
 
-	private void normalModeRun() {
+	private void normalModeRun() throws Exception {
 		for (final OmegaParticleDetectionRun spotDetRun : this.particlesToProcess
 				.keySet()) {
 			final List<OmegaParameter> parameters = this.particlesToProcess
@@ -166,6 +171,9 @@ public class PLRunner implements PLRunnable {
 					optimizer = param.getStringValue();
 				}
 			}
+
+			this.updateStatusSync(PLRunner.RUNNER
+					+ " rebuilding MOSAIC structures.", false);
 
 			final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
 			final MyFrame[] mosaicFrames = new MyFrame[sizeT];
@@ -230,14 +238,24 @@ public class PLRunner implements PLRunnable {
 			options.l_s = 1f;
 			options.l_f = objectFeature;
 			options.l_d = dynamics;
+
+			this.updateStatusSync(
+					PLRunner.RUNNER + " launching MOSAIC linker.", false);
+
 			linker.linkParticles(mosaicFrames, sizeT, options);
+
+			this.updateStatusSync(
+					PLRunner.RUNNER + " generating trajectories.", false);
 
 			final List<List<Particle>> mosaicTracks = this
 					.generateTrajectories(mosaicFrames, sizeT, linkrange);
 			final List<OmegaTrajectory> tracks = new ArrayList<OmegaTrajectory>();
+			int counter = 0;
 			for (final List<Particle> mosaicTrack : mosaicTracks) {
 				final OmegaTrajectory track = new OmegaTrajectory(
 						mosaicTrack.size());
+				track.setName(track.getName() + "_" + counter);
+				counter++;
 				for (final Particle p : mosaicTrack) {
 					final OmegaROI particle = particlesMap.get(p);
 					track.addROI(particle);
@@ -249,69 +267,63 @@ public class PLRunner implements PLRunnable {
 	}
 
 	private List<List<Particle>> generateTrajectories(final MyFrame[] frames,
-	        final int frames_number, final int linkrange) {
+			final int frames_number, final int linkrange) {
 		int i, j, k;
 		int found, n, m;
 		// temporary vector to hold particles for current trajctory
 		final List<List<Particle>> tracks = new ArrayList<List<Particle>>();
 		final List<Particle> curr_track_particles = new ArrayList<Particle>();
 		for (i = 0; i < frames_number; i++) {
-			final Vector<Particle> particles = frames[i].getParticles();
-			for (j = 0; j < particles.size(); j++) {
-				if (!particles.get(j).special) {
-					particles.get(j).special = true;
+			for (j = 0; j < frames[i].getParticles().size(); j++) {
+				if (!frames[i].getParticles().elementAt(j).special) {
+					frames[i].getParticles().elementAt(j).special = true;
 					found = -1;
 					// go over all particles that this particle (particles[j])
 					// is linked to
 					for (n = 0; n < linkrange; n++) {
 						// if it is NOT a dummy particle - stop looking
-						if (particles.get(j).next[n] != -1) {
+						if (frames[i].getParticles().elementAt(j).next[n] != -1) {
 							found = n;
 							break;
 						}
 					}
-					// if this particle is not linked to any other
-					// go to next particle and dont add a trajectory
+					// if this particle is not linked to any other go to next
+					// particle and dont add a trajectory
 					if (found == -1) {
 						continue;
 					}
+
 					// Added by Guy Levy, 18.08.06 - A change form original
-					// implementation
-					// if this particle is linkd to a "real" paritcle that was
-					// already linked
-					// break the trajectory and start again from the next
-					// particle. dont add a trajectory
-					final Vector<Particle> particles2 = frames[i + n + 1]
-					        .getParticles();
-					if (particles2.get(particles.get(j).next[n]).special) {
+					// implementation if this particle is linkd to a "real"
+					// paritcle that was already linked break the trajectory and
+					// start again from the next particle. dont add a trajectory
+					if (frames[i + n + 1].getParticles().elementAt(
+							frames[i].getParticles().elementAt(j).next[n]).special) {
 						continue;
 					}
-					// this particle is linked to another "real" particle that
-					// is not already linked so we have a trajectory
-					curr_track_particles.add(particles.get(j));
+
+					curr_track_particles.add(frames[i].getParticles()
+							.elementAt(j));
 					k = i;
 					m = j;
-					final Vector<Particle> particles3 = frames[k]
-					        .getParticles();
 					do {
 						found = -1;
 						for (n = 0; n < linkrange; n++) {
-							if (particles3.get(m).next[n] != -1) {
+							if (frames[k].getParticles().elementAt(m).next[n] != -1) {
 								// If this particle is linked to a "real"
-								// particle that
-								// that is NOT already linked, continue with
-								// building the trajectory
-								final Vector<Particle> particles4 = frames[k
-								        + n + 1].getParticles();
-								if (particles4.get(particles3.get(m).next[n]).special == false) {
+								// particle that that is NOT already linked,
+								// continue with building the trajectory
+								if (frames[k + n + 1].getParticles()
+										.elementAt(
+												frames[k].getParticles()
+												.elementAt(m).next[n]).special == false) {
 									found = n;
 									break;
 									// Added by Guy Levy, 18.08.06 - A change
-									// form original implementation
-									// If this particle is linked to a "real"
-									// particle that
-									// that is already linked, stop building the
-									// trajectory
+									// form original implementation If this
+									// particle is linked to a "real" particle
+									// that that is already linked, stop
+									// building the trajectory
 								} else {
 									break;
 								}
@@ -320,13 +332,17 @@ public class PLRunner implements PLRunnable {
 						if (found == -1) {
 							break;
 						}
-						m = particles3.get(m).next[found];
+						m = frames[k].getParticles().elementAt(m).next[found];
 						k += (found + 1);
-						curr_track_particles.add(particles3.get(m));
-						particles3.get(m).special = true;
+						curr_track_particles.add(frames[k].getParticles()
+								.elementAt(m));
+						if ((k == 90) && (m == 6)) {
+						}
+						frames[k].getParticles().elementAt(m).special = true;
 					} while (m != -1);
-					tracks.add(curr_track_particles);
-					curr_track_particles.removeAll(curr_track_particles);
+
+					tracks.add(new ArrayList<Particle>(curr_track_particles));
+					curr_track_particles.clear();
 				}
 			}
 		}

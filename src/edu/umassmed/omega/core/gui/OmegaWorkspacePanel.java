@@ -76,7 +76,7 @@ GenericPanelInterface {
 
 	private boolean isAttached;
 
-	private final boolean hasAttachedFrame;
+	private boolean hasAttachedFrame;
 
 	private JMenuBar menu;
 	private JMenu workspaceMenu;
@@ -518,6 +518,10 @@ GenericPanelInterface {
 		this.internalFrames.remove(index);
 		intFrame.dispose();
 
+		if (this.internalFrames.size() == 0) {
+			this.hasAttachedFrame = false;
+		}
+
 		content.setIsAttached(false);
 
 		if (!this.isAttached && this.internalFrames.isEmpty()) {
@@ -540,6 +544,8 @@ GenericPanelInterface {
 		this.frames.remove(index);
 		frame.dispose();
 		content.setIsAttached(true);
+
+		this.hasAttachedFrame = true;
 
 		if (!this.isAttached && !this.internalFrames.isEmpty()) {
 			final JFrame workspaceFrame = (JFrame) this.parent;

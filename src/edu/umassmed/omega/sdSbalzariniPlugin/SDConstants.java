@@ -52,11 +52,12 @@ public class SDConstants {
 	public static final String PREVIEW_BUTTON = "Show Preview";
 	public static final String EXECUTE_BUTTON = "Execute Queue";
 
-	public static final String PLUGIN_NAME = "Mosaic 2D Particle Detector";
+	public static final String PLUGIN_NAME = "MOSAIC 2D Particle Detector";
+	public static final String PLUGIN_SNAME = "MOSAIC 2D PD";
 	public static final String PLUGIN_AUTHOR_FIRSTNAME = "Ivo";
 	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
-	public static final String PLUGIN_DESC = "TO BE DEFINED";
-	public static final String PLUGIN_ALGO_DESC = "TO BE DEFINED";
+	public static final String PLUGIN_DESC = "To be defined";
+	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 	.getTime();
 }

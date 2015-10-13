@@ -40,20 +40,19 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
-
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 
 public class SDLoadedDataBrowserPanel extends GenericPanel {
@@ -115,7 +114,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 				SDLoadedDataBrowserPanel.this.handleMouseClick(event.getPoint());
 			}
 		});
-		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
+		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent event) {
 				final TreePath parent = event.getTreePath();
@@ -125,15 +124,30 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 				SDLoadedDataBrowserPanel.this.handleTreeNodeChanged(parent,
 						children, model);
 			}
+
+			@Override
+			public void treeNodesInserted(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeNodesRemoved(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void treeStructureChanged(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
 		});
 	}
 
 	private void handleMouseClick(final Point clickP) {
-		final TreePath path = SDLoadedDataBrowserPanel.this.dataTree
-				.getPathForLocation(clickP.x, clickP.y);
+		final TreePath path = this.dataTree.getPathForLocation(clickP.x,
+				clickP.y);
 		if (path == null) {
-			SDLoadedDataBrowserPanel.this.sptPanel.updateSelectedImage(null);
-			SDLoadedDataBrowserPanel.this.deselect();
+			this.sptPanel.updateSelectedImage(null);
+			this.deselect();
 			return;
 		}
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
@@ -142,26 +156,23 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 		final OmegaElement element = SDLoadedDataBrowserPanel.this.nodeMap
 				.get(s);
 		if (element instanceof OmegaImage) {
-			SDLoadedDataBrowserPanel.this.sptPanel
-			.updateSelectedImage((OmegaImage) element);
+			this.sptPanel.updateSelectedImage((OmegaImage) element);
 		} else if (element instanceof OmegaAnalysisRun) {
 			final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
 					.getParent();
 			final String parentString = parentNode.toString();
-			final OmegaElement parentElement = SDLoadedDataBrowserPanel.this.nodeMap
-					.get(parentString);
-			SDLoadedDataBrowserPanel.this.sptPanel
-			.updateSelectedImage((OmegaImage) parentElement);
-			SDLoadedDataBrowserPanel.this.sptPanel
+			final OmegaElement parentElement = this.nodeMap.get(parentString);
+			this.sptPanel.updateSelectedImage((OmegaImage) parentElement);
+			this.sptPanel
 			.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
 		}
 	}
 
 	private void handleTreeNodeChanged(final TreePath parent,
 			final Object[] children, final DefaultTreeModel model) {
-		if (SDLoadedDataBrowserPanel.this.adjusting)
+		if (this.adjusting)
 			return;
-		SDLoadedDataBrowserPanel.this.adjusting = true;
+		this.adjusting = true;
 
 		DefaultMutableTreeNode node;
 		CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
@@ -179,7 +190,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 
 		model.nodeChanged(node);
 
-		SDLoadedDataBrowserPanel.this.adjusting = false;
+		this.adjusting = false;
 
 		c.getStatus();
 		// TODO update something here

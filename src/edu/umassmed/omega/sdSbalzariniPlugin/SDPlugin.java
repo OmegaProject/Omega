@@ -31,12 +31,12 @@ import java.util.Date;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sdSbalzariniPlugin.gui.SDPluginPanel;
 
 public class SDPlugin extends OmegaParticleTrackingPlugin implements
@@ -74,6 +74,11 @@ OmegaDataDisplayerPluginInterface {
 	@Override
 	public String getName() {
 		return SDConstants.PLUGIN_NAME;
+	}
+
+	@Override
+	public String getShortName() {
+		return SDConstants.PLUGIN_SNAME;
 	}
 
 	@Override

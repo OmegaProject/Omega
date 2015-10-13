@@ -40,13 +40,13 @@ import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericComboBox;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
@@ -58,8 +58,8 @@ public class PLRunPanel extends GenericPanel {
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
 
 	private GenericTextFieldValidable displacement_txtField,
-	linkrange_txtField, objectFeature_txtField, minPoints_txtField,
-	        dynamics_txtField;
+	        linkrange_txtField, objectFeature_txtField, minPoints_txtField,
+	dynamics_txtField;
 
 	private GenericAnalysisInformationPanel infoPanel;
 	private GenericComboBox<String> dynamics_combo, optimizer_combo;
@@ -78,9 +78,9 @@ public class PLRunPanel extends GenericPanel {
 
 	private void createAndAddWidgets() {
 		this.infoPanel = new GenericAnalysisInformationPanel(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.infoPanel.setBorder(new TitledBorder(
-		        OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
+				OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
 		this.add(this.infoPanel);
 
 		final JPanel additionalParamPanel = this.createAdditionalParamPanel();
@@ -102,41 +102,41 @@ public class PLRunPanel extends GenericPanel {
 		// Linking panel
 		final JPanel paramLinkingPanel = new JPanel();
 		paramLinkingPanel.setLayout(new GridLayout(3, 1));
-		// Displacement
-		final JPanel displacementPanel = new JPanel();
-		displacementPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel displacement_lbl = new JLabel(
-				SPTConstants.PARAM_DISPLACEMENT + ":");
-		displacement_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
-		displacementPanel.add(displacement_lbl);
-		this.displacement_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
-		this.displacement_txtField
-		.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
-		displacementPanel.add(this.displacement_txtField);
-		paramLinkingPanel.add(displacementPanel);
 
 		// Linkrange
 		final JPanel linkrangePanel = new JPanel();
 		linkrangePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel linkrange_lbl = new JLabel(PLConstants.PARAM_LINKRANGE
-				+ ":");
+		        + ":");
 		linkrange_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		linkrangePanel.add(linkrange_lbl);
 		this.linkrange_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.linkrange_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		linkrangePanel.add(this.linkrange_txtField);
 		paramLinkingPanel.add(linkrangePanel);
 
+		// Displacement
+		final JPanel displacementPanel = new JPanel();
+		displacementPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		final JLabel displacement_lbl = new JLabel(
+		        SPTConstants.PARAM_DISPLACEMENT + ":");
+		displacement_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
+		displacementPanel.add(displacement_lbl);
+		this.displacement_txtField = new GenericTextFieldValidable(
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
+		this.displacement_txtField
+		        .setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
+		displacementPanel.add(this.displacement_txtField);
+		paramLinkingPanel.add(displacementPanel);
+
 		final JPanel dynamicsPanel = new JPanel();
 		dynamicsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel dynamics_lbl = new JLabel(PLConstants.PARAM_DISPLACEMENT
-				+ ":");
+		final JLabel dynamics_lbl = new JLabel(PLConstants.PARAM_MOVTYPE + ":");
 		dynamics_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		dynamicsPanel.add(dynamics_lbl);
 		this.dynamics_combo = new GenericComboBox<String>(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.dynamics_combo.addItem(PLConstants.PARAM_MOVTYPE_BROWNIAN);
 		this.dynamics_combo.addItem(PLConstants.PARAM_MOVTYPE_STRAIGHT);
 		this.dynamics_combo.addItem(PLConstants.PARAM_MOVTYPE_COSVEL);
@@ -161,13 +161,13 @@ public class PLRunPanel extends GenericPanel {
 		final JPanel objectFeaturePanel = new JPanel();
 		objectFeaturePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel objectFeature_lbl = new JLabel(
-				PLConstants.PARAM_OBJFEATURE + ":");
+		        PLConstants.PARAM_OBJFEATURE + ":");
 		objectFeature_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		objectFeaturePanel.add(objectFeature_lbl);
 		this.objectFeature_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_FLOAT);
+		        GenericTextFieldValidable.CONTENT_FLOAT);
 		this.objectFeature_txtField
-		.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
+		        .setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		objectFeaturePanel.add(this.objectFeature_txtField);
 		parametersPanel.add(objectFeaturePanel);
 
@@ -177,7 +177,7 @@ public class PLRunPanel extends GenericPanel {
 		radius_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		displacementPanel.add(radius_lbl);
 		this.dynamics_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_FLOAT);
+		        GenericTextFieldValidable.CONTENT_FLOAT);
 		this.dynamics_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		displacementPanel.add(this.dynamics_txtField);
 		parametersPanel.add(displacementPanel);
@@ -185,11 +185,11 @@ public class PLRunPanel extends GenericPanel {
 		final JPanel optimizerPanel = new JPanel();
 		optimizerPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel optimizer_lbl = new JLabel(PLConstants.PARAM_OPTIMIZER
-				+ ":");
+		        + ":");
 		optimizer_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		optimizerPanel.add(optimizer_lbl);
 		this.optimizer_combo = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.optimizer_combo.addItem(PLConstants.PARAM_OPTIMIZER_GREEDY);
 		this.optimizer_combo.addItem(PLConstants.PARAM_OPTIMIZER_HUNGARIAN);
 		this.optimizer_combo.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
@@ -214,11 +214,11 @@ public class PLRunPanel extends GenericPanel {
 		final JPanel minPointsPanel = new JPanel();
 		minPointsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel minPointsLbl = new JLabel(PLConstants.PARAM_MINPOINTS
-				+ ":");
+		        + ":");
 		minPointsLbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		minPointsPanel.add(minPointsLbl);
 		this.minPoints_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.minPoints_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		minPointsPanel.add(this.minPoints_txtField);
 		additionaParamPanel.add(minPointsPanel);
@@ -231,10 +231,10 @@ public class PLRunPanel extends GenericPanel {
 
 	public boolean areParametersValidated() {
 		return this.displacement_txtField.isContentValidated()
-		        && this.linkrange_txtField.isContentValidated()
-		        && this.objectFeature_txtField.isContentValidated()
-		        && this.dynamics_txtField.isContentValidated()
-		        && this.minPoints_txtField.isContentValidated();
+				&& this.linkrange_txtField.isContentValidated()
+				&& this.objectFeature_txtField.isContentValidated()
+				&& this.dynamics_txtField.isContentValidated()
+				&& this.minPoints_txtField.isContentValidated();
 	}
 
 	public String[] getParametersError() {
@@ -244,23 +244,23 @@ public class PLRunPanel extends GenericPanel {
 		}
 		if (!this.displacement_txtField.isContentValidated()) {
 			errors[0] = PLConstants.PARAM_DISPLACEMENT + ": "
-			        + this.displacement_txtField.getError();
+					+ this.displacement_txtField.getError();
 		}
 		if (!this.linkrange_txtField.isContentValidated()) {
 			errors[1] = PLConstants.PARAM_LINKRANGE + ": "
-			        + this.linkrange_txtField.getError();
+					+ this.linkrange_txtField.getError();
 		}
 		if (!this.objectFeature_txtField.isContentValidated()) {
 			errors[2] = PLConstants.PARAM_LINKRANGE + ": "
-			        + this.linkrange_txtField.getError();
+					+ this.linkrange_txtField.getError();
 		}
 		if (!this.dynamics_txtField.isContentValidated()) {
 			errors[3] = PLConstants.PARAM_LINKRANGE + ": "
-			        + this.linkrange_txtField.getError();
+					+ this.linkrange_txtField.getError();
 		}
 		if (!this.minPoints_txtField.isContentValidated()) {
 			errors[4] = SPTConstants.PARAM_MINPOINTS + ": "
-					+ this.minPoints_txtField.getError();
+			        + this.minPoints_txtField.getError();
 		}
 
 		return errors;
@@ -297,6 +297,12 @@ public class PLRunPanel extends GenericPanel {
 	public void updateRunFieldsDefault() {
 		this.displacement_txtField.setText("10");
 		this.linkrange_txtField.setText("5");
+		this.dynamics_combo.setSelectedItem(PLConstants.PARAM_MOVTYPE_BROWNIAN);
+		this.minPoints_txtField.setText("25");
+		this.objectFeature_txtField.setText("1");
+		this.dynamics_txtField.setText("1");
+		this.optimizer_combo
+		.setSelectedItem(PLConstants.PARAM_OPTIMIZER_GREEDY);
 	}
 
 	public void setGateway(final OmegaGateway gateway) {
@@ -308,26 +314,26 @@ public class PLRunPanel extends GenericPanel {
 			return null;
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		final float displacement = Float.valueOf(this.displacement_txtField
-		        .getText());
+				.getText());
 		params.add(new OmegaParameter(PLConstants.PARAM_DISPLACEMENT,
-		        displacement));
+				displacement));
 		final int linkrange = Integer
-		        .valueOf(this.linkrange_txtField.getText());
+				.valueOf(this.linkrange_txtField.getText());
 		params.add(new OmegaParameter(PLConstants.PARAM_LINKRANGE, linkrange));
 		final String movType = (String) this.dynamics_combo.getSelectedItem();
 		params.add(new OmegaParameter(PLConstants.PARAM_MOVTYPE, movType));
 
 		final float objectFeature = Float.valueOf(this.objectFeature_txtField
-		        .getText());
+				.getText());
 		params.add(new OmegaParameter(PLConstants.PARAM_OBJFEATURE,
-		        objectFeature));
+				objectFeature));
 		final float dynamics = Float.valueOf(this.dynamics_txtField.getText());
 		params.add(new OmegaParameter(PLConstants.PARAM_DYNAMICS, dynamics));
 		final String optimizer = (String) this.optimizer_combo
-		        .getSelectedItem();
+				.getSelectedItem();
 		params.add(new OmegaParameter(PLConstants.PARAM_OPTIMIZER, optimizer));
 		final int minPoints = Integer
-				.valueOf(this.minPoints_txtField.getText());
+		        .valueOf(this.minPoints_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_MINPOINTS, minPoints));
 		return params;
 	}
@@ -340,5 +346,11 @@ public class PLRunPanel extends GenericPanel {
 		this.dynamics_txtField.setEnabled(enabled);
 		this.optimizer_combo.setEnabled(enabled);
 		this.minPoints_txtField.setEnabled(enabled);
+	}
+
+	@Override
+	public void updateParentContainer(final RootPaneContainer parent) {
+		super.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
 	}
 }

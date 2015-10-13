@@ -16,17 +16,17 @@ import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.GenericComboBox;
 import edu.umassmed.omega.commons.gui.GenericScrollPane;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaElementOverlaysPanel extends GenericScrollPane {
 
@@ -35,7 +35,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	private final OmegaSidePanel sidePanel;
 
 	private final Map<OmegaAnalysisRun, List<OmegaAnalysisRun>> particleLinkingMap,
-	trajectoriesRelinkingMap, trajectoriesSegmentationMap;
+	        trajectoriesRelinkingMap, trajectoriesSegmentationMap;
 
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	private OmegaParticleLinkingRun selectedParticleLinkingRun;
@@ -47,12 +47,12 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	private boolean particlesOverlay, isPopulatingOverlay, isHandlingEvent;
 	// Overlay panel element
 	private JCheckBox trajOnlyStartingAtT_chk, trajOnlyUpToT_chk,
-	        trajOnlyActive_chk;
+	trajOnlyActive_chk;
 	private GenericComboBox<String> overlayKind_cmb, overlayPD_cmb,
-	overlayPL_cmb, overlayTR_cmb, overlayTS_cmb;
+	        overlayPL_cmb, overlayTR_cmb, overlayTS_cmb;
 
 	public OmegaElementOverlaysPanel(final RootPaneContainer parent,
-			final OmegaSidePanel sidePanel) {
+	        final OmegaSidePanel sidePanel) {
 		super(parent);
 
 		this.sidePanel = sidePanel;
@@ -85,37 +85,37 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		mainPanel.setLayout(new GridLayout(13, 1));
 
 		this.trajOnlyStartingAtT_chk = new JCheckBox(
-		        OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWATT);
+				OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWATT);
 		this.trajOnlyStartingAtT_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.trajOnlyStartingAtT_chk.setSize(OmegaConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyStartingAtT_chk);
 
 		this.trajOnlyUpToT_chk = new JCheckBox(
-		        OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWUPT);
+				OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWUPT);
 		this.trajOnlyUpToT_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.trajOnlyUpToT_chk.setSize(OmegaConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyUpToT_chk);
 
 		this.trajOnlyActive_chk = new JCheckBox(
-		        OmegaGUIConstants.SIDEPANEL_TRACKS_ACTIVEONLY);
+				OmegaGUIConstants.SIDEPANEL_TRACKS_ACTIVEONLY);
 		this.trajOnlyActive_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.trajOnlyActive_chk.setSize(OmegaConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyActive_chk);
 
 		final JLabel lbl1 = new JLabel(
-		        OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY);
+				OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY);
 		mainPanel.add(lbl1);
 		this.overlayKind_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.overlayKind_cmb.addItem(OmegaGUIConstants.NONE);
 		this.overlayKind_cmb
-		        .addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_PARTICLES);
+		.addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_PARTICLES);
 		this.overlayKind_cmb
-		        .addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_TRACKS);
+		.addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_TRACKS);
 		this.overlayKind_cmb
-		        .addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_ADJ);
+		.addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_ADJ);
 		this.overlayKind_cmb
-		        .addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_SEGM);
+		.addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_SEGM);
 		this.overlayKind_cmb.setSelectedIndex(0);
 		this.overlayKind_cmb.setEnabled(false);
 		this.overlayKind_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
@@ -125,17 +125,16 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final JLabel lbl2 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_SPOT);
 		mainPanel.add(lbl2);
 		this.overlayPD_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.overlayPD_cmb.setEnabled(false);
 		this.overlayPD_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.overlayPD_cmb.setSize(OmegaConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayPD_cmb);
 
-		final JLabel lbl3 = new JLabel(
-		        OmegaGUIConstants.SELECT_TRACKS_LINKING);
+		final JLabel lbl3 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_LINKING);
 		mainPanel.add(lbl3);
 		this.overlayPL_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.overlayPL_cmb.setEnabled(false);
 		this.overlayPL_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.overlayPL_cmb.setSize(OmegaConstants.TEXT_SIZE);
@@ -144,7 +143,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final JLabel lbl4 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_ADJ);
 		mainPanel.add(lbl4);
 		this.overlayTR_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.overlayTR_cmb.setEnabled(false);
 		this.overlayTR_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.overlayTR_cmb.setSize(OmegaConstants.TEXT_SIZE);
@@ -153,7 +152,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final JLabel lbl5 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_SEGM);
 		mainPanel.add(lbl5);
 		this.overlayTS_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.overlayTS_cmb.setEnabled(false);
 		this.overlayTS_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		this.overlayTS_cmb.setSize(OmegaConstants.TEXT_SIZE);
@@ -167,7 +166,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmegaElementOverlaysPanel.this
-				        .handleTrajOnlyStartingAtTSelection();
+				.handleTrajOnlyStartingAtTSelection();
 			}
 		});
 		this.trajOnlyUpToT_chk.addActionListener(new ActionListener() {
@@ -217,34 +216,38 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 
 	private void handleTrajOnlyActiveSelection() {
 		this.sidePanel.setShowTrajectoriesOnlyActive(this.trajOnlyActive_chk
-				.isSelected());
+		        .isSelected());
 	}
 
 	private void handleTrajOnlyUpToTSelection() {
 		this.sidePanel.setShowTrajectoriesOnlyUpToT(this.trajOnlyUpToT_chk
-				.isSelected());
+		        .isSelected());
 	}
 
 	private void handleTrajOnlyStartingAtTSelection() {
 		this.sidePanel
-		        .setShowTrajectoriesOnlyStartingAtT(this.trajOnlyStartingAtT_chk
-		                .isSelected());
+		.setShowTrajectoriesOnlyStartingAtT(this.trajOnlyStartingAtT_chk
+				.isSelected());
 	}
 
 	private void selectOverlayKind() {
 		if (this.isHandlingEvent)
 			return;
 		final String selected = (String) this.overlayKind_cmb.getSelectedItem();
-		if (selected.equals("Spots")) {
+		if (selected
+				.equals(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_PARTICLES)) {
 			this.activateParticlesOverlay();
-		} else if (selected.equals("Tracks")) {
+		} else if (selected
+				.equals(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_TRACKS)) {
 			// this.activateParticlesOverlay();
 			this.activateTrajectoriesOverlay();
-		} else if (selected.equals("Tracks relinking")) {
+		} else if (selected
+				.equals(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_ADJ)) {
 			// this.activateParticlesOverlay();
 			// this.activateTrajectoriesOverlay();
 			this.activateTrajectoriesRelinkingOverlay();
-		} else if (selected.equals("Tracks segmentation")) {
+		} else if (selected
+				.equals(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_SEGM)) {
 			// this.activateParticlesOverlay();
 			// this.activateTrajectoriesOverlay();
 			this.activateTrajectoriesSegmentationOverlay();
@@ -261,19 +264,19 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final List<OmegaROI> particles = this.selectParticleDetectionOverlay();
 		this.selectParticleLinkingOverlay();
 		final List<OmegaTrajectory> modifiedTrajectories = this
-				.selectTrajectoriesRelinkingOverlay();
+		        .selectTrajectoriesRelinkingOverlay();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = this
-				.selectTrajectoriesSegmentationOverlay();
+		        .selectTrajectoriesSegmentationOverlay();
 		this.sidePanel.setParticles(particles);
 		this.sidePanel.setTrajectories(modifiedTrajectories);
 		this.sidePanel.setSegments(segmentsMap);
 		if (!this.isHandlingEvent) {
 			if (this.selectedTrajectoriesSegmentationRun == null) {
 				this.sidePanel
-				.sendCoreEventSelectionCurrentTrajectoriesSegmentationRun();
+				        .sendCoreEventSelectionCurrentTrajectoriesSegmentationRun();
 			} else {
 				this.sidePanel
-				.sendCoreEventSelectionTrajectoriesSegmentationRun();
+				        .sendCoreEventSelectionTrajectoriesSegmentationRun();
 			}
 		}
 	}
@@ -285,17 +288,18 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final List<OmegaROI> particles = this.selectParticleDetectionOverlay();
 		this.selectParticleLinkingOverlay();
 		final List<OmegaTrajectory> modifiedTrajectories = this
-				.selectTrajectoriesRelinkingOverlay();
-		if (this.overlayKind_cmb.getSelectedItem().equals("Tracks relinking")) {
+		        .selectTrajectoriesRelinkingOverlay();
+		if (this.overlayKind_cmb.getSelectedItem().equals(
+		        OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_ADJ)) {
 			this.sidePanel.setParticles(particles);
 			this.sidePanel.setTrajectories(modifiedTrajectories);
 			if (!this.isHandlingEvent) {
 				if (this.selectedTrajectoriesRelinkingRun == null) {
 					this.sidePanel
-					.sendCoreEventSelectionCurrentTrajectoriesRelinkingRun();
+					        .sendCoreEventSelectionCurrentTrajectoriesRelinkingRun();
 				} else {
 					this.sidePanel
-					.sendCoreEventSelectionTrajectoriesRelinkingRun();
+					        .sendCoreEventSelectionTrajectoriesRelinkingRun();
 				}
 			}
 		} else {
@@ -309,8 +313,9 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.resetCurrentSelection();
 		final List<OmegaROI> particles = this.selectParticleDetectionOverlay();
 		final List<OmegaTrajectory> trajectories = this
-				.selectParticleLinkingOverlay();
-		if (this.overlayKind_cmb.getSelectedItem().equals("Tracks")) {
+		        .selectParticleLinkingOverlay();
+		if (this.overlayKind_cmb.getSelectedItem().equals(
+		        OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_TRACKS)) {
 			this.sidePanel.setParticles(particles);
 			this.sidePanel.setTrajectories(trajectories);
 			if (!this.isHandlingEvent) {
@@ -326,7 +331,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			return;
 		this.resetCurrentSelection();
 		final List<OmegaROI> particles = this.selectParticleDetectionOverlay();
-		if (this.overlayKind_cmb.getSelectedItem().equals("Spots")) {
+		if (this.overlayKind_cmb.getSelectedItem().equals(
+		        OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_PARTICLES)) {
 			this.sidePanel.setParticles(particles);
 			if (!this.isHandlingEvent) {
 				this.sidePanel.sendCoreEventSelectionParticleDetectionRun();
@@ -343,12 +349,12 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayTS_cmb.removeAllItems();
 		if (this.selectedTrajectoriesRelinkingRun != null) {
 			final List<OmegaAnalysisRun> trajSegmentationRuns = this.trajectoriesSegmentationMap
-					.get(this.selectedTrajectoriesRelinkingRun);
+			        .get(this.selectedTrajectoriesRelinkingRun);
 			for (final OmegaAnalysisRun trajSegmentationRun : trajSegmentationRuns) {
 				this.overlayTS_cmb.addItem(trajSegmentationRun.getName());
 			}
 			this.overlayTS_cmb
-			.addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+			        .addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		}
 		this.isPopulatingOverlay = false;
 		if (this.overlayTS_cmb.getItemCount() > 0) {
@@ -365,7 +371,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayTR_cmb.removeAllItems();
 		if (this.selectedParticleLinkingRun != null) {
 			final List<OmegaAnalysisRun> trajRelinkingRuns = this.trajectoriesRelinkingMap
-					.get(this.selectedParticleLinkingRun);
+			        .get(this.selectedParticleLinkingRun);
 			for (final OmegaAnalysisRun trajRelinkingRun : trajRelinkingRuns) {
 				this.overlayTR_cmb.addItem(trajRelinkingRun.getName());
 			}
@@ -386,7 +392,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayPL_cmb.removeAllItems();
 		if (this.selectedParticleDetectionRun != null) {
 			final List<OmegaAnalysisRun> particleLinkingRuns = this.particleLinkingMap
-					.get(this.selectedParticleDetectionRun);
+			        .get(this.selectedParticleDetectionRun);
 			for (final OmegaAnalysisRun particleLinkingRun : particleLinkingRuns) {
 				this.overlayPL_cmb.addItem(particleLinkingRun.getName());
 			}
@@ -405,7 +411,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.isPopulatingOverlay = true;
 		this.overlayPD_cmb.removeAllItems();
 		for (final OmegaAnalysisRun particleDetectionRun : this.particleLinkingMap
-				.keySet()) {
+		        .keySet()) {
 			this.overlayPD_cmb.addItem(particleDetectionRun.getName());
 		}
 		this.isPopulatingOverlay = false;
@@ -524,7 +530,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final String s = (String) this.overlayTS_cmb.getSelectedItem();
 		if (this.selectedTrajectoriesRelinkingRun != null) {
 			final List<OmegaAnalysisRun> trajSegmentationRuns = this.trajectoriesSegmentationMap
-					.get(this.selectedTrajectoriesRelinkingRun);
+			        .get(this.selectedTrajectoriesRelinkingRun);
 			for (final OmegaAnalysisRun trajSegmentationRun : trajSegmentationRuns) {
 				if (!trajSegmentationRun.getName().equals(s)) {
 					continue;
@@ -532,7 +538,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 				final OmegaTrajectoriesSegmentationRun trajectoriesSegmentationRun = (OmegaTrajectoriesSegmentationRun) trajSegmentationRun;
 				this.selectedTrajectoriesSegmentationRun = trajectoriesSegmentationRun;
 				segmentsMap = trajectoriesSegmentationRun
-						.getResultingSegments();
+				        .getResultingSegments();
 				return segmentsMap;
 			}
 		}
@@ -547,7 +553,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final String s = (String) this.overlayTR_cmb.getSelectedItem();
 		if (this.selectedParticleLinkingRun != null) {
 			final List<OmegaAnalysisRun> modifiedTrajectoriesRun = this.trajectoriesRelinkingMap
-					.get(this.selectedParticleLinkingRun);
+			        .get(this.selectedParticleLinkingRun);
 			for (final OmegaAnalysisRun trajRelinkingRun : modifiedTrajectoriesRun) {
 				if (!trajRelinkingRun.getName().equals(s)) {
 					continue;
@@ -555,7 +561,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 				final OmegaTrajectoriesRelinkingRun trajectoriesRelinkingRun = (OmegaTrajectoriesRelinkingRun) trajRelinkingRun;
 				this.selectedTrajectoriesRelinkingRun = trajectoriesRelinkingRun;
 				modifiedTrajectories = trajectoriesRelinkingRun
-						.getResultingTrajectories();
+				        .getResultingTrajectories();
 				return modifiedTrajectories;
 			}
 		}
@@ -570,7 +576,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final String s = (String) this.overlayPL_cmb.getSelectedItem();
 		if (this.selectedParticleDetectionRun != null) {
 			final List<OmegaAnalysisRun> trajectoriesRuns = this.particleLinkingMap
-					.get(this.selectedParticleDetectionRun);
+			        .get(this.selectedParticleDetectionRun);
 			for (final OmegaAnalysisRun pLinkingRun : trajectoriesRuns) {
 				if (!pLinkingRun.getName().equals(s)) {
 					continue;
@@ -587,10 +593,10 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 
 	protected List<OmegaROI> getFrameParticlesOverlay(final int t) {
 		for (final OmegaFrame frame : this.selectedParticleDetectionRun
-				.getResultingParticles().keySet()) {
+		        .getResultingParticles().keySet()) {
 			if (frame.getIndex() == t) {
 				final List<OmegaROI> resultingParticles = this.selectedParticleDetectionRun
-						.getResultingParticles().get(frame);
+				        .getResultingParticles().get(frame);
 				return resultingParticles;
 			}
 		}
@@ -603,14 +609,14 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		List<OmegaROI> particles = null;
 		final String s = (String) this.overlayPD_cmb.getSelectedItem();
 		for (final OmegaAnalysisRun pDetectionRun : this.particleLinkingMap
-				.keySet()) {
+		        .keySet()) {
 			if (!pDetectionRun.getName().equals(s)) {
 				continue;
 			}
 			final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) pDetectionRun;
 			this.selectedParticleDetectionRun = particleDetectionRun;
 			particles = this.getFrameParticlesOverlay(this.sidePanel
-					.getCurrentT());
+			        .getCurrentT());
 			if (particles != null)
 				return particles;
 		}
@@ -620,10 +626,16 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void selectParticleDetectionRun(
-			final OmegaParticleDetectionRun analysisRun) {
+	        final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(1);
 		this.activateParticlesOverlay();
+
+		if (analysisRun == null) {
+			this.isHandlingEvent = false;
+			return;
+		}
+
 		for (int i = 0; i < this.overlayPD_cmb.getItemCount(); i++) {
 			final String s = this.overlayPD_cmb.getItemAt(i);
 			if (analysisRun.getName().equals(s)) {
@@ -638,11 +650,17 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void selectParticleLinkingRun(
-			final OmegaParticleLinkingRun analysisRun) {
+	        final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(2);
 		this.activateParticlesOverlay();
 		this.activateTrajectoriesOverlay();
+
+		if (analysisRun == null) {
+			this.isHandlingEvent = false;
+			return;
+		}
+
 		for (int i = 0; i < this.overlayPL_cmb.getItemCount(); i++) {
 			final String s = this.overlayPL_cmb.getItemAt(i);
 			if (analysisRun.getName().equals(s)) {
@@ -657,7 +675,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void selectTrajectoriesRelinkingRun(
-			final OmegaTrajectoriesRelinkingRun analysisRun) {
+	        final OmegaTrajectoriesRelinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(3);
 		this.activateParticlesOverlay();
@@ -685,19 +703,19 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void selectCurrentTrajectoriesRelinkingRun(
-			final List<OmegaTrajectory> trajectories) {
+	        final List<OmegaTrajectory> trajectories) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(3);
 		this.activateParticlesOverlay();
 		this.activateTrajectoriesOverlay();
 		this.activateTrajectoriesRelinkingOverlay();
 		this.overlayTR_cmb
-		.setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		        .setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
 		this.isHandlingEvent = false;
 	}
 
 	public void selectTrajectoriesSegmentationRun(
-			final OmegaTrajectoriesSegmentationRun analysisRun) {
+	        final OmegaTrajectoriesSegmentationRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(4);
 		this.activateParticlesOverlay();
@@ -726,7 +744,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void selectCurrentSegmentationRun(
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.isHandlingEvent = true;
 		this.overlayKind_cmb.setSelectedIndex(4);
 		this.activateParticlesOverlay();
@@ -734,7 +752,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.activateTrajectoriesRelinkingOverlay();
 		this.activateTrajectoriesSegmentationOverlay();
 		this.overlayTS_cmb
-		.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		        .setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		this.isHandlingEvent = false;
 	}
 
@@ -752,13 +770,13 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	public void updateMap(final List<OmegaAnalysisRun> loadedAnalysisRuns,
-			final OmegaAnalysisRun analysisRun) {
+	        final OmegaAnalysisRun analysisRun) {
 		this.updateMap(loadedAnalysisRuns, analysisRun, this.particleLinkingMap);
 	}
 
 	private void updateMap(final List<OmegaAnalysisRun> loadedAnalysisRuns,
-			final OmegaAnalysisRun analysisRun,
-			final Map<OmegaAnalysisRun, List<OmegaAnalysisRun>> targetMap) {
+	        final OmegaAnalysisRun analysisRun,
+	        final Map<OmegaAnalysisRun, List<OmegaAnalysisRun>> targetMap) {
 		if (!loadedAnalysisRuns.contains(analysisRun))
 			return;
 		List<OmegaAnalysisRun> subAnalysisRuns;
@@ -768,7 +786,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			subAnalysisRuns = new ArrayList<>();
 		}
 		for (final OmegaAnalysisRun subAnalysisRun : analysisRun
-				.getAnalysisRuns()) {
+		        .getAnalysisRuns()) {
 			if (!loadedAnalysisRuns.contains(subAnalysisRun)) {
 				continue;
 			}

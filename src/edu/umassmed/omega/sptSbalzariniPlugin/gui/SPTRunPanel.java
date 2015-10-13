@@ -34,6 +34,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -42,12 +43,12 @@ import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTRunPanel extends GenericPanel {
@@ -58,8 +59,8 @@ public class SPTRunPanel extends GenericPanel {
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
 
 	private GenericTextFieldValidable radius_txtField, cutoff_txtField,
-	percentile_txtField, displacement_txtField, linkrange_txtField,
-	minPoints_txtField, zSection_txtField;
+	        percentile_txtField, displacement_txtField, linkrange_txtField,
+	        minPoints_txtField, zSection_txtField;
 
 	private JPanel additionaParamPanel, channelsPanel;
 	private JCheckBox[] channels;
@@ -72,7 +73,7 @@ public class SPTRunPanel extends GenericPanel {
 	private OmegaGateway gateway;
 
 	public SPTRunPanel(final RootPaneContainer parent,
-			final OmegaGateway gateway) {
+	        final OmegaGateway gateway) {
 		super(parent);
 
 		this.gateway = gateway;
@@ -84,19 +85,19 @@ public class SPTRunPanel extends GenericPanel {
 
 	private void createAndAddWidgets() {
 		this.infoPanel = new GenericElementInformationPanel(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.infoPanel.setBorder(new TitledBorder(
-				OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
+		        OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
 		this.add(this.infoPanel);
+
+		final JPanel additionalParamPanel = this.createAdditionalParamPanel();
+		this.add(additionalParamPanel);
 
 		final JPanel detParamPanel = this.createDetectionParamPanel();
 		this.add(detParamPanel);
 
 		final JPanel linkParamPanel = this.createLinkingParamPanel();
 		this.add(linkParamPanel);
-
-		final JPanel additionalParamPanel = this.createAdditionalParamPanel();
-		this.add(additionalParamPanel);
 	}
 
 	private JPanel createDetectionParamPanel() {
@@ -115,7 +116,7 @@ public class SPTRunPanel extends GenericPanel {
 		radius_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		radiusPanel.add(radius_lbl);
 		this.radius_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.radius_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		radiusPanel.add(this.radius_txtField);
 		paramDetectionPanel.add(radiusPanel);
@@ -127,7 +128,7 @@ public class SPTRunPanel extends GenericPanel {
 		cutoff_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		cutoffPanel.add(cutoff_lbl);
 		this.cutoff_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.cutoff_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		cutoffPanel.add(this.cutoff_txtField);
 		paramDetectionPanel.add(cutoffPanel);
@@ -136,11 +137,11 @@ public class SPTRunPanel extends GenericPanel {
 		final JPanel percentilePanel = new JPanel();
 		percentilePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel percentile_lbl = new JLabel(SPTConstants.PARAM_PERCENTILE
-				+ ":");
+		        + ":");
 		percentile_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		percentilePanel.add(percentile_lbl);
 		this.percentile_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.percentile_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		percentilePanel.add(this.percentile_txtField);
 		paramDetectionPanel.add(percentilePanel);
@@ -159,32 +160,33 @@ public class SPTRunPanel extends GenericPanel {
 		// Linking panel
 		final JPanel paramLinkingPanel = new JPanel();
 		paramLinkingPanel.setLayout(new GridLayout(2, 1));
-		// Displacement
-		final JPanel displacementPanel = new JPanel();
-		displacementPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel displacement_lbl = new JLabel(
-				SPTConstants.PARAM_DISPLACEMENT + ":");
-		displacement_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
-		displacementPanel.add(displacement_lbl);
-		this.displacement_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_DOUBLE);
-		this.displacement_txtField
-		.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
-		displacementPanel.add(this.displacement_txtField);
-		paramLinkingPanel.add(displacementPanel);
 
 		// Linkrange
 		final JPanel linkrangePanel = new JPanel();
 		linkrangePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel linkrange_lbl = new JLabel(SPTConstants.PARAM_LINKRANGE
-				+ ":");
+		        + ":");
 		linkrange_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		linkrangePanel.add(linkrange_lbl);
 		this.linkrange_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.linkrange_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		linkrangePanel.add(this.linkrange_txtField);
 		paramLinkingPanel.add(linkrangePanel);
+
+		// Displacement
+		final JPanel displacementPanel = new JPanel();
+		displacementPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		final JLabel displacement_lbl = new JLabel(
+		        SPTConstants.PARAM_DISPLACEMENT + ":");
+		displacement_lbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
+		displacementPanel.add(displacement_lbl);
+		this.displacement_txtField = new GenericTextFieldValidable(
+		        GenericTextFieldValidable.CONTENT_DOUBLE);
+		this.displacement_txtField
+		        .setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
+		displacementPanel.add(this.displacement_txtField);
+		paramLinkingPanel.add(displacementPanel);
 
 		mainPanel.add(paramLinkingPanel, BorderLayout.NORTH);
 		mainPanel.add(new JLabel(), BorderLayout.CENTER);
@@ -198,17 +200,18 @@ public class SPTRunPanel extends GenericPanel {
 		mainPanel.setBorder(new TitledBorder(SPTConstants.PARAMETER_ADVANCED));
 
 		this.additionaParamPanel = new JPanel();
-		this.additionaParamPanel.setLayout(new GridLayout(3, 1));
+		this.additionaParamPanel.setLayout(new BoxLayout(
+				this.additionaParamPanel, BoxLayout.Y_AXIS));
 
 		// Min points
 		final JPanel minPointsPanel = new JPanel();
 		minPointsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel minPointsLbl = new JLabel(SPTConstants.PARAM_MINPOINTS
-				+ ":");
+		        + ":");
 		minPointsLbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		minPointsPanel.add(minPointsLbl);
 		this.minPoints_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.minPoints_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		minPointsPanel.add(this.minPoints_txtField);
 		this.additionaParamPanel.add(minPointsPanel);
@@ -219,7 +222,7 @@ public class SPTRunPanel extends GenericPanel {
 		zSectionLbl.setPreferredSize(SPTRunPanel.LBL_FIELDS_DIM);
 		zSectionPanel.add(zSectionLbl);
 		this.zSection_txtField = new GenericTextFieldValidable(
-				GenericTextFieldValidable.CONTENT_INT);
+		        GenericTextFieldValidable.CONTENT_INT);
 		this.zSection_txtField.setPreferredSize(SPTRunPanel.VALUE_FIELDS_DIM);
 		zSectionPanel.add(this.zSection_txtField);
 		this.maxSection_lbl = new JLabel("/ NA");
@@ -242,8 +245,10 @@ public class SPTRunPanel extends GenericPanel {
 	private void createChannelsPane(final int n, final boolean[] selC) {
 		this.additionaParamPanel.remove(this.channelsPanel);
 		this.channelsPanel.removeAll();
-		for (final JCheckBox checkBox : this.channels) {
-			this.group.remove(checkBox);
+		if (this.channels != null) {
+			for (final JCheckBox checkBox : this.channels) {
+				this.group.remove(checkBox);
+			}
 		}
 		// this.channelsPanel.revalidate();
 		// this.channelsPanel.repaint();
@@ -261,7 +266,7 @@ public class SPTRunPanel extends GenericPanel {
 		}
 
 		final Dimension channelsDim = new Dimension(
-		        this.channelsPanel.getWidth(), 50 * n);
+				this.channelsPanel.getWidth(), 50 * n);
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
 
@@ -270,12 +275,12 @@ public class SPTRunPanel extends GenericPanel {
 
 	public boolean areParametersValidated() {
 		return this.radius_txtField.isContentValidated()
-				&& this.cutoff_txtField.isContentValidated()
-				&& this.percentile_txtField.isContentValidated()
-				&& this.displacement_txtField.isContentValidated()
-				&& this.linkrange_txtField.isContentValidated()
-				&& this.minPoints_txtField.isContentValidated()
-				&& this.zSection_txtField.isContentValidated();
+		        && this.cutoff_txtField.isContentValidated()
+		        && this.percentile_txtField.isContentValidated()
+		        && this.displacement_txtField.isContentValidated()
+		        && this.linkrange_txtField.isContentValidated()
+		        && this.minPoints_txtField.isContentValidated()
+		        && this.zSection_txtField.isContentValidated();
 		// TODO Add validation about z and channels
 	}
 
@@ -286,33 +291,33 @@ public class SPTRunPanel extends GenericPanel {
 		}
 		if (!this.radius_txtField.isContentValidated()) {
 			errors[0] = SPTConstants.PARAM_RADIUS + ": "
-					+ this.radius_txtField.getError();
+			        + this.radius_txtField.getError();
 		}
 		if (!this.cutoff_txtField.isContentValidated()) {
 			errors[1] = SPTConstants.PARAM_CUTOFF + ": "
-					+ this.cutoff_txtField.getError();
+			        + this.cutoff_txtField.getError();
 		}
 		if (!this.percentile_txtField.isContentValidated()) {
 			errors[2] = SPTConstants.PARAM_PERCENTILE + ": "
-					+ this.percentile_txtField.getError();
+			        + this.percentile_txtField.getError();
 		}
 		if (!this.displacement_txtField.isContentValidated()) {
 			errors[3] = SPTConstants.PARAM_DISPLACEMENT + ": "
-					+ this.displacement_txtField.getError();
+			        + this.displacement_txtField.getError();
 		}
 		if (!this.linkrange_txtField.isContentValidated()) {
 			errors[4] = SPTConstants.PARAM_LINKRANGE + ": "
-					+ this.linkrange_txtField.getError();
+			        + this.linkrange_txtField.getError();
 		}
 
 		if (!this.minPoints_txtField.isContentValidated()) {
 			errors[5] = SPTConstants.PARAM_MINPOINTS + ": "
-					+ this.minPoints_txtField.getError();
+			        + this.minPoints_txtField.getError();
 		}
 
 		if (!this.zSection_txtField.isContentValidated()) {
 			errors[6] = SPTConstants.PARAM_ZSECTION + ": "
-					+ this.zSection_txtField.getError();
+			        + this.zSection_txtField.getError();
 		}
 
 		return errors;
@@ -323,7 +328,7 @@ public class SPTRunPanel extends GenericPanel {
 
 		final int selZ = image.getDefaultPixels().getSelectedZ();
 		this.zSection_txtField.setText(String.valueOf(selZ));
-		final int z = image.getDefaultPixels().getSizeZ();
+		final int z = image.getDefaultPixels().getSizeZ() - 1;
 		this.maxSection_lbl.setText("/ " + z);
 
 		final boolean[] selC = image.getDefaultPixels().getSelectedC();
@@ -380,17 +385,17 @@ public class SPTRunPanel extends GenericPanel {
 		final double cutoff = Double.valueOf(this.cutoff_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_CUTOFF, cutoff));
 		final double percentile = Double.valueOf(this.percentile_txtField
-				.getText());
+		        .getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_PERCENTILE, percentile));
 		final int linkrange = Integer
-				.valueOf(this.linkrange_txtField.getText());
+		        .valueOf(this.linkrange_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_LINKRANGE, linkrange));
 		final double displacement = Double.valueOf(this.displacement_txtField
-				.getText());
+		        .getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_DISPLACEMENT,
-				displacement));
+		        displacement));
 		final int minPoints = Integer
-				.valueOf(this.minPoints_txtField.getText());
+		        .valueOf(this.minPoints_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_MINPOINTS, minPoints));
 		final int section = Integer.valueOf(this.zSection_txtField.getText());
 		params.add(new OmegaParameter(SPTConstants.PARAM_ZSECTION, section));
@@ -424,7 +429,7 @@ public class SPTRunPanel extends GenericPanel {
 
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
-		this.infoPanel.updateParentContainer(parent);
 		super.updateParentContainer(parent);
+		this.infoPanel.updateParentContainer(parent);
 	}
 }

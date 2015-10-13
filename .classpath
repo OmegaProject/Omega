@@ -2,40 +2,17 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/commons-io.jar"/>
-	<classpathentry kind="lib" path="lib/commons-math3-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/dss_client.jar"/>
-	<classpathentry kind="lib" path="lib/flanagan.jar"/>
-	<classpathentry kind="lib" path="lib/GalLibrary.jar"/>
-	<classpathentry kind="lib" path="lib/omero_client.jar"/>
-	<classpathentry kind="lib" path="lib/jcommon/jcommon-1.0.16.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart/iText-2.1.5.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart/jcommon-1.0.16.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart/jfreechart-1.0.13-demo.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart/jfreechart-1.0.13-experimental.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart/jfreechart-1.0.13.jar"/>
-	<classpathentry kind="lib" path="lib/openbis_screening_api-batteries_included.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.31-bin.jar"/>
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_71"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_25"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Omega.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Omega.omeroCommons"/>
 	<classpathentry kind="lib" path="lib/Mosaic_ToolSuite.jar"/>
-	<classpathentry kind="lib" path="lib/ij-1.49j.jar"/>
-	<classpathentry kind="lib" path="lib/loci_tools.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-2.0.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-algorithms-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-algorithms-gpl-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-algorithms-legacy-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-ij-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-meta-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-ops-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-realtransform-2.0.0-beta-26.jar"/>
-	<classpathentry kind="lib" path="lib/imglib2-ui-2.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/imagej/ij-1.50b.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

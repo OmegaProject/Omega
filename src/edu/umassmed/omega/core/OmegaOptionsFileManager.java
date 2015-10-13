@@ -88,12 +88,12 @@ public class OmegaOptionsFileManager {
 
 		this.loadOptionsFromFile();
 		if (OmegaApplication.ISDEBUG) {
-			OmegaLogFileManager.appendToMainLog("Loading options saved: "
+			OmegaLogFileManager.appendToCoreLog("Loading options saved: "
 			        + this.optionsSaved);
 			for (final String cat : this.optionsCat.keySet()) {
-				OmegaLogFileManager.appendToMainLog(cat);
+				OmegaLogFileManager.appendToCoreLog(cat);
 				for (final String optionKey : this.optionsCat.get(cat)) {
-					OmegaLogFileManager.appendToMainLog(optionKey + "\t"
+					OmegaLogFileManager.appendToCoreLog(optionKey + "\t"
 					        + this.options.get(optionKey));
 				}
 			}
@@ -164,7 +164,7 @@ public class OmegaOptionsFileManager {
 			if ((configFileIdent == null)
 			        || !configFileIdent
 			                .equals(OmegaOptionsFileManager.CONFIG_FILE_IDENT)) {
-				OmegaLogFileManager.appendToMainLog("Error loading options");
+				OmegaLogFileManager.appendToCoreLog("Error loading options");
 				br.close();
 				fr.close();
 				return -1;
@@ -219,7 +219,7 @@ public class OmegaOptionsFileManager {
 
 	protected void saveOptionsToFile() {
 		if (OmegaApplication.ISDEBUG) {
-			OmegaLogFileManager.appendToMainLog("Saving options");
+			OmegaLogFileManager.appendToCoreLog("Saving options");
 		}
 		try {
 			final FileWriter fw = new FileWriter(this.configFile);

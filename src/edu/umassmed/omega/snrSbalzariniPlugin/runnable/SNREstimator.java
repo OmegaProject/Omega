@@ -36,12 +36,12 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
 import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
 
 public class SNREstimator implements SNRRunnable {
 	private static final String RUNNER = "SNR estimator service: ";
@@ -65,9 +65,9 @@ public class SNREstimator implements SNRRunnable {
 	private final Map<OmegaROI, Double> localSNRs;
 
 	public SNREstimator(
-	        final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final OmegaGateway gateway, final OmegaFrame frame,
-	        final List<OmegaROI> rois, final int radius, final double threshold) {
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
+			final OmegaGateway gateway, final OmegaFrame frame,
+			final List<OmegaROI> rois, final int radius, final double threshold) {
 		this.displayerPanel = displayerPanel;
 		this.isJobCompleted = false;
 
@@ -107,7 +107,7 @@ public class SNREstimator implements SNRRunnable {
 		final int byteWidth = this.gateway.getByteWidth(pixelsID);
 		final byte[] pixels = this.gateway.getImageData(pixelsID, z, t, c);
 		final Integer[] image = OmegaImageUtilities.convertByteToIntegerImage(
-		        byteWidth, pixels);
+				byteWidth, pixels);
 		// data = OmegaImageUtilities.normalizeImage(data);
 
 		final Integer[] minMax = OmegaMathsUtilities.getMinAndMax(image);
@@ -116,7 +116,7 @@ public class SNREstimator implements SNRRunnable {
 
 		final double thresh = ((max - min) * this.threshold) + min;
 		final Integer[] smallerValues = OmegaMathsUtilities.getSmallerValue(
-		        image, thresh);
+				image, thresh);
 		this.imageBGR = OmegaMathsUtilities.mean(smallerValues);
 		this.imageNoise = OmegaMathsUtilities.standardDeviationN(smallerValues);
 
@@ -152,10 +152,10 @@ public class SNREstimator implements SNRRunnable {
 			this.localMeanSignals.put(roi, localMeanSignal);
 			this.localSignalSizes.put(roi, counter);
 			final double localNoise = Math.sqrt(localMaxSignal
-			        * ((this.imageNoise * this.imageNoise) / this.imageBGR));
+					* ((this.imageNoise * this.imageNoise) / this.imageBGR));
 			this.localNoises.put(roi, localNoise);
 			final double localSNR = (localMaxSignal - this.imageBGR)
-			        / localNoise;
+					/ localNoise;
 			this.localSNRs.put(roi, localSNR);
 		}
 		this.isJobCompleted = true;
@@ -167,8 +167,8 @@ public class SNREstimator implements SNRRunnable {
 				@Override
 				public void run() {
 					SNREstimator.this.displayerPanel
-					        .updateMessageStatus(new SNRMessageEvent(msg,
-					                SNREstimator.this, ended));
+					.updateMessageStatus(new SNRMessageEvent(msg,
+							SNREstimator.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
@@ -181,8 +181,8 @@ public class SNREstimator implements SNRRunnable {
 			@Override
 			public void run() {
 				SNREstimator.this.displayerPanel
-				        .updateMessageStatus(new SNRMessageEvent(msg,
-				                SNREstimator.this, ended));
+				.updateMessageStatus(new SNRMessageEvent(msg,
+						SNREstimator.this, ended));
 			}
 		});
 	}

@@ -39,19 +39,18 @@ import javax.swing.JTree;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.lf5.viewer.categoryexplorer.TreeModelAdapter;
-
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaElement;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTQueueRunBrowserPanel extends GenericPanel {
@@ -110,58 +109,81 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final MouseEvent event) {
-				final TreePath path = SPTQueueRunBrowserPanel.this.dataTree
-						.getPathForLocation(event.getX(), event.getY());
-				if (path == null) {
-					SPTQueueRunBrowserPanel.this.sptPanel
-					.updateSelectedImage(null);
-					SPTQueueRunBrowserPanel.this.deselect();
-					return;
-				}
-				final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-						.getLastPathComponent();
-				final String s = node.toString();
-				final OmegaElement element = SPTQueueRunBrowserPanel.this.nodeMap
-						.get(s);
-				if (element instanceof OmegaImage) {
-					SPTQueueRunBrowserPanel.this.sptPanel
-					.updateSelectedImage((OmegaImage) element);
-				}
+				SPTQueueRunBrowserPanel.this.handleMouseClicked(event.getX(),
+						event.getY());
 			}
 		});
-		this.dataTree.getModel().addTreeModelListener(new TreeModelAdapter() {
+		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent event) {
-				if (SPTQueueRunBrowserPanel.this.adjusting)
-					return;
-				SPTQueueRunBrowserPanel.this.adjusting = true;
 				final TreePath parent = event.getTreePath();
 				final Object[] children = event.getChildren();
 				final DefaultTreeModel model = (DefaultTreeModel) event
 						.getSource();
+				SPTQueueRunBrowserPanel.this.handleTreeNodeChanged(parent,
+						children, model);
+			}
 
-				DefaultMutableTreeNode node;
-				CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
-				if ((children != null) && (children.length == 1)) {
-					node = (DefaultMutableTreeNode) children[0];
-					c = (CheckBoxNode) node.getUserObject();
-					final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
-							.getLastPathComponent();
+			@Override
+			public void treeNodesInserted(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
 
-					model.nodeChanged(n);
-				} else {
-					node = (DefaultMutableTreeNode) model.getRoot();
-					c = (CheckBoxNode) node.getUserObject();
-				}
+			@Override
+			public void treeNodesRemoved(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
+			}
 
-				model.nodeChanged(node);
-
-				SPTQueueRunBrowserPanel.this.adjusting = false;
-
-				c.getStatus();
-				// TODO update something here
+			@Override
+			public void treeStructureChanged(final TreeModelEvent e) {
+				// TODO Auto-generated method stub
 			}
 		});
+	}
+
+	private void handleMouseClicked(final int x, final int y) {
+		final TreePath path = SPTQueueRunBrowserPanel.this.dataTree
+				.getPathForLocation(x, y);
+		if (path == null) {
+			this.sptPanel.updateSelectedImage(null);
+			this.deselect();
+			return;
+		}
+		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
+				.getLastPathComponent();
+		final String s = node.toString();
+		final OmegaElement element = this.nodeMap.get(s);
+		if (element instanceof OmegaImage) {
+			this.sptPanel.updateSelectedImage((OmegaImage) element);
+		}
+	}
+
+	private void handleTreeNodeChanged(final TreePath parent,
+			final Object[] children, final DefaultTreeModel model) {
+		if (this.adjusting)
+			return;
+		this.adjusting = true;
+
+		DefaultMutableTreeNode node;
+		CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
+		if ((children != null) && (children.length == 1)) {
+			node = (DefaultMutableTreeNode) children[0];
+			c = (CheckBoxNode) node.getUserObject();
+			final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
+					.getLastPathComponent();
+
+			model.nodeChanged(n);
+		} else {
+			node = (DefaultMutableTreeNode) model.getRoot();
+			c = (CheckBoxNode) node.getUserObject();
+		}
+
+		model.nodeChanged(node);
+
+		this.adjusting = false;
+
+		c.getStatus();
+		// TODO update something here
 	}
 
 	@Override

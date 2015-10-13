@@ -4,20 +4,20 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.core.OmegaMySqlGateway;
-import edu.umassmed.omega.data.coreElements.OmegaDataset;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaProject;
 
 public class OmegaDBLoader extends OmegaDBRunnable {
 
 	private final List<OmegaProject> projectsToLoad;
 
 	public OmegaDBLoader(final OmegaApplication omegaApp,
-	        final OmegaMySqlGateway gateway, final GenericMessageDialog dialog,
-	        final List<OmegaProject> projects) {
+			final OmegaMySqlGateway gateway, final GenericMessageDialog dialog,
+			final List<OmegaProject> projects) {
 		super(omegaApp, gateway, dialog);
 		this.projectsToLoad = projects;
 	}

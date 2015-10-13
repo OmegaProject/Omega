@@ -21,14 +21,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.GenericPanel;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationType;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSPanel extends GenericPanel {
@@ -50,7 +50,7 @@ public class TSPanel extends GenericPanel {
 
 	private JComboBox<String> segmOn_cb;
 	private JButton selectStart_btt, selectEnd_btt, reset_btt, scaleToFit_btt,
-	        scale1on1_btt;
+	scale1on1_btt;
 
 	private JLabel segment_lbl;
 
@@ -62,8 +62,8 @@ public class TSPanel extends GenericPanel {
 	private int currentPanelIndex;
 
 	public TSPanel(final RootPaneContainer parent,
-	        final TSPluginPanel pluginPanel,
-	        final OmegaSegmentationTypes segmTypes) {
+			final TSPluginPanel pluginPanel,
+			final OmegaSegmentationTypes segmTypes) {
 		super(parent);
 		this.segmTypes = segmTypes;
 		this.pluginPanel = pluginPanel;
@@ -152,7 +152,7 @@ public class TSPanel extends GenericPanel {
 		this.add(this.mainPanel, BorderLayout.CENTER);
 
 		this.segment_lbl = new JLabel(TSConstants.ACTUAL_SEGM
-		        + TSConstants.SELECT_NONE);
+				+ TSConstants.SELECT_NONE);
 		this.add(this.segment_lbl, BorderLayout.SOUTH);
 	}
 
@@ -280,7 +280,7 @@ public class TSPanel extends GenericPanel {
 			} else {
 				s = this.segment_lbl.getText();
 				s = s.replace(TSConstants.SELECT_FROM_UPPER, segmName
-						+ TSConstants.SELECT_FROM_LOWER);
+				        + TSConstants.SELECT_FROM_LOWER);
 			}
 		}
 		this.updateSegmentationStatus(s);
@@ -290,7 +290,7 @@ public class TSPanel extends GenericPanel {
 			panel.setSegmentationType(segmType);
 		}
 		final TSTrackPanel singleTrajPanel = this.segmentTrajectoryPanels
-		        .get(this.currentPanelIndex);
+				.get(this.currentPanelIndex);
 		if (!this.isSegmentOnSpotsSelection()) {
 			singleTrajPanel.segmentTrajectory();
 			this.buttonGroup.clearSelection();
@@ -308,7 +308,7 @@ public class TSPanel extends GenericPanel {
 	}
 
 	public void createSegmentSingleTrajectoryPanels(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentationResults) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentationResults) {
 		// for (int i = 0; i < this.segmentTrajectoryScrollPane.size(); i++) {
 		// this.mainPanel.remove(this.segmentTrajectoryScrollPane.get(i));
 		// this.segmentTrajectoryScrollPane.set(i, null);
@@ -334,9 +334,9 @@ public class TSPanel extends GenericPanel {
 				}
 			}
 			final TSTrackPanel panel = new TSTrackPanel(
-			        this.getParentContainer(), this.pluginPanel, sizeX, sizeY,
-			        this.pixelSizeX, this.pixelSizeY, traj,
-			        segmentationResults.get(traj));
+					this.getParentContainer(), this.pluginPanel, sizeX, sizeY,
+					this.pixelSizeX, this.pixelSizeY, traj,
+					segmentationResults.get(traj));
 			// final JScrollPane scrollPane = new JScrollPane(panel);
 			this.segmentTrajectoryPanels.add(panel);
 			// this.segmentTrajectoryScrollPane.add(scrollPane);
@@ -346,7 +346,7 @@ public class TSPanel extends GenericPanel {
 			this.mainPanel.add(s, panel);
 			// panel.setTrajectory(traj);
 			panel.setSegmentationType(this.segmTypes
-			        .getSegmentationValue(this.segmentationName));
+					.getSegmentationValue(this.segmentationName));
 			// panel.rescale();
 		}
 		this.currentPanelIndex = 0;
@@ -360,7 +360,7 @@ public class TSPanel extends GenericPanel {
 	}
 
 	public void updateCurrentSegmentTrajectories(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		// for (final OmegaTrajectory traj : segmentsMap.keySet()) {
 		// System.out.println(traj.getName());
 		// for (final OmegaSegment segm : segmentsMap.get(traj)) {
@@ -393,19 +393,19 @@ public class TSPanel extends GenericPanel {
 
 	private void handleSelectStart() {
 		final TSTrackPanel singleTrajPanel = this.segmentTrajectoryPanels
-		        .get(this.currentPanelIndex);
+				.get(this.currentPanelIndex);
 		singleTrajPanel.selectTrajectoryStart();
 	}
 
 	private void handleSelectEnd() {
 		final TSTrackPanel singleTrajPanel = this.segmentTrajectoryPanels
-		        .get(this.currentPanelIndex);
+				.get(this.currentPanelIndex);
 		singleTrajPanel.selectTrajectoryEnd();
 	}
 
 	private void handleSegmentationReset() {
 		final TSTrackPanel singleTrajPanel = this.segmentTrajectoryPanels
-		        .get(this.currentPanelIndex);
+				.get(this.currentPanelIndex);
 		singleTrajPanel.resetSegmentation();
 		this.segmentationEnded = false;
 		final StringBuffer buf = new StringBuffer();
@@ -433,7 +433,7 @@ public class TSPanel extends GenericPanel {
 	public void selectEndingROI(final OmegaROI endingROI) {
 		final StringBuffer buf = new StringBuffer();
 		buf.append(this.segment_lbl.getText().replace(TSConstants.SELECT_PUNCT,
-		        ""));
+				""));
 		buf.append(TSConstants.SELECT_TO_LOWER_SPACE);
 		buf.append(endingROI.getFrameIndex() + 1);
 		buf.append(TSConstants.SELECT_PUNCT);
@@ -450,8 +450,8 @@ public class TSPanel extends GenericPanel {
 		if (image == null)
 			return;
 		final OmegaImagePixels pixels = image.getDefaultPixels();
-		this.pixelSizeX = pixels.getPixelSizeX();
-		this.pixelSizeY = pixels.getPixelSizeY();
+		this.pixelSizeX = pixels.getPhysicalSizeX();
+		this.pixelSizeY = pixels.getPhysicalSizeY();
 		this.sizeX = pixels.getSizeX();
 		this.sizeY = pixels.getSizeY();
 	}

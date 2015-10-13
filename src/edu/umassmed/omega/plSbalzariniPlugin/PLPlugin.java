@@ -32,6 +32,12 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
@@ -40,12 +46,6 @@ import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumer
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
-import edu.umassmed.omega.data.coreElements.OmegaPerson;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.plSbalzariniPlugin.gui.PLPluginPanel;
 
 public class PLPlugin extends OmegaParticleTrackingPlugin implements
@@ -93,6 +93,11 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 	@Override
 	public String getName() {
 		return PLConstants.PLUGIN_NAME;
+	}
+
+	@Override
+	public String getShortName() {
+		return PLConstants.PLUGIN_SNAME;
 	}
 
 	@Override

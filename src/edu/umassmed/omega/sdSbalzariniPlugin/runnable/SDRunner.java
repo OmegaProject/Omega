@@ -27,10 +27,12 @@
  *******************************************************************************/
 package edu.umassmed.omega.sdSbalzariniPlugin.runnable;
 
-import ij.process.ColorProcessor;
+import ij.process.ImageProcessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,19 +42,21 @@ import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 
 public class SDRunner implements SDRunnable {
+	private final OmegaPlugin plugin;
 	private static final String RUNNER = "Runner service: ";
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 
@@ -64,8 +68,10 @@ public class SDRunner implements SDRunnable {
 	private final boolean isDebugMode, isPreview;
 	private boolean isJobCompleted, isTerminated;
 
-	public SDRunner(final OmegaMessageDisplayerPanelInterface displayerPanel) {
+	public SDRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
+			final OmegaPlugin plugin) {
 		this.displayerPanel = displayerPanel;
+		this.plugin = plugin;
 
 		this.imagesToProcess = null;
 		this.gateway = null;
@@ -80,8 +86,10 @@ public class SDRunner implements SDRunnable {
 
 	public SDRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
 			final Map<OmegaImage, List<OmegaParameter>> imageToProcess,
-			final OmegaGateway gateway, final boolean isPreview) {
+			final OmegaGateway gateway, final boolean isPreview,
+			final OmegaPlugin plugin) {
 		this.displayerPanel = displayerPanel;
+		this.plugin = plugin;
 
 		this.imagesToProcess = new LinkedHashMap<>(imageToProcess);
 		this.gateway = gateway;
@@ -137,12 +145,10 @@ public class SDRunner implements SDRunnable {
 					.get(image);
 			final OmegaImagePixels defaultPixels = image.getDefaultPixels();
 			final long pixelsID = defaultPixels.getElementID();
-			final int sizeX = defaultPixels.getSizeX();
-			final int sizeY = defaultPixels.getSizeY();
+			defaultPixels.getSizeX();
+			defaultPixels.getSizeY();
 			final int sizeT = defaultPixels.getSizeT();
-			final int byteWidth = this.gateway.getByteWidth(pixelsID);
-			// number of frames for this image
-			// final int byteWidth = this.gateway.getByteWidth(pixelsID);
+			this.gateway.getByteWidth(pixelsID);
 
 			if (sizeT < 2) {
 				// TODO throw error and skip image or stop thread?
@@ -185,75 +191,73 @@ public class SDRunner implements SDRunnable {
 			final Map<OmegaFrame, List<OmegaROI>> frames = new LinkedHashMap<OmegaFrame, List<OmegaROI>>();
 
 			this.updateStatusSync(SDRunner.RUNNER
-			        + " calculating global values on image " + image.getName(),
-			        false);
+			        + " loading values for image " + image.getName(), false);
+
+			final List<SDWorker> loaders = new ArrayList<SDWorker>(), workers = new ArrayList<SDWorker>(), completedWorkers = new ArrayList<SDWorker>();
+			final ExecutorService loaderExecutor = Executors
+			        .newFixedThreadPool(5);
+
+			if (this.isPreview) {
+				OmegaLogFileManager.appendToPluginLog(this.plugin,
+				        "Creating preview 0 SDWorker for " + image.getName());
+				final SDWorker worker = new SDWorker(this.gateway,
+						defaultPixels, 0, radius, cutoff, percentile, percAbs,
+				        c, z);
+				workers.add(worker);
+				loaderExecutor.execute(worker);
+			} else {
+				OmegaLogFileManager.appendToPluginLog(this.plugin, "Creating "
+				        + sizeT + " SDWorkers for " + image.getName());
+				for (int t = 0; t < sizeT; t++) {
+					final SDWorker worker = new SDWorker(this.gateway,
+					        defaultPixels, t, radius, cutoff, percentile,
+							percAbs, c, z);
+					workers.add(worker);
+					loaderExecutor.execute(worker);
+				}
+			}
+
+			this.waitForExecutor(loaderExecutor, loaders, workers,
+			        image.getName(), sizeT, true);
 
 			Float globalMin = Float.MAX_VALUE, globalMax = 0F;
-			for (int t = 0; t < sizeT; t++) {
-
-				final byte[] pixels = this.gateway.getImageData(pixelsID, z, t,
-				        c);
-				final ColorProcessor bp = new ColorProcessor(sizeX, sizeY,
-				        OmegaImageUtilities.convertByteToIntImage(byteWidth,
-				                pixels));
-				if (globalMin > bp.getMin()) {
-					globalMin = Float.valueOf(String.valueOf(bp.getMin()));
+			for (final SDWorker loader : workers) {
+				final ImageProcessor ip = loader.getProcessor();
+				if (globalMin > ip.getMin()) {
+					globalMin = Float.valueOf(String.valueOf(ip.getMin()));
 				}
-				if (globalMax < bp.getMax()) {
-					globalMax = Float.valueOf(String.valueOf(bp.getMax()));
+				if (globalMax < ip.getMax()) {
+					globalMax = Float.valueOf(String.valueOf(ip.getMax()));
 				}
 			}
 
 			this.updateStatusSync(SDRunner.RUNNER + " processing image "
 			        + image.getName(), false);
 
-			final List<SDWorker> workers = new ArrayList<SDWorker>(), completedWorkers = new ArrayList<SDWorker>();
-			final ExecutorService executor = Executors.newFixedThreadPool(5);
-			if (this.isPreview) {
-				final SDWorker worker = new SDWorker(this.gateway,
-						defaultPixels, 0, radius, cutoff, percentile, percAbs,
-				        c, z, globalMin, globalMax);
-				workers.add(worker);
-				executor.execute(worker);
-			} else {
-				for (int t = 0; t < sizeT; t++) {
-					final SDWorker worker = new SDWorker(this.gateway,
-					        defaultPixels, t, radius, cutoff, percentile,
-							percAbs, c, z, globalMin, globalMax);
-					workers.add(worker);
-					executor.execute(worker);
-				}
+			final ExecutorService workerExecutor = Executors
+			        .newFixedThreadPool(5);
+			for (final SDWorker worker : workers) {
+				worker.setGlobalMin(globalMin);
+				worker.setGlobalMax(globalMax);
+				worker.setLoadingEnded();
+				workerExecutor.execute(worker);
 			}
 
-			int completed = 0;
-			while (!executor.isTerminated()) {
-				if (this.isTerminated) {
-					for (final SDWorker worker : workers) {
-						worker.terminate();
-						// TODO to be fixed because if everything terminate
-						// there are not results to get, find a solution
-					}
-				}
-				if (workers.isEmpty()) {
-					executor.shutdown();
-				}
-				for (final SDWorker worker : workers) {
-					if (!worker.isJobCompleted()) {
-						continue;
-					}
-					completed++;
-					this.updateStatusSync(
-							SDRunner.RUNNER + " image " + image.getName()
-							+ ", completed frame(s) " + completed + "/"
-							+ sizeT, false);
-					completedWorkers.add(worker);
-				}
-				workers.removeAll(completedWorkers);
-			}
+			this.waitForExecutor(workerExecutor, workers, completedWorkers,
+			        image.getName(), sizeT, false);
+			this.orderList(completedWorkers);
 
 			final Map<OmegaROI, Map<String, Object>> particleValues = new LinkedHashMap<OmegaROI, Map<String, Object>>();
+			OmegaLogFileManager.appendToPluginLog(this.plugin,
+			        "Pulling results from SDWorkers");
+			int counter = 0;
 			for (final SDWorker worker : completedWorkers) {
 				final OmegaFrame frame = worker.getFrame();
+				if (frame.getIndex() != counter) {
+					OmegaLogFileManager.appendToPluginLog(this.plugin,
+					        "Problem in frame " + frame.getIndex());
+				}
+				counter++;
 				final List<OmegaROI> particles = worker.getResultingParticles();
 				particleValues.putAll(worker.getParticlesAdditionalValues());
 				frames.put(frame, particles);
@@ -273,6 +277,57 @@ public class SDRunner implements SDRunnable {
 		}
 	}
 
+	private void waitForExecutor(final ExecutorService exec,
+	        final List<SDWorker> workers,
+	        final List<SDWorker> completedWorkers, final String imageName,
+			final int sizeT, final boolean isLoading) {
+		int completed = 0;
+		while (!exec.isTerminated()) {
+			if (this.isTerminated) {
+				for (final SDWorker runnable : workers) {
+					runnable.terminate();
+					// TODO to be fixed because if everything terminate
+					// there are not results to get, find a solution
+				}
+			}
+			if (workers.isEmpty()) {
+				exec.shutdown();
+			}
+			for (final SDWorker runnable : workers) {
+				if (!runnable.isJobCompleted()) {
+					continue;
+				}
+				completed++;
+				final StringBuffer sb = new StringBuffer();
+				sb.append(SDRunner.RUNNER + " image " + imageName);
+				if (isLoading) {
+					sb.append(", frame(s) loaded ");
+				} else {
+					sb.append(", frame(s)  completed ");
+				}
+				sb.append(completed + "/" + sizeT);
+				this.updateStatusSync(sb.toString(), false);
+				completedWorkers.add(runnable);
+			}
+			workers.removeAll(completedWorkers);
+		}
+	}
+
+	private void orderList(final List<SDWorker> workers) {
+		Collections.sort(workers, new Comparator<SDWorker>() {
+			@Override
+			public int compare(final SDWorker o1, final SDWorker o2) {
+				final int i1 = o1.getFrame().getIndex();
+				final int i2 = o2.getFrame().getIndex();
+				if (i1 < i2)
+					return -1;
+				else if (i1 > i2)
+					return 1;
+				return 0;
+			}
+		});
+	}
+
 	private void debugModeRun() {
 
 	}
@@ -289,6 +344,7 @@ public class SDRunner implements SDRunnable {
 		return this.resultingParticlesValues;
 	}
 
+	@Override
 	public void terminate() {
 		this.isTerminated = true;
 	}

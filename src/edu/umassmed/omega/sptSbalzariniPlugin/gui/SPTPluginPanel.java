@@ -46,27 +46,29 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleTracking;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.coreElements.OmegaFrame;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTLoader;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTMessageEvent;
@@ -75,7 +77,7 @@ import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTWriter;
 
 public class SPTPluginPanel extends GenericPluginPanel implements
-        OmegaMessageDisplayerPanelInterface {
+OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -84,6 +86,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 	private JTabbedPane tabPanel;
 
 	private SPTRunPanel runPanel;
+	private GenericTrackingResultsPanel resDetectionPanel, resLinkingPanel;
 
 	// private OmeroListPanel projectListPanel;
 	private SPTLoadedDataBrowserPanel loadedDataBrowserPanel;
@@ -107,8 +110,8 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 	private boolean isRunningBatch;
 
 	public SPTPluginPanel(final RootPaneContainer parent,
-	        final OmegaPlugin plugin, final OmegaGateway gateway,
-	        final List<OmegaImage> images, final int index) {
+			final OmegaPlugin plugin, final OmegaGateway gateway,
+			final List<OmegaImage> images, final int index) {
 		super(parent, plugin, index);
 
 		this.sptThread = null;
@@ -138,10 +141,10 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 
 	public void createAndAddWidgets() {
 		this.loadedDataBrowserPanel = new SPTLoadedDataBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		this.queueRunBrowserPanel = new SPTQueueRunBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
@@ -156,14 +159,14 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		browserButtonPanel.setLayout(new FlowLayout());
 
 		final ImageIcon addIcon = new ImageIcon(
-		        OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-		                + "green_plus.png");
+				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
+				+ "green_plus.png");
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
 
 		final ImageIcon removeIcon = new ImageIcon(
-		        OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-		                + "red_minus.png");
+				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
+				+ "red_minus.png");
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 
@@ -175,17 +178,20 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
 
 		this.tabPanel = new JTabbedPane(SwingConstants.TOP,
-		        JTabbedPane.WRAP_TAB_LAYOUT);
+				JTabbedPane.WRAP_TAB_LAYOUT);
 
 		// TODO create panel for parameters
 		this.runPanel = new SPTRunPanel(this.getParentContainer(), this.gateway);
 		final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
-		scrollPaneRun
-		        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneRun
-		        .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
 		this.tabPanel.add(SPTConstants.RUN_DEFINITION, scrollPaneRun);
+
+		this.resDetectionPanel = new GenericTrackingResultsPanel(
+		        this.getParentContainer());
+		this.tabPanel.add("Detection results", this.resDetectionPanel);
+
+		this.resLinkingPanel = new GenericTrackingResultsPanel(
+		        this.getParentContainer());
+		this.tabPanel.add("Linking results", this.resLinkingPanel);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
@@ -288,27 +294,27 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 	private void updateRunnerEnded() {
 		if (this.sptRunner.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sptRunner
-			        .getImageParameters();
+					.getImageParameters();
 			final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = this.sptRunner
-			        .getImageResultingParticles();
+					.getImageResultingParticles();
 			final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = this.sptRunner
-			        .getImageResultingTrajectories();
+					.getImageResultingTrajectories();
 			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sptRunner
-					.getImageResultingParticlesValues();
+			        .getImageResultingParticlesValues();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
 				final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
-				        .get(image);
+						.get(image);
 				final List<OmegaTrajectory> trajectories = resultingTrajectories
-				        .get(image);
+						.get(image);
 				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
-				        .get(image);
+						.get(image);
 				// TODO additional value to complete
 				final OmegaPluginEventResultsParticleTracking particleTrackingEvt = new OmegaPluginEventResultsParticleTracking(
-				        this.getPlugin(), image, params, particles,
-				        trajectories, particlesValues);
+						this.getPlugin(), image, params, particles,
+						trajectories, particlesValues);
 
 				this.imagesToProcess.remove(image);
 				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
@@ -339,7 +345,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			break;
 		default:
 			final List<OmegaParameter> params = this.runPanel
-			        .getSPTParameters();
+			.getSPTParameters();
 			if (params == null) {
 				final String[] errors = this.runPanel.getParametersError();
 				final StringBuffer exceptionError = new StringBuffer();
@@ -360,17 +366,13 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 					this.statusPanel.updateStatus(3, buf.toString());
 				} catch (final OmegaPluginExceptionStatusPanel ex) {
 					OmegaLogFileManager.handlePluginException(this.getPlugin(),
-					        ex);
+							ex);
 				}
 				break;
 				// Lanciare eccezione ho printare errore a schermo
 				// throw new OmegaAlgorithmParametersTypeException(
 				// this.getPlugin(), exceptionError.toString());
 			}
-			params.add(new OmegaParameter(SPTConstants.PARAM_CHANNEL,
-			        this.selectedImage.getDefaultPixels().getSelectedC()));
-			params.add(new OmegaParameter(SPTConstants.PARAM_ZSECTION,
-			        this.selectedImage.getDefaultPixels().getSelectedZ()));
 			this.imagesToProcess.put(this.selectedImage, params);
 			break;
 		}
@@ -386,12 +388,26 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.loadedDataBrowserPanel.updateParentContainer(parent);
+		this.queueRunBrowserPanel.updateParentContainer(parent);
+		this.runPanel.updateParentContainer(parent);
 		// this.projectListPanel.updateParentContainer(parent);
 	}
 
 	@Override
 	public void onCloseOperation() {
 
+	}
+
+	private void fireEventSelectionImage() {
+		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
+		        this.getPlugin(), this.selectedImage);
+		this.getPlugin().fireEvent(event);
+	}
+
+	private void fireEventSelectionParticleTrackingRun() {
+		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
+		        this.getPlugin(), this.selectedAnalysisRun);
+		this.getPlugin().fireEvent(event);
 	}
 
 	public void setGateway(final OmegaGateway gateway) {
@@ -401,15 +417,35 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 
 	public void updateSelectedAnalysisRun(final OmegaAnalysisRun analysisRun) {
 		// TODO capire se serve
+		this.resDetectionPanel.setAnalysisRun(null);
+		this.resLinkingPanel.setAnalysisRun(null);
 		this.selectedAnalysisRun = analysisRun;
+		this.fireEventSelectionParticleTrackingRun();
+		this.setAddAndRemoveButtonsEnabled(false);
+		if (this.isRunningBatch)
+			return;
 		if (analysisRun != null) {
 			this.runPanel.updateRunFields(analysisRun.getAlgorithmSpec()
 			        .getParameters());
+			this.resDetectionPanel.setAnalysisRun(this.selectedAnalysisRun);
+			for (final OmegaAnalysisRun linkingRun : this.selectedAnalysisRun
+			        .getAnalysisRuns()) {
+				if (!this.checkIfThisAlgorithm(linkingRun)
+				        || !this.selectedAnalysisRun.getTimeStamps().equals(
+				                linkingRun.getTimeStamps())) {
+					continue;
+				}
+				this.resLinkingPanel.setAnalysisRun(linkingRun);
+				break;
+			}
 		}
 	}
 
 	public void updateSelectedImage(final OmegaImage image) {
+		this.resDetectionPanel.setAnalysisRun(null);
+		this.resLinkingPanel.setAnalysisRun(null);
 		this.selectedImage = image;
+		this.fireEventSelectionImage();
 		this.setAddAndRemoveButtonsEnabled(false);
 		if (this.isRunningBatch)
 			return;
@@ -418,7 +454,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			if (this.imagesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.imagesToProcess
-				        .get(this.selectedImage));
+						.get(this.selectedImage));
 			} else {
 				this.addToProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFieldsDefault();
@@ -441,11 +477,10 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		this.queueRunBrowserPanel.updateTree(null);
 	}
 
-	public boolean checkIfThisAlgorithm(
-	        final OmegaParticleDetectionRun particleDetectionRun) {
+	public boolean checkIfThisAlgorithm(final OmegaAnalysisRun analysisRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
-		        .getPlugin();
-		return plugin.checkIfThisAlgorithm(particleDetectionRun);
+				.getPlugin();
+		return plugin.checkIfThisAlgorithm(analysisRun);
 
 	}
 

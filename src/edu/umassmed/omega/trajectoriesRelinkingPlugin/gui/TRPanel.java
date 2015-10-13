@@ -11,11 +11,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class TRPanel extends GenericTrajectoriesBrowserPanel {
@@ -35,7 +35,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 	private Point mousePosition;
 
 	public TRPanel(final RootPaneContainer parent,
-	        final TRPluginPanel pluginPanel, final OmegaGateway gateway) {
+			final TRPluginPanel pluginPanel, final OmegaGateway gateway) {
 		super(parent, pluginPanel, gateway, false, false);
 
 		this.pluginPanel = pluginPanel;
@@ -94,17 +94,17 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 	}
 
 	@Override
-	protected void addToPaint(final Graphics2D g2D) {
+	public void addToPaint(final Graphics2D g2D) {
 		if (this.isMerging && this.isMouseIn) {
 			g2D.setColor(Color.red);
 			g2D.drawLine(this.getClickPosition().x, this.getClickPosition().y,
-			        this.mousePosition.x, this.mousePosition.y);
+					this.mousePosition.x, this.mousePosition.y);
 		}
 	}
 
 	@Override
 	protected void handleMouseClick(final Point clickP,
-	        final boolean isRightButton, final boolean isCtrlDown) {
+			final boolean isRightButton, final boolean isCtrlDown) {
 		final OmegaTrajectory oldTraj = this.getSelectedTrajectory();
 		this.resetClickReferences();
 		this.findSelectedTrajectory(clickP);
@@ -129,7 +129,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 			}
 		}
 		if ((this.getSelectedTrajectory() != null)
-		        && (this.getSelectedTrajectory() != oldTraj)) {
+				&& (this.getSelectedTrajectory() != oldTraj)) {
 			this.getSelectedTrajectories().add(this.getSelectedTrajectory());
 			// this.sendEventTrajectories(this.getSelectedTrajectories(),
 			// false);
@@ -139,7 +139,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 		this.repaint();
 
 		this.pluginPanel.updateSelectedInformation(this
-		        .getSelectedTrajectories());
+				.getSelectedTrajectories());
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 				this.getMenu().add(this.splitTrajMenuItem);
 			}
 		} else if ((this.nextParticle != null)
-		        && (selectedParticle.getFrameIndex() > 0)) {
+				&& (selectedParticle.getFrameIndex() > 0)) {
 			this.getMenu().add(this.mergeTrajMenuItem);
 		}
 	}
@@ -201,13 +201,13 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 
 	@Override
 	public void addTrajectoriesToSelection(
-	        final List<OmegaTrajectory> trajectories, final int index) {
+			final List<OmegaTrajectory> trajectories, final int index) {
 		this.getTrajectories().addAll(index, trajectories);
 	}
 
 	@Override
 	public int removeTrajectoriesFromSelection(
-	        final List<OmegaTrajectory> trajectories) {
+			final List<OmegaTrajectory> trajectories) {
 		final int index = this.getTrajectories().indexOf(trajectories.get(0));
 		this.getTrajectories().removeAll(trajectories);
 		return index;
@@ -225,10 +225,10 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 	}
 
 	private boolean showConfirmationDialog(final String title,
-	        final String label) {
+			final String label) {
 		final RootPaneContainer parentContainer = this.getParentContainer();
 		final GenericConfirmationDialog dialog = new GenericConfirmationDialog(
-		        parentContainer, title, label, true);
+				parentContainer, title, label, true);
 		dialog.setVisible(true);
 		return dialog.getConfirmation();
 	}
@@ -240,13 +240,13 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 			final String traj1Name = this.mergeTrajectory.getName();
 			final int traj1NameIndex = traj1Name.indexOf("_") + 1;
 			final String traj1Index = traj1Name.substring(traj1NameIndex,
-			        traj1Name.length());
+					traj1Name.length());
 			final int traj1Length = this.mergeTrajectory.getLength();
 
 			final String traj2Name = selectedTraj.getName();
 			final int traj2NameIndex = traj2Name.indexOf("_") + 1;
 			final String traj2Index = traj2Name.substring(traj2NameIndex,
-			        traj2Name.length());
+					traj2Name.length());
 			final int traj2Length = selectedTraj.getLength();
 
 			final StringBuffer buf = new StringBuffer();
@@ -260,16 +260,16 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 			buf.append(TRConstants.MERGE_CONFIRM_MSG4);
 
 			if (!this.showConfirmationDialog(TRConstants.MERGE_CONFIRM,
-			        buf.toString()))
+					buf.toString()))
 				return;
 
 			OmegaTrajectory from, to;
 			if (selectedParticle.getFrameIndex() < this.mergeParticle
-			        .getFrameIndex()) {
+					.getFrameIndex()) {
 				from = selectedTraj;
 				to = this.mergeTrajectory;
 			} else if (selectedParticle.getFrameIndex() > this.mergeParticle
-			        .getFrameIndex()) {
+					.getFrameIndex()) {
 				from = this.mergeTrajectory;
 				to = selectedTraj;
 			} else
@@ -297,14 +297,14 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 		final OmegaROI selectedParticle = this.getSelectedParticle();
 
 		final int actualParticleIndex = selectedTraj.getROIs().indexOf(
-		        selectedParticle);
+				selectedParticle);
 		final int newTrajLength = selectedTraj.getLength()
-		        - actualParticleIndex;
+				- actualParticleIndex;
 
 		final String trajName = selectedTraj.getName();
 		final int trajNameIndex = trajName.indexOf("_") + 1;
 		final String trajIndex = trajName.substring(trajNameIndex,
-		        trajName.length());
+				trajName.length());
 
 		final StringBuffer buf = new StringBuffer();
 		buf.append(TRConstants.SPLIT_CONFIRM_MSG1);
@@ -318,7 +318,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 		buf.append(TRConstants.SPLIT_CONFIRM_MSG4);
 
 		if (!this.showConfirmationDialog(TRConstants.SPLIT_CONFIRM,
-		        buf.toString()))
+				buf.toString()))
 			return;
 
 		// final OmegaTrajectory newTraj = new OmegaTrajectory(newTrajLength);

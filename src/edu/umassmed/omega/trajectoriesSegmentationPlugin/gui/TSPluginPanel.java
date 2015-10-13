@@ -55,6 +55,20 @@ import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesSegmentation;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
@@ -64,26 +78,12 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectorie
 import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
 import edu.umassmed.omega.commons.gui.GenericTrajectoryInformationPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
 import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaAnalysisRunContainer;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParameter;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleDetectionRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaParticleLinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import edu.umassmed.omega.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.data.analysisRunElements.OrphanedAnalysisContainer;
-import edu.umassmed.omega.data.coreElements.OmegaImage;
-import edu.umassmed.omega.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.data.trajectoryElements.OmegaROI;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegment;
-import edu.umassmed.omega.data.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.actions.SegmentationAction;
@@ -110,6 +110,8 @@ GenericTrajectoriesBrowserContainerInterface {
 	private ActionListener save_al, undo_al, redo_al, cancel_al;
 
 	private JTabbedPane tabbedPane;
+
+	private GenericTrackingResultsPanel resPanel;
 
 	private GenericTrajectoriesBrowserPanel tbPanel;
 	private TSPanel tsPanel;
@@ -303,6 +305,10 @@ GenericTrajectoriesBrowserContainerInterface {
 		this.tsPanel = new TSPanel(this.getParentContainer(), this,
 				this.actualSegmentationTypes);
 		this.tabbedPane.add(TSConstants.SEGMENTATION_TABNAME, this.tsPanel);
+
+		this.resPanel = new GenericTrackingResultsPanel(
+		        this.getParentContainer());
+		this.tabbedPane.add("Segmentation results", this.resPanel);
 
 		this.add(this.tabbedPane, BorderLayout.CENTER);
 
@@ -517,10 +523,22 @@ GenericTrajectoriesBrowserContainerInterface {
 		final OmegaPluginEvent event = new OmegaPluginEventResultsTrajectoriesSegmentation(
 				this.getPlugin(), this.selectedTrajRelinkingRun,
 				this.getSegmentsMap(), this.actualSegmentationTypes);
-		this.markActionsApplied(this.selectedTrajRelinkingRun);
+		// TODO BUG HERE : mark actions should be on starting point of this
+		// segmentation
+		// this.markActionsApplied(this.selectedTrajRelinkingRun);
+		// FIXME changed to avoid messing up with subsequent segmentation
+		OmegaTrajectoriesSegmentationRun currentSegmentation = this.selectedTrajSegmentationRun;
+		if (currentSegmentation == null) {
+			currentSegmentation = this.startingPointTrajSegmentationRun;
+		}
+		this.markActionsApplied(currentSegmentation);
+		// end changed
 		this.getPlugin().fireEvent(event);
 		final OmegaTrajectoriesSegmentationRun newSegmentation = this.trajSegmentationRuns
 				.get(this.trajSegmentationRuns.size() - 1);
+		// TODO ACTIONS SHOULD BE MOVED TO THE NEWLY CREATED SEGMENTATION
+		// HERE!?? TO BE VERIFIED
+		this.moveActionsToNewSegmentation(currentSegmentation, newSegmentation);
 		this.trajectoriesSegmentation_cmb.setSelectedItem(newSegmentation
 				.getName());
 	}
@@ -622,13 +640,28 @@ GenericTrajectoriesBrowserContainerInterface {
 		this.updateCurrentSegmentedTrajectories();
 	}
 
-	private void markActionsApplied(final OmegaParticleLinkingRun analysisRun) {
+	// FIXME changed to avoid messing up with subsequent segmentation
+	// private void markActionsApplied(final OmegaParticleLinkingRun
+	// analysisRun) {
+	private void markActionsApplied(
+	        final OmegaTrajectoriesSegmentationRun analysisRun) {
 		if (this.actions.containsKey(analysisRun)) {
 			final List<SegmentationAction> actionList = this.actions
 					.get(analysisRun);
 			for (final SegmentationAction action : actionList) {
 				action.setHasBeenApplied(true);
 			}
+		}
+	}
+
+	private void moveActionsToNewSegmentation(
+	        final OmegaTrajectoriesSegmentationRun currentSegmentation,
+	        final OmegaTrajectoriesSegmentationRun newSegmentation) {
+		if (this.actions.containsKey(currentSegmentation)) {
+			final List<SegmentationAction> actionList = this.actions
+					.get(currentSegmentation);
+			this.actions.remove(currentSegmentation);
+			this.actions.put(newSegmentation, actionList);
 		}
 	}
 
@@ -748,6 +781,10 @@ GenericTrajectoriesBrowserContainerInterface {
 		} else {
 			this.setStartingPointAndCurrentModification(this.selectedTrajSegmentationRun);
 		}
+
+		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = this
+				.getSegmentsMap();
+		this.resPanel.populateSegmentsResults(segmentsMap);
 	}
 
 	private void segmentTrajectory(
@@ -890,7 +927,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.resetTrajectories();
 			return;
 		}
-		if ((this.images == null) || (index > this.images.size())) {
+		if ((this.images == null) || (index >= this.images.size())) {
 			this.selectedImage = this.orphanedAnalysis;
 			this.tbPanel.setImage(null);
 			this.tsPanel.setImage(null);
@@ -974,10 +1011,11 @@ GenericTrajectoriesBrowserContainerInterface {
 	}
 
 	private void selectTrajectoriesSegmentationRun() {
+		this.resPanel.setAnalysisRun(null);
 		if (this.popTrajSegmentation)
 			return;
 		final int index = this.trajectoriesSegmentation_cmb.getSelectedIndex();
-		this.selectedTrajSegmentationRun = null;
+
 		if (index == -1)
 			return;
 
@@ -1004,6 +1042,13 @@ GenericTrajectoriesBrowserContainerInterface {
 		this.tbPanel
 		.updateTrajectories(this.selectedTrajRelinkingRun
 				.getResultingTrajectories(), false);
+
+		if (this.selectedTrajSegmentationRun == null) {
+			this.resPanel.setAnalysisRun(this.startingPointTrajSegmentationRun);
+		} else {
+			this.resPanel.setAnalysisRun(this.selectedTrajSegmentationRun);
+		}
+		this.resPanel.populateSegmentsResults(this.getSegmentsMap());
 
 		// TODO think abt how to manage this point
 		// OmegaTrajectoriesSegmentationRun actualModification =
@@ -1035,21 +1080,29 @@ GenericTrajectoriesBrowserContainerInterface {
 		for (final OmegaTrajectory traj : segmentsMap.keySet()) {
 			// TODO to be revisited
 			final List<SegmentationAction> relatedActions = new ArrayList<SegmentationAction>();
+			// FIXME actions can be null here?!
 			if (actions != null) {
 				for (final SegmentationAction action : actions) {
 					if (!(action instanceof SegmentationAction)) {
 						continue;
 					}
 					final SegmentationAction segAction = action;
-					if (segAction.getTrajectory().equals(traj)) {
+					// FIXME action.hasBeenApplied added to avoid messing up of
+					// subsequent segmentation TO BE VERIFIED!
+					if (segAction.getTrajectory().equals(traj)
+							&& !action.hasBeenApplied()) {
 						relatedActions.add(segAction);
 					}
 				}
 			}
-			final List<OmegaSegment> originalSegments = OmegaAlgorithmsUtilities
-					.createDefaultSegmentation(traj);
+			// FIXME commented and using the original segments from the current
+			// segmentation avoiding to reusing those already applied TO BE
+			// VERIFIED!
+			// final List<OmegaSegment> originalSegments =
+			// OmegaAlgorithmsUtilities
+			// .createDefaultSegmentation(traj);
 			final List<OmegaSegment> newSegments = this.applySegmentActions(
-					originalSegments, relatedActions);
+					segmentsMap.get(traj), relatedActions);
 			segmentsMap.put(traj, newSegments);
 		}
 		return segmentsMap;

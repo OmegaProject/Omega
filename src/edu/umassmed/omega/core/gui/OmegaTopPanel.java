@@ -46,7 +46,7 @@ import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaSNRPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaTrackingMeasuresPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
@@ -89,7 +89,7 @@ public class OmegaTopPanel extends GenericPanel {
 				this.addPluginToCategoryMap(
 						OmegaGUIConstants.TOPPANEL_PLUGINMENU_SNR_ESTIMATOR,
 				        id, plugin);
-			} else if (plugin instanceof OmegaTrackingMeasuresPlugin) {
+			} else if (plugin instanceof OmegaStatsPlugin) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_TRACK_MEASURES,
 				        id, plugin);
