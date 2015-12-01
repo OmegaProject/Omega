@@ -27,6 +27,10 @@
  *******************************************************************************/
 package edu.umassmed.omega.core;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.umassmed.omega.commons.OmegaGenericApplication;
+import edu.umassmed.omega.commons.OmegaImageManager;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.OmegaData;
@@ -53,6 +58,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasures
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresVelocityRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
@@ -67,16 +73,15 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import edu.umassmed.omega.commons.data.utilities.OmegaTracksImporter;
-import edu.umassmed.omega.commons.eventSystem.OmegaImporterEventListener;
 import edu.umassmed.omega.commons.eventSystem.OmegaPluginEventListener;
+import edu.umassmed.omega.commons.eventSystem.OmegaTrajectoryIOEventListener;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSegments;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventTrajectories;
-import edu.umassmed.omega.commons.eventSystem.events.OmegaImporterEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaImporterEventResultsParticleTracking;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventAlgorithm;
@@ -93,17 +98,18 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrac
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresVelocity;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesRelinking;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesSegmentation;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSegments;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaTrajectoryIOEvent;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
@@ -116,10 +122,15 @@ import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsum
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSegmentsInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
+import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksExporter;
+import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksImporter;
+import edu.umassmed.omega.commons.trajectoryTool.gui.OmegaTracksToolTargetSelectorDialog;
 import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
-import edu.umassmed.omega.commons.utilities.OmegaImporter;
+import edu.umassmed.omega.commons.utilities.OmegaTrajectoryIOUtility;
 import edu.umassmed.omega.core.gui.OmegaGUIFrame;
 import edu.umassmed.omega.core.runnables.OmegaDBLoader;
 import edu.umassmed.omega.core.runnables.OmegaDBRunnable;
@@ -141,7 +152,7 @@ import edu.umassmed.omega.trajectoriesRelinkingPlugin.TrajectoriesRelinkingPlugi
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TrajectoriesSegmentationPlugin;
 
 public class OmegaApplication extends OmegaGenericApplication implements
-OmegaPluginEventListener, OmegaImporterEventListener {
+        OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 
 	public static final boolean ISDEBUG = true;
 
@@ -159,9 +170,11 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	private final List<OmegaPlugin> registeredPlugin;
 	private final Map<Long, OmegaPlugin> pluginIndexMap;
 
-	private final List<OmegaImporter> registeredImporter;
+	private final List<OmegaTrajectoryIOUtility> registeredImporter;
+	private final List<OmegaTrajectoryIOUtility> registeredExporter;
 
 	private final OmegaLogFileManager logFileManager;
+	private final OmegaImageManager imageManager;
 
 	private final OmegaOptionsFileManager optionsFileManager;
 	private final Map<String, Map<String, String>> generalOptions;
@@ -173,6 +186,7 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	public OmegaApplication() {
 		this.registeredImporter = new ArrayList<>();
+		this.registeredExporter = new ArrayList<>();
 		this.pluginIndexes = new HashMap<>();
 		this.registeredPlugin = new ArrayList<>();
 		this.pluginIndexMap = new HashMap<>();
@@ -180,6 +194,8 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 		this.logFileManager = OmegaLogFileManager.getOmegaLogFileManager(this);
 		OmegaLogFileManager.markCoreNewRun();
+
+		this.imageManager = OmegaImageManager.getOmegaImageManager(this);
 
 		this.optionsFileManager = new OmegaOptionsFileManager();
 		this.generalOptions = this.optionsFileManager.getGeneralOptions();
@@ -194,6 +210,7 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 		this.registerCorePlugins();
 		this.registerImporters();
+		this.registerExporters();
 		OmegaLogFileManager.markPluginsNewRun(this.registeredPlugin);
 
 		this.gui = new OmegaGUIFrame(this);
@@ -204,6 +221,11 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	private void registerImporters() {
 		this.registerImporter(new OmegaTracksImporter());
+
+	}
+
+	private void registerExporters() {
+		this.registerExporter(new OmegaTracksExporter());
 	}
 
 	private void registerCorePlugins() {
@@ -224,41 +246,51 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			final String optionsCategory = plugin.getOptionsCategory();
 			final Map<String, String> pluginOptions = this.optionsFileManager
-			        .getOptions(optionsCategory);
+					.getOptions(optionsCategory);
 			plugin.addPluginOptions(pluginOptions);
 			if (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
-				        .setOrphanedAnalysis(this.omegaData
-				                .getOrphanedContainer());
+				.setOrphanedAnalysis(this.omegaData
+						.getOrphanedContainer());
 			}
 			if (plugin instanceof OmegaMainDataConsumerPluginInterface) {
 				((OmegaMainDataConsumerPluginInterface) plugin)
-				        .setMainData(this.omegaData);
+				.setMainData(this.omegaData);
 			}
 			if (plugin instanceof OmegaLoadedDataConsumerPluginInterface) {
 				((OmegaLoadedDataConsumerPluginInterface) plugin)
-				        .setLoadedData(this.loadedData);
+				.setLoadedData(this.loadedData);
 			}
 			if (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface) {
 				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-				        .setLoadedAnalysisRun(this.loadedAnalysisRuns);
+				.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
 			if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 				((OmegaTrajectoriesSegmentationPlugin) plugin)
-				        .setSegmentationTypesList(this.omegaData
-				                .getSegmentationTypesList());
+				.setSegmentationTypesList(this.omegaData
+						.getSegmentationTypesList());
 			}
 		}
 	}
 
-	private void registerImporter(final OmegaImporter importer) {
-		importer.addOmegaImporterListener(this);
+	private void registerImporter(final OmegaTrajectoryIOUtility tracksIOUtility) {
+		tracksIOUtility.addOmegaImporterListener(this);
 		// final String name = importer.getName();
 		// final long index = this.pluginIndex;
 		// this.pluginIndex++;
 		// this.pluginIndexMap.put(index, plugin);
 		// this.pluginIndexes.put(name, index);
-		this.registeredImporter.add(importer);
+		this.registeredImporter.add(tracksIOUtility);
+	}
+
+	private void registerExporter(final OmegaTrajectoryIOUtility tracksIOUtility) {
+		tracksIOUtility.addOmegaImporterListener(this);
+		// final String name = importer.getName();
+		// final long index = this.pluginIndex;
+		// this.pluginIndex++;
+		// this.pluginIndexMap.put(index, plugin);
+		// this.pluginIndexes.put(name, index);
+		this.registeredExporter.add(tracksIOUtility);
 	}
 
 	private void registerPlugin(final OmegaPlugin plugin) {
@@ -286,7 +318,7 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	}
 
 	public void addGeneralOptions(final String category,
-	        final Map<String, String> options) {
+			final Map<String, String> options) {
 		this.generalOptions.put(category, options);
 	}
 
@@ -300,12 +332,12 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	public void saveOptions() {
 		for (final String category : this.generalOptions.keySet()) {
 			this.optionsFileManager.addOptions(category,
-			        this.generalOptions.get(category));
+					this.generalOptions.get(category));
 		}
 
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			this.optionsFileManager.addOptions(plugin.getOptionsCategory(),
-			        plugin.getPluginOptions());
+					plugin.getPluginOptions());
 		}
 		this.optionsFileManager.saveOptionsToFile();
 	}
@@ -313,27 +345,29 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	private void loadSelectedData(final List<OmegaElement> selectedData) {
 		for (final OmegaElement element : selectedData) {
 			if ((element instanceof OmegaProject)
-			        && !this.loadedData.containsProject((OmegaProject) element)) {
+					&& !this.loadedData.containsProject((OmegaProject) element)) {
 				this.loadedData.addProject((OmegaProject) element);
 			} else if ((element instanceof OmegaDataset)
-			        && !this.loadedData.containsDataset((OmegaDataset) element)) {
+					&& !this.loadedData.containsDataset((OmegaDataset) element)) {
 				this.loadedData.addDataset((OmegaDataset) element);
 			} else if ((element instanceof OmegaImage)
-			        && !this.loadedData.containsImage((OmegaImage) element)) {
+					&& !this.loadedData.containsImage((OmegaImage) element)) {
 				this.loadedData.addImage((OmegaImage) element);
 			} else if ((element instanceof OmegaImagePixels)
-			        && !this.loadedData
-			                .containsImagePixels((OmegaImagePixels) element)) {
+					&& !this.loadedData
+					.containsImagePixels((OmegaImagePixels) element)) {
 				this.loadedData.addImagePixels((OmegaImagePixels) element);
 			} else if ((element instanceof OmegaFrame)
-			        && !this.loadedData.containsFrame((OmegaFrame) element)) {
+					&& !this.loadedData.containsFrame((OmegaFrame) element)) {
 				this.loadedData.addFrame((OmegaFrame) element);
 			}
 		}
 	}
 
 	public void handleCoreEvent(final OmegaCoreEvent event) {
-		if (event instanceof OmegaCoreEventTrajectories) {
+		if (event instanceof OmegaCoreEventSegments) {
+			this.handleCoreEventSegments((OmegaCoreEventSegments) event);
+		} else if (event instanceof OmegaCoreEventTrajectories) {
 			this.handleCoreEventTrajectories((OmegaCoreEventTrajectories) event);
 		} else if (event instanceof OmegaCoreEventSelectionImage) {
 			this.handleCoreEventSelectionImage((OmegaCoreEventSelectionImage) event);
@@ -343,112 +377,123 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	}
 
 	private void handleCoreEventSelectionImage(
-	        final OmegaCoreEventSelectionImage event) {
+			final OmegaCoreEventSelectionImage event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectImagePluginInterface) {
 				((OmegaSelectImagePluginInterface) plugin).selectImage(event
-				        .getImage());
+						.getImage());
 			}
 		}
 	}
 
 	private void handleCoreEventSelectionAnalysisRun(
-	        final OmegaCoreEventSelectionAnalysisRun event) {
+			final OmegaCoreEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if ((event instanceof OmegaCoreEventSelectionTrajectoriesSegmentationRun)
-			        && (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
+					&& (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
 				((OmegaTrajectoriesSegmentationPlugin) plugin)
-				        .selectCurrentTrajectoriesSegmentationRun(event
-				                .getAnalysisRun());
+				.selectCurrentTrajectoriesSegmentationRun(event
+						.getAnalysisRun());
 			} else if ((event instanceof OmegaCoreEventSelectionTrajectoriesRelinkingRun)
-			        && (plugin instanceof OmegaTrajectoriesRelinkingPlugin)) {
+					&& (plugin instanceof OmegaTrajectoriesRelinkingPlugin)) {
 				((OmegaTrajectoriesRelinkingPlugin) plugin)
-				        .selectCurrentTrajectoriesRelinkingRun(event
-				                .getAnalysisRun());
+				.selectCurrentTrajectoriesRelinkingRun(event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesSegmentationRun)
-			        && (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
 				((OmegaSelectTrajectoriesSegmentationRunPluginInterface) plugin)
-				        .selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
-				                .getAnalysisRun());
+				.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesRelinkingRun)
-			        && (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
 				((OmegaSelectTrajectoriesRelinkingRunPluginInterface) plugin)
-				        .selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
-				                .getAnalysisRun());
+				.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleLinkingRun)
-			        && (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
 				((OmegaSelectParticleLinkingRunPluginInterface) plugin)
-				        .selectParticleLinkingRun((OmegaParticleLinkingRun) event
-				                .getAnalysisRun());
+				.selectParticleLinkingRun((OmegaParticleLinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleDetectionRun)
-			        && (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
 				((OmegaSelectParticleDetectionRunPluginInterface) plugin)
-				        .selectParticleDetectionRun((OmegaParticleDetectionRun) event
-				                .getAnalysisRun());
+				.selectParticleDetectionRun((OmegaParticleDetectionRun) event
+						.getAnalysisRun());
 			}
 		}
 	}
 
 	private void handleCoreEventTrajectories(
-	        final OmegaCoreEventTrajectories event) {
+			final OmegaCoreEventTrajectories event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			if (plugin instanceof OmegaTrajectoriesRelinkingPlugin) {
-				((OmegaTrajectoriesRelinkingPlugin) plugin).updateTrajectories(
-				        event.getTrajectories(), event.isSelectionEvent());
-			} else if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-				((OmegaTrajectoriesSegmentationPlugin) plugin)
-				        .updateTrajectories(event.getTrajectories(),
-				                event.isSelectionEvent());
-			} else if (plugin instanceof OmegaStatsPlugin) {
-				((OmegaStatsPlugin) plugin).updateTrajectories(
-				        event.getTrajectories(), event.isSelectionEvent());
+			if (plugin instanceof OmegaSelectTrajectoriesInterface) {
+				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
+						event.getTrajectories(), event.isSelectionEvent());
+			}
+		}
+	}
+
+	private void handleCoreEventSegments(final OmegaCoreEventSegments event) {
+		for (final OmegaPlugin plugin : this.registeredPlugin) {
+			if (plugin instanceof OmegaSelectSegmentsInterface) {
+				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
+				        new ArrayList<OmegaTrajectory>(event.getSegments()
+				                .keySet()), event.isSelectionEvent());
+				((OmegaSelectSegmentsInterface) plugin).updateSegments(
+						event.getSegments(), event.getSegmentationTypes(),
+				        event.isSelectionEvent());
 			}
 		}
 	}
 
 	@Override
-	public void handleImporterEvent(final OmegaImporterEvent event) {
+	public void handleIOEvent(final OmegaTrajectoryIOEvent event) {
 		if (event instanceof OmegaImporterEventResultsParticleTracking) {
 			this.handleImporterEventResultsParticleTracking((OmegaImporterEventResultsParticleTracking) event);
 		}
 	}
 
 	public void handleImporterEventResultsParticleTracking(
-	        final OmegaImporterEventResultsParticleTracking event) {
+			final OmegaImporterEventResultsParticleTracking event) {
+		final OmegaAnalysisRunContainer container = event.getContainer();
 		OmegaExperimenter exp = this.experimenter;
 		if (exp == null) {
 			exp = OmegaConstants.OMEGA_DEFAULT_EXPERIMENTER;
 		}
 		final OmegaParticleDetectionRun detRun = new OmegaParticleDetectionRun(
-		        exp, OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC,
-		        event.getResultingParticles(),
-		        event.getResultingParticlesValues());
+				exp, OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC,
+				event.getResultingParticles(),
+				event.getResultingParticlesValues());
 		final OmegaParticleLinkingRun linkRun = new OmegaParticleLinkingRun(
-		        exp, OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC,
-		        event.getResultingTrajectories());
+				exp, OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC,
+				event.getResultingTrajectories());
 
 		detRun.addAnalysisRun(linkRun);
 		this.loadedAnalysisRuns.add(linkRun);
-		this.omegaData.addOrphanedAnalysis(detRun);
+		if (container instanceof OrphanedAnalysisContainer) {
+			this.omegaData.addOrphanedAnalysis(detRun);
+		} else {
+			container.addAnalysisRun(detRun);
+		}
 		this.loadedAnalysisRuns.add(detRun);
 
 		final OmegaAlgorithmSpecification defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultRelinkingAlgorithmSpecification();
+		        .getDefaultRelinkingAlgorithmSpecification();
 		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
-		        exp, defaultRelinkingAlgoSpec, "Default relinking run",
-		        event.getResultingTrajectories());
+				exp, defaultRelinkingAlgoSpec, "Default relinking run",
+				event.getResultingTrajectories());
 		this.loadedAnalysisRuns.add(defaultRelinkingRun);
 		linkRun.addAnalysisRun(defaultRelinkingRun);
 
 		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultSegmentationAlgorithmSpecification();
+		        .getDefaultSegmentationAlgorithmSpecification();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
-				.createDefaultSegmentation(event.getResultingTrajectories());
+		        .createDefaultSegmentation(event.getResultingTrajectories());
 		final OmegaAnalysisRun defaultSegmentationRun = new OmegaTrajectoriesSegmentationRun(
-		        exp, defaultSegmentationAlgoSpec, "Default segmentation run",
-		        segmentsMap,
-				OmegaSegmentationTypes.getDefaultSegmentationTypes());
+				exp, defaultSegmentationAlgoSpec, "Default segmentation run",
+				segmentsMap,
+		        OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
 
@@ -462,19 +507,24 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 		if (maxT != -1) {
 			this.handleTrackingMeasures(
-			        (OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
-			        maxT, false);
+					(OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
+					maxT, false);
 		}
 
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			if (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface) {
+			if ((container instanceof OrphanedAnalysisContainer)
+					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
-				        .setOrphanedAnalysis(this.omegaData
-				                .getOrphanedContainer());
+				.setOrphanedAnalysis(this.omegaData
+						.getOrphanedContainer());
+			} else if (!(container instanceof OrphanedAnalysisContainer)
+					&& (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface)) {
+				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
+				.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
-				        .updateDisplayedData();
+				.updateDisplayedData();
 			}
 		}
 	}
@@ -491,15 +541,17 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 			this.handlePluginEventSelectionImage((OmegaPluginEventSelectionImage) event);
 		} else if (event instanceof OmegaPluginEventSelectionAnalysisRun) {
 			this.handlePluginEventSelectionAnalysisRun((OmegaPluginEventSelectionAnalysisRun) event);
-		} else {
+		} else if (event instanceof OmegaPluginEventTrajectories) {
 			this.handlePluginEventTrajectories((OmegaPluginEventTrajectories) event);
+		} else if (event instanceof OmegaPluginEventSegments) {
+			this.handlePluginEventSegments((OmegaPluginEventSegments) event);
 		}
 	}
 
 	private void handlePluginEventAlgorithm(
-			final OmegaPluginEventAlgorithm event) {
+	        final OmegaPluginEventAlgorithm event) {
 		final OmegaAlgorithmPlugin source = (OmegaAlgorithmPlugin) event
-				.getSource();
+		        .getSource();
 		if (source == null)
 			// TODO gestire errore
 			return;
@@ -512,9 +564,9 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 			return;
 
 		final OmegaAlgorithmInformation algoInfo = source
-				.getAlgorithmInformation();
+		        .getAlgorithmInformation();
 		final OmegaAlgorithmSpecification algoSpec = new OmegaAlgorithmSpecification(
-				algoInfo);
+		        algoInfo);
 		if (event.getParameters() != null) {
 			for (final OmegaParameter param : event.getParameters()) {
 				algoSpec.addParameter(param);
@@ -527,46 +579,46 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		OmegaAnalysisRun analysisRun;
 		if (event instanceof OmegaPluginEventResultsTrackingMeasuresDiffusivity) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackingMeasuresDiffusivity(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackingMeasuresDiffusivity(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsTrackingMeasuresVelocity) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackingMeasuresVelocity(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackingMeasuresVelocity(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsTrackingMeasuresMobility) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackingMeasuresMobility(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackingMeasuresMobility(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsTrackingMeasuresIntensity) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackingMeasuresIntensity(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackingMeasuresIntensity(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsSNR) {
 			analysisRun = this.handlePluginEventAlgorithmResultsSNR(algoSpec,
-					event);
+			        event);
 		} else if (event instanceof OmegaPluginEventResultsTrajectoriesSegmentation) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackSegmentationRun(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackSegmentationRun(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsTrajectoriesRelinking) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsTrackRelinkingRun(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsTrackRelinkingRun(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsParticleTracking) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsParticleTrackingRun(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsParticleTrackingRun(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsParticleLinking) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsParticleLinkingRun(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsParticleLinkingRun(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventResultsParticleDetection) {
 			analysisRun = this
-					.handlePluginEventAlgorithmResultsParticleDetectionRun(
-							algoSpec, event);
+			        .handlePluginEventAlgorithmResultsParticleDetectionRun(
+			                algoSpec, event);
 		} else if (event instanceof OmegaPluginEventPreviewParticleDetection) {
 			this.gui.updateParticles(((OmegaPluginEventPreviewParticleDetection) event)
-					.getResultingParticles());
+			        .getResultingParticles());
 			return;
 		} else
 			// TODO gestire errore
@@ -579,94 +631,186 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	}
 
 	private OmegaTrackingMeasuresDiffusivityRun handlePluginEventAlgorithmResultsTrackingMeasuresDiffusivity(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrackingMeasuresDiffusivity specificEvent = (OmegaPluginEventResultsTrackingMeasuresDiffusivity) event;
 		return new OmegaTrackingMeasuresDiffusivityRun(this.experimenter,
-		        algoSpec, specificEvent.getResultingSegments(),
-				specificEvent.getResultingNy(), specificEvent.getResultingMu(),
-				specificEvent.getResultingLogMu(),
-				specificEvent.getResultingDeltaT(),
-				specificEvent.getResultingLogDeltaT(),
-				specificEvent.getResultingGammaD(),
-				specificEvent.getResultingGammaDFromLog(),
-				specificEvent.getResultingGamma(),
-				specificEvent.getResultingGammaFromLog(),
-				specificEvent.getResultingSmss(),
-				specificEvent.getResultingSmssFromLog());
+				algoSpec, specificEvent.getResultingSegments(),
+		        specificEvent.getResultingNy(), specificEvent.getResultingMu(),
+		        specificEvent.getResultingLogMu(),
+		        specificEvent.getResultingDeltaT(),
+		        specificEvent.getResultingLogDeltaT(),
+		        specificEvent.getResultingGammaD(),
+		        specificEvent.getResultingGammaDFromLog(),
+		        specificEvent.getResultingGamma(),
+		        specificEvent.getResultingGammaFromLog(),
+		        specificEvent.getResultingSmss(),
+		        specificEvent.getResultingSmssFromLog(),
+		        specificEvent.getErrors(), specificEvent.getErrorsFromLog(),
+		        specificEvent.getSNRRun(),
+		        specificEvent.getTrackigMeasuresDiffusivityRun());
 	}
 
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresVelocity(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrackingMeasuresVelocity specificEvent = (OmegaPluginEventResultsTrackingMeasuresVelocity) event;
 		return new OmegaTrackingMeasuresVelocityRun(this.experimenter,
-		        algoSpec, specificEvent.getResultingSegments(),
-				specificEvent.getResultingLocalSpeed(),
-		        specificEvent.getResultingLocalVelocity(),
-				specificEvent.getResultingMeanSpeed(),
-				specificEvent.getResultingMeanVelocity());
+				algoSpec, specificEvent.getResultingSegments(),
+		        specificEvent.getResultingLocalSpeed(),
+				specificEvent.getResultingLocalVelocity(),
+		        specificEvent.getResultingMeanSpeed(),
+		        specificEvent.getResultingMeanVelocity());
 	}
 
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresMobility(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrackingMeasuresMobility specificEvent = (OmegaPluginEventResultsTrackingMeasuresMobility) event;
 		return new OmegaTrackingMeasuresMobilityRun(this.experimenter,
-				algoSpec, specificEvent.getResultingSegments(),
-				specificEvent.getResultingDistances(),
-		        specificEvent.getResultingDisplacements(),
-				specificEvent.getResultingMaxDisplacements(),
-				specificEvent.getResultingTotalTimeTraveled(),
-				specificEvent.getResultingConfinementRatio(),
-				specificEvent.getResultingAnglesAndDirectionalChanges());
+		        algoSpec, specificEvent.getResultingSegments(),
+		        specificEvent.getResultingDistances(),
+				specificEvent.getResultingDisplacements(),
+		        specificEvent.getResultingMaxDisplacements(),
+		        specificEvent.getResultingTotalTimeTraveled(),
+		        specificEvent.getResultingConfinementRatio(),
+		        specificEvent.getResultingAnglesAndDirectionalChanges());
 	}
 
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresIntensity(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrackingMeasuresIntensity specificEvent = (OmegaPluginEventResultsTrackingMeasuresIntensity) event;
 		return new OmegaTrackingMeasuresIntensityRun(this.experimenter,
-				algoSpec, specificEvent.getResultingSegments(),
-				specificEvent.getResultingPeakSignals(),
-				specificEvent.getResultingMeanSignals(),
-				specificEvent.getResultingLocalBackgrounds(),
-				specificEvent.getResultingLocalSNRs());
-	}
-
-	private OmegaAnalysisRun handlePluginEventAlgorithmResultsSNR(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
-		final OmegaPluginEventResultsSNR specificEvent = (OmegaPluginEventResultsSNR) event;
-		return new OmegaSNRRun(this.experimenter, algoSpec,
-		        specificEvent.getResultingImageNoise(),
-		        specificEvent.getResultingImageBGR(),
-		        specificEvent.getResultingLocalCenterSignals(),
-		        specificEvent.getResultingLocalMeanSignals(),
-		        specificEvent.getResultingLocalSignalSizes(),
-		        specificEvent.getResultingLocalPeakSignals(),
-		        specificEvent.getResultingLocalNoises(),
+		        algoSpec, specificEvent.getResultingSegments(),
+		        specificEvent.getResultingPeakSignals(),
+		        specificEvent.getResultingMeanSignals(),
+		        specificEvent.getResultingLocalBackgrounds(),
 		        specificEvent.getResultingLocalSNRs());
 	}
 
+	private OmegaAnalysisRun handlePluginEventAlgorithmResultsSNR(
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
+		final OmegaPluginEventResultsSNR specificEvent = (OmegaPluginEventResultsSNR) event;
+		return new OmegaSNRRun(this.experimenter, algoSpec,
+				specificEvent.getResultingImageNoise(),
+				specificEvent.getResultingImageBGR(),
+				specificEvent.getResultingImageAverageSNR(),
+		        specificEvent.getResultingImageMinimumSNR(),
+		        specificEvent.getResultingImageMaximumSNR(),
+				specificEvent.getResultingLocalCenterSignals(),
+				specificEvent.getResultingLocalMeanSignals(),
+				specificEvent.getResultingLocalSignalSizes(),
+				specificEvent.getResultingLocalPeakSignals(),
+				specificEvent.getResultingLocalNoises(),
+				specificEvent.getResultingLocalSNRs(),
+				specificEvent.getResultingLocalBhattacharyyaPoissonSNRs());
+	}
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackSegmentationRun(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrajectoriesSegmentation specificEvent = (OmegaPluginEventResultsTrajectoriesSegmentation) event;
 		return new OmegaTrajectoriesSegmentationRun(this.experimenter,
-		        algoSpec, specificEvent.getResultingSegments(),
-		        specificEvent.getSegmentationTypes());
+				algoSpec, specificEvent.getResultingSegments(),
+				specificEvent.getSegmentationTypes());
 	}
 
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackRelinkingRun(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrajectoriesRelinking specificEvent = (OmegaPluginEventResultsTrajectoriesRelinking) event;
 		final List<OmegaTrajectory> resultingTrajectories = specificEvent
-		        .getResultingTrajectories();
+				.getResultingTrajectories();
 
 		final OmegaTrajectoriesRelinkingRun relinkingRun = new OmegaTrajectoriesRelinkingRun(
+				this.experimenter, algoSpec, resultingTrajectories);
+
+		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
+				.getDefaultSegmentationAlgorithmSpecification();
+		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
+				.createDefaultSegmentation(resultingTrajectories);
+		final OmegaAnalysisRun defaultSegmentationRun = new OmegaTrajectoriesSegmentationRun(
+				this.experimenter, defaultSegmentationAlgoSpec,
+				"Default segmentation run", segmentsMap,
+				OmegaSegmentationTypes.getDefaultSegmentationTypes());
+		this.loadedAnalysisRuns.add(defaultSegmentationRun);
+		relinkingRun.addAnalysisRun(defaultSegmentationRun);
+
+		return relinkingRun;
+	}
+
+	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleLinkingRun(
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
+		final OmegaPluginEventResultsParticleLinking specificEvent = (OmegaPluginEventResultsParticleLinking) event;
+		final List<OmegaTrajectory> resultingTrajectories = specificEvent
+		        .getResultingTrajectories();
+		final OmegaParticleLinkingRun particleLinkingRun = new OmegaParticleLinkingRun(
 		        this.experimenter, algoSpec, resultingTrajectories);
+		final OmegaAlgorithmSpecification defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
+		        .getDefaultRelinkingAlgorithmSpecification();
+		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
+		        this.experimenter, defaultRelinkingAlgoSpec,
+		        "Default relinking run", resultingTrajectories);
+		this.loadedAnalysisRuns.add(defaultRelinkingRun);
+		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
+		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
+		        .getDefaultSegmentationAlgorithmSpecification();
+		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
+		        .createDefaultSegmentation(resultingTrajectories);
+		final OmegaAnalysisRun defaultSegmentationRun = new OmegaTrajectoriesSegmentationRun(
+		        this.experimenter, defaultSegmentationAlgoSpec,
+		        "Default segmentation run", segmentsMap,
+		        OmegaSegmentationTypes.getDefaultSegmentationTypes());
+		this.loadedAnalysisRuns.add(defaultSegmentationRun);
+		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
+		return particleLinkingRun;
+	}
+
+	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleDetectionRun(
+			final OmegaAlgorithmSpecification algoSpec,
+			final OmegaPluginEventAlgorithm event) {
+		final OmegaPluginEventResultsParticleDetection specificEvent = (OmegaPluginEventResultsParticleDetection) event;
+		return new OmegaParticleDetectionRun(this.experimenter, algoSpec,
+				specificEvent.getResultingParticles(),
+		        specificEvent.getResultingParticlesValues());
+	}
+
+	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleTrackingRun(
+	        final OmegaAlgorithmSpecification algoSpec,
+	        final OmegaPluginEventAlgorithm event) {
+		final OmegaPluginEventResultsParticleTracking specificEvent = (OmegaPluginEventResultsParticleTracking) event;
+		final Map<OmegaFrame, List<OmegaROI>> resultingParticles = specificEvent
+		        .getResultingParticles();
+		// for (final OmegaFrame frame : resultingParticles.keySet()) {
+		// System.out.println("FI: " + frame.getIndex());
+		// for (final OmegaROI roi : resultingParticles.get(frame)) {
+		// System.out.print(roi.getFrameIndex() + "\t");
+		// }
+		// System.out.println();
+		// }
+		final List<OmegaTrajectory> resultingTrajectories = specificEvent
+		        .getResultingTrajectories();
+		final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = specificEvent
+		        .getResultingParticlesValues();
+
+		final OmegaAnalysisRun particleDetectionRun = new OmegaParticleDetectionRun(
+		        this.experimenter, algoSpec, resultingParticles,
+		        resultingParticlesValues);
+		final OmegaAnalysisRun particleLinkingRun = new OmegaParticleLinkingRun(
+		        this.experimenter, algoSpec, resultingTrajectories);
+		this.loadedAnalysisRuns.add(particleLinkingRun);
+		particleDetectionRun.addAnalysisRun(particleLinkingRun);
+
+		final OmegaAlgorithmSpecification defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
+		        .getDefaultRelinkingAlgorithmSpecification();
+		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
+		        this.experimenter, defaultRelinkingAlgoSpec,
+		        "Default relinking run", resultingTrajectories);
+		this.loadedAnalysisRuns.add(defaultRelinkingRun);
+		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
 
 		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
 		        .getDefaultSegmentationAlgorithmSpecification();
@@ -677,111 +821,26 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		        "Default segmentation run", segmentsMap,
 		        OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
-		relinkingRun.addAnalysisRun(defaultSegmentationRun);
-
-		return relinkingRun;
-	}
-
-	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleLinkingRun(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
-		final OmegaPluginEventResultsParticleLinking specificEvent = (OmegaPluginEventResultsParticleLinking) event;
-		final List<OmegaTrajectory> resultingTrajectories = specificEvent
-				.getResultingTrajectories();
-		final OmegaParticleLinkingRun particleLinkingRun = new OmegaParticleLinkingRun(
-				this.experimenter, algoSpec, resultingTrajectories);
-		final OmegaAlgorithmSpecification defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultRelinkingAlgorithmSpecification();
-		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
-				this.experimenter, defaultRelinkingAlgoSpec,
-				"Default relinking run", resultingTrajectories);
-		this.loadedAnalysisRuns.add(defaultRelinkingRun);
-		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
-		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultSegmentationAlgorithmSpecification();
-		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
-				.createDefaultSegmentation(resultingTrajectories);
-		final OmegaAnalysisRun defaultSegmentationRun = new OmegaTrajectoriesSegmentationRun(
-				this.experimenter, defaultSegmentationAlgoSpec,
-				"Default segmentation run", segmentsMap,
-				OmegaSegmentationTypes.getDefaultSegmentationTypes());
-		this.loadedAnalysisRuns.add(defaultSegmentationRun);
-		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
-		return particleLinkingRun;
-	}
-
-	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleDetectionRun(
-	        final OmegaAlgorithmSpecification algoSpec,
-	        final OmegaPluginEventAlgorithm event) {
-		final OmegaPluginEventResultsParticleDetection specificEvent = (OmegaPluginEventResultsParticleDetection) event;
-		return new OmegaParticleDetectionRun(this.experimenter, algoSpec,
-		        specificEvent.getResultingParticles(),
-				specificEvent.getResultingParticlesValues());
-	}
-
-	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleTrackingRun(
-			final OmegaAlgorithmSpecification algoSpec,
-			final OmegaPluginEventAlgorithm event) {
-		final OmegaPluginEventResultsParticleTracking specificEvent = (OmegaPluginEventResultsParticleTracking) event;
-		final Map<OmegaFrame, List<OmegaROI>> resultingParticles = specificEvent
-				.getResultingParticles();
-		// for (final OmegaFrame frame : resultingParticles.keySet()) {
-		// System.out.println("FI: " + frame.getIndex());
-		// for (final OmegaROI roi : resultingParticles.get(frame)) {
-		// System.out.print(roi.getFrameIndex() + "\t");
-		// }
-		// System.out.println();
-		// }
-		final List<OmegaTrajectory> resultingTrajectories = specificEvent
-				.getResultingTrajectories();
-		final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = specificEvent
-				.getResultingParticlesValues();
-
-		final OmegaAnalysisRun particleDetectionRun = new OmegaParticleDetectionRun(
-				this.experimenter, algoSpec, resultingParticles,
-				resultingParticlesValues);
-		final OmegaAnalysisRun particleLinkingRun = new OmegaParticleLinkingRun(
-				this.experimenter, algoSpec, resultingTrajectories);
-		this.loadedAnalysisRuns.add(particleLinkingRun);
-		particleDetectionRun.addAnalysisRun(particleLinkingRun);
-
-		final OmegaAlgorithmSpecification defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultRelinkingAlgorithmSpecification();
-		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
-				this.experimenter, defaultRelinkingAlgoSpec,
-				"Default relinking run", resultingTrajectories);
-		this.loadedAnalysisRuns.add(defaultRelinkingRun);
-		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
-
-		final OmegaAlgorithmSpecification defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
-				.getDefaultSegmentationAlgorithmSpecification();
-		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
-				.createDefaultSegmentation(resultingTrajectories);
-		final OmegaAnalysisRun defaultSegmentationRun = new OmegaTrajectoriesSegmentationRun(
-				this.experimenter, defaultSegmentationAlgoSpec,
-				"Default segmentation run", segmentsMap,
-				OmegaSegmentationTypes.getDefaultSegmentationTypes());
-		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
 
 		if (event.getElement() instanceof OmegaImage) {
 			final OmegaImage img = (OmegaImage) event.getElement();
 			final int maxT = img.getDefaultPixels().getSizeT();
 			this.handleTrackingMeasures(
-					(OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
-			        maxT, true);
+			        (OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
+					maxT, true);
 		}
 
 		return particleDetectionRun;
 	}
 
 	private void handleTrackingMeasures(
-	        final OmegaTrajectoriesSegmentationRun segmentationRun,
-	        final int maxT, final boolean hasIntensities) {
+			final OmegaTrajectoriesSegmentationRun segmentationRun,
+			final int maxT, final boolean hasIntensities) {
 		// TODO FIX HERE calling the separates analizer or making a new common
 		// analizer
 		final OmegaTrackingMeasuresAnalizer trackingMeasuresAnalizer = new OmegaTrackingMeasuresAnalizer(
-		        this, segmentationRun, maxT, hasIntensities);
+				this, segmentationRun, maxT, hasIntensities);
 		final Thread t = new Thread(trackingMeasuresAnalizer);
 		t.setName("TrackingMeasuresAnalizer");
 		t.start();
@@ -789,65 +848,76 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	// TODO to be changed somehow
 	public void updateTrackingMeasuresAnalizerResults(
-			final OmegaTrajectoriesSegmentationRun segmentationRun,
-			final Map<OmegaSegment, Double[]> peakSignalsMap,
-			final Map<OmegaSegment, Double[]> meanSignalsMap,
-			final Map<OmegaSegment, Double[]> localBackgroundsMap,
-			final Map<OmegaSegment, Double[]> localSNRsMap,
-			final Map<OmegaSegment, List<Double>> distancesMap,
-			final Map<OmegaSegment, List<Double>> displacementsMap,
-			final Map<OmegaSegment, Double> maxDisplacementsMap,
-			final Map<OmegaSegment, Integer> totalTimeTraveledMap,
-			final Map<OmegaSegment, List<Double>> confinementRatioMap,
-			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap,
-			final Map<OmegaSegment, List<Double>> localSpeedMap,
-			final Map<OmegaSegment, List<Double>> localVelocityMap,
-			final Map<OmegaSegment, Double> meanSpeedMap,
-			final Map<OmegaSegment, Double> meanVelocityMap,
-			final Map<OmegaSegment, Double[]> ny,
-			final Map<OmegaSegment, Double[][]> mu,
-			final Map<OmegaSegment, Double[][]> logMu,
-			final Map<OmegaSegment, Double[][]> deltaT,
-			final Map<OmegaSegment, Double[][]> logDeltaT,
-			final Map<OmegaSegment, Double[][]> gammaD,
-			final Map<OmegaSegment, Double[][]> gammaDLog,
-			final Map<OmegaSegment, Double[]> gamma,
-			final Map<OmegaSegment, Double[]> gammaLog,
-			final Map<OmegaSegment, Double[]> smss,
-			final Map<OmegaSegment, Double[]> smssLog) {
-		final OmegaAlgorithmSpecification defaultTrackingMeasuresSpec = OmegaAlgorithmsUtilities
-				.getDefaultTrackingMeasuresSpecification();
+	        final OmegaTrajectoriesSegmentationRun segmentationRun,
+	        final Map<OmegaSegment, Double[]> peakSignalsMap,
+	        final Map<OmegaSegment, Double[]> meanSignalsMap,
+	        final Map<OmegaSegment, Double[]> localBackgroundsMap,
+	        final Map<OmegaSegment, Double[]> localSNRsMap,
+	        final Map<OmegaSegment, List<Double>> distancesMap,
+	        final Map<OmegaSegment, List<Double>> displacementsMap,
+	        final Map<OmegaSegment, Double> maxDisplacementsMap,
+	        final Map<OmegaSegment, Integer> totalTimeTraveledMap,
+	        final Map<OmegaSegment, List<Double>> confinementRatioMap,
+	        final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap,
+	        final Map<OmegaSegment, List<Double>> localSpeedMap,
+	        final Map<OmegaSegment, List<Double>> localVelocityMap,
+	        final Map<OmegaSegment, Double> meanSpeedMap,
+	        final Map<OmegaSegment, Double> meanVelocityMap,
+	        final Map<OmegaSegment, Double[]> ny,
+	        final Map<OmegaSegment, Double[][]> mu,
+	        final Map<OmegaSegment, Double[][]> logMu,
+	        final Map<OmegaSegment, Double[][]> deltaT,
+	        final Map<OmegaSegment, Double[][]> logDeltaT,
+	        final Map<OmegaSegment, Double[][]> gammaD,
+	        final Map<OmegaSegment, Double[][]> gammaDLog,
+	        final Map<OmegaSegment, Double[]> gamma,
+	        final Map<OmegaSegment, Double[]> gammaLog,
+	        final Map<OmegaSegment, Double[]> smss,
+	        final Map<OmegaSegment, Double[]> smssLog,
+			final Map<OmegaSegment, Double[]> errors,
+			final Map<OmegaSegment, Double[]> errorsLog,
+			final OmegaSNRRun snrRun,
+			final OmegaTrackingMeasuresDiffusivityRun parentDiffusivityRun) {
 		OmegaExperimenter exp = this.experimenter;
 		if (exp == null) {
 			exp = OmegaConstants.OMEGA_DEFAULT_EXPERIMENTER;
 		}
 
 		final OmegaTrackingMeasuresIntensityRun intensityRun = new OmegaTrackingMeasuresIntensityRun(
-				this.experimenter, defaultTrackingMeasuresSpec,
-				segmentationRun.getResultingSegments(), peakSignalsMap,
-				meanSignalsMap, localBackgroundsMap, localSNRsMap);
+		        exp,
+				OmegaAlgorithmsUtilities
+				.getDefaultTrackingMeasuresIntensitySpecification(),
+		        segmentationRun.getResultingSegments(), peakSignalsMap,
+		        meanSignalsMap, localBackgroundsMap, localSNRsMap);
 		segmentationRun.addAnalysisRun(intensityRun);
 		this.loadedAnalysisRuns.add(intensityRun);
 
 		final OmegaTrackingMeasuresMobilityRun mobilityRun = new OmegaTrackingMeasuresMobilityRun(
-				this.experimenter, defaultTrackingMeasuresSpec,
-				segmentationRun.getResultingSegments(), distancesMap,
-				displacementsMap, maxDisplacementsMap, totalTimeTraveledMap,
-				confinementRatioMap, anglesAndDirectionalChangesMap);
+		        exp,
+				OmegaAlgorithmsUtilities
+				.getDefaultTrackingMeasuresMobilitySpecification(),
+		        segmentationRun.getResultingSegments(), distancesMap,
+		        displacementsMap, maxDisplacementsMap, totalTimeTraveledMap,
+		        confinementRatioMap, anglesAndDirectionalChangesMap);
 		segmentationRun.addAnalysisRun(mobilityRun);
 		this.loadedAnalysisRuns.add(mobilityRun);
 
 		final OmegaTrackingMeasuresVelocityRun velocityRun = new OmegaTrackingMeasuresVelocityRun(
-				this.experimenter, defaultTrackingMeasuresSpec,
-				segmentationRun.getResultingSegments(), localSpeedMap,
-				localVelocityMap, meanSpeedMap, meanVelocityMap);
+		        exp,
+				OmegaAlgorithmsUtilities
+				.getDefaultTrackingMeasuresVelocitySpecification(),
+		        segmentationRun.getResultingSegments(), localSpeedMap,
+		        localVelocityMap, meanSpeedMap, meanVelocityMap);
 		segmentationRun.addAnalysisRun(velocityRun);
 		this.loadedAnalysisRuns.add(velocityRun);
 
 		final OmegaTrackingMeasuresDiffusivityRun diffusivityRun = new OmegaTrackingMeasuresDiffusivityRun(
-				this.experimenter, defaultTrackingMeasuresSpec,
-				segmentationRun.getResultingSegments(), ny, mu, logMu, deltaT,
-				logDeltaT, gammaD, gammaDLog, gamma, gammaLog, smss, smssLog);
+		        exp,
+				OmegaAlgorithmsUtilities
+				.getDefaultTrackingMeasuresDiffusivitySpecification(),
+		        segmentationRun.getResultingSegments(), ny, mu, logMu, deltaT,
+		        logDeltaT, gammaD, gammaDLog, gamma, gammaLog, smss, smssLog,
+				errors, errorsLog, snrRun, parentDiffusivityRun);
 		segmentationRun.addAnalysisRun(diffusivityRun);
 		this.loadedAnalysisRuns.add(diffusivityRun);
 	}
@@ -880,27 +950,27 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	}
 
 	private void handlePluginEventSelectionImage(
-	        final OmegaPluginEventSelectionImage event) {
+			final OmegaPluginEventSelectionImage event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (event.getSource().equals(plugin)) {
 				continue;
 			}
 			if (plugin instanceof OmegaSelectImagePluginInterface) {
 				((OmegaSelectImagePluginInterface) plugin).selectImage(event
-				        .getImage());
+						.getImage());
 			}
 		}
 		this.gui.selectImage(event.getImage());
 	}
 
 	private void handlePluginEventSelectionAnalysisRun(
-	        final OmegaPluginEventSelectionAnalysisRun event) {
+			final OmegaPluginEventSelectionAnalysisRun event) {
 		this.handlePluginEventSelectionAnalysisRunPlugins(event);
 		this.handlePluginEventSelectionAnalysisRunGUI(event);
 	}
 
 	private void handlePluginEventSelectionAnalysisRunPlugins(
-	        final OmegaPluginEventSelectionAnalysisRun event) {
+			final OmegaPluginEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (event.getSource().equals(plugin)) {
@@ -909,51 +979,51 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 			if (event instanceof OmegaPluginEventSelectionTrajectoriesSegmentationRun) {
 				if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 					((OmegaTrajectoriesSegmentationPlugin) plugin)
-					        .selectCurrentTrajectoriesSegmentationRun(event
-					                .getAnalysisRun());
+					.selectCurrentTrajectoriesSegmentationRun(event
+							.getAnalysisRun());
 				}
 			} else if (event instanceof OmegaPluginEventSelectionTrajectoriesRelinkingRun) {
 				if (plugin instanceof OmegaTrajectoriesRelinkingPlugin) {
 					((OmegaTrajectoriesRelinkingPlugin) plugin)
-					        .selectCurrentTrajectoriesRelinkingRun(event
-					                .getAnalysisRun());
+					.selectCurrentTrajectoriesRelinkingRun(event
+							.getAnalysisRun());
 				} else if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 					((OmegaTrajectoriesSegmentationPlugin) plugin)
-					        .selectTrajectoriesRelinkingRun(null);
+					.selectTrajectoriesRelinkingRun(null);
 				}
 			} else if ((analysisRun instanceof OmegaTrajectoriesSegmentationRun)
-			        && (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
 				((OmegaSelectTrajectoriesSegmentationRunPluginInterface) plugin)
-				        .selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
-				                .getAnalysisRun());
+				.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesRelinkingRun)
-			        && (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
 				((OmegaSelectTrajectoriesRelinkingRunPluginInterface) plugin)
-				        .selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
-				                .getAnalysisRun());
+				.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleLinkingRun)
-			        && (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
 				((OmegaSelectParticleLinkingRunPluginInterface) plugin)
-				        .selectParticleLinkingRun((OmegaParticleLinkingRun) event
-				                .getAnalysisRun());
+				.selectParticleLinkingRun((OmegaParticleLinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleDetectionRun)
-			        && (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
+					&& (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
 				((OmegaSelectParticleDetectionRunPluginInterface) plugin)
-				        .selectParticleDetectionRun((OmegaParticleDetectionRun) event
-				                .getAnalysisRun());
+				.selectParticleDetectionRun((OmegaParticleDetectionRun) event
+						.getAnalysisRun());
 			}
 		}
 	}
 
 	private void handlePluginEventSelectionAnalysisRunGUI(
-	        final OmegaPluginEventSelectionAnalysisRun event) {
+			final OmegaPluginEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
 		if (event instanceof OmegaPluginEventSelectionTrajectoriesSegmentationRun) {
 			this.gui.selectCurrentTrajectoriesSegmentationRun(((OmegaPluginEventSelectionTrajectoriesSegmentationRun) event)
-			        .getSegmentsMap());
+					.getSegmentsMap());
 		} else if (event instanceof OmegaPluginEventSelectionTrajectoriesRelinkingRun) {
 			this.gui.selectCurrentTrajectoriesRelinkingRun(((OmegaPluginEventSelectionTrajectoriesRelinkingRun) event)
-			        .getTrajectories());
+					.getTrajectories());
 		} else if (analysisRun instanceof OmegaTrajectoriesSegmentationRun) {
 			this.gui.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) analysisRun);
 		} else if (analysisRun instanceof OmegaTrajectoriesRelinkingRun) {
@@ -966,35 +1036,45 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 	}
 
 	private void handlePluginEventTrajectories(
-	        final OmegaPluginEventTrajectories event) {
+			final OmegaPluginEventTrajectories event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (plugin.equals(event.getSource())) {
 				continue;
 			}
-			if (plugin instanceof OmegaTrajectoriesRelinkingPlugin) {
-				((OmegaTrajectoriesRelinkingPlugin) plugin).updateTrajectories(
-				        event.getTrajectories(), event.isSelectionEvent());
-			} else if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-				((OmegaTrajectoriesSegmentationPlugin) plugin)
-				        .updateTrajectories(event.getTrajectories(),
-				                event.isSelectionEvent());
-			} else if (plugin instanceof OmegaStatsPlugin) {
-				((OmegaStatsPlugin) plugin).updateTrajectories(
-				        event.getTrajectories(), event.isSelectionEvent());
+			if (plugin instanceof OmegaSelectTrajectoriesInterface) {
+				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
+						event.getTrajectories(), event.isSelectionEvent());
 			}
 		}
 		this.gui.updateTrajectories(event.getTrajectories(),
-		        event.isSelectionEvent());
+				event.isSelectionEvent());
+	}
+
+	private void handlePluginEventSegments(final OmegaPluginEventSegments event) {
+		for (final OmegaPlugin plugin : this.registeredPlugin) {
+			if (plugin.equals(event.getSource())) {
+				continue;
+			}
+			if (plugin instanceof OmegaSelectSegmentsInterface) {
+				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
+				        new ArrayList<OmegaTrajectory>(event.getSegments()
+				                .keySet()), event.isSelectionEvent());
+				((OmegaSelectSegmentsInterface) plugin).updateSegments(
+						event.getSegments(), event.getSegmentationTypes(),
+						event.isSelectionEvent());
+			}
+		}
+		this.gui.updateSegments(event.getSegments(), event.isSelectionEvent());
 	}
 
 	private void handlePluginEventDataChanged(
-	        final OmegaPluginEventDataChanged event) {
+			final OmegaPluginEventDataChanged event) {
 		if (event.getSource() instanceof OmegaBrowserPlugin) {
 			this.updateGUI(event.getSource(), true);
 		} else if (event.getSource() instanceof OmegaLoaderPlugin) {
 			this.loadSelectedData(event.getSelectedData());
 			this.updateGUI(event.getSource(),
-			        event.getSelectedData().size() > 0);
+					event.getSelectedData().size() > 0);
 		}
 	}
 
@@ -1002,33 +1082,33 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		if (dataLoaded) {
 			for (final OmegaPlugin plugin : this.registeredPlugin) {
 				if ((plugin instanceof OmegaBrowserPlugin)
-				        && plugin.equals(source)) {
+						&& plugin.equals(source)) {
 					continue;
 				}
 				if (plugin instanceof OmegaImageConsumerPluginInterface) {
 					((OmegaImageConsumerPluginInterface) plugin)
-					        .setLoadedImages(this.loadedData.getImages());
+					.setLoadedImages(this.loadedData.getImages());
 				}
 				if (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface) {
 					((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-					        .setLoadedAnalysisRun(this.loadedAnalysisRuns);
+					.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 				}
 			}
 			this.gui.updateGUI(this.loadedData,
-					this.omegaData.getOrphanedContainer(),
-					this.loadedAnalysisRuns, this.gateway);
+			        this.omegaData.getOrphanedContainer(),
+			        this.loadedAnalysisRuns, this.gateway);
 		}
 
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			// if (dataLoaded && (plugin instanceof OmegaBrowserPlugin)) {
-			// continue;
-			// }
+				// continue;
+				// }
 			if ((plugin instanceof OmegaBrowserPlugin) && plugin.equals(source)) {
 				continue;
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
-				        .updateDisplayedData();
+				.updateDisplayedData();
 			}
 		}
 	}
@@ -1040,9 +1120,9 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	public void loadAnalysis() {
 		final OmegaDBServerInformation serverInfo = this.gui
-		        .getOmegaDBServerInformation();
+				.getOmegaDBServerInformation();
 		final OmegaLoginCredentials loginCred = this.gui
-		        .getOmegaLoginCredentials();
+				.getOmegaLoginCredentials();
 		this.mysqlGateway.setServerInformation(serverInfo);
 		this.mysqlGateway.setLoginCredentials(loginCred);
 
@@ -1055,12 +1135,12 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		}
 
 		this.dbDialog = new GenericMessageDialog(this.gui,
-		        "Loading analysis from Omega server",
-		        "Starting loading analysis from Omega Server", false);
+				"Loading analysis from Omega server",
+				"Starting loading analysis from Omega Server", false);
 		this.dbDialog.setVisible(true);
 		this.gui.setEnabled(false);
 		final OmegaDBLoader loader = new OmegaDBLoader(this, this.mysqlGateway,
-		        this.dbDialog, this.omegaData.getProjects());
+				this.dbDialog, this.omegaData.getProjects());
 		this.dbThread = new Thread(loader);
 		this.dbThread.start();
 
@@ -1068,9 +1148,9 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	public void updateTrajectories() {
 		final OmegaDBServerInformation serverInfo = this.gui
-		        .getOmegaDBServerInformation();
+				.getOmegaDBServerInformation();
 		final OmegaLoginCredentials loginCred = this.gui
-		        .getOmegaLoginCredentials();
+				.getOmegaLoginCredentials();
 		this.mysqlGateway.setServerInformation(serverInfo);
 		this.mysqlGateway.setLoginCredentials(loginCred);
 
@@ -1083,12 +1163,12 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 		}
 
 		this.dbDialog = new GenericMessageDialog(this.gui,
-		        "Updating analysis in Omega server",
-		        "Starting updating analysis in Omega Server", false);
+				"Updating analysis in Omega server",
+				"Starting updating analysis in Omega Server", false);
 		this.dbDialog.setVisible(true);
 		this.gui.setEnabled(false);
 		final OmegaDBUpdater updater = new OmegaDBUpdater(this,
-		        this.mysqlGateway, this.dbDialog, this.omegaData.getProjects());
+				this.mysqlGateway, this.dbDialog, this.omegaData.getProjects());
 		this.dbThread = new Thread(updater);
 		this.dbThread.start();
 
@@ -1096,9 +1176,9 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	public void saveAnalysis() {
 		final OmegaDBServerInformation serverInfo = this.gui
-		        .getOmegaDBServerInformation();
+				.getOmegaDBServerInformation();
 		final OmegaLoginCredentials loginCred = this.gui
-		        .getOmegaLoginCredentials();
+				.getOmegaLoginCredentials();
 		this.mysqlGateway.setServerInformation(serverInfo);
 		this.mysqlGateway.setLoginCredentials(loginCred);
 		final StringBuffer dialogTitleBuf = new StringBuffer();
@@ -1114,7 +1194,7 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 			// TODO add the possible errors checking the getCause of the
 			// exception
 			this.dbDialog = new GenericMessageDialog(this.gui,
-			        dialogTitleBuf.toString(), dialogMsgBuf.toString(), true);
+					dialogTitleBuf.toString(), dialogMsgBuf.toString(), true);
 			this.dbDialog.setVisible(true);
 			this.gui.setEnabled(false);
 			return;
@@ -1122,18 +1202,18 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 		try {
 			for (final OmegaSegmentationTypes segmTypes : this.omegaData
-			        .getSegmentationTypesList()) {
+					.getSegmentationTypesList()) {
 				final int result = this.mysqlGateway
-				        .isSegmentationTypesNameInDBWithDifferentValues(segmTypes);
+						.isSegmentationTypesNameInDBWithDifferentValues(segmTypes);
 				if (result == -1) {
 					dialogTitleBuf.append(" error");
 					dialogMsgBuf.append("SegmentationTypes ");
 					dialogMsgBuf.append(segmTypes.getName());
 					dialogMsgBuf
-					        .append(" already present in db with different types");
+					.append(" already present in db with different types");
 					this.dbDialog = new GenericMessageDialog(this.gui,
-					        dialogTitleBuf.toString(), dialogMsgBuf.toString(),
-					        true);
+							dialogTitleBuf.toString(), dialogMsgBuf.toString(),
+							true);
 					this.dbDialog.setVisible(true);
 					this.gui.setEnabled(false);
 					return;
@@ -1147,11 +1227,11 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 		dialogMsgBuf.append("Starting saving analysis to Omega Server");
 		this.dbDialog = new GenericMessageDialog(this.gui,
-		        dialogTitleBuf.toString(), dialogMsgBuf.toString(), false);
+				dialogTitleBuf.toString(), dialogMsgBuf.toString(), false);
 		this.dbDialog.setVisible(true);
 		this.gui.setEnabled(false);
 		final OmegaDBSaver saver = new OmegaDBSaver(this, this.mysqlGateway,
-		        this.dbDialog, this.omegaData.getProjects());
+				this.dbDialog, this.omegaData.getProjects());
 		this.dbThread = new Thread(saver);
 		this.dbThread.start();
 	}
@@ -1200,7 +1280,7 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 				if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 					final OmegaTrajectoriesSegmentationPlugin tmPlugin = (OmegaTrajectoriesSegmentationPlugin) plugin;
 					tmPlugin.updateSegmentationTypesList(new ArrayList<OmegaSegmentationTypes>(
-					        this.omegaData.getSegmentationTypesList()));
+							this.omegaData.getSegmentationTypesList()));
 				}
 			}
 		}
@@ -1208,8 +1288,98 @@ OmegaPluginEventListener, OmegaImporterEventListener {
 
 	public void showTracksImporter() {
 		// TODO to find a better way
+		final OmegaTracksToolTargetSelectorDialog ts = new OmegaTracksToolTargetSelectorDialog(
+		        this.gui, this.loadedData.getImages(),
+		        this.omegaData.getOrphanedContainer(), this.loadedAnalysisRuns);
+		ts.setImporter(true);
+		ts.setVisible(true);
+		if (!ts.isNext())
+			return;
+		final OmegaAnalysisRunContainer container = ts.getSelectedImage();
 		final OmegaTracksImporter oti = (OmegaTracksImporter) this.registeredImporter
 		        .get(0);
+		oti.setContainer(container);
 		oti.showDialog(this.gui);
+	}
+
+	public void showTracksExporter() {
+		// TODO to find a better way
+		final OmegaTracksToolTargetSelectorDialog ts = new OmegaTracksToolTargetSelectorDialog(
+				this.gui, this.loadedData.getImages(),
+				this.omegaData.getOrphanedContainer(), this.loadedAnalysisRuns);
+		ts.setImporter(false);
+		ts.setVisible(true);
+		if (!ts.isNext())
+			return;
+		final OmegaParticleDetectionRun detectionRun = ts
+		        .getSelectedParticleDetectionRun();
+		final OmegaParticleLinkingRun linkingRun = ts
+		        .getSelectedParticleLinkingRun();
+		if ((detectionRun == null) || (linkingRun == null))
+			return;
+		// TODO to find a better way
+		final OmegaTracksExporter ote = (OmegaTracksExporter) this.registeredExporter
+				.get(0);
+		ote.setParticles(detectionRun.getResultingParticles());
+		ote.setParticlesValues(detectionRun.getResultingParticlesValues());
+		ote.setTracks(linkingRun.getResultingTrajectories());
+		ote.showDialog(this.gui);
+	}
+
+	public void showDiffusivityExporter() {
+		// TODO to find a better way
+		final OmegaTracksToolTargetSelectorDialog ts = new OmegaTracksToolTargetSelectorDialog(
+				this.gui, this.loadedData.getImages(),
+				this.omegaData.getOrphanedContainer(), this.loadedAnalysisRuns);
+		ts.setImporter(false);
+		ts.setVisible(true);
+		if (!ts.isNext())
+			return;
+		final OmegaParticleDetectionRun detectionRun = ts
+		        .getSelectedParticleDetectionRun();
+		final OmegaParticleLinkingRun linkingRun = ts
+		        .getSelectedParticleLinkingRun();
+		if ((detectionRun == null) || (linkingRun == null))
+			return;
+		// TODO to find a better way
+		final OmegaTrajectoriesRelinkingRun relinkingRun = (OmegaTrajectoriesRelinkingRun) linkingRun
+		        .getAnalysisRuns().get(0);
+		final OmegaTrajectoriesSegmentationRun segmRun = (OmegaTrajectoriesSegmentationRun) relinkingRun
+		        .getAnalysisRuns().get(0);
+		final OmegaTrackingMeasuresDiffusivityRun diffRun = (OmegaTrackingMeasuresDiffusivityRun) segmRun
+		        .getAnalysisRuns().get(3);
+		final File f = new File(".//exported//dAndSmss_omega_test.txt");
+		FileWriter fw;
+		try {
+			f.createNewFile();
+			fw = new FileWriter(f);
+		} catch (final IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		final BufferedWriter bw = new BufferedWriter(fw);
+		for (final OmegaTrajectory track : diffRun.getSegments().keySet()) {
+			for (final OmegaSegment segm : diffRun.getSegments().get(track)) {
+				try {
+					bw.write(track.getName() + " from "
+					        + segm.getStartingROI().getFrameIndex() + " to "
+					        + segm.getEndingROI().getFrameIndex() + "\t"
+					        + diffRun.getGammaDFromLogResults().get(segm)[2][3]
+					        + "\t"
+					        + diffRun.getSmssFromLogResults().get(segm)[0]
+					        + "\n");
+				} catch (final IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		try {
+			bw.close();
+			fw.close();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

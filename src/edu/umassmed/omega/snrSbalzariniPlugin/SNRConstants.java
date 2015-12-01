@@ -34,6 +34,11 @@ import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class SNRConstants {
+	public static String PARAM_SNR_METHOD = "SNR Method";
+	public static String PARAM_SNR_METHOD_SBALZARINI = "Sbalzarini (TBD)";
+	public static String PARAM_SNR_METHOD_BHATTACHARYYA_POISSON = "Bhattacharyya Poisson";
+	public static String PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN = "Bhattacharyya Gaussian";
+
 	public static final String PARAM_RADIUS = OmegaConstantsAlgorithmParameters.PARAM_RADIUS;
 	public static final String PARAM_THRESHOLD = OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD;
 
@@ -52,5 +57,5 @@ public class SNRConstants {
 	public static final String PLUGIN_DESC = "To be defined";
 	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
-	        .getTime();
+	.getTime();
 }

@@ -30,6 +30,7 @@ package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
@@ -40,6 +41,8 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesReli
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -152,6 +155,16 @@ public class TMDPlugin extends OmegaStatsPlugin implements
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMDPluginPanel specificPanel = (TMDPluginPanel) panel;
 			specificPanel.updateTrajectories(trajectories, selection);
+		}
+	}
+
+	@Override
+	public void updateSegments(
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMDPluginPanel specificPanel = (TMDPluginPanel) panel;
+			specificPanel.updateSegments(segments, segmTypes, selection);
 		}
 	}
 

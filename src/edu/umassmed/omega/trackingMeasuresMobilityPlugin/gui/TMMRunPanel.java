@@ -15,6 +15,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresMobility;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
 import edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
@@ -77,6 +78,12 @@ OmegaMessageDisplayerPanelInterface {
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
+		if (siEvt.needDialog()) {
+			final GenericMessageDialog gd = new GenericMessageDialog(
+			        this.getParentContainer(), "Mobility Analyzer Warning",
+			        evt.getMessage(), false);
+			gd.setVisible(true);
+		}
 		this.pluginPanel.updateStatus(evt.getMessage());
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresMobility rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresMobility(

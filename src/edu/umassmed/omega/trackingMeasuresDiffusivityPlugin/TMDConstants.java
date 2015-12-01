@@ -3,10 +3,31 @@ package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TMDConstants {
+
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW = OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW;
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION = OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION;
+	public static final String PARAMETER_ERROR_OPTION = OmegaConstants.PARAMETER_ERROR_OPTION;
+	public static final String PARAMETER_ERROR_SNR = OmegaConstants.PARAMETER_ERROR_SNR;
+
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_3 = OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_3;
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_5 = OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_5;
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_10 = OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_10;
+
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_ONLY = OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_ONLY;
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LINEAR_ONLY = OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LINEAR_ONLY;
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR = OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR;
+
+	public static final String PARAMETER_ERROR_OPTION_ENABLED = OmegaConstants.PARAMETER_ERROR_OPTION_ENABLED;
+	public static final String PARAMETER_ERROR_OPTION_DISABLED = OmegaConstants.PARAMETER_ERROR_OPTION_DISABLED;
+	public static final String PARAMETER_ERROR_OPTION_ONLY = OmegaConstants.PARAMETER_ERROR_OPTION_ONLY;
+
+	public static final String PARAMETER_TMD = OmegaGUIConstants.PLUGIN_PARAMETERS_TMD;
+	public static final String PARAMETER_TMDE = OmegaGUIConstants.PLUGIN_PARAMETERS_TMDE;
 
 	public static final String SELECT_IMAGE = OmegaGUIConstants.SELECT_IMAGE;
 	public static final String SELECT_TRACKS_SPOT = OmegaGUIConstants.SELECT_TRACKS_SPOT;

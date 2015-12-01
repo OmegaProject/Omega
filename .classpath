@@ -7,12 +7,13 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_25"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_60 x86"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Omega.commons"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Omega.omeroCommons"/>
 	<classpathentry kind="lib" path="lib/Mosaic_ToolSuite.jar"/>
 	<classpathentry kind="lib" path="lib/imagej/ij-1.50b.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Omega.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Omega.omeroCommons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Omega.omeroImageJ_testConverting"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

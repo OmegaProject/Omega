@@ -51,12 +51,16 @@ public class SNRRunner implements SNRRunnable {
 	private final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> resultingImageBGR;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> resultingImageNoise;
+	private final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> resultingImageAvgSNR;
+	private final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> resultingImageMinSNR;
+	private final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> resultingImageMaxSNR;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> resultingLocalCenterSignals;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> resultingLocalMeanSignals;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> resultingLocalSignalSizes;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> resultingLocalPeakSignals;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> resultingLocalNoises;
 	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> resultingLocalSNRs;
+	private final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> resultingLocalBattaPoissonSNRs;
 
 	private final OmegaGateway gateway;
 	private final boolean isDebugMode;
@@ -77,12 +81,16 @@ public class SNRRunner implements SNRRunnable {
 
 		this.resultingImageBGR = new LinkedHashMap<>();
 		this.resultingImageNoise = new LinkedHashMap<>();
+		this.resultingImageAvgSNR = new LinkedHashMap<>();
+		this.resultingImageMinSNR = new LinkedHashMap<>();
+		this.resultingImageMaxSNR = new LinkedHashMap<>();
 		this.resultingLocalCenterSignals = new LinkedHashMap<>();
 		this.resultingLocalMeanSignals = new LinkedHashMap<>();
 		this.resultingLocalSignalSizes = new LinkedHashMap<>();
 		this.resultingLocalPeakSignals = new LinkedHashMap<>();
 		this.resultingLocalNoises = new LinkedHashMap<>();
 		this.resultingLocalSNRs = new LinkedHashMap<>();
+		this.resultingLocalBattaPoissonSNRs = new LinkedHashMap<>();
 
 		this.workers = new LinkedHashMap<>();
 		this.workersCompleted = new LinkedHashMap<>();
@@ -103,12 +111,16 @@ public class SNRRunner implements SNRRunnable {
 
 		this.resultingImageBGR = new LinkedHashMap<>();
 		this.resultingImageNoise = new LinkedHashMap<>();
+		this.resultingImageAvgSNR = new LinkedHashMap<>();
+		this.resultingImageMinSNR = new LinkedHashMap<>();
+		this.resultingImageMaxSNR = new LinkedHashMap<>();
 		this.resultingLocalCenterSignals = new LinkedHashMap<>();
 		this.resultingLocalMeanSignals = new LinkedHashMap<>();
 		this.resultingLocalSignalSizes = new LinkedHashMap<>();
 		this.resultingLocalPeakSignals = new LinkedHashMap<>();
 		this.resultingLocalNoises = new LinkedHashMap<>();
 		this.resultingLocalSNRs = new LinkedHashMap<>();
+		this.resultingLocalBattaPoissonSNRs = new LinkedHashMap<>();
 
 		this.workers = new LinkedHashMap<>();
 		this.workersCompleted = new LinkedHashMap<>();
@@ -169,12 +181,15 @@ public class SNRRunner implements SNRRunnable {
 
 			Integer radius = null;
 			Double threshold = null;
+			String method = null;
 			for (int i = 0; i < parameters.size(); i++) {
 				final OmegaParameter param = parameters.get(i);
 				if (param.getName() == SNRConstants.PARAM_RADIUS) {
 					radius = (Integer) param.getValue();
 				} else if (param.getName() == SNRConstants.PARAM_THRESHOLD) {
 					threshold = (Double) param.getValue();
+				} else if (param.getName() == SNRConstants.PARAM_SNR_METHOD) {
+					method = (String) param.getValue();
 				} else
 					return;
 			}
@@ -183,7 +198,7 @@ public class SNRRunner implements SNRRunnable {
 				final List<OmegaROI> rois = particles.get(frame);
 				final SNREstimator estimator = new SNREstimator(
 						this.displayerPanel, this.gateway, frame, rois, radius,
-						threshold);
+						threshold, method);
 				final Thread thread = new Thread(estimator);
 				this.workers.put(thread, estimator);
 				thread.start();
@@ -204,11 +219,13 @@ public class SNRRunner implements SNRRunnable {
 						break;
 					}
 				}
-				this.workers.remove(threadFinished);
-				workersCounter++;
-				completed += increase;
-				this.updateStatusSync(SNRRunner.RUNNER + " " + completed
-						+ " completed.", false);
+				if (threadFinished != null) {
+					this.workers.remove(threadFinished);
+					workersCounter++;
+					completed += increase;
+					this.updateStatusSync(SNRRunner.RUNNER + " " + completed
+							+ " completed.", false);
+				}
 				if (this.isTerminated)
 					return;
 			}
@@ -225,12 +242,16 @@ public class SNRRunner implements SNRRunnable {
 
 			final Map<OmegaFrame, Double> imageBGRMap = new LinkedHashMap<>();
 			final Map<OmegaFrame, Double> imageNoiseMap = new LinkedHashMap<>();
+			final Map<OmegaFrame, Double> imageAvgSNRMap = new LinkedHashMap<>();
+			final Map<OmegaFrame, Double> imageMinSNRMap = new LinkedHashMap<>();
+			final Map<OmegaFrame, Double> imageMaxSNRMap = new LinkedHashMap<>();
 			final Map<OmegaROI, Integer> localCenterSignals = new LinkedHashMap<>();
 			final Map<OmegaROI, Double> localMeanSignals = new LinkedHashMap<>();
 			final Map<OmegaROI, Integer> localSignalSizes = new LinkedHashMap<>();
 			final Map<OmegaROI, Integer> localPeakSignals = new LinkedHashMap<>();
 			final Map<OmegaROI, Double> localNoises = new LinkedHashMap<>();
 			final Map<OmegaROI, Double> localSNRs = new LinkedHashMap<>();
+			final Map<OmegaROI, Double> localBattaPoissonSNRs = new LinkedHashMap<>();
 			for (final Thread thread : this.workersCompleted.keySet()) {
 				final SNREstimator estimator = this.workersCompleted
 						.get(thread);
@@ -238,16 +259,27 @@ public class SNRRunner implements SNRRunnable {
 						estimator.getImageBackground());
 				imageNoiseMap.put(estimator.getFrame(),
 						estimator.getImageNoise());
+				imageAvgSNRMap.put(estimator.getFrame(),
+				        estimator.getAverageSNR());
+				imageMinSNRMap.put(estimator.getFrame(),
+						estimator.getMinimumSNR());
+				imageMaxSNRMap.put(estimator.getFrame(),
+						estimator.getMaximumSNR());
 				localCenterSignals.putAll(estimator.getLocalCenterSignals());
 				localMeanSignals.putAll(estimator.getLocalMeanSignals());
 				localSignalSizes.putAll(estimator.getLocalSignalSizes());
 				localPeakSignals.putAll(estimator.getLocalPeakSignals());
 				localNoises.putAll(estimator.getLocalNoises());
 				localSNRs.putAll(estimator.getLocalSNRs());
+				localBattaPoissonSNRs.putAll(estimator
+						.getLocalBhattacharyyaPoissonSNRs());
 			}
 
 			this.resultingImageBGR.put(spotDetRun, imageBGRMap);
 			this.resultingImageNoise.put(spotDetRun, imageNoiseMap);
+			this.resultingImageAvgSNR.put(spotDetRun, imageAvgSNRMap);
+			this.resultingImageMinSNR.put(spotDetRun, imageMinSNRMap);
+			this.resultingImageMaxSNR.put(spotDetRun, imageMaxSNRMap);
 			this.resultingLocalCenterSignals
 			.put(spotDetRun, localCenterSignals);
 			this.resultingLocalMeanSignals.put(spotDetRun, localMeanSignals);
@@ -255,6 +287,8 @@ public class SNRRunner implements SNRRunnable {
 			this.resultingLocalPeakSignals.put(spotDetRun, localPeakSignals);
 			this.resultingLocalNoises.put(spotDetRun, localNoises);
 			this.resultingLocalSNRs.put(spotDetRun, localSNRs);
+			this.resultingLocalBattaPoissonSNRs.put(spotDetRun,
+					localBattaPoissonSNRs);
 			// TODO get data and send
 		}
 	}
@@ -269,6 +303,18 @@ public class SNRRunner implements SNRRunnable {
 
 	public Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> getResultingImageBackground() {
 		return this.resultingImageBGR;
+	}
+
+	public Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> getResultingImageAverageSNR() {
+		return this.resultingImageAvgSNR;
+	}
+
+	public Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> getResultingImageMinimumSNR() {
+		return this.resultingImageMinSNR;
+	}
+
+	public Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> getResultingImageMaximumSNR() {
+		return this.resultingImageMaxSNR;
 	}
 
 	public Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> getResultingImageNoise() {
@@ -297,6 +343,10 @@ public class SNRRunner implements SNRRunnable {
 
 	public Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> getResultingLocalSNRs() {
 		return this.resultingLocalSNRs;
+	}
+
+	public Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> getResultingLocalBhattacharyyaPoissonSNRs() {
+		return this.resultingLocalBattaPoissonSNRs;
 	}
 
 	public void terminate() {

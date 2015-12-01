@@ -62,7 +62,7 @@ import edu.umassmed.omega.omeroCommons.gui.OmeroPluginGUIConstants;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 
 public class OmeroPluginPanel extends OmeroPanel implements
-OmeroAbstractBrowserInterface {
+        OmeroAbstractBrowserInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -74,13 +74,13 @@ OmeroAbstractBrowserInterface {
 	private final OmegaData omegaData;
 
 	public OmeroPluginPanel(final RootPaneContainer parent,
-			final OmeroPlugin plugin, final OmeroGateway gateway,
-			final OmegaData omegaData, final int index) {
+	        final OmeroPlugin plugin, final OmeroGateway gateway,
+	        final OmegaData omegaData, final int index) {
 		super(parent, plugin, index, gateway);
 
 		this.omegaData = omegaData;
 		this.connectionDialog = new OmeroConnectionDialog(
-				this.getParentContainer(), this, gateway);
+		        this.getParentContainer(), this, gateway);
 
 		this.setPreferredSize(new Dimension(750, 500));
 		// this.setLayout(new BorderLayout());
@@ -93,7 +93,7 @@ OmeroAbstractBrowserInterface {
 
 		this.connectionMenu = new JMenu(OmeroPluginGUIConstants.MENU_CONNECTION);
 		this.connectMItem = new JMenuItem(
-				OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
+		        OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
 		this.connectionMenu.add(this.connectMItem);
 
 		menu.add(this.connectionMenu);
@@ -110,7 +110,7 @@ OmeroAbstractBrowserInterface {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-						OmegaConstantsEvent.PROPERTY_CONNECTION)) {
+				        OmegaConstantsEvent.PROPERTY_CONNECTION)) {
 					OmeroPluginPanel.this.handlePropertyConnection();
 				}
 			}
@@ -118,22 +118,22 @@ OmeroAbstractBrowserInterface {
 	}
 
 	private void handlePropertyConnection() {
+		if (this.getGateway().isConnected()) {
+			final OmegaExperimenter experimenter = OmeroImporterUtilities
+			        .getExperimenter(this.getGateway());
+			this.getPlugin().fireEvent(
+					new OmegaPluginEventGateway(this.getPlugin(),
+							OmegaPluginEventGateway.STATUS_CONNECTED,
+							experimenter));
+		} else {
+			OmeroPluginPanel.this.getPlugin().fireEvent(
+					new OmegaPluginEventGateway(this.getPlugin(),
+							OmegaPluginEventGateway.STATUS_DISCONNECTED));
+		}
 		try {
 			this.updateVisualizationMenu();
 		} catch (final ServerError e) {
 			e.printStackTrace();
-		}
-		if (this.getGateway().isConnected()) {
-			final OmegaExperimenter experimenter = OmeroImporterUtilities
-					.getExperimenter(this.getGateway());
-			this.getPlugin().fireEvent(
-			        new OmegaPluginEventGateway(this.getPlugin(),
-			                OmegaPluginEventGateway.STATUS_CONNECTED,
-			                experimenter));
-		} else {
-			OmeroPluginPanel.this.getPlugin().fireEvent(
-			        new OmegaPluginEventGateway(this.getPlugin(),
-			                OmegaPluginEventGateway.STATUS_DISCONNECTED));
 		}
 	}
 
@@ -160,9 +160,9 @@ OmeroAbstractBrowserInterface {
 		final int x = parentLocOnScren.x;
 		final int y = parentLocOnScren.y;
 		final int xOffset = (parentSize.width / 2)
-				- (this.connectionDialog.getSize().width / 2);
+		        - (this.connectionDialog.getSize().width / 2);
 		final int yOffset = (parentSize.height / 2)
-				- (this.connectionDialog.getSize().height / 2);
+		        - (this.connectionDialog.getSize().height / 2);
 		final Point dialogPos = new Point(x + xOffset, y + yOffset);
 		this.connectionDialog.setLocation(dialogPos);
 		this.connectionDialog.validate();
@@ -182,28 +182,28 @@ OmeroAbstractBrowserInterface {
 
 		// TODO add all checks and sub checks
 		OmegaExperimenter exp = OmeroImporterUtilities.loadAndAddExperimenter(
-		        this.getGateway(), this.omegaData);
+				this.getGateway(), this.omegaData);
 		if (exp != null) {
 			dataChanged = OmeroImporterUtilities.loadAndAddGroups(exp,
-			        this.getGateway(), this.omegaData);
+					this.getGateway(), this.omegaData);
 		} else {
 			exp = OmeroImporterUtilities.loadAndAddExperimenterAndGroups(
-			        this.getGateway(), this.omegaData);
+					this.getGateway(), this.omegaData);
 			dataChanged = true;
 		}
 		// Create pixels, image, dataset and project for the actual images
 		// to load and add it to the main data
 		for (final OmeroImageWrapper imageWrapper : this
-				.getImageWrapperToBeLoadedList()) {
+		        .getImageWrapperToBeLoadedList()) {
 			dataChanged = OmeroImporterUtilities.loadAndAddData(imageWrapper,
-			        exp, this.getGateway(), this.omegaData, hasToSelect,
-			        loadedElements, dataChanged);
+					exp, this.getGateway(), this.omegaData, hasToSelect,
+					loadedElements, dataChanged);
 		}
 
 		if (dataChanged) {
 			this.getPlugin().fireEvent(
-					new OmegaPluginEventDataChanged(this.getPlugin(),
-							loadedElements));
+			        new OmegaPluginEventDataChanged(this.getPlugin(),
+			                loadedElements));
 		}
 		final List<OmegaImage> loadedImages = this.getLoadedImages();
 		this.getProjectPanel().updateLoadedElements(loadedImages);

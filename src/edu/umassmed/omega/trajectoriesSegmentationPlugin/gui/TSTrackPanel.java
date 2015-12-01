@@ -46,7 +46,7 @@ public class TSTrackPanel extends GenericPanel {
 	private TSTrackLabelsPanel hLabelsPanel, vLabelsPanel;
 
 	private JScrollPane trackDisplayScrollPane, hLabelsScrollPane,
-	vLabelsScrollPane;
+	        vLabelsScrollPane;
 
 	private JPopupMenu segmentMenu;
 	private JMenuItem zoomIn, zoomOut;
@@ -74,10 +74,10 @@ public class TSTrackPanel extends GenericPanel {
 	private boolean segmOnROISelection;
 
 	public TSTrackPanel(final RootPaneContainer parent,
-			final TSPluginPanel pluginPanel, final int sizeX, final int sizeY,
-			final double pixelSizeX, final double pixelSizeY,
-			final OmegaTrajectory traj,
-			final List<OmegaSegment> segmentationsResults) {
+	        final TSPluginPanel pluginPanel, final int sizeX, final int sizeY,
+	        final double pixelSizeX, final double pixelSizeY,
+	        final OmegaTrajectory traj,
+	        final List<OmegaSegment> segmentationsResults) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 
@@ -126,7 +126,7 @@ public class TSTrackPanel extends GenericPanel {
 		final JPanel cornerPanel = new JPanel();
 		cornerPanel.setLayout(new BorderLayout());
 		final Dimension dim = new Dimension(TSTrackPanel.LABELS_PANEL_SIZE + 3,
-				TSTrackPanel.LABELS_PANEL_SIZE);
+		        TSTrackPanel.LABELS_PANEL_SIZE);
 		cornerPanel.setPreferredSize(dim);
 		cornerPanel.setSize(dim);
 
@@ -134,30 +134,32 @@ public class TSTrackPanel extends GenericPanel {
 		cornerPanel.add(lbl, BorderLayout.CENTER);
 
 		this.hLabelsPanel = new TSTrackLabelsPanel(this.getParentContainer(),
-				0, this.imgWidth, this.pixelSizeX, this.getWidth(), 0);
+		        this.pluginPanel.getPlugin(), 0, this.imgWidth,
+		        this.pixelSizeX, this.getWidth(), 0);
 		this.hLabelsScrollPane = new JScrollPane(this.hLabelsPanel);
 		this.hLabelsScrollPane
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		this.hLabelsScrollPane
-		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		        .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		topPanel.add(cornerPanel, BorderLayout.WEST);
 		topPanel.add(this.hLabelsScrollPane, BorderLayout.CENTER);
 
 		this.add(topPanel, BorderLayout.NORTH);
 
 		this.vLabelsPanel = new TSTrackLabelsPanel(this.getParentContainer(),
-				1, this.imgHeight, this.pixelSizeY, this.getHeight(), 0);
+		        this.pluginPanel.getPlugin(), 1, this.imgHeight,
+		        this.pixelSizeY, this.getHeight(), 0);
 		this.vLabelsScrollPane = new JScrollPane(this.vLabelsPanel);
 		this.vLabelsScrollPane
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		this.vLabelsScrollPane
-		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		        .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
 		this.add(this.vLabelsScrollPane, BorderLayout.WEST);
 
 		this.trackDisplayPanel = new TSTrackDisplayPanel(
-				this.getParentContainer(), this, this.radius, this.imgWidth,
-				this.imgHeight);
+		        this.getParentContainer(), this, this.radius, this.imgWidth,
+		        this.imgHeight);
 		this.trackDisplayScrollPane = new JScrollPane(this.trackDisplayPanel);
 
 		this.add(this.trackDisplayScrollPane, BorderLayout.CENTER);
@@ -166,19 +168,19 @@ public class TSTrackPanel extends GenericPanel {
 
 	private void addListeners() {
 		this.trackDisplayScrollPane.getHorizontalScrollBar()
-		.addAdjustmentListener(new AdjustmentListener() {
-			@Override
-			public void adjustmentValueChanged(final AdjustmentEvent evt) {
-				TSTrackPanel.this.handleHorizontalScrollBarChanged();
-			}
-		});
+		        .addAdjustmentListener(new AdjustmentListener() {
+			        @Override
+			        public void adjustmentValueChanged(final AdjustmentEvent evt) {
+				        TSTrackPanel.this.handleHorizontalScrollBarChanged();
+			        }
+		        });
 		this.trackDisplayScrollPane.getVerticalScrollBar()
-		.addAdjustmentListener(new AdjustmentListener() {
-			@Override
-			public void adjustmentValueChanged(final AdjustmentEvent evt) {
-				TSTrackPanel.this.handleVerticalScrollBarChanged();
-			}
-		});
+		        .addAdjustmentListener(new AdjustmentListener() {
+			        @Override
+			        public void adjustmentValueChanged(final AdjustmentEvent evt) {
+				        TSTrackPanel.this.handleVerticalScrollBarChanged();
+			        }
+		        });
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(final ComponentEvent evt) {
@@ -189,7 +191,7 @@ public class TSTrackPanel extends GenericPanel {
 			@Override
 			public void mouseClicked(final MouseEvent evt) {
 				TSTrackPanel.this.handleMouseClick(evt.getPoint(),
-						SwingUtilities.isRightMouseButton(evt));
+				        SwingUtilities.isRightMouseButton(evt));
 			}
 
 			@Override
@@ -200,14 +202,14 @@ public class TSTrackPanel extends GenericPanel {
 			@Override
 			public void mouseReleased(final MouseEvent evt) {
 				TSTrackPanel.this.handleMouseReleased(evt.getPoint(),
-						SwingUtilities.isRightMouseButton(evt));
+				        SwingUtilities.isRightMouseButton(evt));
 			}
 		});
 		this.trackDisplayPanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(final MouseEvent evt) {
 				TSTrackPanel.this.handleMouseDragged(evt.getPoint(),
-						SwingUtilities.isRightMouseButton(evt));
+				        SwingUtilities.isRightMouseButton(evt));
 			}
 		});
 		this.zoomIn.addActionListener(new ActionListener() {
@@ -243,16 +245,16 @@ public class TSTrackPanel extends GenericPanel {
 		}
 		this.hLabelsPanel.setPanelSize(neededWidth);
 		final Dimension hDim = new Dimension(neededWidth,
-				TSTrackPanel.LABELS_PANEL_SIZE);
+		        TSTrackPanel.LABELS_PANEL_SIZE);
 		this.hLabelsScrollPane.getViewport().setPreferredSize(hDim);
 		this.hLabelsScrollPane.getViewport().setSize(hDim);
 		this.vLabelsPanel.setPanelSize(neededHeight);
 		final Dimension vDim = new Dimension(TSTrackPanel.LABELS_PANEL_SIZE,
-				neededHeight);
+		        neededHeight);
 		this.vLabelsScrollPane.getViewport().setPreferredSize(vDim);
 		this.vLabelsScrollPane.getViewport().setSize(vDim);
 		this.trackDisplayPanel.setSizes(width, height, neededWidth,
-				neededHeight);
+		        neededHeight);
 		final Dimension dim = new Dimension(width, height);
 		this.trackDisplayScrollPane.getViewport().setPreferredSize(dim);
 		this.trackDisplayScrollPane.getViewport().setSize(dim);
@@ -276,9 +278,9 @@ public class TSTrackPanel extends GenericPanel {
 			final double scaledXD = xD * this.scale;
 			final double scaledYD = yD * this.scale;
 			final int pointX = new BigDecimal(String.valueOf(scaledXD))
-			.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+			        .setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 			final int pointY = new BigDecimal(String.valueOf(scaledYD))
-			.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+			        .setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 			this.points.put(roi, new Point(pointX, pointY));
 			if (this.minXP > pointX) {
 				this.minXP = pointX;
@@ -295,20 +297,20 @@ public class TSTrackPanel extends GenericPanel {
 		}
 
 		// for (final Point p : this.points) {
-			// final int tmpX = p.x + Math.abs(this.minXP) + this.offsetX;
-			// final int tmpY = p.y + Math.abs(this.minYP) + this.offsetY;
-			// p.x = tmpX;
-			// p.y = tmpY;
-			// }
+		// final int tmpX = p.x + Math.abs(this.minXP) + this.offsetX;
+		// final int tmpY = p.y + Math.abs(this.minYP) + this.offsetY;
+		// p.x = tmpX;
+		// p.y = tmpY;
+		// }
 
 		this.trackDisplayPanel.setPoints(this.points);
 	}
 
 	private void computeAndSetScaleToFit() {
 		final int width = this.getWidth()
-				- (TSTrackPanel.LABELS_PANEL_SIZE + 3) - 60;
+		        - (TSTrackPanel.LABELS_PANEL_SIZE + 3) - 60;
 		final int height = this.getHeight() - TSTrackPanel.LABELS_PANEL_SIZE
-				- 60;
+		        - 60;
 		final double neededWidth = (this.maxX - this.minX);
 		final double neededHeight = (this.maxY - this.minY);
 		final double maxScaleX = width / neededWidth;
@@ -331,13 +333,13 @@ public class TSTrackPanel extends GenericPanel {
 	}
 
 	private void computeScrollBarPositionOnDrag(final Point startP,
-			final Point endP) {
+	        final Point endP) {
 		final int diffX = startP.x - endP.x;
 		final int diffY = startP.y - endP.y;
 		final int hSBPos = this.trackDisplayScrollPane.getHorizontalScrollBar()
-				.getValue();
+		        .getValue();
 		final int vSBPos = this.trackDisplayScrollPane.getVerticalScrollBar()
-				.getValue();
+		        .getValue();
 		this.setScrollBarPosition(hSBPos + diffX, vSBPos + diffY);
 	}
 
@@ -348,20 +350,20 @@ public class TSTrackPanel extends GenericPanel {
 
 	private void handleHorizontalScrollBarChanged() {
 		final int value = this.trackDisplayScrollPane.getHorizontalScrollBar()
-				.getValue();
+		        .getValue();
 		this.hLabelsScrollPane.getHorizontalScrollBar().setValue(value);
 	}
 
 	private void handleVerticalScrollBarChanged() {
 		final int value = this.trackDisplayScrollPane.getVerticalScrollBar()
-				.getValue();
+		        .getValue();
 		this.vLabelsScrollPane.getVerticalScrollBar().setValue(value);
 	}
 
 	private void handleZoom(final double modifier) {
 		this.scale *= modifier;
 		// if (this.scale == 0) {
-			// this.scale = 0.01;
+		// this.scale = 0.01;
 		// }
 		this.rescale();
 		this.computePoints();
@@ -385,14 +387,14 @@ public class TSTrackPanel extends GenericPanel {
 	}
 
 	private void handleMouseReleased(final Point pos,
-			final boolean isRightButton) {
+	        final boolean isRightButton) {
 		if (isRightButton)
 			return;
 		this.computeScrollBarPositionOnDrag(this.mousePosition, pos);
 	}
 
 	private void handleMouseClick(final Point clickP,
-			final boolean isRightButton) {
+	        final boolean isRightButton) {
 		if (isRightButton) {
 			this.startingROI = null;
 			this.endingROI = null;
@@ -409,9 +411,9 @@ public class TSTrackPanel extends GenericPanel {
 		for (final OmegaROI roi : this.points.keySet()) {
 			final Point p = this.points.get(roi);
 			if ((clickP.x > (p.x - this.radius))
-					&& (clickP.x < (p.x + this.radius))
-					&& (clickP.y > (p.y - this.radius))
-					&& (clickP.y < (p.y + this.radius))) {
+			        && (clickP.x < (p.x + this.radius))
+			        && (clickP.y > (p.y - this.radius))
+			        && (clickP.y < (p.y + this.radius))) {
 				// System.out.println("FI: " + roi.getFrameIndex());
 				rois.add(roi);
 			}
@@ -450,16 +452,16 @@ public class TSTrackPanel extends GenericPanel {
 		this.minY = minY;
 		this.maxY = maxY;
 		this.normalizedDiffX = OmegaMathsUtilities.normalize(maxX - minX, minX,
-				maxX);
+		        maxX);
 		this.normalizedDiffY = OmegaMathsUtilities.normalize(maxY - minY, minY,
-				maxY);
+		        maxY);
 	}
 
 	private void handleROISelection(final List<OmegaROI> rois) {
 		OmegaROI roi = null;
 		if (rois.size() > 1) {
 			final TSTrackROISelectionDialog dialog = new TSTrackROISelectionDialog(
-					this.getParentContainer(), rois);
+			        this.getParentContainer(), rois);
 			dialog.setVisible(true);
 			roi = dialog.getSelectedROI();
 		} else {
@@ -497,8 +499,8 @@ public class TSTrackPanel extends GenericPanel {
 		if ((this.startingROI == null) || (this.endingROI == null))
 			return;
 		this.pluginPanel.segmentTrajectory(this.trajectory,
-				this.segmentationResults, this.startingROI, this.endingROI,
-				this.segmType);
+		        this.segmentationResults, this.startingROI, this.endingROI,
+		        this.segmType);
 		this.resetSegmentation();
 	}
 
@@ -556,12 +558,12 @@ public class TSTrackPanel extends GenericPanel {
 	}
 
 	public int getSegmentationType(final int startingIndex,
-			final int endingIndex) {
+	        final int endingIndex) {
 		for (final OmegaSegment edge : this.segmentationResults) {
 			final int edgeStartingIndex = edge.getStartingROI().getFrameIndex();
 			final int edgeEndingIndex = edge.getEndingROI().getFrameIndex();
 			if ((edgeStartingIndex <= startingIndex)
-					&& (edgeEndingIndex >= endingIndex))
+			        && (edgeEndingIndex >= endingIndex))
 				return edge.getSegmentationType();
 		}
 		return 0;

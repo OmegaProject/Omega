@@ -265,11 +265,11 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.selectParticleLinkingOverlay();
 		final List<OmegaTrajectory> modifiedTrajectories = this
 		        .selectTrajectoriesRelinkingOverlay();
-		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = this
+		final Map<OmegaTrajectory, List<OmegaSegment>> segments = this
 		        .selectTrajectoriesSegmentationOverlay();
 		this.sidePanel.setParticles(particles);
 		this.sidePanel.setTrajectories(modifiedTrajectories);
-		this.sidePanel.setSegments(segmentsMap);
+		this.sidePanel.setSegments(segments);
 		if (!this.isHandlingEvent) {
 			if (this.selectedTrajectoriesSegmentationRun == null) {
 				this.sidePanel
@@ -450,6 +450,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	private void activateTrajectoriesRelinkingOverlay() {
 		this.overlayTS_cmb.setEnabled(false);
 		this.overlayTS_cmb.setSelectedIndex(-1);
+		this.sidePanel.setSegments(null);
 		this.overlayPD_cmb.setEnabled(true);
 		this.particlesOverlay = true;
 		this.populateParticleDetectionOverlay();
@@ -464,6 +465,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayTS_cmb.setSelectedIndex(-1);
 		this.overlayTR_cmb.setEnabled(false);
 		this.overlayTR_cmb.setSelectedIndex(-1);
+		this.sidePanel.setSegments(null);
 		this.overlayPD_cmb.setEnabled(true);
 		this.particlesOverlay = true;
 		this.populateParticleDetectionOverlay();

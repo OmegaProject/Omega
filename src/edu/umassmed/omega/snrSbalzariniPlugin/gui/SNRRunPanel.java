@@ -44,6 +44,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
@@ -57,6 +58,7 @@ public class SNRRunPanel extends GenericPanel {
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
 
 	private GenericTextFieldValidable radius_txtField, threshold_txtField;
+	private GenericComboBox<String> snrMethod_cmb;
 
 	private GenericElementInformationPanel elementInfoPanel;
 	private GenericAnalysisInformationPanel analysisInfoPanel;
@@ -87,7 +89,7 @@ public class SNRRunPanel extends GenericPanel {
 		this.add(this.analysisInfoPanel);
 
 		final JPanel parametersPanel = new JPanel();
-		parametersPanel.setLayout(new GridLayout(2, 1));
+		parametersPanel.setLayout(new GridLayout(3, 1));
 		parametersPanel.setBorder(new TitledBorder(SNRConstants.PARAMETER_SNR));
 
 		final JPanel radiusPanel = new JPanel();
@@ -111,6 +113,23 @@ public class SNRRunPanel extends GenericPanel {
 		this.threshold_txtField.setPreferredSize(SNRRunPanel.VALUE_FIELDS_DIM);
 		threshPanel.add(this.threshold_txtField);
 		parametersPanel.add(threshPanel);
+
+		final JPanel snrMethodPanel = new JPanel();
+		snrMethodPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		final JLabel snrMethod_lbl = new JLabel(SNRConstants.PARAM_SNR_METHOD
+				+ ":");
+		snrMethod_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
+		snrMethodPanel.add(snrMethod_lbl);
+		this.snrMethod_cmb = new GenericComboBox<String>(
+				this.getParentContainer());
+		this.snrMethod_cmb.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
+		this.snrMethod_cmb
+		        .addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON);
+		this.snrMethod_cmb
+		        .addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN);
+		this.snrMethod_cmb.addItem(SNRConstants.PARAM_SNR_METHOD_SBALZARINI);
+		snrMethodPanel.add(this.snrMethod_cmb);
+		parametersPanel.add(snrMethodPanel);
 
 		this.add(parametersPanel);
 	}
@@ -150,6 +169,8 @@ public class SNRRunPanel extends GenericPanel {
 				this.radius_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(SNRConstants.PARAM_THRESHOLD)) {
 				this.threshold_txtField.setText(param.getStringValue());
+			} else if (param.getName().equals(SNRConstants.PARAM_SNR_METHOD)) {
+				this.snrMethod_cmb.setSelectedItem(param.getValue());
 			} else {
 				// TODO gestire errore
 			}
@@ -173,12 +194,15 @@ public class SNRRunPanel extends GenericPanel {
 		params.add(new OmegaParameter(SNRConstants.PARAM_RADIUS, radius));
 		final double thresh = Double.valueOf(this.threshold_txtField.getText());
 		params.add(new OmegaParameter(SNRConstants.PARAM_THRESHOLD, thresh));
+		final String snrMethod = (String) this.snrMethod_cmb.getSelectedItem();
+		params.add(new OmegaParameter(SNRConstants.PARAM_SNR_METHOD, snrMethod));
 		return params;
 	}
 
 	public void setFieldsEnalbed(final boolean enabled) {
 		this.radius_txtField.setEnabled(enabled);
 		this.threshold_txtField.setEnabled(enabled);
+		this.snrMethod_cmb.setEnabled(enabled);
 	}
 
 	@Override
@@ -186,5 +210,6 @@ public class SNRRunPanel extends GenericPanel {
 		super.updateParentContainer(parent);
 		this.analysisInfoPanel.updateParentContainer(parent);
 		this.elementInfoPanel.updateParentContainer(parent);
+		this.snrMethod_cmb.updateParentContainer(parent);
 	}
 }

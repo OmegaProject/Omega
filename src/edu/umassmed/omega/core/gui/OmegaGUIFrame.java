@@ -91,7 +91,8 @@ public class OmegaGUIFrame extends JFrame {
 	private JMenu fileMenu, viewMenu, editMenu;
 	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem, aboutMItem,
 	quitMItem;
-	private JMenuItem tracksImporterMItem;
+	private JMenuItem tracksImporterMItem, tracksExporterMItem,
+	        diffExporterMItem;
 	private JMenuItem sepUnifyInterfaceMItem;
 	private JMenuItem omegaDbOptionsMItem, omegaDbUpdateTrajectoriesMItem;
 
@@ -171,6 +172,16 @@ public class OmegaGUIFrame extends JFrame {
 		this.tracksImporterMItem
 		.setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
 		this.fileMenu.add(this.tracksImporterMItem);
+		this.tracksExporterMItem = new JMenuItem(
+				OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS);
+		this.tracksExporterMItem
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS_TT);
+		this.fileMenu.add(this.tracksExporterMItem);
+		this.diffExporterMItem = new JMenuItem(
+				OmegaGUIConstants.MENU_FILE_EXPORT_DIFF);
+		this.diffExporterMItem
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DIFF_TT);
+		this.fileMenu.add(this.diffExporterMItem);
 		this.fileMenu.add(new JSeparator());
 		this.omegaDbLoadMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_LOAD);
 		this.omegaDbLoadMItem
@@ -230,6 +241,18 @@ public class OmegaGUIFrame extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmegaGUIFrame.this.omegaApp.showTracksImporter();
+			}
+		});
+		this.tracksExporterMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.showTracksExporter();
+			}
+		});
+		this.diffExporterMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.showDiffusivityExporter();
 			}
 		});
 		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
@@ -520,6 +543,12 @@ public class OmegaGUIFrame extends JFrame {
 
 	public void sendCoreEvent(final OmegaCoreEvent event) {
 		this.omegaApp.handleCoreEvent(event);
+	}
+
+	public void updateSegments(
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final boolean selection) {
+		this.sidePanel.updateSegments(segments, selection);
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,

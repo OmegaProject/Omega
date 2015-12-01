@@ -65,8 +65,10 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSegments;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
@@ -105,15 +107,15 @@ GenericSegmentsBrowserContainerInterface {
 	private OmegaAnalysisRunContainer selectedImage;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
-	final List<OmegaParticleDetectionRun> particleDetectionRuns;
+	private final List<OmegaParticleDetectionRun> particleDetectionRuns;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
-	final List<OmegaParticleLinkingRun> particleLinkingRuns;
+	private final List<OmegaParticleLinkingRun> particleLinkingRuns;
 	private OmegaParticleLinkingRun selectedParticleLinkingRun;
-	final List<OmegaTrajectoriesRelinkingRun> trajRelinkingRuns;
+	private final List<OmegaTrajectoriesRelinkingRun> trajRelinkingRuns;
 	private OmegaTrajectoriesRelinkingRun selectedTrajRelinkingRun;
-	final List<OmegaTrajectoriesSegmentationRun> trajSegmentationRuns;
+	private final List<OmegaTrajectoriesSegmentationRun> trajSegmentationRuns;
 	private OmegaTrajectoriesSegmentationRun selectedTrajSegmentationRun;
-	final List<OmegaTrackingMeasuresIntensityRun> trackingMeasuresRuns;
+	private final List<OmegaTrackingMeasuresIntensityRun> trackingMeasuresRuns;
 	private OmegaTrackingMeasuresIntensityRun selectedTrackingMeasuresRun;
 
 	private JPanel topPanel;
@@ -514,6 +516,12 @@ GenericSegmentsBrowserContainerInterface {
 			// this.fireEventSelectionTrajectoriesSegmentationRun();
 		}
 
+		final Map<OmegaTrajectory, List<OmegaSegment>> segments = this.selectedTrackingMeasuresRun
+				.getSegments();
+		final OmegaSegmentationTypes segmTypes = this.selectedTrajSegmentationRun
+				.getSegmentationTypes();
+
+		this.sbPanel.updateSegments(segments, segmTypes, true);
 		this.graphPanel
 		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 	}
@@ -627,8 +635,9 @@ GenericSegmentsBrowserContainerInterface {
 		}
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
-			if (this.selectedParticleDetectionRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+			if ((analysisRun instanceof OmegaParticleLinkingRun)
+					&& this.selectedParticleDetectionRun.getAnalysisRuns()
+					.contains(analysisRun)) {
 				this.particleLinkingRuns
 				        .add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
@@ -800,6 +809,15 @@ GenericSegmentsBrowserContainerInterface {
 		this.getPlugin().fireEvent(event);
 	}
 
+	protected void fireEventSegments(
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+		// TODO modified as needed
+		final OmegaPluginEvent event = new OmegaPluginEventSegments(
+				this.getPlugin(), segments, segmTypes, selection);
+		this.getPlugin().fireEvent(event);
+	}
+
 	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
 		int index = -1;
@@ -875,8 +893,6 @@ GenericSegmentsBrowserContainerInterface {
 			segments.put(track, this.sbPanel.getSegments().get(track));
 		}
 		this.graphPanel.setSelectedSegments(segments);
-		// }
-		// graphPanel.updateTrajectories(selectedTrajectories);
 		this.fireEventTrajectories(selectedTrajectories, selected);
 	}
 
@@ -885,7 +901,9 @@ GenericSegmentsBrowserContainerInterface {
 	        final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegments,
 	        final boolean selected) {
 		this.graphPanel.setSelectedSegments(selectedSegments);
-		// this.fireEventSegments(selectedSegments, selected);
+		this.fireEventSegments(selectedSegments,
+				this.selectedTrajSegmentationRun.getSegmentationTypes(),
+				selected);
 	}
 
 	@Override
@@ -912,6 +930,15 @@ GenericSegmentsBrowserContainerInterface {
 		// }
 		// this.graphPanel.setSelectedSegments(segments);
 		// }
+	}
+
+	public void updateSegments(
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final OmegaSegmentationTypes segmTypes, final boolean selection) {
+		this.sbPanel.updateSegments(segments, segmTypes, selection);
+		if (selection) {
+			this.graphPanel.setSelectedSegments(segments);
+		}
 	}
 
 	public OmegaParticleLinkingRun getSelectedLinkingRun() {

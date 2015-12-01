@@ -152,8 +152,8 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 				this.selectedTrajRelinkingRun, this.loadedAnalysisRuns);
 		this.trackingMeasuresPanel = new OmegaDataBrowserAnalysisBrowserPanel(
 				this.getParentContainer(), this,
-				OmegaTrackingMeasuresRun.class, this.selectedLinkingRun,
-				this.loadedAnalysisRuns);
+				OmegaTrackingMeasuresRun.class,
+				this.selectedTrajSegmentationRun, this.loadedAnalysisRuns);
 		// final OmegaDataBrowserAnalysisBrowserPanel motionAnalysisPanel = new
 		// OmegaDataBrowserAnalysisBrowserPanel(
 		// this.getParentContainer(), this, OmegaAnalysisRun.class,
@@ -286,8 +286,8 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 			this.selectedTrackingMeasuresRun = analysisRunContainer;
 		} else if (analysisRunContainer instanceof OmegaTrajectoriesSegmentationRun) {
 			this.selectedTrajSegmentationRun = analysisRunContainer;
-			// this.trackingMeasuresPanel
-			// .updateTree(this.selectedTrajSegmentationRun);
+			this.trackingMeasuresPanel
+			        .updateTree(this.selectedTrajSegmentationRun);
 		} else if (analysisRunContainer instanceof OmegaTrajectoriesRelinkingRun) {
 			this.selectedTrajRelinkingRun = analysisRunContainer;
 			this.selectedTrajSegmentationRun = null;
@@ -298,8 +298,9 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 			this.selectedTrajSegmentationRun = null;
 			this.selectedTrackingMeasuresRun = null;
 			this.trackAdjPanel.updateTree(this.selectedLinkingRun);
-			this.trackingMeasuresPanel.updateTree(this.selectedLinkingRun);
-			this.trackSegmPanel.updateTree(this.selectedTrajSegmentationRun);
+			this.trackSegmPanel.updateTree(this.selectedTrajRelinkingRun);
+			this.trackingMeasuresPanel
+			        .updateTree(this.selectedTrajSegmentationRun);
 		} else if (analysisRunContainer instanceof OmegaParticleDetectionRun) {
 			this.selectedDetectionRun = analysisRunContainer;
 			this.selectedLinkingRun = null;
@@ -309,8 +310,9 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 			this.spotLinkPanel.updateTree(this.selectedDetectionRun);
 			this.snrPanel.updateTree(this.selectedDetectionRun);
 			this.trackAdjPanel.updateTree(this.selectedLinkingRun);
-			this.trackingMeasuresPanel.updateTree(this.selectedLinkingRun);
-			this.trackSegmPanel.updateTree(this.selectedTrajSegmentationRun);
+			this.trackSegmPanel.updateTree(this.selectedTrajRelinkingRun);
+			this.trackingMeasuresPanel
+			        .updateTree(this.selectedTrajSegmentationRun);
 		} else {
 			this.selectedDetectionRun = null;
 			this.selectedLinkingRun = null;

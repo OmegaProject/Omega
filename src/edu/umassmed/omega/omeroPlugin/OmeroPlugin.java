@@ -30,6 +30,7 @@ package edu.umassmed.omega.omeroPlugin;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -77,6 +78,14 @@ public class OmeroPlugin extends OmegaLoaderPlugin {
 	@Override
 	public void run() {
 		//
+	}
+
+	@Override
+	public void setGateway(final OmegaGateway gateway) {
+		super.setGateway(gateway);
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			((OmeroPluginPanel) panel).setGateway((OmeroGateway) gateway);
+		}
 	}
 
 	@Override
