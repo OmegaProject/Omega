@@ -53,7 +53,7 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.omeroImageJ_testConverting.OmeroImageJTestConverting;
+import edu.umassmed.omega.omero.ij.testConvert.OmeroImageJTestConvert;
 import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 
 public class SDRunner2 implements SDRunnable {
@@ -200,7 +200,7 @@ public class SDRunner2 implements SDRunnable {
 					.newFixedThreadPool(5);
 
 			// final ImagePlus imgPlus = null;
-			final OmeroImageJTestConverting oij = new OmeroImageJTestConverting();
+			final OmeroImageJTestConvert oij = new OmeroImageJTestConvert();
 			final ImagePlus imgPlus = oij.convert(image.getElementID(),
 			        this.gateway);
 			Float globalMin = Float.MAX_VALUE, globalMax = 0F;

@@ -53,12 +53,12 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
-import edu.umassmed.omega.omeroCommons.OmeroGateway;
-import edu.umassmed.omega.omeroCommons.OmeroImporterUtilities;
-import edu.umassmed.omega.omeroCommons.data.OmeroImageWrapper;
-import edu.umassmed.omega.omeroCommons.gui.OmeroAbstractBrowserInterface;
-import edu.umassmed.omega.omeroCommons.gui.OmeroPanel;
-import edu.umassmed.omega.omeroCommons.gui.OmeroPluginGUIConstants;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
+import edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
+import edu.umassmed.omega.omero.commons.data.OmeroImageWrapper;
+import edu.umassmed.omega.omero.commons.gui.OmeroAbstractBrowserInterface;
+import edu.umassmed.omega.omero.commons.gui.OmeroPanel;
+import edu.umassmed.omega.omero.commons.gui.OmeroPluginGUIConstants;
 import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 
 public class OmeroPluginPanel extends OmeroPanel implements

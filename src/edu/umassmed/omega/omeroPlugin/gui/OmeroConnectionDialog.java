@@ -56,9 +56,9 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaServerInfo
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
-import edu.umassmed.omega.omeroCommons.OmeroGateway;
-import edu.umassmed.omega.omeroCommons.OmeroImporterUtilities;
-import edu.umassmed.omega.omeroCommons.data.OmeroServerInformation;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
+import edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
+import edu.umassmed.omega.omero.commons.data.OmeroServerInformation;
 
 public class OmeroConnectionDialog extends GenericDialog {
 

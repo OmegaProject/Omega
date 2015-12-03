@@ -35,7 +35,7 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import edu.umassmed.omega.omeroCommons.OmeroGateway;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
 import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
 
 public class OmeroPlugin extends OmegaLoaderPlugin {
