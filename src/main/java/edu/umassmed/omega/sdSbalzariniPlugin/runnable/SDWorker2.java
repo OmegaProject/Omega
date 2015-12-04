@@ -36,9 +36,9 @@ public class SDWorker2 implements SDRunnable {
 	private final Map<OmegaROI, Map<String, Object>> values;
 
 	public SDWorker2(final ImageStack is, final OmegaImagePixels pixels,
-	        final int frameIndex, final Integer radius, final Double cutoff,
-	        final Float percentile, final Boolean percAbs,
-			final Integer channel, final Integer zSection) {
+			final int frameIndex, final Integer radius, final Double cutoff,
+			final Float percentile, final Boolean percAbs,
+	        final Integer channel, final Integer zSection) {
 		this.isDebugMode = false;
 		this.is = is;
 		this.pixels = pixels;
@@ -58,7 +58,7 @@ public class SDWorker2 implements SDRunnable {
 	@Override
 	public void run() {
 		Thread.currentThread().setName(
-		        "Mosaic2D_SpotDetector_SDWorker_" + this.frameIndex);
+				"Mosaic2D_SpotDetector_SDWorker_" + this.frameIndex);
 		if (this.isDebugMode) {
 			this.debugModeRun();
 		} else {
@@ -74,11 +74,21 @@ public class SDWorker2 implements SDRunnable {
 	}
 
 	private void normalProcessingModeRun() {
-		final MyFrame mosaicFrame = new MyFrame(this.is, this.frameIndex, 0);
-		final FeaturePointDetector fpd = new FeaturePointDetector(
-		        this.globalMax, this.globalMin);
+		final List<OmegaFrame> frames = this.pixels.getFrames(this.channel,
+				this.zSection);
+		if (!frames.isEmpty() && (frames.size() > this.frameIndex)) {
+			this.frame = frames.get(this.frameIndex);
+		} else {
+			this.frame = new OmegaFrame(this.frameIndex, this.channel,
+					this.zSection);
+			this.frame.setParentPixels(this.pixels);
+			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
+		}
+		MyFrame mosaicFrame = new MyFrame(this.is, this.frameIndex, 0);
+		FeaturePointDetector fpd = new FeaturePointDetector(this.globalMax,
+		        this.globalMin);
 		fpd.setUserDefinedParameters(this.cutoff, this.percentile, this.radius,
-				this.percentile * 100, this.percAbs);
+		        this.percentile * 100, this.percAbs);
 		fpd.featurePointDetection(mosaicFrame);
 
 		if (this.isTerminated)
@@ -105,6 +115,8 @@ public class SDWorker2 implements SDRunnable {
 			this.particles.add(particle);
 			this.values.put(particle, particleValues);
 		}
+		mosaicFrame = null;
+		fpd = null;
 	}
 
 	private void debugModeRun() {

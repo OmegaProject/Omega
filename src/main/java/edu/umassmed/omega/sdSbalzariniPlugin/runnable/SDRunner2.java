@@ -28,6 +28,7 @@
 package main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -195,14 +196,14 @@ public class SDRunner2 implements SDRunnable {
 					+ " loading values for image " + image.getName(), false);
 
 			final List<SDWorker2> loaders = new ArrayList<SDWorker2>(), workers = new ArrayList<SDWorker2>();
-			new ArrayList<SDWorker2>();
 			final ExecutorService loaderExecutor = Executors
-					.newFixedThreadPool(5);
+					.newFixedThreadPool(1);
 
 			// final ImagePlus imgPlus = null;
 			final OmeroImageJTestConvert oij = new OmeroImageJTestConvert();
 			final ImagePlus imgPlus = oij.convert(image.getElementID(),
 			        this.gateway);
+			final ImageStack is = imgPlus.getImageStack();
 			Float globalMin = Float.MAX_VALUE, globalMax = 0F;
 			globalMin = (float) imgPlus.getStatistics().min;
 			globalMax = (float) imgPlus.getStatistics().max;
@@ -210,9 +211,8 @@ public class SDRunner2 implements SDRunnable {
 			if (this.isPreview) {
 				OmegaLogFileManager.appendToPluginLog(this.plugin,
 						"Creating preview 0 SDWorker for " + image.getName());
-				final SDWorker2 worker = new SDWorker2(imgPlus.getImageStack(),
-						defaultPixels, 0, radius, cutoff, percentile, percAbs,
-						c, z);
+				final SDWorker2 worker = new SDWorker2(is, defaultPixels, 0,
+						radius, cutoff, percentile, percAbs, c, z);
 				worker.setGlobalMin(globalMin);
 				worker.setGlobalMax(globalMax);
 				workers.add(worker);
@@ -221,9 +221,8 @@ public class SDRunner2 implements SDRunnable {
 				OmegaLogFileManager.appendToPluginLog(this.plugin, "Creating "
 						+ sizeT + " SDWorkers for " + image.getName());
 				for (int t = 0; t < sizeT; t++) {
-					final SDWorker2 worker = new SDWorker2(
-					        imgPlus.getImageStack(), defaultPixels, t, radius,
-					        cutoff, percentile, percAbs, c, z);
+					final SDWorker2 worker = new SDWorker2(is, defaultPixels,
+					        t, radius, cutoff, percentile, percAbs, c, z);
 					workers.add(worker);
 					loaderExecutor.execute(worker);
 				}
