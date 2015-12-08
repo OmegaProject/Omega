@@ -147,8 +147,8 @@ public class SDRunner2 implements SDRunnable {
 					.get(image);
 			final OmegaImagePixels defaultPixels = image.getDefaultPixels();
 			final long pixelsID = defaultPixels.getElementID();
-			defaultPixels.getSizeX();
-			defaultPixels.getSizeY();
+			final int width = defaultPixels.getSizeX();
+			final int height = defaultPixels.getSizeY();
 			final int sizeT = defaultPixels.getSizeT();
 			this.gateway.getByteWidth(pixelsID);
 
@@ -197,7 +197,7 @@ public class SDRunner2 implements SDRunnable {
 
 			final List<SDWorker2> loaders = new ArrayList<SDWorker2>(), workers = new ArrayList<SDWorker2>();
 			final ExecutorService loaderExecutor = Executors
-					.newFixedThreadPool(1);
+					.newFixedThreadPool(5);
 
 			// final ImagePlus imgPlus = null;
 			final OmeroImageJTestConvert oij = new OmeroImageJTestConvert();
@@ -221,8 +221,12 @@ public class SDRunner2 implements SDRunnable {
 				OmegaLogFileManager.appendToPluginLog(this.plugin, "Creating "
 						+ sizeT + " SDWorkers for " + image.getName());
 				for (int t = 0; t < sizeT; t++) {
-					final SDWorker2 worker = new SDWorker2(is, defaultPixels,
+					final ImageStack lis = new ImageStack(width, height);
+					lis.addSlice(is.getProcessor(t + 1));
+					final SDWorker2 worker = new SDWorker2(lis, defaultPixels,
 					        t, radius, cutoff, percentile, percAbs, c, z);
+					worker.setGlobalMin(globalMin);
+					worker.setGlobalMax(globalMax);
 					workers.add(worker);
 					loaderExecutor.execute(worker);
 				}

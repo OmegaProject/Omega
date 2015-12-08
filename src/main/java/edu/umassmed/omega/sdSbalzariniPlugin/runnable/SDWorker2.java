@@ -75,12 +75,12 @@ public class SDWorker2 implements SDRunnable {
 
 	private void normalProcessingModeRun() {
 		final List<OmegaFrame> frames = this.pixels.getFrames(this.channel,
-				this.zSection);
+		        this.zSection);
 		if (!frames.isEmpty() && (frames.size() > this.frameIndex)) {
 			this.frame = frames.get(this.frameIndex);
 		} else {
 			this.frame = new OmegaFrame(this.frameIndex, this.channel,
-					this.zSection);
+			        this.zSection);
 			this.frame.setParentPixels(this.pixels);
 			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
 		}

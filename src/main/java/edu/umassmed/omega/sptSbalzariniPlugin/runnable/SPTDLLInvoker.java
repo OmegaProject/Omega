@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -55,7 +55,7 @@ public class SPTDLLInvoker {
 	private native void disposeRunner();
 
 	public static void callSetOutputPath(final String path)
-	        throws UnsatisfiedLinkError {
+			throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setOutputPath(path);
 	}
 
@@ -64,12 +64,12 @@ public class SPTDLLInvoker {
 	}
 
 	public static void callSetParameter(final String pNumber,
-	        final String pValue) throws UnsatisfiedLinkError {
+			final String pValue) throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setParameter(pNumber, pValue);
 	}
 
 	public static void callSetMinPoints(final int minPoints)
-	        throws UnsatisfiedLinkError {
+			throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setMinPoints(minPoints);
 
 	}
@@ -79,7 +79,7 @@ public class SPTDLLInvoker {
 	}
 
 	public static void callLoadImage(final int[] imageData)
-	        throws UnsatisfiedLinkError {
+			throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().loadImage(imageData);
 	}
 
@@ -96,18 +96,35 @@ public class SPTDLLInvoker {
 	 */
 	static {
 		try {
-			final String dir = System.getProperty("user.dir") + File.separator
+
+			final String dir1 = System.getProperty("user.dir") + File.separator
+					+ OmegaConstants.OMEGA_SPT_DLL + File.separator;
+			final String dir2 = System.getProperty("user.dir") + File.separator
+					+ "target" + File.separator
 			        + OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
+			// final String dir = System.getProperty("user.dir") +
+			// File.separator;
+			// OmegaClassLoaderUtilities.addLibraryPath(dir);
+			final File f = new File(dir1 + "pthreadVC2" + ".dll");
+			String dir;
+			if (f.exists()) {
+				dir = dir1;
+			} else {
+				dir = dir2;
+			}
 			OmegaClassLoaderUtilities.addLibraryPath(dir);
 			System.load(dir + "pthreadVC2" + ".dll");
 			System.load(dir + "ParticleTracker_Statistics_Dll_VC2008-Release"
-			        + ".dll");
+					+ ".dll");
 			System.load(dir + OmegaConstants.OMEGA_SPT_DLL + ".dll");
+			// System.loadLibrary("pthreadVC2.dll");
+			// System.loadLibrary("ParticleTracker_Statistics_Dll_VC2008-Release.dll");
+			// System.loadLibrary(OmegaConstants.OMEGA_SPT_DLL + ".dll");
 		} catch (final UnsatisfiedLinkError ex) {
 			OmegaLogFileManager.handleUncaughtException(ex);
-			JOptionPane.showMessageDialog(null,
-			        OmegaConstantsError.ERROR_NODLL + ex.toString(),
-			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, OmegaConstantsError.ERROR_NODLL
+			        + ex.toString(), OmegaConstants.OMEGA_TITLE,
+			        JOptionPane.ERROR_MESSAGE);
 		} catch (final SecurityException | IllegalArgumentException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex);
 		}
