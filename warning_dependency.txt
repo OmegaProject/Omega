@@ -1,0 +1,33 @@
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_60
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+org.eclipse.m2e.logback.appender
+Warning
+Wed Dec 09 12:05:27 EST 2015
+Failure to find org.springframework:org.springframework.context.support:jar:3.0.1.RELEASE-A in http://maven.imagej.net/content/groups/public was cached in the local repository, resolution will not be reattempted until the update interval of imagej.public has elapsed or updates are forced
+
+Try downloading the file manually from the project website.
+
+Then, install it using the command: 
+    mvn install:install-file -DgroupId=org.springframework -DartifactId=org.springframework.context.support -Dversion=3.0.1.RELEASE-A -Dpackaging=jar -Dfile=/path/to/file
+
+Alternatively, if you host your own repository you can deploy the file there: 
+    mvn deploy:deploy-file -DgroupId=org.springframework -DartifactId=org.springframework.context.support -Dversion=3.0.1.RELEASE-A -Dpackaging=jar -Dfile=/path/to/file -Durl=[url] -DrepositoryId=[id]
+
+Path to dependency: 
+	1) edu.umassmed.omega:omega:jar:0.0.1-SNAPSHOT
+	2) edu.umassmed.omega:omero.commons:jar:0.0.1-SNAPSHOT
+	3) omero:blitz:jar:5.1.3-ice35-b52
+	4) omero:server:jar:5.1.3-ice35-b52
+	5) org.springframework:org.springframework.context.support:jar:3.0.1.RELEASE-A
+
+
+  org.springframework:org.springframework.context.support:jar:3.0.1.RELEASE-A
+
+from the specified remote repositories:
+  imagej.public (http://maven.imagej.net/content/groups/public, releases=true, snapshots=true),
+  central (https://repo.maven.apache.org/maven2, releases=true, snapshots=false)

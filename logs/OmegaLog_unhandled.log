@@ -1,3 +1,91 @@
+# 2015-12-09_12-05-PM
+Application started!
+
+# 2015-12-09_11-59-AM
+Application started!
+
+# 2015-12-09_11-58-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : Can't load library: C:\Users\Alex\git\Omega\OMEGA2013\sptPlugin_LibsAndDlls\pthreadVC2.dll
+java.lang.ClassLoader.loadLibrary(ClassLoader.java:1824)
+java.lang.Runtime.load0(Runtime.java:809)
+java.lang.System.load(System.java:1086)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.<clinit>(SPTDLLInvoker.java:116)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-09_11-58-AM
+Application started!
+
+# 2015-12-08_11-38-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.initRunner()V
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.initRunner(Native Method)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.callInitRunner(SPTDLLInvoker.java:63)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-08_11-38-AM
+Application started!
+
+# 2015-12-08_11-38-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : Can't load library: C:\Users\Alex\git\Omega\OMEGA2013\omega-spt-stats\pthreadVC2.dll
+java.lang.ClassLoader.loadLibrary(ClassLoader.java:1824)
+java.lang.Runtime.load0(Runtime.java:809)
+java.lang.System.load(System.java:1086)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.<clinit>(SPTDLLInvoker.java:116)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-08_11-37-AM
+Application started!
+
+# 2015-12-08_11-36-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : Can't load library: C:\Users\Alex\git\Omega\OMEGA2013\pthreadVC2.dll
+java.lang.ClassLoader.loadLibrary(ClassLoader.java:1824)
+java.lang.Runtime.load0(Runtime.java:809)
+java.lang.System.load(System.java:1086)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.<clinit>(SPTDLLInvoker.java:130)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-08_11-35-AM
+Application started!
+
+# 2015-12-08_10-59-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : no pthreadVC2.dll in java.library.path
+java.lang.ClassLoader.loadLibrary(ClassLoader.java:1864)
+java.lang.Runtime.loadLibrary0(Runtime.java:870)
+java.lang.System.loadLibrary(System.java:1122)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.<clinit>(SPTDLLInvoker.java:120)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-08_10-58-AM
+Application started!
+
+# 2015-12-08_10-58-AM
+Exception in thread: SPTRunner
+java.lang.UnsatisfiedLinkError : no pthreadVC2.dll in java.library.path
+java.lang.ClassLoader.loadLibrary(ClassLoader.java:1864)
+java.lang.Runtime.loadLibrary0(Runtime.java:870)
+java.lang.System.loadLibrary(System.java:1122)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.<clinit>(SPTDLLInvoker.java:119)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.normalModeRun(SPTRunner.java:212)
+main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner.run(SPTRunner.java:124)
+java.lang.Thread.run(Thread.java:745)
+
+# 2015-12-08_10-57-AM
+Application started!
+
 # 2015-12-07_06-37-PM
 Exception in thread: SPTRunner
 java.lang.UnsatisfiedLinkError : main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTDLLInvoker.initRunner()V

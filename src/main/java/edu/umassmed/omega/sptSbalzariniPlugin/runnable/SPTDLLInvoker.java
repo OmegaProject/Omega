@@ -96,35 +96,33 @@ public class SPTDLLInvoker {
 	 */
 	static {
 		try {
-
-			final String dir1 = System.getProperty("user.dir") + File.separator
-					+ OmegaConstants.OMEGA_SPT_DLL + File.separator;
-			final String dir2 = System.getProperty("user.dir") + File.separator
-					+ "target" + File.separator
-			        + OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
+			final String dir = System.getProperty("user.dir") + File.separator
+					+ OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
+			// final String dir2 = System.getProperty("user.dir") +
+			// File.separator
+			// + "target" + File.separator
+			// + OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
 			// final String dir = System.getProperty("user.dir") +
 			// File.separator;
 			// OmegaClassLoaderUtilities.addLibraryPath(dir);
-			final File f = new File(dir1 + "pthreadVC2" + ".dll");
-			String dir;
-			if (f.exists()) {
-				dir = dir1;
-			} else {
-				dir = dir2;
-			}
+			// final File f = new File("pthreadVC2" + ".dll");
+			// String dir;
+			// if (f.exists()) {
+			// dir = dir1;
+			// } else {
+			// dir = dir2;
+			// }
+			System.out.println(dir);
 			OmegaClassLoaderUtilities.addLibraryPath(dir);
 			System.load(dir + "pthreadVC2" + ".dll");
 			System.load(dir + "ParticleTracker_Statistics_Dll_VC2008-Release"
-					+ ".dll");
+			        + ".dll");
 			System.load(dir + OmegaConstants.OMEGA_SPT_DLL + ".dll");
-			// System.loadLibrary("pthreadVC2.dll");
-			// System.loadLibrary("ParticleTracker_Statistics_Dll_VC2008-Release.dll");
-			// System.loadLibrary(OmegaConstants.OMEGA_SPT_DLL + ".dll");
 		} catch (final UnsatisfiedLinkError ex) {
 			OmegaLogFileManager.handleUncaughtException(ex);
 			JOptionPane.showMessageDialog(null, OmegaConstantsError.ERROR_NODLL
-			        + ex.toString(), OmegaConstants.OMEGA_TITLE,
-			        JOptionPane.ERROR_MESSAGE);
+					+ ex.toString(), OmegaConstants.OMEGA_TITLE,
+					JOptionPane.ERROR_MESSAGE);
 		} catch (final SecurityException | IllegalArgumentException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex);
 		}
