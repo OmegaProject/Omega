@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -11,17 +11,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresVelocity;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.runnable.AnalyzerEvent;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresVelocity;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
+import edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
 
 public class TMVRunPanel extends GenericPanel implements
-        OmegaMessageDisplayerPanelInterface {
+OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -1925743064869248360L;
 
@@ -31,7 +31,7 @@ public class TMVRunPanel extends GenericPanel implements
 	private OmegaVelocityAnalyzer analyzer;
 
 	public TMVRunPanel(final RootPaneContainer parent,
-			final TMVPluginPanel pluginPanel) {
+	        final TMVPluginPanel pluginPanel) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		this.setLayout(new BorderLayout());
@@ -69,9 +69,9 @@ public class TMVRunPanel extends GenericPanel implements
 			return;
 		// TODO Stop if thread already running (disable button would be better)
 		final int maxT = this.pluginPanel.getSelectedImage().getDefaultPixels()
-				.getSizeT();
+		        .getSizeT();
 		this.analyzer = new OmegaVelocityAnalyzer(this, maxT,
-				this.pluginPanel.getSegments());
+		        this.pluginPanel.getSegments());
 		this.analyzer.run();
 	}
 
@@ -93,8 +93,9 @@ public class TMVRunPanel extends GenericPanel implements
 			        this.analyzer.getSegments(),
 			        this.analyzer.getLocalSpeedResults(),
 			        this.analyzer.getLocalVelocityResults(),
-			        this.analyzer.getMeanSpeedResults(),
-			        this.analyzer.getMeanVelocityResults());
+			        this.analyzer.getAverageCurvilinearSpeedResults(),
+			        this.analyzer.getAverageStraightLineVelocityResults(),
+			        this.analyzer.getForwardProgressionLinearityResults());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
 		}
 	}

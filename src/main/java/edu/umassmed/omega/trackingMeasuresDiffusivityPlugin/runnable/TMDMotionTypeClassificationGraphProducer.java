@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable;
+package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -7,16 +7,16 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
+import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel;
 
 public class TMDMotionTypeClassificationGraphProducer extends
-StatsGraphProducer implements Runnable {
+        StatsGraphProducer implements Runnable {
 
 	private final static int TRACK = 0;
 	private final static int MSD = 1;
@@ -37,28 +37,32 @@ StatsGraphProducer implements Runnable {
 	private final Map<OmegaSegment, Double[][]> gammaDFromLogMap;
 	private final Map<OmegaSegment, Double[][]> gammaDMap;
 	private final Map<OmegaSegment, Double[]> gammaFromLogMap;
-	private final Map<OmegaSegment, Double[]> gammaMap;
+	// private final Map<OmegaSegment, Double[]> gammaMap;
 	private final Map<OmegaSegment, Double[]> smssFromLogMap;
-	private final Map<OmegaSegment, Double[]> smssMap;
+	// private final Map<OmegaSegment, Double[]> smssMap;
+	// private final Map<OmegaSegment, Double[]> errorMap;
+	private final Map<OmegaSegment, Double[]> errorFromLogMap;
 
 	private final JPanel[] chartPanels;
 
 	public TMDMotionTypeClassificationGraphProducer(
-			final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
-			final int motionTypeOption, final int showOption,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-			final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, Double[]> nyMap,
-			final Map<OmegaSegment, Double[][]> muMap,
-			final Map<OmegaSegment, Double[][]> logMuMap,
-			final Map<OmegaSegment, Double[][]> deltaTMap,
-			final Map<OmegaSegment, Double[][]> logDeltaTMap,
-			final Map<OmegaSegment, Double[][]> gammaDMap,
-			final Map<OmegaSegment, Double[][]> gammaDLogMap,
-			final Map<OmegaSegment, Double[]> gammaMap,
-			final Map<OmegaSegment, Double[]> gammaLogMap,
-			final Map<OmegaSegment, Double[]> smssMap,
-			final Map<OmegaSegment, Double[]> smssLogMap) {
+	        final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
+	        final int motionTypeOption, final int showOption,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, Double[]> nyMap,
+	        final Map<OmegaSegment, Double[][]> muMap,
+	        final Map<OmegaSegment, Double[][]> logMuMap,
+	        final Map<OmegaSegment, Double[][]> deltaTMap,
+	        final Map<OmegaSegment, Double[][]> logDeltaTMap,
+	        final Map<OmegaSegment, Double[][]> gammaDMap,
+	        final Map<OmegaSegment, Double[][]> gammaDLogMap,
+	        // final Map<OmegaSegment, Double[]> gammaMap,
+	        final Map<OmegaSegment, Double[]> gammaLogMap,
+	        // final Map<OmegaSegment, Double[]> smssMap,
+	        final Map<OmegaSegment, Double[]> smssLogMap,
+	        // final Map<OmegaSegment, Double[]> errorMap,
+	        final Map<OmegaSegment, Double[]> errorLogMap) {
 		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes);
 		this.motionTypeClassificationPanel = motionTypeClassificationPanel;
 		this.motionTypeOption = motionTypeOption;
@@ -74,9 +78,11 @@ StatsGraphProducer implements Runnable {
 		this.gammaDFromLogMap = gammaDLogMap;
 		this.gammaDMap = gammaDMap;
 		this.gammaFromLogMap = gammaLogMap;
-		this.gammaMap = gammaMap;
+		// this.gammaMap = gammaMap;
 		this.smssFromLogMap = smssLogMap;
-		this.smssMap = smssMap;
+		// this.smssMap = smssMap;
+		// this.errorMap = errorMap;
+		this.errorFromLogMap = errorLogMap;
 		this.chartPanels = new JPanel[4];
 	}
 
@@ -105,27 +111,27 @@ StatsGraphProducer implements Runnable {
 			this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
 			switch (this.motionTypeOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-				this.prepareMSDGraph();
+				this.chartPanels[1] = this.prepareMSDGraph();
 				break;
 			default:
-				this.prepareMSDGraph();
+				this.chartPanels[1] = this.prepareMSDGraph();
 			}
 			break;
 		case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSS_ONLY:
 			this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
 			switch (this.motionTypeOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-				this.prepareMSSGraph();
+				this.chartPanels[2] = this.prepareMSSGraph();
 				break;
 			default:
-				this.prepareMSSGraph();
+				this.chartPanels[2] = this.prepareMSSGraph();
 			}
 			break;
 		case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_PHASE_ONLY:
 			this.currentGraph = TMDMotionTypeClassificationGraphProducer.PHASE;
 			switch (this.motionTypeOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-				this.prepareSMSSvsDGraph();
+				this.chartPanels[3] = this.prepareSMSSvsDGraph();
 				break;
 			default:
 				// this.prepareMSSGraph();
@@ -135,21 +141,21 @@ StatsGraphProducer implements Runnable {
 			switch (this.motionTypeOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
-				this.prepareTrackGraph();
+				this.chartPanels[0] = this.prepareTrackGraph();
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
-				this.prepareMSDGraph();
+				this.chartPanels[1] = this.prepareMSDGraph();
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
-				this.prepareMSSGraph();
+				this.chartPanels[2] = this.prepareMSSGraph();
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.PHASE;
-				this.prepareSMSSvsDGraph();
+				this.chartPanels[3] = this.prepareSMSSvsDGraph();
 				break;
 			default:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
-				this.prepareTrackGraph();
+				this.chartPanels[0] = this.prepareTrackGraph();
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
-				this.prepareMSDGraph();
+				this.chartPanels[1] = this.prepareMSDGraph();
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
-				this.prepareMSSGraph();
+				this.chartPanels[2] = this.prepareMSSGraph();
 				// this.prepareSMSSvsDFromLogGraph();
 			}
 		}
@@ -165,11 +171,11 @@ StatsGraphProducer implements Runnable {
 				@Override
 				public void run() {
 					TMDMotionTypeClassificationGraphProducer.this.motionTypeClassificationPanel
-					.updateStatus(
-							TMDMotionTypeClassificationGraphProducer.this
-					                        .getCompleted(),
-							ended,
-							TMDMotionTypeClassificationGraphProducer.this.chartPanels);
+					        .updateStatus(
+					                TMDMotionTypeClassificationGraphProducer.this
+							.getCompleted(),
+					                ended,
+					                TMDMotionTypeClassificationGraphProducer.this.chartPanels);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
@@ -218,10 +224,10 @@ StatsGraphProducer implements Runnable {
 				gammaMap = this.gammaFromLogMap;
 				break;
 			default:
-				gammaMap = this.gammaMap;
+				gammaMap = null;
 			}
-			if (gammaMap.containsKey(segment)
-					&& this.nyMap.containsKey(segment)) {
+			if ((gammaMap != null) && gammaMap.containsKey(segment)
+			        && this.nyMap.containsKey(segment)) {
 				if (this.countCurrentGraph == 0) {
 					final Double[] gamma = gammaMap.get(segment);
 					value = gamma;
@@ -239,26 +245,33 @@ StatsGraphProducer implements Runnable {
 		case PHASE:
 			final Map<OmegaSegment, Double[][]> gammaDMap;
 			final Map<OmegaSegment, Double[]> smssMap;
+			final Map<OmegaSegment, Double[]> errorMap;
 			switch (this.motionTypeOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
 				gammaDMap = this.gammaDFromLogMap;
 				smssMap = this.smssFromLogMap;
+				errorMap = this.errorFromLogMap;
 				break;
 			default:
 				gammaDMap = this.gammaDMap;
-				smssMap = this.smssMap;
+				smssMap = null;
+				errorMap = null;
 			}
 			value = new Double[4];
-			if (gammaDMap.containsKey(segment) && smssMap.containsKey(segment)) {
+			if (gammaDMap.containsKey(segment) && (smssMap != null)
+			        && smssMap.containsKey(segment)) {
 				final Double d = gammaDMap.get(segment)[2][3];
 				final Double smss = smssMap.get(segment)[0];
-				final int div = 10;
-				final double deltaD = d / div;
-				final double deltaSMSS = smss / div;
+				Double dError = 0.0;
+				Double smssError = 0.0;
+				if ((errorMap != null) && !errorMap.isEmpty()) {
+					dError = errorMap.get(segment)[0];
+					smssError = errorMap.get(segment)[1];
+				}
 				value[0] = d;
 				value[1] = smss;
-				value[2] = deltaD;
-				value[3] = deltaSMSS;
+				value[2] = dError;
+				value[3] = smssError;
 				// final double dMinus = d - deltaD;
 				// final double dPlus = d + deltaD;
 				// final double smssMinus = smss - deltaSMSS;

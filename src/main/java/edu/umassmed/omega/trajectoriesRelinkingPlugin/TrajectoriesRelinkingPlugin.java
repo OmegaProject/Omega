@@ -25,31 +25,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin;
+package edu.umassmed.omega.trajectoriesRelinkingPlugin;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.gui.TRPluginPanel;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.gui.TRPluginPanel;
 
 public class TrajectoriesRelinkingPlugin extends
-OmegaTrajectoriesRelinkingPlugin implements
-OmegaDataDisplayerPluginInterface {
+        OmegaTrajectoriesRelinkingPlugin implements
+        OmegaDataDisplayerPluginInterface {
 
 	public TrajectoriesRelinkingPlugin() {
 		super(1);
@@ -77,10 +77,10 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-			final int index) throws OmegaCoreExceptionPluginMissingData {
+	        final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TRPluginPanel panel = new TRPluginPanel(parent, this,
-				this.getGateway(), this.getLoadedImages(),
-				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+		        this.getGateway(), this.getLoadedImages(),
+		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -98,13 +98,13 @@ OmegaDataDisplayerPluginInterface {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
+					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-			final boolean selection) {
+	        final boolean selection) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.updateTrajectories(trajectories, selection);
@@ -121,7 +121,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectParticleDetectionRun(
-			final OmegaParticleDetectionRun analysisRun) {
+	        final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);
@@ -130,7 +130,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectParticleLinkingRun(
-			final OmegaParticleLinkingRun analysisRun) {
+	        final OmegaParticleLinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectParticleLinkingRun(analysisRun);
@@ -139,7 +139,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectTrajectoriesRelinkingRun(
-			final OmegaTrajectoriesRelinkingRun analysisRun) {
+	        final OmegaTrajectoriesRelinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
@@ -148,7 +148,7 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public void selectCurrentTrajectoriesRelinkingRun(
-			final OmegaAnalysisRun analysisRun) {
+	        final OmegaAnalysisRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TRPluginPanel specificPanel = (TRPluginPanel) panel;
 			specificPanel.selectCurrentTrajectoriesRelinkingRun(analysisRun);
@@ -178,5 +178,10 @@ OmegaDataDisplayerPluginInterface {
 	@Override
 	public String getDescription() {
 		return TRConstants.PLUGIN_DESC;
+	}
+
+	@Override
+	public String getReference() {
+		return "TBD";
 	}
 }

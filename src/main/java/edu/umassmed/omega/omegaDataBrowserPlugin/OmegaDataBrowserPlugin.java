@@ -25,20 +25,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omegaDataBrowserPlugin;
+package edu.umassmed.omega.omegaDataBrowserPlugin;
 
 import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.OmegaData;
-import main.java.edu.umassmed.omega.commons.data.OmegaLoadedData;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import main.java.edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
+import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
 public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
         OmegaDataDisplayerPluginInterface {

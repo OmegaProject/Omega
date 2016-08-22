@@ -1,11 +1,11 @@
-package main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin;
+package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TMDConstants {
 

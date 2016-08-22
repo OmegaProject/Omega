@@ -1,5 +1,5 @@
 Omega configuration file
-Last updated	12/7/15 6:34 PM
+Last updated	8/19/16 4:42 PM
 
 CATEGORY OMERO IMAGE BROWSER PLUGIN
 Omero server adress	omero.umassmed.edu
@@ -11,5 +11,5 @@ Omega server adress	146.189.76.56
 Omega server port	3306
 Omega server db name	omega
 Omega login username	omega
-Omega login password	+CLuLoHq57U=
+Omega login password	m7X+IF4c8FA=
 

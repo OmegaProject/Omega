@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.snrSbalzariniPlugin.gui;
+package edu.umassmed.omega.snrSbalzariniPlugin.gui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -38,17 +38,17 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import main.java.edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
+import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRRunPanel extends GenericPanel {
 

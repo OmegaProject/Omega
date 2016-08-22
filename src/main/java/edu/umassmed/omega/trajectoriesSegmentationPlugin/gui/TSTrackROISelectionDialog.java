@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,11 +22,11 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
-import main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
+import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSTrackROISelectionDialog extends GenericDialog {
 	private static final long serialVersionUID = -4055355735984837884L;

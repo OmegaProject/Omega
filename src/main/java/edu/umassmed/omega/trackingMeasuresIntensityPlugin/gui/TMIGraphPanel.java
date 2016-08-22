@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,17 +19,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.StatsConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresIntensityRun;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
-import main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresIntensityRun;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
+import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
+import edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProducer;
 
 public class TMIGraphPanel extends GenericPanel {
 	private static final long serialVersionUID = 1124434645792957106L;

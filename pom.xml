@@ -151,6 +151,11 @@
 			<version>1</version>
 		</dependency>
 		<dependency>
+			<groupId>mysql-connector-java-5.1.31-bin</groupId>
+			<artifactId>mysql-connector-java-5.1.31-bin</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -221,8 +226,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
-							<!-- Jar file entry point -->
-							<mainClass>main.java.edu.umassmed.omega.core.OmegaApplication</mainClass>
+							<mainClass>main.java.edu.umassmed.omega.OmegaApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

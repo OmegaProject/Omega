@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.gui;
+package edu.umassmed.omega.trajectoriesRelinkingPlugin.gui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -11,12 +11,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class TRPanel extends GenericTrajectoriesBrowserPanel {
 

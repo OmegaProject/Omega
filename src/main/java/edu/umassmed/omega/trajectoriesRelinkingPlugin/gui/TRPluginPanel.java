@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.gui;
+package edu.umassmed.omega.trajectoriesRelinkingPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -51,38 +51,38 @@ import javax.swing.RootPaneContainer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesRelinking;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrajectoryInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.actions.RelinkingAction;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrajectoriesRelinking;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
+import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
+import edu.umassmed.omega.commons.gui.GenericTrajectoryInformationPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
+import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.actions.RelinkingAction;
 
 public class TRPluginPanel extends GenericPluginPanel implements
         GenericTrajectoriesBrowserContainerInterface {
@@ -1036,8 +1036,9 @@ public class TRPluginPanel extends GenericPluginPanel implements
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
-			if (this.selectedParticleDetectionRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+			if ((analysisRun instanceof OmegaParticleLinkingRun)
+			        && this.selectedParticleDetectionRun.getAnalysisRuns()
+			                .contains(analysisRun)) {
 				this.particleLinkingRuns
 				        .add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());

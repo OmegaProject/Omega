@@ -26,13 +26,13 @@ opyright (C) 2014 University of Massachusetts Medical School
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin;
+package edu.umassmed.omega.sptSbalzariniPlugin;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class SPTConstants {
 	public static final String PARAM_RADIUS = OmegaConstantsAlgorithmParameters.PARAM_RADIUS;

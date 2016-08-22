@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,23 +15,23 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresDiffusivity;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.libraries.OmegaDiffusivityLibrary;
-import main.java.edu.umassmed.omega.commons.runnable.AnalyzerEvent;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
-import main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.TMDConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresDiffusivity;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.libraries.OmegaDiffusivityLibrary;
+import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
+import edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
+import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.TMDConstants;
 
 public class TMDRunPanel extends GenericPanel implements
         OmegaMessageDisplayerPanelInterface {
@@ -262,18 +262,20 @@ public class TMDRunPanel extends GenericPanel implements
 			final OmegaPluginEventResultsTrackingMeasuresDiffusivity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresDiffusivity(
 			        this.pluginPanel.getPlugin(),
 			        this.pluginPanel.getSelectedSegmentationRun(),
-			        this.analyzer.getParameters(), this.analyzer.getSegments(),
-			        this.analyzer.getNyResults(), this.analyzer.getMuResults(),
+			        this.analyzer.getParameters(),
+					this.analyzer.getSegments(),
+			        this.analyzer.getNyResults(),
+					this.analyzer.getMuResults(),
 			        this.analyzer.getLogMuResults(),
 			        this.analyzer.getDeltaTResults(),
 			        this.analyzer.getLogDeltaTResults(),
 			        this.analyzer.getGammaDResults(),
 			        this.analyzer.getGammaDFromLogResults(),
-			        this.analyzer.getGammaResults(),
+			        // this.analyzer.getGammaResults(),
 			        this.analyzer.getGammaFromLogResults(),
-			        this.analyzer.getSmssResults(),
+			        // this.analyzer.getSmssResults(),
 			        this.analyzer.getSmssFromLogResults(),
-					this.analyzer.getErrors(),
+					// this.analyzer.getErrors(),
 					this.analyzer.getErrorsFromLog(),
 					this.analyzer.getSNRRun(),
 					this.analyzer.getTrackiMeasuresDiffusivityRun());
@@ -331,8 +333,8 @@ public class TMDRunPanel extends GenericPanel implements
 		}
 
 		final Double minD = OmegaDiffusivityLibrary
-		        .computeMinimumDetectableD(this.selectedSNRRun
-		                .getResultingImageMinimumSNR());
+				.computeMinimumDetectableD(this.selectedSNRRun
+						.getResultingImageMinimumErrorIndexSNR());
 		System.out.println(minD);
 	}
 

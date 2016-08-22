@@ -1,3 +1,5 @@
+package edu.umassmed.omega.core.mysql;
+
 /*******************************************************************************
  * Copyright (C) 2014 University of Massachusetts Medical School
  * AlessANDro Rigano (Program in Molecular Medicine)
@@ -25,7 +27,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core;
 
 import java.awt.Color;
 import java.sql.Connection;
@@ -45,35 +46,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmInformation;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmSpecification;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaProject;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmInformation;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaRunDefinition;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
-public class OmegaMySqlGateway {
+public class OmegaMySqlGatewayOld {
 
 	public static String USER = "omega";
 	public static String PSW = "1234";
@@ -85,7 +86,7 @@ public class OmegaMySqlGateway {
 	private OmegaDBServerInformation serverInfo;
 	private OmegaLoginCredentials loginCred;
 
-	public OmegaMySqlGateway() {
+	public OmegaMySqlGatewayOld() {
 		this.connection = null;
 		this.serverInfo = null;
 		this.loginCred = null;
@@ -226,7 +227,7 @@ public class OmegaMySqlGateway {
 					expLoaded.add(owner);
 					personLoaded.add(owner);
 				}
-				final OmegaAlgorithmSpecification algoSpec = this
+				final OmegaRunDefinition algoSpec = this
 						.loadAlgorithmSpecification(algoSpecID, personLoaded,
 								algoInfoLoaded);
 				final int c = (int) algoSpec.getParameter(
@@ -236,14 +237,14 @@ public class OmegaMySqlGateway {
 						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)
 						.getValue();
 
-				final Map<OmegaFrame, List<OmegaROI>> resultingParticles = this
+				final Map<OmegaPlane, List<OmegaROI>> resultingParticles = this
 						.loadParticles(analysisRunID, image.getDefaultPixels()
 								.getFrames(c, z));
 
 				// TODO load additional data too
 				final OmegaAnalysisRun analysisRun = new OmegaParticleDetectionRun(
 						owner, algoSpec, timeStamps, name, resultingParticles,
-				        new LinkedHashMap<OmegaROI, Map<String, Object>>());
+						new LinkedHashMap<OmegaROI, Map<String, Object>>());
 				analysisRun.setElementID((long) analysisRunID);
 				// this.loadParticleLinkingAnalysisRun(analysisRun);
 				image.addAnalysisRun(analysisRun);
@@ -270,7 +271,7 @@ public class OmegaMySqlGateway {
 				.toString());
 		final ResultSet results = stat.executeQuery();
 		final OmegaParticleDetectionRun particleDetRun = (OmegaParticleDetectionRun) parentAnalysisRun;
-		final Map<OmegaFrame, List<OmegaROI>> particlesMap = particleDetRun
+		final Map<OmegaPlane, List<OmegaROI>> particlesMap = particleDetRun
 				.getResultingParticles();
 		while (results.next()) {
 			final int analysisRunID = results.getInt(1);
@@ -291,7 +292,7 @@ public class OmegaMySqlGateway {
 				expLoaded.add(owner);
 				personLoaded.add(owner);
 			}
-			final OmegaAlgorithmSpecification algoSpec = this
+			final OmegaRunDefinition algoSpec = this
 					.loadAlgorithmSpecification(algoSpecID, personLoaded,
 							algoInfoLoaded);
 			final List<OmegaTrajectory> resultingTrajectory = this
@@ -312,7 +313,7 @@ public class OmegaMySqlGateway {
 
 	private List<OmegaAnalysisRun> loadTrajectoriesRelinkingAnalysisRun(
 			final OmegaAnalysisRun parentAnalysisRun,
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap,
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap,
 			final List<OmegaElement> expLoaded,
 			final List<OmegaElement> personLoaded,
 			final List<OmegaElement> algoInfoLoaded,
@@ -344,7 +345,7 @@ public class OmegaMySqlGateway {
 				expLoaded.add(owner);
 				personLoaded.add(owner);
 			}
-			final OmegaAlgorithmSpecification algoSpec = this
+			final OmegaRunDefinition algoSpec = this
 					.loadAlgorithmSpecification(algoSpecID, personLoaded,
 							algoInfoLoaded);
 
@@ -365,7 +366,7 @@ public class OmegaMySqlGateway {
 
 	private void loadTrajectoriesSegmentationAnlysisRun(
 			final OmegaAnalysisRun parentAnalysisRun,
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap,
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap,
 			final List<OmegaElement> expLoaded,
 			final List<OmegaElement> personLoaded,
 			final List<OmegaElement> algoInfoLoaded,
@@ -396,7 +397,7 @@ public class OmegaMySqlGateway {
 				expLoaded.add(owner);
 				personLoaded.add(owner);
 			}
-			final OmegaAlgorithmSpecification algoSpec = this
+			final OmegaRunDefinition algoSpec = this
 					.loadAlgorithmSpecification(algoSpecID, personLoaded,
 							algoInfoLoaded);
 
@@ -449,7 +450,7 @@ public class OmegaMySqlGateway {
 				.getParameter(OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)
 				.getValue();
 
-		for (final OmegaFrame frame : pixels.getFrames(c, z)) {
+		for (final OmegaPlane frame : pixels.getFrames(c, z)) {
 			final int frameID = this.getOrSaveFrame(frame, pixelsID);
 			frame.setElementID((long) frameID);
 		}
@@ -582,9 +583,9 @@ public class OmegaMySqlGateway {
 				experimenterID);
 		particlesDetectionRun.setElementID(tmpAnalysisRunID);
 		final long analysisRunID = tmpAnalysisRunID;
-		final Map<OmegaFrame, List<OmegaROI>> particles = particlesDetectionRun
+		final Map<OmegaPlane, List<OmegaROI>> particles = particlesDetectionRun
 				.getResultingParticles();
-		for (final OmegaFrame frame : particles.keySet()) {
+		for (final OmegaPlane frame : particles.keySet()) {
 			final List<OmegaROI> rois = particles.get(frame);
 			for (final OmegaROI roi : rois) {
 				final int frameID = Integer.valueOf(frame.getElementID()
@@ -597,10 +598,10 @@ public class OmegaMySqlGateway {
 		return analysisRunID;
 	}
 
-	private Map<OmegaFrame, List<OmegaROI>> loadParticles(
-			final int analysisRunID, final List<OmegaFrame> frames)
+	private Map<OmegaPlane, List<OmegaROI>> loadParticles(
+			final int analysisRunID, final List<OmegaPlane> frames)
 					throws SQLException {
-		final Map<OmegaFrame, List<OmegaROI>> particlesMap = new LinkedHashMap<OmegaFrame, List<OmegaROI>>();
+		final Map<OmegaPlane, List<OmegaROI>> particlesMap = new LinkedHashMap<OmegaPlane, List<OmegaROI>>();
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("SELECT * FROM particle WHERE AnalysisRun_Seq_Id = ");
 		query1.append(analysisRunID);
@@ -656,7 +657,7 @@ public class OmegaMySqlGateway {
 			final double y = results2.getDouble(4);
 
 			List<OmegaROI> particles;
-			final OmegaFrame frame = frames.get(frameIndex);
+			final OmegaPlane frame = frames.get(frameIndex);
 			// System.out.println("FrameIndex: " + frameIndex + " VS RealIndex"
 			// + frame.getIndex());
 			if (particlesMap.containsKey(frame)) {
@@ -772,15 +773,15 @@ public class OmegaMySqlGateway {
 					long trajectoryID = trajectory.getElementID();
 					try {
 						if (trajectoryID == -1) {
-							trajectoryID = OmegaMySqlGateway.this
+							trajectoryID = OmegaMySqlGatewayOld.this
 									.saveTrajectory(trajectory);
 						}
-						OmegaMySqlGateway.this
+						OmegaMySqlGatewayOld.this
 						.saveAnalysisTrajectoryLinkIfNeeded(
 								(int) trajectoryID, analysisRunID);
 						for (final OmegaROI roi : trajectory.getROIs()) {
 							final long roiID = roi.getElementID();
-							OmegaMySqlGateway.this
+							OmegaMySqlGatewayOld.this
 							.saveTrajectoryParticleLinkIfNeeded(
 									(int) roiID, (int) trajectoryID);
 						}
@@ -844,8 +845,8 @@ public class OmegaMySqlGateway {
 						final List<OmegaSegment> segments = segmentsMap
 								.get(trajectory);
 						for (final OmegaSegment segment : segments) {
-							OmegaMySqlGateway.this.saveSegment(analysisRunID,
-									trajectoryID, segment);
+							OmegaMySqlGatewayOld.this.saveSegment(
+									analysisRunID, trajectoryID, segment);
 						}
 					} catch (final SQLException ex) {
 						OmegaLogFileManager.handleCoreException(ex);
@@ -924,15 +925,15 @@ public class OmegaMySqlGateway {
 					long trajectoryID = trajectory.getElementID();
 					try {
 						if (trajectoryID == -1) {
-							trajectoryID = OmegaMySqlGateway.this
+							trajectoryID = OmegaMySqlGatewayOld.this
 									.saveTrajectory(trajectory);
 						}
-						OmegaMySqlGateway.this
+						OmegaMySqlGatewayOld.this
 						.saveAnalysisTrajectoryLinkIfNeeded(
 								(int) trajectoryID, analysisRunID);
 						for (final OmegaROI roi : trajectory.getROIs()) {
 							final long roiID = roi.getElementID();
-							OmegaMySqlGateway.this
+							OmegaMySqlGatewayOld.this
 							.saveTrajectoryParticleLinkIfNeeded(
 									(int) roiID, (int) trajectoryID);
 						}
@@ -964,7 +965,7 @@ public class OmegaMySqlGateway {
 	}
 
 	private List<OmegaTrajectory> loadTrajectories(final int analysisRunID,
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap,
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap,
 			final List<OmegaElement> trajsLoaded) throws SQLException {
 		final List<OmegaTrajectory> trajectories = new ArrayList<OmegaTrajectory>();
 		final StringBuffer query1 = new StringBuffer();
@@ -1002,7 +1003,7 @@ public class OmegaMySqlGateway {
 					trajsLoaded.add(trajectory);
 					trajectories.add(trajectory);
 				}
-				for (final OmegaFrame frame : particlesMap.keySet()) {
+				for (final OmegaPlane frame : particlesMap.keySet()) {
 					for (final OmegaROI roi : particlesMap.get(frame)) {
 						final StringBuffer query3 = new StringBuffer();
 						query3.append("SELECT * FROM trajectoriesParticlesMap WHERE ROI_Seq_Id = ");
@@ -1081,9 +1082,9 @@ public class OmegaMySqlGateway {
 	}
 
 	private List<OmegaROI> getROIs(
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap,
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap,
 			final int frameIndex) {
-		for (final OmegaFrame frame : particlesMap.keySet()) {
+		for (final OmegaPlane frame : particlesMap.keySet()) {
 			if (frame.getIndex() == frameIndex)
 				return particlesMap.get(frame);
 		}
@@ -1092,7 +1093,7 @@ public class OmegaMySqlGateway {
 
 	private Map<OmegaTrajectory, List<OmegaSegment>> loadSegments(
 			final int analysisRunID, final List<OmegaTrajectory> trajectories,
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap)
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap)
 					throws SQLException {
 		final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = new LinkedHashMap<OmegaTrajectory, List<OmegaSegment>>();
 		for (final OmegaTrajectory traj : trajectories) {
@@ -1171,8 +1172,8 @@ public class OmegaMySqlGateway {
 		return id;
 	}
 
-	private OmegaAlgorithmSpecification loadAlgorithmSpecification(
-			final int algoSpecID, final List<OmegaElement> personLoaded,
+	private OmegaRunDefinition loadAlgorithmSpecification(final int algoSpecID,
+			final List<OmegaElement> personLoaded,
 			final List<OmegaElement> algoInfoLoaded) throws SQLException,
 			ParseException {
 		final StringBuffer query = new StringBuffer();
@@ -1194,8 +1195,7 @@ public class OmegaMySqlGateway {
 			algoInfo = this.loadAlgorithmInformation(algoInfoID, personLoaded);
 			algoInfoLoaded.add(algoInfo);
 		}
-		final OmegaAlgorithmSpecification algoSpec = new OmegaAlgorithmSpecification(
-				algoInfo);
+		final OmegaRunDefinition algoSpec = new OmegaRunDefinition(algoInfo);
 		algoSpec.setElementID((long) algoSpecID);
 		final List<OmegaParameter> params = this.loadParameters(algoSpecID);
 		algoSpec.addParameters(params);
@@ -1261,11 +1261,12 @@ public class OmegaMySqlGateway {
 		final double version = results.getDouble(4);
 		final String description = results.getString(5);
 		final String publication_date = results.getString(6);
+		final String reference = results.getString(7);
 		final SimpleDateFormat formatter = new SimpleDateFormat(
 				OmegaConstants.OMEGA_DATE_FORMAT);
 		final Date publicationDate = formatter.parse(publication_date);
 		final OmegaAlgorithmInformation algoInfo = new OmegaAlgorithmInformation(
-				name, version, description, author, publicationDate);
+				name, version, description, author, publicationDate, reference);
 		algoInfo.setElementID((long) algoInfoID);
 		results.close();
 		stat.close();
@@ -1274,8 +1275,7 @@ public class OmegaMySqlGateway {
 
 	private int saveAlgorithmSpecANDInfo(final OmegaAnalysisRun analysisRun)
 			throws SQLException {
-		final OmegaAlgorithmSpecification algoSpec = analysisRun
-				.getAlgorithmSpec();
+		final OmegaRunDefinition algoSpec = analysisRun.getAlgorithmSpec();
 		final OmegaAlgorithmInformation algoInfo = algoSpec.getAlgorithmInfo();
 		long infoID = algoInfo.getElementID();
 		if (infoID == -1) {
@@ -1293,8 +1293,8 @@ public class OmegaMySqlGateway {
 		return specID;
 	}
 
-	private int getAlgorithmSpecification(
-			final OmegaAlgorithmSpecification algoSpec) throws SQLException {
+	private int getAlgorithmSpecification(final OmegaRunDefinition algoSpec)
+			throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM algorithm_specification WHERE AlgorithmInformation_Seq_Id = ");
 		query.append(algoSpec.getAlgorithmInfo().getElementID());
@@ -1311,8 +1311,8 @@ public class OmegaMySqlGateway {
 		return dbID;
 	}
 
-	private int saveAlgorithmSpecification(
-			final OmegaAlgorithmSpecification algoSpec) throws SQLException {
+	private int saveAlgorithmSpecification(final OmegaRunDefinition algoSpec)
+			throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO algorithm_specification (AlgorithmInformation_Seq_Id) VALUES (");
 		query.append(algoSpec.getAlgorithmInfo().getElementID());
@@ -1490,7 +1490,7 @@ public class OmegaMySqlGateway {
 		System.gc();
 		for (final OmegaAnalysisRun particleDetectionRun : particleLinkingRunsMap
 				.keySet()) {
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
 					.getResultingParticles();
 			final List<OmegaAnalysisRun> particleLinkingRuns = particleLinkingRunsMap
 					.get(particleDetectionRun);
@@ -1509,10 +1509,10 @@ public class OmegaMySqlGateway {
 		System.gc();
 		for (final OmegaAnalysisRun particleDetectionRun : particleLinkingRunsMap
 				.keySet()) {
-			final Map<OmegaFrame, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
+			final Map<OmegaPlane, List<OmegaROI>> particlesMap = ((OmegaParticleDetectionRun) particleDetectionRun)
 					.getResultingParticles();
 			// System.out.println("BEGIN");
-			// for (final OmegaFrame frame : particlesMap.keySet()) {
+			// for (final OmegaPlane frame : particlesMap.keySet()) {
 				// System.out.println("FI : " + frame.getIndex());
 			// for (final OmegaROI roi : particlesMap.get(frame)) {
 			// System.out.print(roi.getElementID() + " \t");
@@ -1565,9 +1565,9 @@ public class OmegaMySqlGateway {
 		return id;
 	}
 
-	private Map<Integer, Map<Integer, List<OmegaFrame>>> loadFrames(
+	private Map<Integer, Map<Integer, List<OmegaPlane>>> loadFrames(
 			final OmegaImage image) throws SQLException {
-		final Map<Integer, Map<Integer, List<OmegaFrame>>> frameList = new LinkedHashMap<>();
+		final Map<Integer, Map<Integer, List<OmegaPlane>>> frameList = new LinkedHashMap<>();
 		final int pixelsID = this.getDBIdFROMOmegaElementId("pixels", image
 				.getDefaultPixels().getElementID());
 		final StringBuffer query = new StringBuffer();
@@ -1584,11 +1584,11 @@ public class OmegaMySqlGateway {
 			if (image.getDefaultPixels().containsFrame(channel, zPlane, id)) {
 				continue;
 			}
-			final OmegaFrame f = new OmegaFrame(index, channel, zPlane);
+			final OmegaPlane f = new OmegaPlane(index, channel, zPlane);
 			f.setElementID((long) id);
 			f.setParentPixels(image.getDefaultPixels());
-			Map<Integer, List<OmegaFrame>> subMap = null;
-			List<OmegaFrame> frames = null;
+			Map<Integer, List<OmegaPlane>> subMap = null;
+			List<OmegaPlane> frames = null;
 			if (frameList.containsKey(channel)) {
 				subMap = frameList.get(channel);
 				if (subMap.containsKey(zPlane)) {
@@ -1607,13 +1607,13 @@ public class OmegaMySqlGateway {
 		results.close();
 		stat.close();
 		for (final Integer channel : frameList.keySet()) {
-			final Map<Integer, List<OmegaFrame>> subMap = frameList
+			final Map<Integer, List<OmegaPlane>> subMap = frameList
 					.get(channel);
 			for (final Integer zPlane : subMap.keySet()) {
-				final List<OmegaFrame> frames = subMap.get(zPlane);
-				Collections.sort(frames, new Comparator<OmegaFrame>() {
+				final List<OmegaPlane> frames = subMap.get(zPlane);
+				Collections.sort(frames, new Comparator<OmegaPlane>() {
 					@Override
-					public int compare(final OmegaFrame o1, final OmegaFrame o2) {
+					public int compare(final OmegaPlane o1, final OmegaPlane o2) {
 						if (o1.getIndex() == o2.getIndex())
 							return 0;
 						else if (o1.getIndex() < o2.getIndex())
@@ -1628,7 +1628,7 @@ public class OmegaMySqlGateway {
 		return frameList;
 	}
 
-	private int getOrSaveFrame(final OmegaFrame frame, final int pixelsID)
+	private int getOrSaveFrame(final OmegaPlane frame, final int pixelsID)
 			throws SQLException {
 		int frameID = this.getFrame(frame, pixelsID);
 		if (frameID == -1) {
@@ -1637,7 +1637,7 @@ public class OmegaMySqlGateway {
 		return frameID;
 	}
 
-	private int getFrame(final OmegaFrame frame, final int pixelsID)
+	private int getFrame(final OmegaPlane frame, final int pixelsID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("SELECT * FROM frame WHERE Pixel_Seq_Id = ");
@@ -1660,7 +1660,7 @@ public class OmegaMySqlGateway {
 		return dbID;
 	}
 
-	private int saveFrame(final OmegaFrame frame, final int pixelsID)
+	private int saveFrame(final OmegaPlane frame, final int pixelsID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO frame (Pixel_Seq_Id, Frame_index, Channel, ZPlane) VALUES (");
@@ -1714,7 +1714,7 @@ public class OmegaMySqlGateway {
 			return null;
 		}
 		final int personID = results1.getInt(2);
-		final int omeroID = results1.getInt(3);
+		results1.getInt(3);
 		results1.close();
 		stat1.close();
 		final StringBuffer query2 = new StringBuffer();
@@ -1733,8 +1733,7 @@ public class OmegaMySqlGateway {
 		final String lastName = results2.getString(2);
 		results2.close();
 		stat2.close();
-		final OmegaExperimenter exp = new OmegaExperimenter(omeroID, firstName,
-				lastName);
+		final OmegaExperimenter exp = new OmegaExperimenter(firstName, lastName);
 		exp.setElementID((long) experimenterID);
 		return exp;
 	}

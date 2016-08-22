@@ -25,19 +25,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sdSbalzariniPlugin;
+package edu.umassmed.omega.sdSbalzariniPlugin;
 
 import java.util.Date;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import main.java.edu.umassmed.omega.sdSbalzariniPlugin.gui.SDPluginPanel;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.sdSbalzariniPlugin.gui.SDPluginPanel;
 
 public class SDPlugin extends OmegaParticleTrackingPlugin implements
 OmegaDataDisplayerPluginInterface {
@@ -115,5 +115,10 @@ OmegaDataDisplayerPluginInterface {
 	@Override
 	public String getDescription() {
 		return SDConstants.PLUGIN_DESC;
+	}
+
+	@Override
+	public String getReference() {
+		return "TBD";
 	}
 }

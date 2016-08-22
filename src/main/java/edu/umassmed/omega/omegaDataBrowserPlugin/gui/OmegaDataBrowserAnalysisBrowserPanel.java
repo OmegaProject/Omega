@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omegaDataBrowserPlugin.gui;
+package edu.umassmed.omega.omegaDataBrowserPlugin.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -48,16 +48,16 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import main.java.edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeEditor;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNodeRenderer;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
+import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 

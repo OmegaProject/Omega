@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable;
+package edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -7,15 +7,15 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
-import main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
+import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
+import edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel;
 
 public class TMIGraphProducer extends StatsGraphProducer {
 

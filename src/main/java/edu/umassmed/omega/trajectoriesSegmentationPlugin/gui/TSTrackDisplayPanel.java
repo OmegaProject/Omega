@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,8 +22,8 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.gui.GenericPanel;
 
 public class TSTrackDisplayPanel extends GenericPanel {
 

@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omegaDataBrowserPlugin.gui;
+package edu.umassmed.omega.omegaDataBrowserPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -47,21 +47,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import main.java.edu.umassmed.omega.commons.data.OmegaData;
-import main.java.edu.umassmed.omega.commons.data.OmegaLoadedData;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
+import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserPluginPanel extends GenericPluginPanel {
 

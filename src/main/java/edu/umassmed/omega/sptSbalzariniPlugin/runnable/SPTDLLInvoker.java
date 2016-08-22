@@ -25,16 +25,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sptSbalzariniPlugin.runnable;
 
 import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsError;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaClassLoaderUtilities;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.utilities.OmegaClassLoaderUtilities;
 
 public class SPTDLLInvoker {
 	// native methods

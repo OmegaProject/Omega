@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sptSbalzariniPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -36,17 +36,17 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTRunner implements SPTRunnable {
 	private static final String RUNNER = "Runner service: ";
@@ -54,7 +54,7 @@ public class SPTRunner implements SPTRunnable {
 
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
 	private final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories;
-	private final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles;
+	private final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles;
 	private final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues;
 
 	private final OmegaGateway gateway;
@@ -76,13 +76,13 @@ public class SPTRunner implements SPTRunnable {
 		this.isTerminated = false;
 
 		this.resultingTrajectories = new LinkedHashMap<OmegaImage, List<OmegaTrajectory>>();
-		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaPlane, List<OmegaROI>>>();
 		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
 	public SPTRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
-			final OmegaGateway gateway) {
+	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
+	        final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = new LinkedHashMap<>(imagesToProcess);
@@ -93,7 +93,7 @@ public class SPTRunner implements SPTRunnable {
 		this.isJobCompleted = false;
 
 		this.resultingTrajectories = new LinkedHashMap<OmegaImage, List<OmegaTrajectory>>();
-		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaPlane, List<OmegaROI>>>();
 		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
@@ -136,7 +136,7 @@ public class SPTRunner implements SPTRunnable {
 	private void normalModeRun() {
 		for (final OmegaImage image : this.imagesToProcess.keySet()) {
 			final List<OmegaParameter> parameters = this.imagesToProcess
-					.get(image);
+			        .get(image);
 			// while (it.hasNext()) {
 			// final ImageDataHandler imageDataHandler = it.next();
 
@@ -153,7 +153,7 @@ public class SPTRunner implements SPTRunnable {
 			// check and add the pixels sizes
 			final OmegaImagePixels defaultPixels = image.getDefaultPixels();
 
-			final Long pixelsID = defaultPixels.getElementID();
+			final Long pixelsID = defaultPixels.getOmeroId();
 
 			final int x = defaultPixels.getSizeX();
 			final int y = defaultPixels.getSizeY();
@@ -198,7 +198,7 @@ public class SPTRunner implements SPTRunnable {
 			}
 
 			if ((radius == null) || (cutoff == null) || (percentile == null)
-					|| (displacement == null) || (linkrange == null))
+			        || (displacement == null) || (linkrange == null))
 				// TODO ERROR
 				return;
 
@@ -225,17 +225,17 @@ public class SPTRunner implements SPTRunnable {
 
 				// Max val
 				final int bits = (int) Math.pow(2,
-						this.gateway.getByteWidth(pixelsID) * 8);
+				        this.gateway.getByteWidth(pixelsID) * 8);
 
 				SPTDLLInvoker
-				.callSetParameter("p9", String.format("%s.", bits));
+				        .callSetParameter("p9", String.format("%s.", bits));
 				// SPTDLLInvoker.callSetParameter("p9", "255.");
 
 				// set the minimun number of points
 				// SPTDLLInvoker.callSetMinPoints(minPoints);
 
 				this.updateStatusSync(SPTRunner.RUNNER
-						+ " correctly initialized.", false);
+				        + " correctly initialized.", false);
 
 				// start the Runner
 				SPTDLLInvoker.callStartRunner();
@@ -246,7 +246,7 @@ public class SPTRunner implements SPTRunnable {
 
 			if (!dllInit) {
 				this.updateStatusSync(SPTRunner.RUNNER
-						+ " unable to initialize dll.", false);
+				        + " unable to initialize dll.", false);
 				return;
 			}
 			// TODO update panel with running image name and other available
@@ -261,7 +261,7 @@ public class SPTRunner implements SPTRunnable {
 
 			// load the images into the SPT DLL
 			this.loader = new SPTLoader(this.displayerPanel, image, z, c,
-					this.gateway);
+			        this.gateway);
 			final Thread loaderT = new Thread(this.loader);
 			loaderT.setName(this.loader.getClass().getSimpleName());
 			OmegaLogFileManager.registerAsExceptionHandlerOnThread(loaderT);
@@ -277,15 +277,15 @@ public class SPTRunner implements SPTRunnable {
 			threads.add(writerT);
 
 			while (!this.loader.isJobCompleted()
-					|| !this.writer.isJobCompleted()) {
+			        || !this.writer.isJobCompleted()) {
 				this.updateStatusSync(SPTRunner.RUNNER + " waiting results.",
-						false);
+				        false);
 				if (this.isTerminated)
 					return;
 			}
 
 			final List<OmegaTrajectory> trajectories = new ArrayList<OmegaTrajectory>();
-			final Map<OmegaFrame, List<OmegaROI>> particles = new HashMap<OmegaFrame, List<OmegaROI>>();
+			final Map<OmegaPlane, List<OmegaROI>> particles = new HashMap<OmegaPlane, List<OmegaROI>>();
 			final Object trackList = this.writer.getTrackList();
 			if (trackList != null) {
 				final List<OmegaTrajectory> tracks = (List<OmegaTrajectory>) trackList;
@@ -298,8 +298,8 @@ public class SPTRunner implements SPTRunnable {
 					for (final OmegaROI point : track.getROIs()) {
 						final int frameIndex = point.getFrameIndex() - 1;
 						point.setFrameIndex(frameIndex);
-						final OmegaFrame frame = defaultPixels.getFrames(c, z)
-						        .get(frameIndex);
+						final OmegaPlane frame = defaultPixels.getFrames(c, z)
+								.get(frameIndex);
 						// System.out.println("FI: " + frame.getIndex() + " X: "
 						// + point.getX() + " Y: " + point.getY());
 						List<OmegaROI> framePoints;
@@ -313,9 +313,9 @@ public class SPTRunner implements SPTRunnable {
 
 						final OmegaParticle p = (OmegaParticle) point;
 						final float m0 = Float
-						        .valueOf(String.valueOf(p.getM0()));
+								.valueOf(String.valueOf(p.getM0()));
 						final float m2 = Float
-						        .valueOf(String.valueOf(p.getM2()));
+								.valueOf(String.valueOf(p.getM2()));
 						final Map<String, Object> particleValues = new LinkedHashMap<String, Object>();
 						particleValues.put("m0", m0);
 						particleValues.put("m2", m2);
@@ -408,7 +408,7 @@ public class SPTRunner implements SPTRunnable {
 		return this.imagesToProcess;
 	}
 
-	public Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> getImageResultingParticles() {
+	public Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> getImageResultingParticles() {
 		return this.resultingParticles;
 	}
 
@@ -432,8 +432,8 @@ public class SPTRunner implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTRunner.this.displayerPanel
-					.updateMessageStatus(new SPTMessageEvent(msg,
-							SPTRunner.this, ended));
+					        .updateMessageStatus(new SPTMessageEvent(msg,
+					                SPTRunner.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -448,8 +448,8 @@ public class SPTRunner implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTRunner.this.displayerPanel
-				.updateMessageStatus(new SPTMessageEvent(msg,
-						SPTRunner.this, ended));
+				        .updateMessageStatus(new SPTMessageEvent(msg,
+				                SPTRunner.this, ended));
 			}
 		});
 	}

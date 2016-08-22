@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -49,41 +49,41 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.OmegaLoadedData;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaProject;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSegments;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventTrajectories;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionLoadedElementNotFound;
-import main.java.edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericFrame;
-import main.java.edu.umassmed.omega.commons.gui.GenericImageCanvas;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.GenericImageCanvasContainer;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSegments;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventTrajectories;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionLoadedElementNotFound;
+import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericFrame;
+import edu.umassmed.omega.commons.gui.GenericImageCanvas;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.interfaces.GenericImageCanvasContainer;
 
 public class OmegaSidePanel extends GenericPanel implements
 GenericImageCanvasContainer {
@@ -461,9 +461,9 @@ GenericImageCanvasContainer {
 			} else if (element instanceof OmegaImagePixels) {
 				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_PIXELS_DETAILS);
 				pixels = (OmegaImagePixels) element;
-			} else if (element instanceof OmegaFrame) {
+			} else if (element instanceof OmegaPlane) {
 				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_FRAME_DETAILS);
-				final OmegaFrame frame = (OmegaFrame) element;
+				final OmegaPlane frame = (OmegaPlane) element;
 				frame.getIndex();
 				pixels = null;
 			} else {

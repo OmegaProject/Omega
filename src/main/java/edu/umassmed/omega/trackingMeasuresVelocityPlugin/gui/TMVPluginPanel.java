@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,37 +48,37 @@ import javax.swing.RootPaneContainer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.constants.StatsConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresVelocityRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSegments;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericSegmentsBrowserPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.GenericSegmentsBrowserContainerInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresVelocityRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSegments;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericSegmentsBrowserPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.interfaces.GenericSegmentsBrowserContainerInterface;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVConstants;
 
 public class TMVPluginPanel extends GenericPluginPanel implements
         GenericSegmentsBrowserContainerInterface {

@@ -1,16 +1,16 @@
-package main.java.edu.umassmed.omega.core.runnables;
+package edu.umassmed.omega.core.runnables;
 
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.core.OmegaApplication;
-import main.java.edu.umassmed.omega.core.OmegaMySqlGateway;
+import edu.umassmed.omega.commons.gui.dialogs.GenericProgressDialog;
+import edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.core.mysql.OmegaMySqlWriter;
 
 public abstract class OmegaDBWriter extends OmegaDBRunnable {
 
 	private boolean error;
 
 	public OmegaDBWriter(final OmegaApplication omegaApp,
-	        final OmegaMySqlGateway gateway, final GenericMessageDialog dialog) {
-		super(omegaApp, gateway, dialog);
+			final OmegaMySqlWriter writer, final GenericProgressDialog dialog) {
+		super(omegaApp, writer, dialog);
 		this.error = false;
 	}
 

@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin.gui;
+package edu.umassmed.omega.sptSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -45,13 +45,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
-import main.java.edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
+import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTQueueRunBrowserPanel extends GenericPanel {
 

@@ -25,18 +25,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omeroPlugin;
+package edu.umassmed.omega.omeroPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.OmegaData;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import main.java.edu.umassmed.omega.omero.commons.OmeroGateway;
-import main.java.edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
+import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
+import edu.umassmed.omega.omeroPlugin.gui.OmeroPluginPanel;
 
 public class OmeroPlugin extends OmegaLoaderPlugin {
 

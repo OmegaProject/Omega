@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,13 +28,13 @@ import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
-import main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
+import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 
 public class TSTrackPanel extends GenericPanel {
 	private static final long serialVersionUID = -6552285830250313567L;

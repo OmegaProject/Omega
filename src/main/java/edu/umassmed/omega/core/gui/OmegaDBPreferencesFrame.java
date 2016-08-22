@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -43,12 +43,12 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
-import main.java.edu.umassmed.omega.core.OmegaMySqlGateway;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
+import edu.umassmed.omega.core.mysql.OmegaMySqlGateway;
 
 public class OmegaDBPreferencesFrame extends GenericDialog {
 

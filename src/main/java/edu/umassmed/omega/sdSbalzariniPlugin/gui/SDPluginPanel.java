@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sdSbalzariniPlugin.gui;
+package edu.umassmed.omega.sdSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,30 +48,30 @@ import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventPreviewParticleDetection;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleDetection;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
-import main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDMessageEvent;
-import main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventPreviewParticleDetection;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleDetection;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
+import edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDMessageEvent;
+import edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2;
 
 public class SDPluginPanel extends GenericPluginPanel implements
 OmegaMessageDisplayerPanelInterface {
@@ -316,7 +316,7 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.sdRunner2.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
 					.getImageParameters();
-			final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = this.sdRunner2
+			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
 					.getImageResultingParticles();
 			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sdRunner2
 					.getImageParticlesAdditionalValues();
@@ -324,7 +324,7 @@ OmegaMessageDisplayerPanelInterface {
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
-				final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
+				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
 				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
 						.get(image);
@@ -359,20 +359,20 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.sdRunner2.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
 					.getImageParameters();
-			final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = this.sdRunner2
+			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
 					.getImageResultingParticles();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
-				final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
+				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
 
 				if (particles.size() > 1) {
 					// TODO problem
 					System.out.println("more than 1 frame error!!!");
 				} else {
-					for (final OmegaFrame frame : particles.keySet()) {
+					for (final OmegaPlane frame : particles.keySet()) {
 						final OmegaPluginEventPreviewParticleDetection particleDetectionEvt = new OmegaPluginEventPreviewParticleDetection(
 								this.getPlugin(), image, params, frame,
 						        particles.get(frame));

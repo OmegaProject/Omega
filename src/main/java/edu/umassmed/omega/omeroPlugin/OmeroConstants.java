@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.omeroPlugin;
+package edu.umassmed.omega.omeroPlugin;
 
 public class OmeroConstants {
 	public static final String PLUGIN_NAME = "OMERO Image Browser";

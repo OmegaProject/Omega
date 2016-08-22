@@ -1,9 +1,9 @@
-package main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin;
+package edu.umassmed.omega.trajectoriesRelinkingPlugin;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TRConstants {
 

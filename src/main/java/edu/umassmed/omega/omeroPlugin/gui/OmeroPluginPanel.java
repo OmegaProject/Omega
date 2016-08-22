@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omeroPlugin.gui;
+package edu.umassmed.omega.omeroPlugin.gui;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -44,25 +44,25 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
-import main.java.edu.umassmed.omega.commons.data.OmegaData;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaProject;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
-import main.java.edu.umassmed.omega.omero.commons.OmeroGateway;
-import main.java.edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
-import main.java.edu.umassmed.omega.omero.commons.data.OmeroImageWrapper;
-import main.java.edu.umassmed.omega.omero.commons.gui.OmeroAbstractBrowserInterface;
-import main.java.edu.umassmed.omega.omero.commons.gui.OmeroPanel;
-import main.java.edu.umassmed.omega.omero.commons.gui.OmeroPluginGUIConstants;
-import main.java.edu.umassmed.omega.omeroPlugin.OmeroPlugin;
+import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
+import edu.umassmed.omega.commons.data.OmegaData;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventDataChanged;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventGateway;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
+import edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
+import edu.umassmed.omega.omero.commons.data.OmeroImageWrapper;
+import edu.umassmed.omega.omero.commons.gui.OmeroAbstractBrowserInterface;
+import edu.umassmed.omega.omero.commons.gui.OmeroPanel;
+import edu.umassmed.omega.omero.commons.gui.OmeroPluginGUIConstants;
+import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 
 public class OmeroPluginPanel extends OmeroPanel implements
-        OmeroAbstractBrowserInterface {
+OmeroAbstractBrowserInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -74,13 +74,13 @@ public class OmeroPluginPanel extends OmeroPanel implements
 	private final OmegaData omegaData;
 
 	public OmeroPluginPanel(final RootPaneContainer parent,
-	        final OmeroPlugin plugin, final OmeroGateway gateway,
-	        final OmegaData omegaData, final int index) {
+			final OmeroPlugin plugin, final OmeroGateway gateway,
+			final OmegaData omegaData, final int index) {
 		super(parent, plugin, index, gateway);
 
 		this.omegaData = omegaData;
 		this.connectionDialog = new OmeroConnectionDialog(
-		        this.getParentContainer(), this, gateway);
+				this.getParentContainer(), this, gateway);
 
 		this.setPreferredSize(new Dimension(750, 500));
 		// this.setLayout(new BorderLayout());
@@ -93,7 +93,7 @@ public class OmeroPluginPanel extends OmeroPanel implements
 
 		this.connectionMenu = new JMenu(OmeroPluginGUIConstants.MENU_CONNECTION);
 		this.connectMItem = new JMenuItem(
-		        OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
+				OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
 		this.connectionMenu.add(this.connectMItem);
 
 		menu.add(this.connectionMenu);
@@ -110,7 +110,7 @@ public class OmeroPluginPanel extends OmeroPanel implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-				        OmegaConstantsEvent.PROPERTY_CONNECTION)) {
+						OmegaConstantsEvent.PROPERTY_CONNECTION)) {
 					OmeroPluginPanel.this.handlePropertyConnection();
 				}
 			}
@@ -120,15 +120,15 @@ public class OmeroPluginPanel extends OmeroPanel implements
 	private void handlePropertyConnection() {
 		if (this.getGateway().isConnected()) {
 			final OmegaExperimenter experimenter = OmeroImporterUtilities
-			        .getExperimenter(this.getGateway());
+					.getExperimenter(this.getGateway());
 			this.getPlugin().fireEvent(
-					new OmegaPluginEventGateway(this.getPlugin(),
-							OmegaPluginEventGateway.STATUS_CONNECTED,
-							experimenter));
+			        new OmegaPluginEventGateway(this.getPlugin(),
+			                OmegaPluginEventGateway.STATUS_CONNECTED,
+			                experimenter));
 		} else {
 			OmeroPluginPanel.this.getPlugin().fireEvent(
-					new OmegaPluginEventGateway(this.getPlugin(),
-							OmegaPluginEventGateway.STATUS_DISCONNECTED));
+			        new OmegaPluginEventGateway(this.getPlugin(),
+			                OmegaPluginEventGateway.STATUS_DISCONNECTED));
 		}
 		try {
 			this.updateVisualizationMenu();
@@ -160,9 +160,9 @@ public class OmeroPluginPanel extends OmeroPanel implements
 		final int x = parentLocOnScren.x;
 		final int y = parentLocOnScren.y;
 		final int xOffset = (parentSize.width / 2)
-		        - (this.connectionDialog.getSize().width / 2);
+				- (this.connectionDialog.getSize().width / 2);
 		final int yOffset = (parentSize.height / 2)
-		        - (this.connectionDialog.getSize().height / 2);
+				- (this.connectionDialog.getSize().height / 2);
 		final Point dialogPos = new Point(x + xOffset, y + yOffset);
 		this.connectionDialog.setLocation(dialogPos);
 		this.connectionDialog.validate();
@@ -182,28 +182,28 @@ public class OmeroPluginPanel extends OmeroPanel implements
 
 		// TODO add all checks and sub checks
 		OmegaExperimenter exp = OmeroImporterUtilities.loadAndAddExperimenter(
-				this.getGateway(), this.omegaData);
+		        this.getGateway(), this.omegaData);
 		if (exp != null) {
 			dataChanged = OmeroImporterUtilities.loadAndAddGroups(exp,
-					this.getGateway(), this.omegaData);
+			        this.getGateway(), this.omegaData);
 		} else {
 			exp = OmeroImporterUtilities.loadAndAddExperimenterAndGroups(
-					this.getGateway(), this.omegaData);
+			        this.getGateway(), this.omegaData);
 			dataChanged = true;
 		}
 		// Create pixels, image, dataset and project for the actual images
 		// to load and add it to the main data
 		for (final OmeroImageWrapper imageWrapper : this
-		        .getImageWrapperToBeLoadedList()) {
+				.getImageWrapperToBeLoadedList()) {
 			dataChanged = OmeroImporterUtilities.loadAndAddData(imageWrapper,
-					exp, this.getGateway(), this.omegaData, hasToSelect,
-					loadedElements, dataChanged);
+			        this.getGateway(), this.omegaData, hasToSelect,
+			        loadedElements, dataChanged);
 		}
 
 		if (dataChanged) {
 			this.getPlugin().fireEvent(
-			        new OmegaPluginEventDataChanged(this.getPlugin(),
-			                loadedElements));
+					new OmegaPluginEventDataChanged(this.getPlugin(),
+							loadedElements));
 		}
 		final List<OmegaImage> loadedImages = this.getLoadedImages();
 		this.getProjectPanel().updateLoadedElements(loadedImages);

@@ -25,35 +25,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.plSbalzariniPlugin;
+package edu.umassmed.omega.plSbalzariniPlugin;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.gui.PLPluginPanel;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.plSbalzariniPlugin.gui.PLPluginPanel;
 
 public class PLPlugin extends OmegaParticleTrackingPlugin implements
-        OmegaDataDisplayerPluginInterface,
-        OmegaSelectParticleDetectionRunPluginInterface,
-        OmegaSelectParticleLinkingRunPluginInterface,
-        OmegaOrphanedAnalysisConsumerPluginInterface,
-        OmegaLoadedAnalysisConsumerPluginInterface {
+OmegaDataDisplayerPluginInterface,
+OmegaSelectParticleDetectionRunPluginInterface,
+OmegaSelectParticleLinkingRunPluginInterface,
+OmegaOrphanedAnalysisConsumerPluginInterface,
+OmegaLoadedAnalysisConsumerPluginInterface {
 
 	private OrphanedAnalysisContainer orphanedAnalysis;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
@@ -77,7 +77,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
 		return new OmegaPerson(PLConstants.PLUGIN_AUTHOR_FIRSTNAME,
-		        PLConstants.PLUGIN_AUTHOR_LASTNAME);
+				PLConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -108,10 +108,10 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final PLPluginPanel panel = new PLPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(),
-		        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+				this.getGateway(), this.getLoadedImages(),
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 
@@ -129,7 +129,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final PLPluginPanel specificPanel = (PLPluginPanel) panel;
 			specificPanel.updateCombos(this.getLoadedImages(),
-			        this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
+					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
 
@@ -140,7 +140,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final PLPluginPanel specificPanel = (PLPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);
@@ -149,7 +149,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public void selectParticleLinkingRun(
-			final OmegaParticleLinkingRun analysisRun) {
+	        final OmegaParticleLinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final PLPluginPanel specificPanel = (PLPluginPanel) panel;
 			specificPanel.selectParticleLinkingRun(analysisRun);
@@ -158,7 +158,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public void setLoadedAnalysisRun(
-	        final List<OmegaAnalysisRun> loadedAnalysisRuns) {
+			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		this.loadedAnalysisRuns = loadedAnalysisRuns;
 	}
 
@@ -169,12 +169,17 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public void setOrphanedAnalysis(
-	        final OrphanedAnalysisContainer orphanedAnalysis) {
+			final OrphanedAnalysisContainer orphanedAnalysis) {
 		this.orphanedAnalysis = orphanedAnalysis;
 	}
 
 	@Override
 	public OrphanedAnalysisContainer getOrphanedAnalysis() {
 		return this.orphanedAnalysis;
+	}
+
+	@Override
+	public String getReference() {
+		return "TBD";
 	}
 }

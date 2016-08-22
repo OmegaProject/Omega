@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -11,14 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresIntensity;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.runnable.AnalyzerEvent;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresIntensity;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
+import edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
 
 public class TMIRunPanel extends GenericPanel implements
 OmegaMessageDisplayerPanelInterface {

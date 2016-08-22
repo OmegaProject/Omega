@@ -1,21 +1,21 @@
-package main.java.edu.umassmed.omega.core.runnables;
+package edu.umassmed.omega.core.runnables;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
-import main.java.edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
+import edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
+import edu.umassmed.omega.core.OmegaApplication;
 
 public class OmegaTrackingMeasuresAnalizer implements Runnable {
 
@@ -28,12 +28,12 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 	private final OmegaDiffusivityAnalyzer diffusivityAnalizer;
 
 	public OmegaTrackingMeasuresAnalizer(final OmegaApplication omegaApp,
-			final OmegaTrajectoriesSegmentationRun segmentationRun,
-			final int tMax, final boolean hasIntensities) {
+	        final OmegaTrajectoriesSegmentationRun segmentationRun,
+	        final int tMax, final boolean hasIntensities) {
 		this.omegaApp = omegaApp;
 		this.segmentationRun = segmentationRun;
 		final Map<OmegaTrajectory, List<OmegaSegment>> segments = segmentationRun
-				.getResultingSegments();
+		        .getResultingSegments();
 		if (hasIntensities) {
 			this.intensityAnalizer = new OmegaIntensityAnalyzer(segments);
 		} else {
@@ -43,17 +43,17 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 		this.velocityAnalizer = new OmegaVelocityAnalyzer(tMax, segments);
 		final List<OmegaParameter> diffParams = new ArrayList<OmegaParameter>();
 		diffParams.add(new OmegaParameter(
-		        OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW,
-		        OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_3));
+				OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW,
+				OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_3));
 		diffParams
-		        .add(new OmegaParameter(
-		                OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION,
-		                OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR));
+		.add(new OmegaParameter(
+				OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION,
+				OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR));
 		diffParams.add(new OmegaParameter(
-		        OmegaConstants.PARAMETER_ERROR_OPTION,
-		        OmegaConstants.PARAMETER_ERROR_OPTION_DISABLED));
+				OmegaConstants.PARAMETER_ERROR_OPTION,
+				OmegaConstants.PARAMETER_ERROR_OPTION_DISABLED));
 		this.diffusivityAnalizer = new OmegaDiffusivityAnalyzer(segments,
-		        diffParams);
+				diffParams);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 			peakSignals = this.intensityAnalizer.getPeakSignalsResults();
 			meanSignals = this.intensityAnalizer.getMeanSignalsResults();
 			localBackgrounds = this.intensityAnalizer
-					.getLocalBackgroundsResults();
+			        .getLocalBackgroundsResults();
 			localSNRs = this.intensityAnalizer.getLocalSNRsResults();
 		} else {
 			peakSignals = new LinkedHashMap<OmegaSegment, Double[]>();
@@ -106,32 +106,36 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 		}
 		// TODO to be changed somehow
 		this.omegaApp.updateTrackingMeasuresAnalizerResults(
-				this.segmentationRun, peakSignals, meanSignals,
-				localBackgrounds, localSNRs,
-				this.mobilityAnalizer.getDistancesResults(),
-				this.mobilityAnalizer.getDisplacementsResults(),
-				this.mobilityAnalizer.getMaxDisplacementsResults(),
-				this.mobilityAnalizer.getTotalTimeTraveledResults(),
-				this.mobilityAnalizer.getConfinementRatioResults(),
-				this.mobilityAnalizer.getAnglesAndDirectionalChangesResults(),
-				this.velocityAnalizer.getLocalSpeedResults(),
-				this.velocityAnalizer.getLocalVelocityResults(),
-				this.velocityAnalizer.getMeanSpeedResults(),
-				this.velocityAnalizer.getMeanVelocityResults(),
-				this.diffusivityAnalizer.getNyResults(),
-				this.diffusivityAnalizer.getMuResults(),
-				this.diffusivityAnalizer.getLogMuResults(),
-				this.diffusivityAnalizer.getDeltaTResults(),
-				this.diffusivityAnalizer.getLogDeltaTResults(),
-				this.diffusivityAnalizer.getGammaDResults(),
-				this.diffusivityAnalizer.getGammaDFromLogResults(),
-				this.diffusivityAnalizer.getGammaResults(),
-				this.diffusivityAnalizer.getGammaFromLogResults(),
-				this.diffusivityAnalizer.getSmssResults(),
-				this.diffusivityAnalizer.getSmssFromLogResults(),
-		        this.diffusivityAnalizer.getErrors(),
-		        this.diffusivityAnalizer.getErrorsFromLog(),
-		        this.diffusivityAnalizer.getSNRRun(),
-				this.diffusivityAnalizer.getTrackiMeasuresDiffusivityRun());
+		        this.segmentationRun,
+		        peakSignals,
+		        meanSignals,
+		        localBackgrounds,
+		        localSNRs,
+		        this.mobilityAnalizer.getDistancesResults(),
+		        this.mobilityAnalizer.getDisplacementsResults(),
+		        this.mobilityAnalizer.getMaxDisplacementsResults(),
+		        this.mobilityAnalizer.getTotalTimeTraveledResults(),
+		        this.mobilityAnalizer.getConfinementRatioResults(),
+		        this.mobilityAnalizer.getAnglesAndDirectionalChangesResults(),
+		        this.velocityAnalizer.getLocalSpeedResults(),
+		        this.velocityAnalizer.getLocalVelocityResults(),
+		        this.velocityAnalizer.getAverageCurvilinearSpeedResults(),
+		        this.velocityAnalizer.getAverageStraightLineVelocityResults(),
+		        this.velocityAnalizer.getForwardProgressionLinearityResults(),
+		        this.diffusivityAnalizer.getNyResults(),
+		        this.diffusivityAnalizer.getMuResults(),
+		        this.diffusivityAnalizer.getLogMuResults(),
+		        this.diffusivityAnalizer.getDeltaTResults(),
+		        this.diffusivityAnalizer.getLogDeltaTResults(),
+		        this.diffusivityAnalizer.getGammaDResults(),
+		        this.diffusivityAnalizer.getGammaDFromLogResults(),
+		        // this.diffusivityAnalizer.getGammaResults(),
+		        this.diffusivityAnalizer.getGammaFromLogResults(),
+		        // this.diffusivityAnalizer.getSmssResults(),
+		        this.diffusivityAnalizer.getSmssFromLogResults(),
+				// this.diffusivityAnalizer.getErrors(),
+				this.diffusivityAnalizer.getErrorsFromLog(),
+				this.diffusivityAnalizer.getSNRRun(),
+		        this.diffusivityAnalizer.getTrackiMeasuresDiffusivityRun());
 	}
 }

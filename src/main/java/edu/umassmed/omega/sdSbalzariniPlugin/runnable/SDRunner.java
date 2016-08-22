@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sdSbalzariniPlugin.runnable;
 
 import ij.process.ImageProcessor;
 
@@ -42,18 +42,18 @@ import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsError;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 
 public class SDRunner implements SDRunnable {
 	private final OmegaPlugin plugin;
@@ -61,7 +61,7 @@ public class SDRunner implements SDRunnable {
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
-	private final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles;
+	private final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles;
 	private final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues;
 
 	private final OmegaGateway gateway;
@@ -69,7 +69,7 @@ public class SDRunner implements SDRunnable {
 	private boolean isJobCompleted, isTerminated;
 
 	public SDRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final OmegaPlugin plugin) {
+	        final OmegaPlugin plugin) {
 		this.displayerPanel = displayerPanel;
 		this.plugin = plugin;
 
@@ -80,14 +80,14 @@ public class SDRunner implements SDRunnable {
 		this.isPreview = false;
 		this.isJobCompleted = false;
 
-		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaPlane, List<OmegaROI>>>();
 		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
 	public SDRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final Map<OmegaImage, List<OmegaParameter>> imageToProcess,
-			final OmegaGateway gateway, final boolean isPreview,
-			final OmegaPlugin plugin) {
+	        final Map<OmegaImage, List<OmegaParameter>> imageToProcess,
+	        final OmegaGateway gateway, final boolean isPreview,
+	        final OmegaPlugin plugin) {
 		this.displayerPanel = displayerPanel;
 		this.plugin = plugin;
 
@@ -98,7 +98,7 @@ public class SDRunner implements SDRunnable {
 		this.isPreview = isPreview;
 		this.isJobCompleted = false;
 
-		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaFrame, List<OmegaROI>>>();
+		this.resultingParticles = new LinkedHashMap<OmegaImage, Map<OmegaPlane, List<OmegaROI>>>();
 		this.resultingParticlesValues = new LinkedHashMap<OmegaImage, Map<OmegaROI, Map<String, Object>>>();
 	}
 
@@ -133,7 +133,7 @@ public class SDRunner implements SDRunnable {
 
 		if (this.isPreview) {
 			this.updateStatusAsync(SDRunner.RUNNER + " preview completed.",
-			        true);
+					true);
 		} else {
 			this.updateStatusAsync(SDRunner.RUNNER + " batch completed.", true);
 		}
@@ -142,9 +142,9 @@ public class SDRunner implements SDRunnable {
 	private void normalModeRun() {
 		for (final OmegaImage image : this.imagesToProcess.keySet()) {
 			final List<OmegaParameter> parameters = this.imagesToProcess
-					.get(image);
+			        .get(image);
 			final OmegaImagePixels defaultPixels = image.getDefaultPixels();
-			final long pixelsID = defaultPixels.getElementID();
+			final long pixelsID = defaultPixels.getOmeroId();
 			defaultPixels.getSizeX();
 			defaultPixels.getSizeY();
 			final int sizeT = defaultPixels.getSizeT();
@@ -168,7 +168,7 @@ public class SDRunner implements SDRunnable {
 				} else if (param.getName().equals(SDConstants.PARAM_PERCENTILE)) {
 					percentile = (Float) param.getValue() / 100;
 				} else if (param.getName().equals(
-						SDConstants.PARAM_PERCENTILE_ABS)) {
+				        SDConstants.PARAM_PERCENTILE_ABS)) {
 					percAbs = (Boolean) param.getValue();
 				} else if (param.getName().equals(SDConstants.PARAM_ZSECTION)) {
 					z = (Integer) param.getValue();
@@ -188,37 +188,37 @@ public class SDRunner implements SDRunnable {
 
 			final boolean error = false;
 
-			final Map<OmegaFrame, List<OmegaROI>> frames = new LinkedHashMap<OmegaFrame, List<OmegaROI>>();
+			final Map<OmegaPlane, List<OmegaROI>> frames = new LinkedHashMap<OmegaPlane, List<OmegaROI>>();
 
 			this.updateStatusSync(SDRunner.RUNNER
-			        + " loading values for image " + image.getName(), false);
+					+ " loading values for image " + image.getName(), false);
 
 			final List<SDWorker> loaders = new ArrayList<SDWorker>(), workers = new ArrayList<SDWorker>(), completedWorkers = new ArrayList<SDWorker>();
 			final ExecutorService loaderExecutor = Executors
-			        .newFixedThreadPool(5);
+					.newFixedThreadPool(5);
 
 			if (this.isPreview) {
 				OmegaLogFileManager.appendToPluginLog(this.plugin,
-				        "Creating preview 0 SDWorker for " + image.getName());
+						"Creating preview 0 SDWorker for " + image.getName());
 				final SDWorker worker = new SDWorker(this.gateway,
-						defaultPixels, 0, radius, cutoff, percentile, percAbs,
-				        c, z);
+				        defaultPixels, 0, radius, cutoff, percentile, percAbs,
+						c, z);
 				workers.add(worker);
 				loaderExecutor.execute(worker);
 			} else {
 				OmegaLogFileManager.appendToPluginLog(this.plugin, "Creating "
-				        + sizeT + " SDWorkers for " + image.getName());
+						+ sizeT + " SDWorkers for " + image.getName());
 				for (int t = 0; t < sizeT; t++) {
 					final SDWorker worker = new SDWorker(this.gateway,
-					        defaultPixels, t, radius, cutoff, percentile,
-							percAbs, c, z);
+							defaultPixels, t, radius, cutoff, percentile,
+					        percAbs, c, z);
 					workers.add(worker);
 					loaderExecutor.execute(worker);
 				}
 			}
 
 			this.waitForExecutor(loaderExecutor, loaders, workers,
-			        image.getName(), sizeT, true);
+					image.getName(), sizeT, true);
 
 			Float globalMin = Float.MAX_VALUE, globalMax = 0F;
 			for (final SDWorker loader : workers) {
@@ -232,10 +232,10 @@ public class SDRunner implements SDRunnable {
 			}
 
 			this.updateStatusSync(SDRunner.RUNNER + " processing image "
-			        + image.getName(), false);
+					+ image.getName(), false);
 
 			final ExecutorService workerExecutor = Executors
-			        .newFixedThreadPool(5);
+					.newFixedThreadPool(5);
 			for (final SDWorker worker : workers) {
 				worker.setGlobalMin(globalMin);
 				worker.setGlobalMax(globalMax);
@@ -244,18 +244,18 @@ public class SDRunner implements SDRunnable {
 			}
 
 			this.waitForExecutor(workerExecutor, workers, completedWorkers,
-			        image.getName(), sizeT, false);
+					image.getName(), sizeT, false);
 			this.orderList(completedWorkers);
 
 			final Map<OmegaROI, Map<String, Object>> particleValues = new LinkedHashMap<OmegaROI, Map<String, Object>>();
 			OmegaLogFileManager.appendToPluginLog(this.plugin,
-			        "Pulling results from SDWorkers");
+					"Pulling results from SDWorkers");
 			int counter = 0;
 			for (final SDWorker worker : completedWorkers) {
-				final OmegaFrame frame = worker.getFrame();
+				final OmegaPlane frame = worker.getFrame();
 				if (frame.getIndex() != counter) {
 					OmegaLogFileManager.appendToPluginLog(this.plugin,
-					        "Problem in frame " + frame.getIndex());
+							"Problem in frame " + frame.getIndex());
 				}
 				counter++;
 				final List<OmegaROI> particles = worker.getResultingParticles();
@@ -271,16 +271,16 @@ public class SDRunner implements SDRunnable {
 
 			if (error) {
 				JOptionPane.showMessageDialog(null,
-						OmegaConstantsError.ERROR_DURING_SPT_RUN,
-						OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+				        OmegaConstantsError.ERROR_DURING_SPT_RUN,
+				        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
 
 	private void waitForExecutor(final ExecutorService exec,
-	        final List<SDWorker> workers,
-	        final List<SDWorker> completedWorkers, final String imageName,
-			final int sizeT, final boolean isLoading) {
+			final List<SDWorker> workers,
+			final List<SDWorker> completedWorkers, final String imageName,
+	        final int sizeT, final boolean isLoading) {
 		int completed = 0;
 		while (!exec.isTerminated()) {
 			if (this.isTerminated) {
@@ -336,7 +336,7 @@ public class SDRunner implements SDRunnable {
 		return this.imagesToProcess;
 	}
 
-	public Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> getImageResultingParticles() {
+	public Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> getImageResultingParticles() {
 		return this.resultingParticles;
 	}
 
@@ -355,9 +355,9 @@ public class SDRunner implements SDRunnable {
 				@Override
 				public void run() {
 					SDRunner.this.displayerPanel
-					.updateMessageStatus(new SDMessageEvent(msg,
-							SDRunner.this, ended,
-							SDRunner.this.isPreview));
+					        .updateMessageStatus(new SDMessageEvent(msg,
+					                SDRunner.this, ended,
+					                SDRunner.this.isPreview));
 				}
 			});
 		} catch (final InvocationTargetException ex) {
@@ -372,8 +372,8 @@ public class SDRunner implements SDRunnable {
 			@Override
 			public void run() {
 				SDRunner.this.displayerPanel
-				.updateMessageStatus(new SDMessageEvent(msg,
-						SDRunner.this, ended, SDRunner.this.isPreview));
+				        .updateMessageStatus(new SDMessageEvent(msg,
+				                SDRunner.this, ended, SDRunner.this.isPreview));
 			}
 		});
 	}

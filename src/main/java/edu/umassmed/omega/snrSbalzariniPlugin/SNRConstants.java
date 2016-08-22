@@ -25,13 +25,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.snrSbalzariniPlugin;
+package edu.umassmed.omega.snrSbalzariniPlugin;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class SNRConstants {
 	public static String PARAM_SNR_METHOD = "SNR Method";
@@ -57,5 +57,5 @@ public class SNRConstants {
 	public static final String PLUGIN_DESC = "To be defined";
 	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
-	.getTime();
+	        .getTime();
 }

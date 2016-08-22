@@ -1,6 +1,6 @@
-package main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sdSbalzariniPlugin.runnable;
 
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 
 public class SDMessageEvent extends OmegaMessageEvent {
 

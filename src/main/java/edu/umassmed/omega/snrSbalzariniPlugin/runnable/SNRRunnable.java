@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.snrSbalzariniPlugin.runnable;
+package edu.umassmed.omega.snrSbalzariniPlugin.runnable;
 
 public interface SNRRunnable extends Runnable {
 	public boolean isJobCompleted();

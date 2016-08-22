@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,16 +19,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.StatsConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresMobilityRun;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import main.java.edu.umassmed.omega.trackingMeasuresMobilityPlugin.runnable.TMMGraphProducer;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresMobilityRun;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
+import edu.umassmed.omega.trackingMeasuresMobilityPlugin.runnable.TMMGraphProducer;
 
 public class TMMGraphPanel extends GenericPanel {
 	private static final long serialVersionUID = 5049817481648368289L;

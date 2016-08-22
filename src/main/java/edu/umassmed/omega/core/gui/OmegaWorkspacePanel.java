@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,16 +48,16 @@ import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericDesktopPane;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.GenericPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
-import main.java.edu.umassmed.omega.commons.utilities.OperatingSystemUtilities;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericDesktopPane;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.GenericPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
+import edu.umassmed.omega.commons.utilities.OperatingSystemUtilities;
 
 public class OmegaWorkspacePanel extends GenericDesktopPane implements
 GenericPanelInterface {

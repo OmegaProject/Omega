@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,12 +27,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
 
 public class TSSegmentPreferencesDialog extends GenericDialog {
 

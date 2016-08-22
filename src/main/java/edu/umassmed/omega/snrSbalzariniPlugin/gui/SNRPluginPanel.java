@@ -6,7 +6,7 @@
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
- * Ivo Sbalzarini and Mario Valle.
+ * Ivo ErrorIndex and Mario Valle.
  *
  * Key contacts:
  * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.snrSbalzariniPlugin.gui;
+package edu.umassmed.omega.snrSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -58,35 +58,35 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaElement;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsSNR;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
-import main.java.edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRMessageEvent;
-import main.java.edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRRunner;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsSNR;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
+import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRMessageEvent;
+import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRRunner;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class SNRPluginPanel extends GenericPluginPanel implements
 OmegaMessageDisplayerPanelInterface {
@@ -420,16 +420,22 @@ OmegaMessageDisplayerPanelInterface {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
 					.getParticleToProcess();
 
-			final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> imageNoises = this.snrRunner
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageNoises = this.snrRunner
 					.getResultingImageNoise();
-			final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> imageBackgrounds = this.snrRunner
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageBackgrounds = this.snrRunner
 					.getResultingImageBackground();
-			final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> imageAvgSNR = this.snrRunner
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgSNR = this.snrRunner
 					.getResultingImageAverageSNR();
-			final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> imageMinSNR = this.snrRunner
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinSNR = this.snrRunner
 					.getResultingImageMinimumSNR();
-			final Map<OmegaParticleDetectionRun, Map<OmegaFrame, Double>> imageMaxSNR = this.snrRunner
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxSNR = this.snrRunner
 					.getResultingImageMaximumSNR();
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgErrorIndexSNR = this.snrRunner
+					.getResultingImageAverageErrorIndexSNR();
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinErrorIndexSNR = this.snrRunner
+					.getResultingImageMinimumErrorIndexSNR();
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxErrorIndexSNR = this.snrRunner
+					.getResultingImageMaximumErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localCentralSignals = this.snrRunner
 					.getResultingLocalCentralSignals();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localMeanSignals = this.snrRunner
@@ -442,22 +448,28 @@ OmegaMessageDisplayerPanelInterface {
 					.getResultingLocalNoises();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localSNRs = this.snrRunner
 					.getResultingLocalSNRs();
-			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localBattaPoissonSNRs = this.snrRunner
-					.getResultingLocalBhattacharyyaPoissonSNRs();
+			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localErrorIndexSNRs = this.snrRunner
+					.getResultingLocalErrorIndexSNRs();
 
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
 					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
 						.get(spotDetectionRun);
-				final Map<OmegaFrame, Double> noises = imageNoises
+				final Map<OmegaPlane, Double> noises = imageNoises
 						.get(spotDetectionRun);
-				final Map<OmegaFrame, Double> backgrounds = imageBackgrounds
+				final Map<OmegaPlane, Double> backgrounds = imageBackgrounds
 						.get(spotDetectionRun);
-				final Map<OmegaFrame, Double> averageSNR = imageAvgSNR
+				final Map<OmegaPlane, Double> averageSNR = imageAvgSNR
 						.get(spotDetectionRun);
-				final Map<OmegaFrame, Double> minimumSNR = imageMinSNR
+				final Map<OmegaPlane, Double> minimumSNR = imageMinSNR
 						.get(spotDetectionRun);
-				final Map<OmegaFrame, Double> maximumSNR = imageMaxSNR
+				final Map<OmegaPlane, Double> maximumSNR = imageMaxSNR
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> averageErrorIndexSNR = imageAvgErrorIndexSNR
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> minimumErrorIndexSNR = imageMinErrorIndexSNR
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> maximumErrorIndexSNR = imageMaxErrorIndexSNR
 						.get(spotDetectionRun);
 				final Map<OmegaROI, Integer> lCentralSignals = localCentralSignals
 						.get(spotDetectionRun);
@@ -471,14 +483,16 @@ OmegaMessageDisplayerPanelInterface {
 						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lSNRs = localSNRs
 						.get(spotDetectionRun);
-				final Map<OmegaROI, Double> lBattaPoissonSNRs = localBattaPoissonSNRs
+				final Map<OmegaROI, Double> lErrorIndexSNRs = localErrorIndexSNRs
 						.get(spotDetectionRun);
 
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
 						this.getPlugin(), spotDetectionRun, params, noises,
 						backgrounds, averageSNR, minimumSNR, maximumSNR,
-				        lCentralSignals, lMeanSignals, lSignalSizes,
-				        lPeakSignals, lNoises, lSNRs, lBattaPoissonSNRs);
+				        averageErrorIndexSNR, minimumErrorIndexSNR,
+						maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
+						lSignalSizes, lPeakSignals, lNoises, lSNRs,
+						lErrorIndexSNRs);
 
 				this.particlesToProcess.remove(spotDetectionRun);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);

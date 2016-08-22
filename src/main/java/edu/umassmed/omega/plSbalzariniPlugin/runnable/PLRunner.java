@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.plSbalzariniPlugin.runnable;
+package edu.umassmed.omega.plSbalzariniPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 import mosaic.core.detection.MyFrame;
 import mosaic.core.detection.Particle;
 import mosaic.core.particleLinking.ParticleLinker;
@@ -130,13 +130,13 @@ public class PLRunner implements PLRunnable {
 			final List<OmegaParameter> parameters = this.particlesToProcess
 					.get(spotDetRun);
 
-			final Map<OmegaFrame, List<OmegaROI>> resultingParticles = spotDetRun
+			final Map<OmegaPlane, List<OmegaROI>> resultingParticles = spotDetRun
 					.getResultingParticles();
 			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = spotDetRun
 					.getResultingParticlesValues();
 
 			OmegaImagePixels pixels = null;
-			for (final OmegaFrame frame : resultingParticles.keySet()) {
+			for (final OmegaPlane frame : resultingParticles.keySet()) {
 				pixels = frame.getParentPixels();
 				break;
 			}
@@ -177,7 +177,7 @@ public class PLRunner implements PLRunnable {
 
 			final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
 			final MyFrame[] mosaicFrames = new MyFrame[sizeT];
-			for (final OmegaFrame frame : resultingParticles.keySet()) {
+			for (final OmegaPlane frame : resultingParticles.keySet()) {
 				final List<OmegaROI> particles = resultingParticles.get(frame);
 				final MyFrame mosaicFrame = new MyFrame();
 				final int index = frame.getIndex();

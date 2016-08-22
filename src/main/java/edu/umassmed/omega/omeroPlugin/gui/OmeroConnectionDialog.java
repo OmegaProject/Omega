@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omeroPlugin.gui;
+package edu.umassmed.omega.omeroPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -49,16 +49,16 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaServerInformation;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
-import main.java.edu.umassmed.omega.omero.commons.OmeroGateway;
-import main.java.edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
-import main.java.edu.umassmed.omega.omero.commons.data.OmeroServerInformation;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaServerInformation;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
+import edu.umassmed.omega.omero.commons.OmeroGateway;
+import edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
+import edu.umassmed.omega.omero.commons.data.OmeroServerInformation;
 
 public class OmeroConnectionDialog extends GenericDialog {
 

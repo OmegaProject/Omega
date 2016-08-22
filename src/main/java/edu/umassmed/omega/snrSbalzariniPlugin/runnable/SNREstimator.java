@@ -6,7 +6,7 @@
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
- * Ivo Sbalzarini and Mario Valle.
+ * Ivo ErrorIndex and Mario Valle.
  *
  * Key contacts:
  * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.snrSbalzariniPlugin.runnable;
+package edu.umassmed.omega.snrSbalzariniPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -35,14 +35,14 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
-import main.java.edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
+import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
+import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNREstimator implements SNRRunnable {
 
@@ -51,7 +51,7 @@ public class SNREstimator implements SNRRunnable {
 	private boolean isJobCompleted, isTerminated;
 
 	private final OmegaGateway gateway;
-	private final OmegaFrame frame;
+	private final OmegaPlane frame;
 	private final List<OmegaROI> rois;
 
 	private final int radius;
@@ -67,11 +67,12 @@ public class SNREstimator implements SNRRunnable {
 	private final Map<OmegaROI, Integer> localPeakSignals;
 	private final Map<OmegaROI, Double> localNoises;
 	private final Map<OmegaROI, Double> localSNRs;
-	private final Map<OmegaROI, Double> localBattaPoissonSNRs;
+	private final Map<OmegaROI, Double> localErrorIndexSNRs;
+	private Double avgErrorIndexSNR, minErrorIndexSNR, maxErrorIndexSNR;
 
 	public SNREstimator(
 			final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final OmegaGateway gateway, final OmegaFrame frame,
+			final OmegaGateway gateway, final OmegaPlane frame,
 			final List<OmegaROI> rois, final int radius,
 			final double threshold, final String method) {
 		this.displayerPanel = displayerPanel;
@@ -88,15 +89,18 @@ public class SNREstimator implements SNRRunnable {
 		this.avgSNR = null;
 		this.minSNR = null;
 		this.maxSNR = null;
+		this.avgErrorIndexSNR = null;
+		this.minErrorIndexSNR = null;
+		this.maxErrorIndexSNR = null;
 		this.imageBGR = null;
 		this.imageNoise = null;
-		this.localCenterSignals = new LinkedHashMap<>();
-		this.localMeanSignals = new LinkedHashMap<>();
-		this.localSignalSizes = new LinkedHashMap<>();
-		this.localPeakSignals = new LinkedHashMap<>();
-		this.localNoises = new LinkedHashMap<>();
-		this.localSNRs = new LinkedHashMap<>();
-		this.localBattaPoissonSNRs = new LinkedHashMap<OmegaROI, Double>();
+		this.localCenterSignals = new LinkedHashMap<OmegaROI, Integer>();
+		this.localMeanSignals = new LinkedHashMap<OmegaROI, Double>();
+		this.localSignalSizes = new LinkedHashMap<OmegaROI, Integer>();
+		this.localPeakSignals = new LinkedHashMap<OmegaROI, Integer>();
+		this.localNoises = new LinkedHashMap<OmegaROI, Double>();
+		this.localSNRs = new LinkedHashMap<OmegaROI, Double>();
+		this.localErrorIndexSNRs = new LinkedHashMap<OmegaROI, Double>();
 	}
 
 	@Override
@@ -108,7 +112,7 @@ public class SNREstimator implements SNRRunnable {
 	public void run() {
 		if (this.isTerminated)
 			return;
-		final long pixelsID = this.frame.getParentPixels().getElementID();
+		final long pixelsID = this.frame.getParentPixels().getOmeroId();
 		final int width = this.frame.getParentPixels().getSizeX();
 		final int height = this.frame.getParentPixels().getSizeY();
 		final int z = this.frame.getZPlane();
@@ -134,6 +138,9 @@ public class SNREstimator implements SNRRunnable {
 		this.avgSNR = 0.0;
 		this.minSNR = Double.MAX_VALUE;
 		this.maxSNR = Double.MIN_VALUE;
+		this.avgErrorIndexSNR = 0.0;
+		this.minErrorIndexSNR = Double.MAX_VALUE;
+		this.maxErrorIndexSNR = Double.MIN_VALUE;
 		for (final OmegaROI roi : this.rois) {
 			if (this.isTerminated)
 				return;
@@ -169,17 +176,18 @@ public class SNREstimator implements SNRRunnable {
 					* ((this.imageNoise * this.imageNoise) / this.imageBGR));
 			this.localNoises.put(roi, localNoise);
 			Double localSNR = null;
-			final Double battaPoissonSNR = 2 * (Math.sqrt(localMaxSignal) - Math
-			        .sqrt(this.imageBGR));
+			final Double ErrorIndexSNR = (localMaxSignal - this.imageBGR)
+					/ localNoise;
 			if (this.method
 			        .equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON)) {
-				localSNR = battaPoissonSNR;
+				localSNR = 2 * (Math.sqrt(localMaxSignal) - Math
+				        .sqrt(this.imageBGR));
 			} else if (this.method
 			        .equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN)) {
 				localSNR = (2 * (localMaxSignal - this.imageBGR))
 				        / (Math.sqrt(localMaxSignal) + Math.sqrt(this.imageBGR));
 			} else {
-				localSNR = (localMaxSignal - this.imageBGR) / localNoise;
+				localSNR = ErrorIndexSNR;
 			}
 			this.avgSNR += localSNR;
 			if (this.minSNR > localSNR) {
@@ -188,8 +196,15 @@ public class SNREstimator implements SNRRunnable {
 			if (this.maxSNR < localSNR) {
 				this.maxSNR = localSNR;
 			}
+			this.avgErrorIndexSNR += ErrorIndexSNR;
+			if (this.minErrorIndexSNR > ErrorIndexSNR) {
+				this.minErrorIndexSNR = ErrorIndexSNR;
+			}
+			if (this.maxErrorIndexSNR < ErrorIndexSNR) {
+				this.maxErrorIndexSNR = ErrorIndexSNR;
+			}
 			this.localSNRs.put(roi, localSNR);
-			this.localBattaPoissonSNRs.put(roi, battaPoissonSNR);
+			this.localErrorIndexSNRs.put(roi, ErrorIndexSNR);
 		}
 		this.avgSNR /= this.rois.size();
 		this.isJobCompleted = true;
@@ -225,7 +240,7 @@ public class SNREstimator implements SNRRunnable {
 		this.isTerminated = true;
 	}
 
-	public OmegaFrame getFrame() {
+	public OmegaPlane getFrame() {
 		return this.frame;
 	}
 
@@ -247,6 +262,18 @@ public class SNREstimator implements SNRRunnable {
 
 	public Double getMaximumSNR() {
 		return this.maxSNR;
+	}
+
+	public Double getAverageErrorIndexSNR() {
+		return this.avgErrorIndexSNR;
+	}
+
+	public Double getMinimumErrorIndexSNR() {
+		return this.minErrorIndexSNR;
+	}
+
+	public Double getMaximumErrorIndexSNR() {
+		return this.maxErrorIndexSNR;
 	}
 
 	public Map<OmegaROI, Integer> getLocalCenterSignals() {
@@ -273,7 +300,7 @@ public class SNREstimator implements SNRRunnable {
 		return this.localSNRs;
 	}
 
-	public Map<OmegaROI, Double> getLocalBhattacharyyaPoissonSNRs() {
-		return this.localBattaPoissonSNRs;
+	public Map<OmegaROI, Double> getLocalErrorIndexSNRs() {
+		return this.localErrorIndexSNRs;
 	}
 }

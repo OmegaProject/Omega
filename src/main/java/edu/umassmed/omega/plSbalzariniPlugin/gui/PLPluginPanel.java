@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.plSbalzariniPlugin.gui;
+package edu.umassmed.omega.plSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -59,36 +59,36 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleLinking;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.runnable.PLMessageEvent;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.runnable.PLRunner;
-import main.java.edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleLinking;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
+import edu.umassmed.omega.plSbalzariniPlugin.runnable.PLMessageEvent;
+import edu.umassmed.omega.plSbalzariniPlugin.runnable.PLRunner;
+import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class PLPluginPanel extends GenericPluginPanel implements
 OmegaMessageDisplayerPanelInterface {
@@ -362,14 +362,14 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.particlesToProcess != null) {
 			for (final OmegaParticleDetectionRun detRun : this.particlesToProcess
 					.keySet()) {
-				final Map<OmegaFrame, List<OmegaROI>> particles = detRun
+				final Map<OmegaPlane, List<OmegaROI>> particles = detRun
 						.getResultingParticles();
 				int counter = 0;
-				final List<OmegaFrame> frames = new ArrayList<OmegaFrame>(
+				final List<OmegaPlane> frames = new ArrayList<OmegaPlane>(
 				        particles.keySet());
-				Collections.sort(frames, new Comparator<OmegaFrame>() {
+				Collections.sort(frames, new Comparator<OmegaPlane>() {
 					@Override
-					public int compare(final OmegaFrame o1, final OmegaFrame o2) {
+					public int compare(final OmegaPlane o1, final OmegaPlane o2) {
 						if (o1.getIndex() < o2.getIndex())
 							return -1;
 						else if (o1.getIndex() > o2.getIndex())
@@ -377,7 +377,7 @@ OmegaMessageDisplayerPanelInterface {
 						return 0;
 					}
 				});
-				for (final OmegaFrame f : frames) {
+				for (final OmegaPlane f : frames) {
 					final int index = f.getIndex();
 					if (index != counter)
 						return;

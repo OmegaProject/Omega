@@ -1,6 +1,6 @@
-package main.java.edu.umassmed.omega.omegaDataBrowserPlugin;
+package edu.umassmed.omega.omegaDataBrowserPlugin;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class OmegaDataBrowserConstants {
 

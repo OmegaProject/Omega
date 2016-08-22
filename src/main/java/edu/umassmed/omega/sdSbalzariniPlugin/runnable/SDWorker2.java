@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.sdSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sdSbalzariniPlugin.runnable;
 
 import ij.ImageStack;
 
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import mosaic.core.detection.FeaturePointDetector;
 import mosaic.core.detection.MyFrame;
 import mosaic.core.detection.Particle;
@@ -19,7 +19,7 @@ import mosaic.core.detection.Particle;
 public class SDWorker2 implements SDRunnable {
 
 	private final OmegaImagePixels pixels;
-	private OmegaFrame frame;
+	private OmegaPlane frame;
 	private final List<OmegaROI> particles;
 	private final int frameIndex;
 	private final Integer radius;
@@ -74,12 +74,12 @@ public class SDWorker2 implements SDRunnable {
 	}
 
 	private void normalProcessingModeRun() {
-		final List<OmegaFrame> frames = this.pixels.getFrames(this.channel,
+		final List<OmegaPlane> frames = this.pixels.getFrames(this.channel,
 		        this.zSection);
 		if (!frames.isEmpty() && (frames.size() > this.frameIndex)) {
 			this.frame = frames.get(this.frameIndex);
 		} else {
-			this.frame = new OmegaFrame(this.frameIndex, this.channel,
+			this.frame = new OmegaPlane(this.frameIndex, this.channel,
 			        this.zSection);
 			this.frame.setParentPixels(this.pixels);
 			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
@@ -133,7 +133,7 @@ public class SDWorker2 implements SDRunnable {
 		this.isTerminated = true;
 	}
 
-	public OmegaFrame getFrame() {
+	public OmegaPlane getFrame() {
 		return this.frame;
 	}
 

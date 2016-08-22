@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable;
+package edu.umassmed.omega.sptSbalzariniPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -33,15 +33,15 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstantsError;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
 
 public class SPTLoader implements SPTRunnable {
 	private static final String RUNNER = "Loader service: ";
@@ -53,8 +53,8 @@ public class SPTLoader implements SPTRunnable {
 	private boolean isJobCompleted, isKilled;
 
 	public SPTLoader(final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final OmegaImage image, final int z, final int c,
-	        final OmegaGateway gateway) {
+			final OmegaImage image, final int z, final int c,
+			final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 		this.image = image;
 		this.z = z;
@@ -73,11 +73,11 @@ public class SPTLoader implements SPTRunnable {
 	@Override
 	public void run() {
 		this.updateStatusSync(
-		        SPTLoader.RUNNER + " started image " + this.image.getName(),
-		        false);
+				SPTLoader.RUNNER + " started image " + this.image.getName(),
+				false);
 		final OmegaImagePixels defaultPixels = this.image.getDefaultPixels();
 		// ID of the pixels
-		final Long pixelsID = defaultPixels.getElementID();
+		final Long pixelsID = defaultPixels.getOmeroId();
 		// number of frames for this image
 		final int framesNumber = defaultPixels.getSizeT();
 		// number of bytes of this image
@@ -93,16 +93,16 @@ public class SPTLoader implements SPTRunnable {
 			}
 			final int frameIndex = t + 1;
 			this.updateStatusSync(
-			        SPTLoader.RUNNER + " image " + this.image.getName()
-			                + ", frame(s) " + frameIndex + "/" + framesNumber,
-			        false);
-			final List<OmegaFrame> frames = defaultPixels.getFrames(this.c,
-			        this.z);
-			OmegaFrame frame = null;
+					SPTLoader.RUNNER + " image " + this.image.getName()
+					+ ", frame(s) " + frameIndex + "/" + framesNumber,
+					false);
+			final List<OmegaPlane> frames = defaultPixels.getFrames(this.c,
+					this.z);
+			OmegaPlane frame = null;
 			if (!frames.isEmpty() && (frames.size() > t)) {
 				frame = frames.get(t);
 			} else {
-				frame = new OmegaFrame(t, this.c, this.z);
+				frame = new OmegaPlane(t, this.c, this.z);
 				frame.setParentPixels(defaultPixels);
 				defaultPixels.addFrame(this.c, this.z, frame);
 			}
@@ -112,7 +112,7 @@ public class SPTLoader implements SPTRunnable {
 
 			try {
 				final byte[] pixels = this.gateway.getImageData(pixelsID,
-				        this.z, t, this.c);
+						this.z, t, this.c);
 				// if (oldPixels != null) {
 				// boolean tof = true;
 				// for (int i = 0; i < pixels.length; i++)
@@ -128,8 +128,8 @@ public class SPTLoader implements SPTRunnable {
 				//
 				// oldPixels = pixels;
 
-				final Integer[] data = OmegaImageUtilities.convertByteToIntegerImage(
-				        byteWidth, pixels);
+				final Integer[] data = OmegaImageUtilities
+				        .convertByteToIntegerImage(byteWidth, pixels);
 				final int[] image = new int[data.length];
 				for (int i = 0; i < data.length; i++) {
 					image[i] = data[i];
@@ -145,8 +145,8 @@ public class SPTLoader implements SPTRunnable {
 
 		if (error) {
 			JOptionPane.showMessageDialog(null,
-			        OmegaConstantsError.ERROR_DURING_SPT_RUN,
-			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+					OmegaConstantsError.ERROR_DURING_SPT_RUN,
+					OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 
 		this.updateStatusAsync(SPTLoader.RUNNER + " ended.", true);
@@ -159,8 +159,8 @@ public class SPTLoader implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTLoader.this.displayerPanel
-					        .updateMessageStatus(new SPTMessageEvent(msg,
-					                SPTLoader.this, ended));
+					.updateMessageStatus(new SPTMessageEvent(msg,
+							SPTLoader.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
@@ -173,8 +173,8 @@ public class SPTLoader implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTLoader.this.displayerPanel
-				        .updateMessageStatus(new SPTMessageEvent(msg,
-				                SPTLoader.this, ended));
+				.updateMessageStatus(new SPTMessageEvent(msg,
+						SPTLoader.this, ended));
 			}
 		});
 	}

@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin.gui;
+package edu.umassmed.omega.sptSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,33 +48,33 @@ import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaImage;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleTracking;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericStatusPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTLoader;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTMessageEvent;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunnable;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTWriter;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsParticleTracking;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
+import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
+import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTLoader;
+import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTMessageEvent;
+import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunnable;
+import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner;
+import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTWriter;
 
 public class SPTPluginPanel extends GenericPluginPanel implements
 OmegaMessageDisplayerPanelInterface {
@@ -295,7 +295,7 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.sptRunner.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sptRunner
 					.getImageParameters();
-			final Map<OmegaImage, Map<OmegaFrame, List<OmegaROI>>> resultingParticles = this.sptRunner
+			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sptRunner
 					.getImageResultingParticles();
 			final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = this.sptRunner
 					.getImageResultingTrajectories();
@@ -305,7 +305,7 @@ OmegaMessageDisplayerPanelInterface {
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
-				final Map<OmegaFrame, List<OmegaROI>> particles = resultingParticles
+				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
 				final List<OmegaTrajectory> trajectories = resultingTrajectories
 						.get(image);

@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.plSbalzariniPlugin.gui;
+package edu.umassmed.omega.plSbalzariniPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -39,16 +39,16 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
-import main.java.edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.gui.GenericAnalysisInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
+import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
+import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class PLRunPanel extends GenericPanel {
 

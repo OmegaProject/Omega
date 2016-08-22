@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,14 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresDiffusivityRun;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.gui.GenericComboBox;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresDiffusivityRun;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.gui.GenericComboBox;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTypeClassificationGraphProducer;
 
 public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	private static final long serialVersionUID = 1124434645792957106L;
@@ -213,7 +213,7 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	}
 
 	private void handleDrawChart(final int motionTypeOption,
-			final int showOption) {
+	        final int showOption) {
 		this.pluginPanel.updateStatus("Preparing log graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> segments = null;
 		if ((this.selectedSegments != null) && !this.selectedSegments.isEmpty()) {
@@ -222,18 +222,20 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			segments = this.segmentsMap;
 		}
 		final TMDMotionTypeClassificationGraphProducer graphProducer = new TMDMotionTypeClassificationGraphProducer(
-				this, motionTypeOption, showOption, segments, this.segmTypes,
-				this.selectedTrackingMeasuresRun.getNyResults(),
-				this.selectedTrackingMeasuresRun.getMuResults(),
-				this.selectedTrackingMeasuresRun.getLogMuResults(),
-				this.selectedTrackingMeasuresRun.getDeltaTResults(),
-				this.selectedTrackingMeasuresRun.getLogDeltaTResults(),
-				this.selectedTrackingMeasuresRun.getGammaDResults(),
-				this.selectedTrackingMeasuresRun.getGammaDFromLogResults(),
-				this.selectedTrackingMeasuresRun.getGammaResults(),
-				this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
-				this.selectedTrackingMeasuresRun.getSmssResults(),
-				this.selectedTrackingMeasuresRun.getSmssFromLogResults());
+		        this, motionTypeOption, showOption, segments, this.segmTypes,
+		        this.selectedTrackingMeasuresRun.getNyResults(),
+		        this.selectedTrackingMeasuresRun.getMuResults(),
+		        this.selectedTrackingMeasuresRun.getLogMuResults(),
+		        this.selectedTrackingMeasuresRun.getDeltaTResults(),
+		        this.selectedTrackingMeasuresRun.getLogDeltaTResults(),
+		        this.selectedTrackingMeasuresRun.getGammaDResults(),
+		        this.selectedTrackingMeasuresRun.getGammaDFromLogResults(),
+		        // this.selectedTrackingMeasuresRun.getGammaResults(),
+		        this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
+		        // this.selectedTrackingMeasuresRun.getSmssResults(),
+		        this.selectedTrackingMeasuresRun.getSmssFromLogResults(),
+		        // this.selectedTrackingMeasuresRun.getErrorsResults(),
+		        this.selectedTrackingMeasuresRun.getErrosFromLogResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 
@@ -263,6 +265,7 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
+		this.showOption_cmb.updateParentContainer(parent);
 		// Bottom down menu here
 	}
 

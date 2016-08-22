@@ -25,14 +25,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omegaDataBrowserPlugin.gui;
+package edu.umassmed.omega.omegaDataBrowserPlugin.gui;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserLoadedDataOptionsPanel extends GenericPanel {
 

@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable;
+package edu.umassmed.omega.trackingMeasuresVelocityPlugin.runnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVConstants;
-import main.java.edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
+import edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVConstants;
+import edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel;
 
 public class TMVGraphProducer extends StatsGraphProducer {
 
@@ -24,27 +24,30 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	private final int maxT;
 	private final Map<OmegaSegment, List<Double>> localSpeedMap;
 	private final Map<OmegaSegment, List<Double>> localVelocityMap;
-	private final Map<OmegaSegment, Double> meanSpeedMap;
-	private final Map<OmegaSegment, Double> meanVelocityMap;
+	private final Map<OmegaSegment, Double> averageCurvilinearSpeedMap;
+	private final Map<OmegaSegment, Double> averageStraightLineVelocityMap;
+	private final Map<OmegaSegment, Double> forwardProgressionLinearityMap;
 
 	private JPanel graphPanel;
 
 	public TMVGraphProducer(final TMVGraphPanel velocityPanel,
-			final int graphType, final int velocityOption, final int tMax,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, List<Double>> localSpeedMap,
-			final Map<OmegaSegment, List<Double>> localVelocityMap,
-			final Map<OmegaSegment, Double> meanSpeedMap,
-			final Map<OmegaSegment, Double> meanVelocityMap) {
+	        final int graphType, final int velocityOption, final int tMax,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, List<Double>> localSpeedMap,
+	        final Map<OmegaSegment, List<Double>> localVelocityMap,
+	        final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
+	        final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
+	        final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.velocityPanel = velocityPanel;
 		this.velocityOption = velocityOption;
 		this.maxT = tMax;
 		this.localSpeedMap = localSpeedMap;
 		this.localVelocityMap = localVelocityMap;
-		this.meanSpeedMap = meanSpeedMap;
-		this.meanVelocityMap = meanVelocityMap;
+		this.averageCurvilinearSpeedMap = averageCurvilinearSpeedMap;
+		this.averageStraightLineVelocityMap = averageStraightLineVelocityMap;
+		this.forwardProgressionLinearityMap = forwardProgressionLinearityMap;
 		this.graphPanel = null;
 	}
 
@@ -114,10 +117,10 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		final Double[] value = new Double[1];
 		switch (this.velocityOption) {
 		case TMVGraphPanel.OPTION_MEAN_VELOCITY:
-			value[0] = this.meanVelocityMap.get(segment);
+			value[0] = this.averageStraightLineVelocityMap.get(segment);
 			break;
 		case TMVGraphPanel.OPTION_MEAN_SPEED:
-			value[0] = this.meanSpeedMap.get(segment);
+			value[0] = this.averageCurvilinearSpeedMap.get(segment);
 			break;
 		case TMVGraphPanel.OPTION_LOCAL_VELOCITY:
 			values = this.localVelocityMap.get(segment);
@@ -137,8 +140,8 @@ public class TMVGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMVGraphProducer.this.velocityPanel.updateStatus(
-							TMVGraphProducer.this.getCompleted(), ended,
-							TMVGraphProducer.this.graphPanel);
+					        TMVGraphProducer.this.getCompleted(), ended,
+					        TMVGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {

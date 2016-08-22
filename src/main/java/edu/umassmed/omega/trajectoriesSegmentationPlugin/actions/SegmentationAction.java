@@ -1,9 +1,9 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.actions;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.actions;
 
 import java.util.List;
 
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
 public class SegmentationAction {
 	private final OmegaTrajectory traj;

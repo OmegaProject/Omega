@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
+package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,9 +10,9 @@ import java.math.RoundingMode;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.OmegaLogFileManager;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class TSTrackLabelsPanel extends GenericPanel {
 

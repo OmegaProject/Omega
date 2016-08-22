@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,13 +22,13 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaConstants;
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.gui.GenericAlgorithmDetailsDialog;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
+import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.gui.GenericAlgorithmDetailsDialog;
+import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class OmegaPluginLauncherDialog extends GenericDialog {
 

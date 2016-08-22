@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.sptSbalzariniPlugin;
+package edu.umassmed.omega.sptSbalzariniPlugin;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,17 +33,17 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import main.java.edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
-import main.java.edu.umassmed.omega.sptSbalzariniPlugin.gui.SPTPluginPanel;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
+import edu.umassmed.omega.sptSbalzariniPlugin.gui.SPTPluginPanel;
 
 public class SPTPlugin extends OmegaParticleTrackingPlugin implements
-        OmegaDataDisplayerPluginInterface {
+OmegaDataDisplayerPluginInterface {
 
 	public SPTPlugin() {
 		super(1);
@@ -61,7 +61,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
 		return new OmegaPerson(SPTConstants.PLUGIN_AUTHOR_FIRSTNAME,
-				SPTConstants.PLUGIN_AUTHOR_LASTNAME);
+		        SPTConstants.PLUGIN_AUTHOR_LASTNAME);
 	}
 
 	@Override
@@ -99,9 +99,9 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SPTPluginPanel panel = new SPTPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(), index);
+				this.getGateway(), this.getLoadedImages(), index);
 		return panel;
 	}
 
@@ -125,5 +125,10 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 	@Override
 	public String getDescription() {
 		return SPTConstants.PLUGIN_DESC;
+	}
+
+	@Override
+	public String getReference() {
+		return "TBD";
 	}
 }

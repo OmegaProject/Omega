@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -39,17 +39,17 @@ import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaSNRPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
-import main.java.edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaSNRPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
+import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class OmegaTopPanel extends GenericPanel {
 	private static final long serialVersionUID = -2511349408103225400L;

@@ -25,12 +25,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.omegaVisualizerPlugin;
+package edu.umassmed.omega.omegaVisualizerPlugin;
 
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class OmegaVisualizerPlugin extends OmegaPlugin {
 

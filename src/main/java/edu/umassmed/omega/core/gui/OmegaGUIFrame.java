@@ -25,7 +25,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package main.java.edu.umassmed.omega.core.gui;
+package edu.umassmed.omega.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -51,25 +51,25 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
-import main.java.edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-import main.java.edu.umassmed.omega.commons.data.OmegaLoadedData;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import main.java.edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
-import main.java.edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
-import main.java.edu.umassmed.omega.commons.gui.GenericFrame;
-import main.java.edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import main.java.edu.umassmed.omega.core.OmegaApplication;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.data.OmegaLoadedData;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
+import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
+import edu.umassmed.omega.commons.gui.GenericFrame;
+import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.core.OmegaApplication;
 
 public class OmegaGUIFrame extends JFrame {
 
@@ -89,10 +89,10 @@ public class OmegaGUIFrame extends JFrame {
 
 	private JMenuBar menu;
 	private JMenu fileMenu, viewMenu, editMenu;
-	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem, aboutMItem,
-	quitMItem;
+	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem,
+	omegaDbLoadOrphanedMItem, aboutMItem, quitMItem;
 	private JMenuItem tracksImporterMItem, tracksExporterMItem,
-	        diffExporterMItem;
+	diffExporterMItem, dataExporterMItem;
 	private JMenuItem sepUnifyInterfaceMItem;
 	private JMenuItem omegaDbOptionsMItem, omegaDbUpdateTrajectoriesMItem;
 
@@ -168,28 +168,38 @@ public class OmegaGUIFrame extends JFrame {
 		this.menu = new JMenuBar();
 		this.fileMenu = new JMenu(OmegaGUIConstants.MENU_FILE);
 		this.tracksImporterMItem = new JMenuItem(
-				OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS);
+		        OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS);
 		this.tracksImporterMItem
-		.setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
 		this.fileMenu.add(this.tracksImporterMItem);
 		this.tracksExporterMItem = new JMenuItem(
-				OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS);
+		        OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS);
 		this.tracksExporterMItem
-		.setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS_TT);
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS_TT);
 		this.fileMenu.add(this.tracksExporterMItem);
 		this.diffExporterMItem = new JMenuItem(
-				OmegaGUIConstants.MENU_FILE_EXPORT_DIFF);
+		        OmegaGUIConstants.MENU_FILE_EXPORT_DIFF);
 		this.diffExporterMItem
-		.setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DIFF_TT);
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DIFF_TT);
 		this.fileMenu.add(this.diffExporterMItem);
+		this.dataExporterMItem = new JMenuItem(
+		        OmegaGUIConstants.MENU_FILE_EXPORT_DATA);
+		this.dataExporterMItem
+		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DATA_TT);
+		this.fileMenu.add(this.dataExporterMItem);
 		this.fileMenu.add(new JSeparator());
 		this.omegaDbLoadMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_LOAD);
 		this.omegaDbLoadMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_LOAD_TT);
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_LOAD_TT);
 		this.fileMenu.add(this.omegaDbLoadMItem);
+		this.omegaDbLoadOrphanedMItem = new JMenuItem(
+		        OmegaGUIConstants.MENU_FILE_LOAD_ORPHANED);
+		this.omegaDbLoadOrphanedMItem
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_LOAD_ORPHANED_TT);
+		this.fileMenu.add(this.omegaDbLoadOrphanedMItem);
 		this.omegaDbSaveMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_SAVE);
 		this.omegaDbSaveMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_SAVE_TT);
+		.setToolTipText(OmegaGUIConstants.MENU_FILE_SAVE_TT);
 		this.fileMenu.add(this.omegaDbSaveMItem);
 		this.fileMenu.add(new JSeparator());
 		this.aboutMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_ABOUT);
@@ -200,15 +210,15 @@ public class OmegaGUIFrame extends JFrame {
 
 		this.editMenu = new JMenu(OmegaGUIConstants.MENU_EDIT);
 		this.omegaDbOptionsMItem = new JMenuItem(
-				OmegaGUIConstants.MENU_EDIT_DB_PREF);
+		        OmegaGUIConstants.MENU_EDIT_DB_PREF);
 		this.omegaDbUpdateTrajectoriesMItem = new JMenuItem(
-		        "Update Trajectories");
+				"Update Trajectories");
 		this.editMenu.add(this.omegaDbOptionsMItem);
 		this.editMenu.add(this.omegaDbUpdateTrajectoriesMItem);
 
 		this.viewMenu = new JMenu(OmegaGUIConstants.MENU_VIEW);
 		this.sepUnifyInterfaceMItem = new JMenuItem(
-				OmegaGUIConstants.MENU_VIEW_SEPARATE);
+		        OmegaGUIConstants.MENU_VIEW_SEPARATE);
 		this.viewMenu.add(this.sepUnifyInterfaceMItem);
 
 		final JMenu workspaceMenu = this.workspacePanel.getMenu();
@@ -228,15 +238,15 @@ public class OmegaGUIFrame extends JFrame {
 			}
 		});
 		this.mainSplitPane.addPropertyChangeListener(
-		        JSplitPane.DIVIDER_LOCATION_PROPERTY,
-		        new PropertyChangeListener() {
+				JSplitPane.DIVIDER_LOCATION_PROPERTY,
+				new PropertyChangeListener() {
 
-			        @Override
-			        public void propertyChange(final PropertyChangeEvent evt) {
-				        final JSplitPane source = (JSplitPane) evt.getSource();
-				        OmegaGUIFrame.this.handleSplitChange(source.getSize());
-			        }
-		        });
+					@Override
+					public void propertyChange(final PropertyChangeEvent evt) {
+						final JSplitPane source = (JSplitPane) evt.getSource();
+						OmegaGUIFrame.this.handleSplitChange(source.getSize());
+					}
+				});
 		this.tracksImporterMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -255,10 +265,22 @@ public class OmegaGUIFrame extends JFrame {
 				OmegaGUIFrame.this.omegaApp.showDiffusivityExporter();
 			}
 		});
+		this.dataExporterMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.exportAllData();
+			}
+		});
 		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				OmegaGUIFrame.this.omegaApp.loadAnalysis();
+			}
+		});
+		this.omegaDbLoadOrphanedMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.loadOrphanedAnalysis();
 			}
 		});
 		this.omegaDbSaveMItem.addActionListener(new ActionListener() {
@@ -301,11 +323,11 @@ public class OmegaGUIFrame extends JFrame {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-						OmegaGUIConstants.EVENT_PROPERTY_PLUGIN)) {
+				        OmegaGUIConstants.EVENT_PROPERTY_PLUGIN)) {
 					final OmegaPlugin plugin = OmegaGUIFrame.this.omegaApp
-					        .getPlugin((long) evt.getNewValue());
+							.getPlugin((long) evt.getNewValue());
 					OmegaGUIFrame.this.pluginSelected = (long) evt
-					        .getNewValue();
+							.getNewValue();
 					OmegaGUIFrame.this.workspacePanel.showPlugin(plugin);
 				}
 			}
@@ -318,12 +340,12 @@ public class OmegaGUIFrame extends JFrame {
 			}
 		});
 		this.omegaDbUpdateTrajectoriesMItem
-		        .addActionListener(new ActionListener() {
-			        @Override
-			        public void actionPerformed(final ActionEvent e) {
-				        OmegaGUIFrame.this.omegaApp.updateTrajectories();
-			        }
-		        });
+		.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.omegaApp.updateTrajectories();
+			}
+		});
 	}
 
 	private void handleResize() {
@@ -364,9 +386,9 @@ public class OmegaGUIFrame extends JFrame {
 		final int x = parentLocOnScren.x;
 		final int y = parentLocOnScren.y;
 		final int xOffset = (parentSize.width / 2)
-		        - (this.omegaDbPrefFrame.getSize().width / 2);
+				- (this.omegaDbPrefFrame.getSize().width / 2);
 		final int yOffset = (parentSize.height / 2)
-		        - (this.omegaDbPrefFrame.getSize().height / 2);
+				- (this.omegaDbPrefFrame.getSize().height / 2);
 		final Point dialogPos = new Point(x + xOffset, y + yOffset);
 		this.omegaDbPrefFrame.setLocation(dialogPos);
 		this.omegaDbPrefFrame.validate();
@@ -398,7 +420,7 @@ public class OmegaGUIFrame extends JFrame {
 		final Point workspaceFramePos = new Point();
 		workspaceFramePos.x += windowPos.x + (windowDim.width - spDim.width);
 		workspaceFramePos.y += windowPos.y + (windowDim.height - spDim.height)
-		        + 9;
+				+ 9;
 		return workspaceFramePos;
 	}
 
@@ -447,17 +469,17 @@ public class OmegaGUIFrame extends JFrame {
 
 		this.sepUnifyInterfaceMItem.setText(OmegaGUIConstants.MENU_VIEW_UNIFY);
 		final GenericFrame sideFrame = new GenericFrame(this, this.sidePanel,
-		        "Sidebar", this.getSideFramePosition(),
-		        this.sidePanel.getSize());
+				"Sidebar", this.getSideFramePosition(),
+				this.sidePanel.getSize());
 		sideFrame.doNothingOnClose();
 		this.separatedFrames.add(sideFrame);
 		this.sidePanel.setAttached(false);
 		this.sidePanel.updateParentContainer(sideFrame);
 
 		final GenericFrame workspaceFrame = new GenericFrame(this,
-		        this.workspacePanel, "Workspace",
-		        this.getWorkspaceFramePosition(),
-		        this.getWorkspaceFrameDimension());
+				this.workspacePanel, "Workspace",
+				this.getWorkspaceFramePosition(),
+				this.getWorkspaceFrameDimension());
 		workspaceFrame.doNothingOnClose();
 		this.separatedFrames.add(workspaceFrame);
 		this.workspacePanel.setAttached(false);
@@ -475,7 +497,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.mainSplitPane.setRightComponent(this.sidePanel);
 
 		this.sepUnifyInterfaceMItem
-		        .setText(OmegaGUIConstants.MENU_VIEW_SEPARATE);
+		.setText(OmegaGUIConstants.MENU_VIEW_SEPARATE);
 
 		for (final JFrame frame : this.separatedFrames) {
 			frame.getContentPane().removeAll();
@@ -502,7 +524,7 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void addGeneralOptions(final String category,
-	        final Map<String, String> options) {
+			final Map<String, String> options) {
 		this.omegaApp.addGeneralOptions(category, options);
 	}
 
@@ -526,11 +548,11 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void updateGUI(final OmegaLoadedData loadedData,
-			final OrphanedAnalysisContainer orphanedAnalysis,
-	        final List<OmegaAnalysisRun> loadedAnalysisRuns,
-	        final OmegaGateway gateway) {
+	        final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> loadedAnalysisRuns,
+			final OmegaGateway gateway) {
 		this.sidePanel.updateGUI(loadedData, orphanedAnalysis,
-		        loadedAnalysisRuns, gateway);
+				loadedAnalysisRuns, gateway);
 	}
 
 	public OmegaDBServerInformation getOmegaDBServerInformation() {
@@ -546,13 +568,13 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void updateSegments(
-			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final boolean selection) {
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final boolean selection) {
 		this.sidePanel.updateSegments(segments, selection);
 	}
 
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-	        final boolean selection) {
+			final boolean selection) {
 		this.sidePanel.updateTrajectories(trajectories, selection);
 	}
 
@@ -565,32 +587,32 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		this.sidePanel.selectParticleDetectionRun(analysisRun);
 	}
 
 	public void selectParticleLinkingRun(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		this.sidePanel.selectParticleLinkingRun(analysisRun);
 	}
 
 	public void selectTrajectoriesRelinkingRun(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		this.sidePanel.selectTrajectoriesRelinkingRun(analysisRun);
 	}
 
 	public void selectCurrentTrajectoriesRelinkingRun(
-	        final List<OmegaTrajectory> trajectories) {
+			final List<OmegaTrajectory> trajectories) {
 		this.sidePanel.selectCurrentTrajectoriesRelinking(trajectories);
 	}
 
 	public void selectTrajectoriesSegmentationRun(
-	        final OmegaTrajectoriesSegmentationRun analysisRun) {
+			final OmegaTrajectoriesSegmentationRun analysisRun) {
 		this.sidePanel.selectTrajectoriesSegmentationRun(analysisRun);
 	}
 
 	public void selectCurrentTrajectoriesSegmentationRun(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.sidePanel.selectCurrentTrajectoriesSegmentationRun(segmentsMap);
 	}
 }

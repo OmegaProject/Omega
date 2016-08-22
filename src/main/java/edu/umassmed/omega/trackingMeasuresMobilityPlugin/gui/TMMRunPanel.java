@@ -1,4 +1,4 @@
-package main.java.edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui;
+package edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -11,14 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import main.java.edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
-import main.java.edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresMobility;
-import main.java.edu.umassmed.omega.commons.gui.GenericPanel;
-import main.java.edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
-import main.java.edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import main.java.edu.umassmed.omega.commons.runnable.AnalyzerEvent;
-import main.java.edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresMobility;
+import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
+import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
+import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
+import edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
 
 public class TMMRunPanel extends GenericPanel implements
 OmegaMessageDisplayerPanelInterface {
