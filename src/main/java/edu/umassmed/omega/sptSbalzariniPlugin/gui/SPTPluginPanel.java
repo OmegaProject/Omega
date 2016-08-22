@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
@@ -69,6 +67,7 @@ import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaFileUtilities;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTLoader;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTMessageEvent;
@@ -157,16 +156,12 @@ OmegaMessageDisplayerPanelInterface {
 
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
-
-		final ImageIcon addIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "green_plus.png");
+		final String s1 = OmegaFileUtilities.getImageFilename("green_plus.png");
+		final ImageIcon addIcon = new ImageIcon(s1);
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
-
-		final ImageIcon removeIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "red_minus.png");
+		final String s2 = OmegaFileUtilities.getImageFilename("red_minus.png");
+		final ImageIcon removeIcon = new ImageIcon(s2);
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 

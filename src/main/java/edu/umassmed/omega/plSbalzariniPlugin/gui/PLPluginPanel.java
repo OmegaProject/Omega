@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -85,6 +84,7 @@ import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaFileUtilities;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 import edu.umassmed.omega.plSbalzariniPlugin.runnable.PLMessageEvent;
 import edu.umassmed.omega.plSbalzariniPlugin.runnable.PLRunner;
@@ -218,16 +218,12 @@ OmegaMessageDisplayerPanelInterface {
 
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
-
-		final ImageIcon addIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "green_plus.png");
+		final String s1 = OmegaFileUtilities.getImageFilename("green_plus.jpg");
+		final ImageIcon addIcon = new ImageIcon(s1);
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
-
-		final ImageIcon removeIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "red_minus.png");
+		final String s2 = OmegaFileUtilities.getImageFilename("red_minus.jpg");
+		final ImageIcon removeIcon = new ImageIcon(s2);
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 

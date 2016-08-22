@@ -226,7 +226,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
-							<mainClass>main.java.edu.umassmed.omega.OmegaApplication</mainClass>
+							<mainClass>edu.umassmed.omega.core.OmegaApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

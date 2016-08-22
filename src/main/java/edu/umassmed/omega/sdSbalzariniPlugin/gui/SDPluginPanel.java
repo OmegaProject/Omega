@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
@@ -69,12 +67,13 @@ import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.utilities.OmegaFileUtilities;
 import edu.umassmed.omega.sdSbalzariniPlugin.SDConstants;
 import edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDMessageEvent;
 import edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2;
 
 public class SDPluginPanel extends GenericPluginPanel implements
-OmegaMessageDisplayerPanelInterface {
+        OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -108,8 +107,8 @@ OmegaMessageDisplayerPanelInterface {
 	private boolean isRunningBatch;
 
 	public SDPluginPanel(final RootPaneContainer parent,
-			final OmegaPlugin plugin, final OmegaGateway gateway,
-			final List<OmegaImage> images, final int index) {
+	        final OmegaPlugin plugin, final OmegaGateway gateway,
+	        final List<OmegaImage> images, final int index) {
 		super(parent, plugin, index);
 
 		this.sdThread = null;
@@ -140,10 +139,10 @@ OmegaMessageDisplayerPanelInterface {
 
 	public void createAndAddWidgets() {
 		this.loadedDataBrowserPanel = new SDLoadedDataBrowserPanel(
-				this.getParentContainer(), this);
+		        this.getParentContainer(), this);
 
 		this.queueRunBrowserPanel = new SDQueueRunBrowserPanel(
-				this.getParentContainer(), this);
+		        this.getParentContainer(), this);
 
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
@@ -157,15 +156,12 @@ OmegaMessageDisplayerPanelInterface {
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 
-		final ImageIcon addIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "green_plus.png");
+		final String s1 = OmegaFileUtilities.getImageFilename("green_plus.jpg");
+		final ImageIcon addIcon = new ImageIcon(s1);
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
-
-		final ImageIcon removeIcon = new ImageIcon(
-				OmegaConstants.OMEGA_IMGS_FOLDER + File.separatorChar
-				+ "red_minus.png");
+		final String s2 = OmegaFileUtilities.getImageFilename("red_minus.jpg");
+		final ImageIcon removeIcon = new ImageIcon(s2);
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 
@@ -177,7 +173,7 @@ OmegaMessageDisplayerPanelInterface {
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
 
 		this.tabPanel = new JTabbedPane(SwingConstants.TOP,
-				JTabbedPane.WRAP_TAB_LAYOUT);
+		        JTabbedPane.WRAP_TAB_LAYOUT);
 
 		// TODO create panel for parameters
 		this.runPanel = new SDRunPanel(this.getParentContainer(), this.gateway);
@@ -185,7 +181,7 @@ OmegaMessageDisplayerPanelInterface {
 		this.tabPanel.add(SDConstants.RUN_DEFINITION, scrollPaneRun);
 
 		this.resPanel = new GenericTrackingResultsPanel(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.tabPanel.add("Detection Results", this.resPanel);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -289,7 +285,7 @@ OmegaMessageDisplayerPanelInterface {
 		// this.gateway,
 		// true, this.getPlugin());
 		this.sdRunner2 = new SDRunner2(this, this.imagesToProcess,
-		        this.gateway, true, this.getPlugin());
+				this.gateway, true, this.getPlugin());
 		this.sdThread = new Thread(this.sdRunner2);
 		this.sdThread.setName(this.sdRunner2.getClass().getSimpleName());
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.sdThread);
@@ -305,7 +301,7 @@ OmegaMessageDisplayerPanelInterface {
 		// this.gateway,
 		// false, this.getPlugin());
 		this.sdRunner2 = new SDRunner2(this, this.imagesToProcess,
-				this.gateway, false, this.getPlugin());
+		        this.gateway, false, this.getPlugin());
 		this.sdThread = new Thread(this.sdRunner2);
 		this.sdThread.setName(this.sdRunner2.getClass().getSimpleName());
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.sdThread);
@@ -315,23 +311,23 @@ OmegaMessageDisplayerPanelInterface {
 	private void updateRunnerEnded() {
 		if (this.sdRunner2.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
-					.getImageParameters();
+			        .getImageParameters();
 			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
-					.getImageResultingParticles();
+			        .getImageResultingParticles();
 			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sdRunner2
-					.getImageParticlesAdditionalValues();
+			        .getImageParticlesAdditionalValues();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
-						.get(image);
+				        .get(image);
 				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
-						.get(image);
+				        .get(image);
 
 				final OmegaPluginEventResultsParticleDetection particleDetectionEvt = new OmegaPluginEventResultsParticleDetection(
-						this.getPlugin(), image, params, particles,
-						particlesValues);
+				        this.getPlugin(), image, params, particles,
+				        particlesValues);
 
 				this.imagesToProcess.remove(image);
 				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
@@ -358,15 +354,15 @@ OmegaMessageDisplayerPanelInterface {
 	private void updatePreviewEnded() {
 		if (this.sdRunner2.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
-					.getImageParameters();
+			        .getImageParameters();
 			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
-					.getImageResultingParticles();
+			        .getImageResultingParticles();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
-						.get(image);
+				        .get(image);
 
 				if (particles.size() > 1) {
 					// TODO problem
@@ -374,8 +370,8 @@ OmegaMessageDisplayerPanelInterface {
 				} else {
 					for (final OmegaPlane frame : particles.keySet()) {
 						final OmegaPluginEventPreviewParticleDetection particleDetectionEvt = new OmegaPluginEventPreviewParticleDetection(
-								this.getPlugin(), image, params, frame,
-						        particles.get(frame));
+						        this.getPlugin(), image, params, frame,
+								particles.get(frame));
 						this.getPlugin().fireEvent(particleDetectionEvt);
 					}
 				}
@@ -428,7 +424,7 @@ OmegaMessageDisplayerPanelInterface {
 					this.statusPanel.updateStatus(1, buf.toString());
 				} catch (final OmegaPluginExceptionStatusPanel ex) {
 					OmegaLogFileManager.handlePluginException(this.getPlugin(),
-							ex);
+					        ex);
 				}
 				break;
 				// Lanciare eccezione o printare errore a schermo
@@ -462,13 +458,13 @@ OmegaMessageDisplayerPanelInterface {
 
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleDetectionRun);
+				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -478,7 +474,7 @@ OmegaMessageDisplayerPanelInterface {
 	}
 
 	public void updateSelectedParticleDetectionRun(
-	        final OmegaParticleDetectionRun particleDetectionRun) {
+			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleDetectionRun = particleDetectionRun;
 		this.fireEventSelectionParticleDetectionRun();
@@ -487,7 +483,7 @@ OmegaMessageDisplayerPanelInterface {
 			return;
 		if (this.selectedParticleDetectionRun != null) {
 			this.runPanel.updateRunFields(this.selectedParticleDetectionRun
-			        .getAlgorithmSpec().getParameters());
+					.getAlgorithmSpec().getParameters());
 			this.resPanel.setAnalysisRun(this.selectedParticleDetectionRun);
 		}
 	}
@@ -504,7 +500,7 @@ OmegaMessageDisplayerPanelInterface {
 			if (this.imagesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.imagesToProcess
-						.get(this.selectedImage));
+				        .get(this.selectedImage));
 			} else {
 				this.addToProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFieldsDefault();
@@ -529,9 +525,9 @@ OmegaMessageDisplayerPanelInterface {
 	}
 
 	public boolean checkIfThisAlgorithm(
-			final OmegaParticleDetectionRun particleDetectionRun) {
+	        final OmegaParticleDetectionRun particleDetectionRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
-				.getPlugin();
+		        .getPlugin();
 		return plugin.checkIfThisAlgorithm(particleDetectionRun);
 
 	}
