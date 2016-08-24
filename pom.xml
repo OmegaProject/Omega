@@ -228,6 +228,9 @@
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 							<mainClass>edu.umassmed.omega.core.OmegaApplication</mainClass>
 						</manifest>
+						<manifestEntries>              
+             				<!--<Class-Path>omega-0.0.1-SNAPSHOT.jar</Class-Path>-->
+                    	</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>

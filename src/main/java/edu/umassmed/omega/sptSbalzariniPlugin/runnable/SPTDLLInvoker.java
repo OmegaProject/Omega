@@ -95,6 +95,10 @@ public class SPTDLLInvoker {
 	 * Load the SPT DLL.
 	 */
 	static {
+		// TODO try to use OmegaClassLoader methods
+		// loadLibrary to load unpack dll libraries on the fly when needed
+		// and deleting them at the end of execution
+		// in this way they can be packed in the jar by maven
 		try {
 			final String dir = System.getProperty("user.dir") + File.separator
 					+ OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
@@ -116,8 +120,15 @@ public class SPTDLLInvoker {
 			OmegaClassLoaderUtilities.addLibraryPath(dir);
 			System.load(dir + "pthreadVC2" + ".dll");
 			System.load(dir + "ParticleTracker_Statistics_Dll_VC2008-Release"
-			        + ".dll");
+					+ ".dll");
 			System.load(dir + OmegaConstants.OMEGA_SPT_DLL + ".dll");
+			// System.load(OmegaConstants.OMEGA_SPT_FOLDER + "//pthreadVC2"
+			// + ".dll");
+			// System.load(OmegaConstants.OMEGA_SPT_FOLDER
+			// + "//ParticleTracker_Statistics_Dll_VC2008-Release"
+			// + ".dll");
+			// System.load(OmegaConstants.OMEGA_SPT_FOLDER + "//"
+			// + OmegaConstants.OMEGA_SPT_DLL + ".dll");
 		} catch (final UnsatisfiedLinkError ex) {
 			OmegaLogFileManager.handleUncaughtException(ex);
 			JOptionPane.showMessageDialog(null, OmegaConstantsError.ERROR_NODLL

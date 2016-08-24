@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -71,7 +71,7 @@ public class OmegaOptionsFileManager {
 		this.options = new LinkedHashMap<String, String>();
 
 		this.workingDirFile = new File(
-		        OmegaOptionsFileManager.WORKING_DIR_FILENAME);
+				OmegaOptionsFileManager.WORKING_DIR_FILENAME);
 		this.workingDirPath = null;
 		this.configFile = null;
 
@@ -82,19 +82,21 @@ public class OmegaOptionsFileManager {
 		}
 
 		this.configFile = new File(this.workingDirPath + File.separator
-		        + OmegaOptionsFileManager.CONFIG_FILENAME);
+				+ OmegaOptionsFileManager.CONFIG_FILENAME);
 
 		this.optionsSaved = "Unknown";
+		if (this.configFile.exists()) {
+			this.loadOptionsFromFile();
+		}
 
-		this.loadOptionsFromFile();
 		if (OmegaApplication.ISDEBUG) {
 			OmegaLogFileManager.appendToCoreLog("Loading options saved: "
-			        + this.optionsSaved);
+					+ this.optionsSaved);
 			for (final String cat : this.optionsCat.keySet()) {
 				OmegaLogFileManager.appendToCoreLog(cat);
 				for (final String optionKey : this.optionsCat.get(cat)) {
 					OmegaLogFileManager.appendToCoreLog(optionKey + "\t"
-					        + this.options.get(optionKey));
+							+ this.options.get(optionKey));
 				}
 			}
 		}
@@ -106,7 +108,7 @@ public class OmegaOptionsFileManager {
 			final BufferedReader br = new BufferedReader(fr);
 			final String workingDirFileIdent = br.readLine();
 			if (!workingDirFileIdent
-			        .equals(OmegaOptionsFileManager.WORKING_DIR_FILE_IDENT)) {
+					.equals(OmegaOptionsFileManager.WORKING_DIR_FILE_IDENT)) {
 				// TODO ERROR
 				br.close();
 				fr.close();
@@ -114,7 +116,7 @@ public class OmegaOptionsFileManager {
 			}
 
 			final String dateString = br.readLine().replace(
-			        OmegaOptionsFileManager.FILE_DATE_IDENT, "");
+					OmegaOptionsFileManager.FILE_DATE_IDENT, "");
 			final String date = dateString.substring(1);
 			final DateFormat format = DateFormat.getInstance();
 			final Date d = format.parse(date);
@@ -141,7 +143,7 @@ public class OmegaOptionsFileManager {
 			bw.write(OmegaOptionsFileManager.WORKING_DIR_FILE_IDENT + "\n");
 			final DateFormat format = DateFormat.getInstance();
 			bw.write(OmegaOptionsFileManager.FILE_DATE_IDENT + "\t"
-			        + format.format(Calendar.getInstance().getTime()) + "\n");
+					+ format.format(Calendar.getInstance().getTime()) + "\n");
 
 			bw.write(this.workingDirPath);
 
@@ -162,8 +164,8 @@ public class OmegaOptionsFileManager {
 			final BufferedReader br = new BufferedReader(fr);
 			final String configFileIdent = br.readLine();
 			if ((configFileIdent == null)
-			        || !configFileIdent
-			                .equals(OmegaOptionsFileManager.CONFIG_FILE_IDENT)) {
+					|| !configFileIdent
+					.equals(OmegaOptionsFileManager.CONFIG_FILE_IDENT)) {
 				OmegaLogFileManager.appendToCoreLog("Error loading options");
 				br.close();
 				fr.close();
@@ -171,7 +173,7 @@ public class OmegaOptionsFileManager {
 			}
 
 			final String dateString = br.readLine().replace(
-			        OmegaOptionsFileManager.FILE_DATE_IDENT, "");
+					OmegaOptionsFileManager.FILE_DATE_IDENT, "");
 			final String date = dateString.substring(1);
 			final DateFormat format = DateFormat.getInstance();
 			final Date d = format.parse(date);
@@ -228,7 +230,7 @@ public class OmegaOptionsFileManager {
 			bw.write(OmegaOptionsFileManager.CONFIG_FILE_IDENT + "\n");
 			final DateFormat format = DateFormat.getInstance();
 			bw.write(OmegaOptionsFileManager.FILE_DATE_IDENT + "\t"
-			        + format.format(Calendar.getInstance().getTime()) + "\n");
+					+ format.format(Calendar.getInstance().getTime()) + "\n");
 
 			bw.write("\n");
 			for (final String optionCat : this.optionsCat.keySet()) {
@@ -236,7 +238,7 @@ public class OmegaOptionsFileManager {
 				final List<String> optionsList = this.optionsCat.get(optionCat);
 				for (final String optionsName : optionsList) {
 					bw.write(optionsName + "\t" + this.options.get(optionsName)
-					        + "\n");
+							+ "\n");
 				}
 				bw.write("\n");
 			}
@@ -278,7 +280,7 @@ public class OmegaOptionsFileManager {
 	}
 
 	public void addOptions(final String category,
-	        final Map<String, String> newOptions) {
+			final Map<String, String> newOptions) {
 		for (final String option : newOptions.keySet()) {
 			List<String> optionsList;
 			if (this.optionsCat.containsKey(category)) {

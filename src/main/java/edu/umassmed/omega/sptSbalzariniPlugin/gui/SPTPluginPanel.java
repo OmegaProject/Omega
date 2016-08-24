@@ -34,10 +34,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -76,7 +79,7 @@ import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTRunner;
 import edu.umassmed.omega.sptSbalzariniPlugin.runnable.SPTWriter;
 
 public class SPTPluginPanel extends GenericPluginPanel implements
-OmegaMessageDisplayerPanelInterface {
+        OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -109,8 +112,8 @@ OmegaMessageDisplayerPanelInterface {
 	private boolean isRunningBatch;
 
 	public SPTPluginPanel(final RootPaneContainer parent,
-			final OmegaPlugin plugin, final OmegaGateway gateway,
-			final List<OmegaImage> images, final int index) {
+	        final OmegaPlugin plugin, final OmegaGateway gateway,
+	        final List<OmegaImage> images, final int index) {
 		super(parent, plugin, index);
 
 		this.sptThread = null;
@@ -140,10 +143,10 @@ OmegaMessageDisplayerPanelInterface {
 
 	public void createAndAddWidgets() {
 		this.loadedDataBrowserPanel = new SPTLoadedDataBrowserPanel(
-				this.getParentContainer(), this);
+		        this.getParentContainer(), this);
 
 		this.queueRunBrowserPanel = new SPTQueueRunBrowserPanel(
-				this.getParentContainer(), this);
+		        this.getParentContainer(), this);
 
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
@@ -156,12 +159,26 @@ OmegaMessageDisplayerPanelInterface {
 
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
-		final String s1 = OmegaFileUtilities.getImageFilename("green_plus.png");
-		final ImageIcon addIcon = new ImageIcon(s1);
+		final InputStream s1 = OmegaFileUtilities
+				.getImageFilename("green_plus.png");
+		ImageIcon addIcon = null;
+		try {
+			addIcon = new ImageIcon(ImageIO.read(s1));
+		} catch (final IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
-		final String s2 = OmegaFileUtilities.getImageFilename("red_minus.png");
-		final ImageIcon removeIcon = new ImageIcon(s2);
+		final InputStream s2 = OmegaFileUtilities
+				.getImageFilename("red_minus.png");
+		ImageIcon removeIcon = null;
+		try {
+			removeIcon = new ImageIcon(ImageIO.read(s2));
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 
@@ -173,7 +190,7 @@ OmegaMessageDisplayerPanelInterface {
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
 
 		this.tabPanel = new JTabbedPane(SwingConstants.TOP,
-				JTabbedPane.WRAP_TAB_LAYOUT);
+		        JTabbedPane.WRAP_TAB_LAYOUT);
 
 		// TODO create panel for parameters
 		this.runPanel = new SPTRunPanel(this.getParentContainer(), this.gateway);
@@ -181,11 +198,11 @@ OmegaMessageDisplayerPanelInterface {
 		this.tabPanel.add(SPTConstants.RUN_DEFINITION, scrollPaneRun);
 
 		this.resDetectionPanel = new GenericTrackingResultsPanel(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.tabPanel.add("Detection results", this.resDetectionPanel);
 
 		this.resLinkingPanel = new GenericTrackingResultsPanel(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.tabPanel.add("Linking results", this.resLinkingPanel);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -289,27 +306,27 @@ OmegaMessageDisplayerPanelInterface {
 	private void updateRunnerEnded() {
 		if (this.sptRunner.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sptRunner
-					.getImageParameters();
+			        .getImageParameters();
 			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sptRunner
-					.getImageResultingParticles();
+			        .getImageResultingParticles();
 			final Map<OmegaImage, List<OmegaTrajectory>> resultingTrajectories = this.sptRunner
-					.getImageResultingTrajectories();
+			        .getImageResultingTrajectories();
 			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sptRunner
-			        .getImageResultingParticlesValues();
+					.getImageResultingParticlesValues();
 
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
-						.get(image);
+				        .get(image);
 				final List<OmegaTrajectory> trajectories = resultingTrajectories
-						.get(image);
+				        .get(image);
 				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
-						.get(image);
+				        .get(image);
 				// TODO additional value to complete
 				final OmegaPluginEventResultsParticleTracking particleTrackingEvt = new OmegaPluginEventResultsParticleTracking(
-						this.getPlugin(), image, params, particles,
-						trajectories, particlesValues);
+				        this.getPlugin(), image, params, particles,
+				        trajectories, particlesValues);
 
 				this.imagesToProcess.remove(image);
 				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
@@ -340,7 +357,7 @@ OmegaMessageDisplayerPanelInterface {
 			break;
 		default:
 			final List<OmegaParameter> params = this.runPanel
-			.getSPTParameters();
+			        .getSPTParameters();
 			if (params == null) {
 				final String[] errors = this.runPanel.getParametersError();
 				final StringBuffer exceptionError = new StringBuffer();
@@ -361,7 +378,7 @@ OmegaMessageDisplayerPanelInterface {
 					this.statusPanel.updateStatus(3, buf.toString());
 				} catch (final OmegaPluginExceptionStatusPanel ex) {
 					OmegaLogFileManager.handlePluginException(this.getPlugin(),
-							ex);
+					        ex);
 				}
 				break;
 				// Lanciare eccezione ho printare errore a schermo
@@ -395,13 +412,13 @@ OmegaMessageDisplayerPanelInterface {
 
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleTrackingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedAnalysisRun);
+				this.getPlugin(), this.selectedAnalysisRun);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -421,13 +438,13 @@ OmegaMessageDisplayerPanelInterface {
 			return;
 		if (analysisRun != null) {
 			this.runPanel.updateRunFields(analysisRun.getAlgorithmSpec()
-			        .getParameters());
+					.getParameters());
 			this.resDetectionPanel.setAnalysisRun(this.selectedAnalysisRun);
 			for (final OmegaAnalysisRun linkingRun : this.selectedAnalysisRun
-			        .getAnalysisRuns()) {
+					.getAnalysisRuns()) {
 				if (!this.checkIfThisAlgorithm(linkingRun)
-				        || !this.selectedAnalysisRun.getTimeStamps().equals(
-				                linkingRun.getTimeStamps())) {
+						|| !this.selectedAnalysisRun.getTimeStamps().equals(
+								linkingRun.getTimeStamps())) {
 					continue;
 				}
 				this.resLinkingPanel.setAnalysisRun(linkingRun);
@@ -449,7 +466,7 @@ OmegaMessageDisplayerPanelInterface {
 			if (this.imagesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.imagesToProcess
-						.get(this.selectedImage));
+				        .get(this.selectedImage));
 			} else {
 				this.addToProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFieldsDefault();
@@ -474,7 +491,7 @@ OmegaMessageDisplayerPanelInterface {
 
 	public boolean checkIfThisAlgorithm(final OmegaAnalysisRun analysisRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
-				.getPlugin();
+		        .getPlugin();
 		return plugin.checkIfThisAlgorithm(analysisRun);
 
 	}

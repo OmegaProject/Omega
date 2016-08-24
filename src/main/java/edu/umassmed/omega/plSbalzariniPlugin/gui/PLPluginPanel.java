@@ -35,6 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -218,12 +221,26 @@ OmegaMessageDisplayerPanelInterface {
 
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
-		final String s1 = OmegaFileUtilities.getImageFilename("green_plus.jpg");
-		final ImageIcon addIcon = new ImageIcon(s1);
+		final InputStream s1 = OmegaFileUtilities
+				.getImageFilename("green_plus.png");
+		ImageIcon addIcon = null;
+		try {
+			addIcon = new ImageIcon(ImageIO.read(s1));
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
-		final String s2 = OmegaFileUtilities.getImageFilename("red_minus.jpg");
-		final ImageIcon removeIcon = new ImageIcon(s2);
+		final InputStream s2 = OmegaFileUtilities
+				.getImageFilename("red_minus.png");
+		ImageIcon removeIcon = null;
+		try {
+			removeIcon = new ImageIcon(ImageIO.read(s2));
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
 
