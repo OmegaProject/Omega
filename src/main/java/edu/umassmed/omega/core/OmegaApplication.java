@@ -1159,6 +1159,24 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 	}
 
 	public static void main(final String[] args) {
+		for (final String arg : args) {
+			// System.out.println(arg);
+			if (arg.equals("-debug")) {
+				OmegaLogFileManager.setDebug();
+			}
+		}
+		// if (!OmegaLogFileManager.isDebug()) {
+		// try {
+		// // re-launch the app itselft with VM option passed
+		// Runtime.getRuntime().exec(
+		// new String[] { "java", "-d32", "-Xmx1G", "-jar",
+		// "omega-0.0.1-SNAPSHOT.jar" });
+		// } catch (final IOException ioe) {
+		// ioe.printStackTrace();
+		// // System.exit(0);
+		// }
+		// }
+
 		final OmegaApplication instance = new OmegaApplication();
 		instance.showGUI();
 	}
