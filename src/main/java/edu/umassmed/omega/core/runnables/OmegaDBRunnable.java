@@ -13,7 +13,7 @@ import edu.umassmed.omega.core.OmegaApplication;
 import edu.umassmed.omega.core.mysql.OmegaMySqlGateway;
 
 public abstract class OmegaDBRunnable implements Runnable {
-	
+
 	static public int LOAD_TYPE_LOADED_IMAGE = 1;
 	static public int LOAD_TYPE_ORPHANED_IMAGE = 2;
 
@@ -22,7 +22,7 @@ public abstract class OmegaDBRunnable implements Runnable {
 	private final GenericProgressDialog dialog;
 
 	public OmegaDBRunnable(final OmegaApplication omegaApp,
-	        final OmegaMySqlGateway gateway, final GenericProgressDialog dialog) {
+			final OmegaMySqlGateway gateway, final GenericProgressDialog dialog) {
 		this.omegaApp = omegaApp;
 		this.gateway = gateway;
 		this.dialog = dialog;
@@ -48,7 +48,7 @@ public abstract class OmegaDBRunnable implements Runnable {
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}
@@ -73,38 +73,38 @@ public abstract class OmegaDBRunnable implements Runnable {
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}
 
 	protected void updateCurrentProgress(final OmegaElement element,
-	        final int currentProgress) {
+			final int currentProgress) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					if (element == null) {
 						OmegaDBRunnable.this.dialog
-						        .setTotalProgressCurrent(currentProgress);
+						.setTotalProgressCurrent(currentProgress);
 					} else if (element instanceof OmegaAnalysisRun) {
 						OmegaDBRunnable.this.dialog
-						        .setAnalysisProgressCurrent(currentProgress);
+						.setAnalysisProgressCurrent(currentProgress);
 					} else if (element instanceof OmegaImage) {
 						OmegaDBRunnable.this.dialog
-						        .setImageProgressCurrent(currentProgress);
+						.setImageProgressCurrent(currentProgress);
 					} else if (element instanceof OmegaDataset) {
 						OmegaDBRunnable.this.dialog
-						        .setDatasetProgressCurrent(currentProgress);
+						.setDatasetProgressCurrent(currentProgress);
 					} else if (element instanceof OmegaProject) {
 						OmegaDBRunnable.this.dialog
-						        .setProjectProgressCurrent(currentProgress);
+						.setProjectProgressCurrent(currentProgress);
 					}
 
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}
@@ -116,54 +116,54 @@ public abstract class OmegaDBRunnable implements Runnable {
 				public void run() {
 					if (index == 0) {
 						OmegaDBRunnable.this.dialog
-						        .setTotalProgressCurrent(maxProgress);
+						.setTotalProgressCurrent(maxProgress);
 					} else if (index == 1) {
 						OmegaDBRunnable.this.dialog
-						        .setAnalysisProgressCurrent(maxProgress);
+						.setAnalysisProgressCurrent(maxProgress);
 					} else if (index == 2) {
 						OmegaDBRunnable.this.dialog
-						        .setImageProgressCurrent(maxProgress);
+						.setImageProgressCurrent(maxProgress);
 					} else if (index == 3) {
 						OmegaDBRunnable.this.dialog
-						        .setDatasetProgressCurrent(maxProgress);
+						.setDatasetProgressCurrent(maxProgress);
 					} else if (index == 4) {
 						OmegaDBRunnable.this.dialog
-						        .setProjectProgressCurrent(maxProgress);
+						.setProjectProgressCurrent(maxProgress);
 					}
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}
 
 	protected void updateMaxProgress(final OmegaElement element,
-	        final int maxProgress) {
+			final int maxProgress) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					if (element == null) {
 						OmegaDBRunnable.this.dialog
-						        .setTotalProgressMax(maxProgress);
+						.setTotalProgressMax(maxProgress);
 					} else if (element instanceof OmegaAnalysisRun) {
 						OmegaDBRunnable.this.dialog
-						        .setAnalysisProgressMax(maxProgress);
+						.setAnalysisProgressMax(maxProgress);
 					} else if (element instanceof OmegaImage) {
 						OmegaDBRunnable.this.dialog
-						        .setImageProgressMax(maxProgress);
+						.setImageProgressMax(maxProgress);
 					} else if (element instanceof OmegaDataset) {
 						OmegaDBRunnable.this.dialog
-						        .setDatasetProgressMax(maxProgress);
+						.setDatasetProgressMax(maxProgress);
 					} else if (element instanceof OmegaProject) {
 						OmegaDBRunnable.this.dialog
-						        .setProjectProgressMax(maxProgress);
+						.setProjectProgressMax(maxProgress);
 					}
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}
@@ -175,24 +175,24 @@ public abstract class OmegaDBRunnable implements Runnable {
 				public void run() {
 					if (index == 0) {
 						OmegaDBRunnable.this.dialog
-						        .setTotalProgressMax(maxProgress);
+						.setTotalProgressMax(maxProgress);
 					} else if (index == 1) {
 						OmegaDBRunnable.this.dialog
-						        .setAnalysisProgressMax(maxProgress);
+						.setAnalysisProgressMax(maxProgress);
 					} else if (index == 2) {
 						OmegaDBRunnable.this.dialog
-						        .setImageProgressMax(maxProgress);
+						.setImageProgressMax(maxProgress);
 					} else if (index == 3) {
 						OmegaDBRunnable.this.dialog
-						        .setDatasetProgressMax(maxProgress);
+						.setDatasetProgressMax(maxProgress);
 					} else if (index == 4) {
 						OmegaDBRunnable.this.dialog
-						        .setProjectProgressMax(maxProgress);
+						.setProjectProgressMax(maxProgress);
 					}
 				}
 			});
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO should I do something here?
 		}
 	}

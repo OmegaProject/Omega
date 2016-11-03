@@ -26,9 +26,9 @@ public class TSTrackLabelsPanel extends GenericPanel {
 	private final double pixelsSize;
 
 	public TSTrackLabelsPanel(final RootPaneContainer parent,
-			final OmegaPlugin plugin, final int orientation,
-			final double realSize, final double pixelsSize,
-			final int panelSize, final int center) {
+	        final OmegaPlugin plugin, final int orientation,
+	        final double realSize, final double pixelsSize,
+	        final int panelSize, final int center) {
 		super(parent);
 
 		this.plugin = plugin;
@@ -53,11 +53,11 @@ public class TSTrackLabelsPanel extends GenericPanel {
 
 		g2D.setBackground(Color.white);
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		        RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_QUALITY);
+		        RenderingHints.VALUE_RENDER_QUALITY);
 		g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2D.clearRect(0, 0, width, height);
 
 		this.paintMetrics(g2D);
@@ -72,9 +72,9 @@ public class TSTrackLabelsPanel extends GenericPanel {
 	}
 
 	private void paintHLabel(final Graphics2D g2D, final int coord,
-			final double val1, final double val2) {
+	        final double val1, final double val2) {
 		g2D.drawLine(coord, TSTrackPanel.LABELS_PANEL_SIZE - 10, coord,
-				TSTrackPanel.LABELS_PANEL_SIZE);
+		        TSTrackPanel.LABELS_PANEL_SIZE);
 		if (coord == 0) {
 			g2D.drawString(String.valueOf(val1), coord, 15);
 		} else if (coord == this.panelSize) {
@@ -91,9 +91,9 @@ public class TSTrackLabelsPanel extends GenericPanel {
 	}
 
 	private void paintVLabel(final Graphics2D g2D, final int coord,
-			final double val1, final double val2) {
+	        final double val1, final double val2) {
 		g2D.drawLine(TSTrackPanel.LABELS_PANEL_SIZE - 10, coord,
-				TSTrackPanel.LABELS_PANEL_SIZE, coord);
+		        TSTrackPanel.LABELS_PANEL_SIZE, coord);
 		if (coord == 0) {
 			g2D.drawString(String.valueOf(val1), 5, coord + 10);
 		} else if (coord == this.panelSize) {
@@ -111,21 +111,21 @@ public class TSTrackLabelsPanel extends GenericPanel {
 
 	private void paintMetricsFromZero(final Graphics2D g2D) {
 		final int numOfLabels = this.panelSize
-				/ TSTrackPanel.SPACE_BETWEEN_LABELS;
+		        / TSTrackPanel.SPACE_BETWEEN_LABELS;
 		final double offsetCoord = (double) this.panelSize
-				/ (double) numOfLabels;
+		        / (double) numOfLabels;
 		final double offsetVal = this.realSize / numOfLabels;
 		for (int i = 0; i <= numOfLabels; i++) {
 			try {
 				final int coord = new BigDecimal(
-				        String.valueOf(i * offsetCoord)).setScale(0,
-				        RoundingMode.HALF_UP).intValue();
+						String.valueOf(i * offsetCoord)).setScale(0,
+								RoundingMode.HALF_UP).intValue();
 				final double val1 = new BigDecimal(
-				        String.valueOf(offsetVal * i)).setScale(2,
-				        RoundingMode.HALF_UP).doubleValue();
+						String.valueOf(offsetVal * i)).setScale(2,
+								RoundingMode.HALF_UP).doubleValue();
 				final double val2 = new BigDecimal(String.valueOf(val1
-				        * this.pixelsSize)).setScale(2, RoundingMode.HALF_UP)
-				        .doubleValue();
+						* this.pixelsSize)).setScale(2, RoundingMode.HALF_UP)
+						.doubleValue();
 				if (this.orientation == 0) {
 					this.paintHLabel(g2D, coord, val1, val2);
 				} else {
@@ -133,7 +133,8 @@ public class TSTrackLabelsPanel extends GenericPanel {
 				}
 			} catch (final Exception ex) {
 				// TODO handled?
-				OmegaLogFileManager.handlePluginException(this.plugin, ex);
+				OmegaLogFileManager
+				        .handlePluginException(this.plugin, ex, true);
 			}
 		}
 		// System.out.println(this.panelSize + " VS "
@@ -155,9 +156,9 @@ public class TSTrackLabelsPanel extends GenericPanel {
 		final int spaceBefore = this.center;
 		final int spaceAfter = this.panelSize - this.center;
 		final int numOfLabelsBefore = spaceBefore
-				/ TSTrackPanel.SPACE_BETWEEN_LABELS;
+		        / TSTrackPanel.SPACE_BETWEEN_LABELS;
 		final int numOfLabelsAfter = spaceAfter
-				/ TSTrackPanel.SPACE_BETWEEN_LABELS;
+		        / TSTrackPanel.SPACE_BETWEEN_LABELS;
 		for (int i = 0; i < numOfLabelsBefore; i++) {
 
 		}
@@ -171,17 +172,17 @@ public class TSTrackLabelsPanel extends GenericPanel {
 		final Dimension dim;
 		if (this.orientation == 1) {
 			dim = new Dimension(TSTrackPanel.LABELS_PANEL_SIZE,
-					this.panelSize + 30);
+			        this.panelSize + 30);
 		} else {
 			dim = new Dimension(this.panelSize + 30,
-					TSTrackPanel.LABELS_PANEL_SIZE);
+			        TSTrackPanel.LABELS_PANEL_SIZE);
 		}
 		this.setPreferredSize(dim);
 		this.setSize(dim);
 	}
 
 	public void setSizes(final double realSize, final int panelSize,
-			final int center) {
+	        final int center) {
 		this.realSize = realSize;
 		this.panelSize = panelSize;
 		this.center = center;

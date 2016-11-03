@@ -37,20 +37,20 @@ public class TMDGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMDGraphProducer(final TMDGraphPanel diffusivityPanel,
-			final int graphType, final int diffusivityOption, final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, Double[]> nyMap,
-	        final Map<OmegaSegment, Double[][]> muMap,
-	        final Map<OmegaSegment, Double[][]> logMuMap,
-	        final Map<OmegaSegment, Double[][]> deltaTMap,
-	        final Map<OmegaSegment, Double[][]> logDeltaTMap,
-	        final Map<OmegaSegment, Double[][]> gammaDMap,
-	        final Map<OmegaSegment, Double[][]> gammaDLogMap,
-	        // final Map<OmegaSegment, Double[]> gammaMap,
-	        final Map<OmegaSegment, Double[]> gammaLogMap,
-	        // final Map<OmegaSegment, Double[]> smssMap,
-	        final Map<OmegaSegment, Double[]> smssLogMap) {
+	        final int graphType, final int diffusivityOption, final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, Double[]> nyMap,
+			final Map<OmegaSegment, Double[][]> muMap,
+			final Map<OmegaSegment, Double[][]> logMuMap,
+			final Map<OmegaSegment, Double[][]> deltaTMap,
+			final Map<OmegaSegment, Double[][]> logDeltaTMap,
+			final Map<OmegaSegment, Double[][]> gammaDMap,
+			final Map<OmegaSegment, Double[][]> gammaDLogMap,
+			// final Map<OmegaSegment, Double[]> gammaMap,
+			final Map<OmegaSegment, Double[]> gammaLogMap,
+			// final Map<OmegaSegment, Double[]> smssMap,
+			final Map<OmegaSegment, Double[]> smssLogMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.diffusivityPanel = diffusivityPanel;
 		this.diffusivityOption = diffusivityOption;
@@ -154,12 +154,12 @@ public class TMDGraphProducer extends StatsGraphProducer {
 			values = array[2];
 			value[0] = values[3];
 			break;
-		// case TMDGraphPanel.OPTION_TRACK_ERROR_SMSS:
-		// value = this.meanVelocityMap.get(track);
-		// break;
-		// case TMDGraphPanel.OPTION_TRACK_ERROR_D:
-		// value = this.meanVelocityMap.get(track);
-		// break;
+			// case TMDGraphPanel.OPTION_TRACK_ERROR_SMSS:
+			// value = this.meanVelocityMap.get(track);
+			// break;
+			// case TMDGraphPanel.OPTION_TRACK_ERROR_D:
+			// value = this.meanVelocityMap.get(track);
+			// break;
 		default:
 			array = this.gammaDFromLogMap.get(segment);
 			values = array[2];
@@ -177,12 +177,12 @@ public class TMDGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMDGraphProducer.this.diffusivityPanel.updateStatus(
-							TMDGraphProducer.this.getCompleted(), ended,
-							TMDGraphProducer.this.graphPanel);
+					        TMDGraphProducer.this.getCompleted(), ended,
+					        TMDGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 

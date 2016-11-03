@@ -55,7 +55,7 @@ public class SPTDLLInvoker {
 	private native void disposeRunner();
 
 	public static void callSetOutputPath(final String path)
-			throws UnsatisfiedLinkError {
+	        throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setOutputPath(path);
 	}
 
@@ -64,12 +64,12 @@ public class SPTDLLInvoker {
 	}
 
 	public static void callSetParameter(final String pNumber,
-			final String pValue) throws UnsatisfiedLinkError {
+	        final String pValue) throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setParameter(pNumber, pValue);
 	}
 
 	public static void callSetMinPoints(final int minPoints)
-			throws UnsatisfiedLinkError {
+	        throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().setMinPoints(minPoints);
 
 	}
@@ -79,7 +79,7 @@ public class SPTDLLInvoker {
 	}
 
 	public static void callLoadImage(final int[] imageData)
-			throws UnsatisfiedLinkError {
+	        throws UnsatisfiedLinkError {
 		new SPTDLLInvoker().loadImage(imageData);
 	}
 
@@ -101,7 +101,7 @@ public class SPTDLLInvoker {
 		// in this way they can be packed in the jar by maven
 		try {
 			final String dir = System.getProperty("user.dir") + File.separator
-					+ OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
+			        + OmegaConstants.OMEGA_SPT_FOLDER + File.separator;
 			// final String dir2 = System.getProperty("user.dir") +
 			// File.separator
 			// + "target" + File.separator
@@ -120,7 +120,7 @@ public class SPTDLLInvoker {
 			OmegaClassLoaderUtilities.addLibraryPath(dir);
 			System.load(dir + "pthreadVC2" + ".dll");
 			System.load(dir + "ParticleTracker_Statistics_Dll_VC2008-Release"
-					+ ".dll");
+			        + ".dll");
 			System.load(dir + OmegaConstants.OMEGA_SPT_DLL + ".dll");
 			// System.load(OmegaConstants.OMEGA_SPT_FOLDER + "//pthreadVC2"
 			// + ".dll");
@@ -130,12 +130,12 @@ public class SPTDLLInvoker {
 			// System.load(OmegaConstants.OMEGA_SPT_FOLDER + "//"
 			// + OmegaConstants.OMEGA_SPT_DLL + ".dll");
 		} catch (final UnsatisfiedLinkError ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 			JOptionPane.showMessageDialog(null, OmegaConstantsError.ERROR_NODLL
-					+ ex.toString(), OmegaConstants.OMEGA_TITLE,
-					JOptionPane.ERROR_MESSAGE);
+			        + ex.toString(), OmegaConstants.OMEGA_TITLE,
+			        JOptionPane.ERROR_MESSAGE);
 		} catch (final SecurityException | IllegalArgumentException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 }

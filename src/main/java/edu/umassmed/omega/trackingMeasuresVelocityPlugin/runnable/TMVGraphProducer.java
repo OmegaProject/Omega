@@ -31,14 +31,14 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMVGraphProducer(final TMVGraphPanel velocityPanel,
-	        final int graphType, final int velocityOption, final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-			final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, List<Double>> localSpeedMap,
-	        final Map<OmegaSegment, List<Double>> localVelocityMap,
-	        final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
-	        final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
-	        final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
+			final int graphType, final int velocityOption, final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+	        final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, List<Double>> localSpeedMap,
+			final Map<OmegaSegment, List<Double>> localVelocityMap,
+			final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
+			final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
+			final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.velocityPanel = velocityPanel;
 		this.velocityOption = velocityOption;
@@ -140,12 +140,12 @@ public class TMVGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMVGraphProducer.this.velocityPanel.updateStatus(
-					        TMVGraphProducer.this.getCompleted(), ended,
-					        TMVGraphProducer.this.graphPanel);
+							TMVGraphProducer.this.getCompleted(), ended,
+							TMVGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 

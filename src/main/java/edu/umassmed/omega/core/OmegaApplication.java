@@ -157,7 +157,7 @@ import edu.umassmed.omega.trajectoriesSegmentationPlugin.TrajectoriesSegmentatio
 public class OmegaApplication extends OmegaGenericApplication implements
 OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 
-	public static final boolean ISDEBUG = true;
+	public static final boolean ISDEBUG = false;
 
 	private final OmegaGUIFrame gui;
 
@@ -1192,7 +1192,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 		try {
 			this.mysqlReader.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO manage the case somehow
 			return;
 		}
@@ -1221,7 +1221,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 		try {
 			this.mysqlReader.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO manage the case somehow
 			return;
 		}
@@ -1250,7 +1250,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 		try {
 			this.mysqlWriter.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO manage the case somehow
 			return;
 		}
@@ -1284,7 +1284,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 			this.mysqlWriter.connect();
 			this.mysqlReader.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			dialogTitleBuf.append(" error");
 			dialogMsgBuf.append("Unable to connect to the Omega server");
 			// TODO add the possible errors checking the getCause of the
@@ -1347,7 +1347,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 					this.mysqlWriter.commit();
 				}
 			} catch (final SQLException ex) {
-				OmegaLogFileManager.handleCoreException(ex);
+				OmegaLogFileManager.handleCoreException(ex, true);
 				// TODO manage the case somehow
 				return;
 			}
@@ -1359,7 +1359,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 			}
 			this.mysqlReader.disconnect();
 		} catch (final SQLException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO manage the case somehow
 			return;
 		}
@@ -1367,7 +1367,7 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 		try {
 			this.dbThread.join();
 		} catch (final InterruptedException ex) {
-			OmegaLogFileManager.handleCoreException(ex);
+			OmegaLogFileManager.handleCoreException(ex, true);
 			// TODO manage the case somehow
 			return;
 		}

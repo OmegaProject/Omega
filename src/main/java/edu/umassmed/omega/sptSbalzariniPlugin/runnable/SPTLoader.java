@@ -53,8 +53,8 @@ public class SPTLoader implements SPTRunnable {
 	private boolean isJobCompleted, isKilled;
 
 	public SPTLoader(final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final OmegaImage image, final int z, final int c,
-			final OmegaGateway gateway) {
+	        final OmegaImage image, final int z, final int c,
+	        final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 		this.image = image;
 		this.z = z;
@@ -73,8 +73,8 @@ public class SPTLoader implements SPTRunnable {
 	@Override
 	public void run() {
 		this.updateStatusSync(
-				SPTLoader.RUNNER + " started image " + this.image.getName(),
-				false);
+		        SPTLoader.RUNNER + " started image " + this.image.getName(),
+		        false);
 		final OmegaImagePixels defaultPixels = this.image.getDefaultPixels();
 		// ID of the pixels
 		final Long pixelsID = defaultPixels.getOmeroId();
@@ -93,11 +93,11 @@ public class SPTLoader implements SPTRunnable {
 			}
 			final int frameIndex = t + 1;
 			this.updateStatusSync(
-					SPTLoader.RUNNER + " image " + this.image.getName()
-					+ ", frame(s) " + frameIndex + "/" + framesNumber,
-					false);
+			        SPTLoader.RUNNER + " image " + this.image.getName()
+			                + ", frame(s) " + frameIndex + "/" + framesNumber,
+			        false);
 			final List<OmegaPlane> frames = defaultPixels.getFrames(this.c,
-					this.z);
+			        this.z);
 			OmegaPlane frame = null;
 			if (!frames.isEmpty() && (frames.size() > t)) {
 				frame = frames.get(t);
@@ -112,7 +112,7 @@ public class SPTLoader implements SPTRunnable {
 
 			try {
 				final byte[] pixels = this.gateway.getImageData(pixelsID,
-						this.z, t, this.c);
+				        this.z, t, this.c);
 				// if (oldPixels != null) {
 				// boolean tof = true;
 				// for (int i = 0; i < pixels.length; i++)
@@ -129,7 +129,7 @@ public class SPTLoader implements SPTRunnable {
 				// oldPixels = pixels;
 
 				final Integer[] data = OmegaImageUtilities
-				        .convertByteToIntegerImage(byteWidth, pixels);
+						.convertByteToIntegerImage(byteWidth, pixels);
 				final int[] image = new int[data.length];
 				for (int i = 0; i < data.length; i++) {
 					image[i] = data[i];
@@ -137,7 +137,7 @@ public class SPTLoader implements SPTRunnable {
 				SPTDLLInvoker.callLoadImage(image);
 			} catch (final Exception ex) {
 				error = true;
-				OmegaLogFileManager.handleUncaughtException(ex);
+				OmegaLogFileManager.handleUncaughtException(ex, true);
 			}
 		}
 		if (this.isKilled)
@@ -145,8 +145,8 @@ public class SPTLoader implements SPTRunnable {
 
 		if (error) {
 			JOptionPane.showMessageDialog(null,
-					OmegaConstantsError.ERROR_DURING_SPT_RUN,
-					OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+			        OmegaConstantsError.ERROR_DURING_SPT_RUN,
+			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 
 		this.updateStatusAsync(SPTLoader.RUNNER + " ended.", true);
@@ -159,12 +159,12 @@ public class SPTLoader implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTLoader.this.displayerPanel
-					.updateMessageStatus(new SPTMessageEvent(msg,
-							SPTLoader.this, ended));
+					        .updateMessageStatus(new SPTMessageEvent(msg,
+					                SPTLoader.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 
@@ -173,8 +173,8 @@ public class SPTLoader implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTLoader.this.displayerPanel
-				.updateMessageStatus(new SPTMessageEvent(msg,
-						SPTLoader.this, ended));
+				        .updateMessageStatus(new SPTMessageEvent(msg,
+				                SPTLoader.this, ended));
 			}
 		});
 	}

@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -67,15 +67,15 @@ public class SPTWriter implements SPTRunnable {
 			this.trackList = SPTDLLInvoker.callWriteResults();
 		} catch (final Exception ex) {
 			JOptionPane.showMessageDialog(null,
-			        OmegaConstantsError.ERROR_SPT_SAVE_RESULTS,
-			        OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
-			OmegaLogFileManager.handleUncaughtException(ex);
+					OmegaConstantsError.ERROR_SPT_SAVE_RESULTS,
+					OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 
 		try {
 			SPTDLLInvoker.callDisposeRunner();
 		} catch (final Exception ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 
 		this.updateStatusAsync(SPTWriter.RUNNER + " ended.", true);
@@ -88,12 +88,12 @@ public class SPTWriter implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTWriter.this.displayerPanel
-					        .updateMessageStatus(new SPTMessageEvent(msg,
-					                SPTWriter.this, ended));
+					.updateMessageStatus(new SPTMessageEvent(msg,
+							SPTWriter.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 
@@ -102,8 +102,8 @@ public class SPTWriter implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTWriter.this.displayerPanel
-				        .updateMessageStatus(new SPTMessageEvent(msg,
-				                SPTWriter.this, ended));
+				.updateMessageStatus(new SPTMessageEvent(msg,
+						SPTWriter.this, ended));
 			}
 		});
 	}

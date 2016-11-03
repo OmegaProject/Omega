@@ -16,7 +16,7 @@ import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
 import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel;
 
 public class TMDMotionTypeClassificationGraphProducer extends
-        StatsGraphProducer implements Runnable {
+StatsGraphProducer implements Runnable {
 
 	private final static int TRACK = 0;
 	private final static int MSD = 1;
@@ -46,23 +46,23 @@ public class TMDMotionTypeClassificationGraphProducer extends
 	private final JPanel[] chartPanels;
 
 	public TMDMotionTypeClassificationGraphProducer(
-	        final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
-	        final int motionTypeOption, final int showOption,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, Double[]> nyMap,
-	        final Map<OmegaSegment, Double[][]> muMap,
-	        final Map<OmegaSegment, Double[][]> logMuMap,
-	        final Map<OmegaSegment, Double[][]> deltaTMap,
-	        final Map<OmegaSegment, Double[][]> logDeltaTMap,
-	        final Map<OmegaSegment, Double[][]> gammaDMap,
-	        final Map<OmegaSegment, Double[][]> gammaDLogMap,
-	        // final Map<OmegaSegment, Double[]> gammaMap,
-	        final Map<OmegaSegment, Double[]> gammaLogMap,
-	        // final Map<OmegaSegment, Double[]> smssMap,
-	        final Map<OmegaSegment, Double[]> smssLogMap,
-	        // final Map<OmegaSegment, Double[]> errorMap,
-	        final Map<OmegaSegment, Double[]> errorLogMap) {
+			final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
+			final int motionTypeOption, final int showOption,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, Double[]> nyMap,
+			final Map<OmegaSegment, Double[][]> muMap,
+			final Map<OmegaSegment, Double[][]> logMuMap,
+			final Map<OmegaSegment, Double[][]> deltaTMap,
+			final Map<OmegaSegment, Double[][]> logDeltaTMap,
+			final Map<OmegaSegment, Double[][]> gammaDMap,
+			final Map<OmegaSegment, Double[][]> gammaDLogMap,
+			// final Map<OmegaSegment, Double[]> gammaMap,
+			final Map<OmegaSegment, Double[]> gammaLogMap,
+			// final Map<OmegaSegment, Double[]> smssMap,
+			final Map<OmegaSegment, Double[]> smssLogMap,
+			// final Map<OmegaSegment, Double[]> errorMap,
+			final Map<OmegaSegment, Double[]> errorLogMap) {
 		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes);
 		this.motionTypeClassificationPanel = motionTypeClassificationPanel;
 		this.motionTypeOption = motionTypeOption;
@@ -171,15 +171,15 @@ public class TMDMotionTypeClassificationGraphProducer extends
 				@Override
 				public void run() {
 					TMDMotionTypeClassificationGraphProducer.this.motionTypeClassificationPanel
-					        .updateStatus(
-					                TMDMotionTypeClassificationGraphProducer.this
-							.getCompleted(),
-					                ended,
-					                TMDMotionTypeClassificationGraphProducer.this.chartPanels);
+					.updateStatus(
+							TMDMotionTypeClassificationGraphProducer.this
+					                        .getCompleted(),
+							ended,
+							TMDMotionTypeClassificationGraphProducer.this.chartPanels);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 
@@ -227,7 +227,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 				gammaMap = null;
 			}
 			if ((gammaMap != null) && gammaMap.containsKey(segment)
-			        && this.nyMap.containsKey(segment)) {
+					&& this.nyMap.containsKey(segment)) {
 				if (this.countCurrentGraph == 0) {
 					final Double[] gamma = gammaMap.get(segment);
 					value = gamma;
@@ -259,7 +259,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 			}
 			value = new Double[4];
 			if (gammaDMap.containsKey(segment) && (smssMap != null)
-			        && smssMap.containsKey(segment)) {
+					&& smssMap.containsKey(segment)) {
 				final Double d = gammaDMap.get(segment)[2][3];
 				final Double smss = smssMap.get(segment)[0];
 				Double dError = 0.0;

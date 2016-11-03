@@ -92,7 +92,7 @@ import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRRunner;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class SNRPluginPanel extends GenericPluginPanel implements
-        OmegaMessageDisplayerPanelInterface {
+OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -138,10 +138,10 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	private JMenuItem hideDataSelection_mItm;
 
 	public SNRPluginPanel(final RootPaneContainer parent,
-	        final OmegaPlugin plugin, final OmegaGateway gateway,
-	        final List<OmegaImage> images,
-	        final OrphanedAnalysisContainer orphanedAnalysis,
-	        final List<OmegaAnalysisRun> analysisRuns, final int index) {
+			final OmegaPlugin plugin, final OmegaGateway gateway,
+			final List<OmegaImage> images,
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
 
 		this.gateway = gateway;
@@ -179,7 +179,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				continue;
 			}
 			this.hideDataSelection_mItm = new JMenuItem(
-					OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+			        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 			menu.add(this.hideDataSelection_mItm);
 		}
 	}
@@ -202,10 +202,10 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.add(this.topPanel, BorderLayout.NORTH);
 
 		this.loadedDataBrowserPanel = new SNRLoadedDataBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		this.queueRunBrowserPanel = new SNRQueueRunBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
@@ -219,7 +219,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 		final InputStream s1 = OmegaFileUtilities
-				.getImageFilename("green_plus.png");
+		        .getImageFilename("green_plus.png");
 		ImageIcon addIcon = null;
 		try {
 			addIcon = new ImageIcon(ImageIO.read(s1));
@@ -230,7 +230,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
 		final InputStream s2 = OmegaFileUtilities
-				.getImageFilename("red_minus.png");
+		        .getImageFilename("red_minus.png");
 		ImageIcon removeIcon = null;
 		try {
 			removeIcon = new ImageIcon(ImageIO.read(s2));
@@ -249,15 +249,15 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
 
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP,
-		        JTabbedPane.WRAP_TAB_LAYOUT);
+				JTabbedPane.WRAP_TAB_LAYOUT);
 
 		// TODO create panel for parameters
 		this.runPanel = new SNRRunPanel(this.getParentContainer(), this.gateway);
 		final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
 		scrollPaneRun
-		        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneRun
-		        .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		this.tabbedPane.add(SNRConstants.RUN_DEFINITION, scrollPaneRun);
 
@@ -338,14 +338,14 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 
 	private void handleHideDataSelection() {
 		if (this.hideDataSelection_mItm.getText().equals(
-				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
+		        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
 			this.remove(this.topPanel);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+			        .setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
 		} else {
 			this.add(this.topPanel, BorderLayout.NORTH);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+			        .setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 		}
 		this.revalidate();
 		this.repaint();
@@ -375,7 +375,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.setProcessButtonsEnabled(false);
 		this.runPanel.setFieldsEnalbed(false);
 		this.snrRunner = new SNRRunner(this, this.particlesToProcess,
-		        this.gateway);
+				this.gateway);
 		this.snrThread = new Thread(this.snrRunner);
 		this.snrThread.setName(this.snrRunner.getClass().getSimpleName());
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.snrThread);
@@ -409,7 +409,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					this.statusPanel.updateStatus(1, buf.toString());
 				} catch (final OmegaPluginExceptionStatusPanel ex) {
 					OmegaLogFileManager.handlePluginException(this.getPlugin(),
-					        ex);
+							ex, true);
 				}
 				break;
 				// TODO Lanciare eccezione o printare errore a schermo
@@ -417,7 +417,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				// this.getPlugin(), exceptionError.toString());
 			}
 			this.particlesToProcess.put(this.selectedParticleDetectionRun,
-			        params);
+					params);
 			break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -431,81 +431,81 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	private void updateRunnerEnded() {
 		if (this.snrRunner.isJobCompleted()) {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
-			        .getParticleToProcess();
+					.getParticleToProcess();
 
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageNoises = this.snrRunner
-			        .getResultingImageNoise();
+					.getResultingImageNoise();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageBackgrounds = this.snrRunner
-			        .getResultingImageBackground();
+					.getResultingImageBackground();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgSNR = this.snrRunner
-			        .getResultingImageAverageSNR();
+					.getResultingImageAverageSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinSNR = this.snrRunner
-			        .getResultingImageMinimumSNR();
+					.getResultingImageMinimumSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxSNR = this.snrRunner
-			        .getResultingImageMaximumSNR();
+					.getResultingImageMaximumSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgErrorIndexSNR = this.snrRunner
-			        .getResultingImageAverageErrorIndexSNR();
+					.getResultingImageAverageErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinErrorIndexSNR = this.snrRunner
-			        .getResultingImageMinimumErrorIndexSNR();
+					.getResultingImageMinimumErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxErrorIndexSNR = this.snrRunner
-			        .getResultingImageMaximumErrorIndexSNR();
+					.getResultingImageMaximumErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localCentralSignals = this.snrRunner
-			        .getResultingLocalCentralSignals();
+					.getResultingLocalCentralSignals();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localMeanSignals = this.snrRunner
-			        .getResultingLocalMeanSignals();
+					.getResultingLocalMeanSignals();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localSignalSizes = this.snrRunner
-			        .getResultingLocalSignalSizes();
+					.getResultingLocalSignalSizes();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localPeakSignals = this.snrRunner
-			        .getResultingLocalPeakSignals();
+					.getResultingLocalPeakSignals();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localNoises = this.snrRunner
-			        .getResultingLocalNoises();
+					.getResultingLocalNoises();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localSNRs = this.snrRunner
-			        .getResultingLocalSNRs();
+					.getResultingLocalSNRs();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localErrorIndexSNRs = this.snrRunner
-			        .getResultingLocalErrorIndexSNRs();
+					.getResultingLocalErrorIndexSNRs();
 
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
-			        .keySet()) {
+					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> noises = imageNoises
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> backgrounds = imageBackgrounds
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> averageSNR = imageAvgSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> minimumSNR = imageMinSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> maximumSNR = imageMaxSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> averageErrorIndexSNR = imageAvgErrorIndexSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> minimumErrorIndexSNR = imageMinErrorIndexSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> maximumErrorIndexSNR = imageMaxErrorIndexSNR
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Integer> lCentralSignals = localCentralSignals
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lMeanSignals = localMeanSignals
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Integer> lSignalSizes = localSignalSizes
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Integer> lPeakSignals = localPeakSignals
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lNoises = localNoises
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lSNRs = localSNRs
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lErrorIndexSNRs = localErrorIndexSNRs
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
-				        this.getPlugin(), spotDetectionRun, params, noises,
-				        backgrounds, averageSNR, minimumSNR, maximumSNR,
-						averageErrorIndexSNR, minimumErrorIndexSNR,
-				        maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
-				        lSignalSizes, lPeakSignals, lNoises, lSNRs,
-				        lErrorIndexSNRs);
+						this.getPlugin(), spotDetectionRun, params, noises,
+						backgrounds, averageSNR, minimumSNR, maximumSNR,
+				        averageErrorIndexSNR, minimumErrorIndexSNR,
+						maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
+						lSignalSizes, lPeakSignals, lNoises, lSNRs,
+						lErrorIndexSNRs);
 
 				this.particlesToProcess.remove(spotDetectionRun);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -533,7 +533,8 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(0, "Plugin ready");
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
-			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
+					true);
 		}
 	}
 
@@ -562,7 +563,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 
 		final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
 		for (final OmegaAnalysisRun analysisRun : this.selectedImage
-		        .getAnalysisRuns()) {
+				.getAnalysisRuns()) {
 			if (!(analysisRun instanceof OmegaParticleDetectionRun)) {
 				continue;
 			}
@@ -593,8 +594,8 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateCombos(final List<OmegaImage> images,
-	        final OrphanedAnalysisContainer orphanedAnalysis,
-	        final List<OmegaAnalysisRun> analysisRuns) {
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns) {
 		this.isHandlingEvent = true;
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
@@ -610,7 +611,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.selectedImage = null;
 		this.images_cmb.setSelectedIndex(-1);
 		if (((this.images == null) || this.images.isEmpty())
-				&& this.orphanedAnalysis.isEmpty()) {
+		        && this.orphanedAnalysis.isEmpty()) {
 			this.images_cmb.setEnabled(false);
 			this.loadedDataBrowserPanel.updateTree(null);
 			this.queueRunBrowserPanel.updateTree(null);
@@ -638,19 +639,19 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleDetectionRun);
+				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionSNRRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedSNRRun);
+				this.getPlugin(), this.selectedSNRRun);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -670,7 +671,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		// TODO select particle detection run in list
 		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
@@ -694,7 +695,8 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		try {
 			this.statusPanel.updateStatus(0, s);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
-			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
+			        true);
 		}
 	}
 
@@ -705,12 +707,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		if (snrRun != null) {
 			// TODO update SNR fields?
 			this.runPanel.updateRunFields(snrRun.getAlgorithmSpec()
-			        .getParameters());
+					.getParameters());
 		}
 	}
 
 	public void updateSelectedParticleDetectionRun(
-	        final OmegaParticleDetectionRun particleDetectionRun) {
+			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.selectedParticleDetectionRun = particleDetectionRun;
 		this.fireEventSelectionParticleDetectionRun();
 		this.setAddAndRemoveButtonsEnabled(false);
@@ -718,11 +720,11 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			return;
 		if (this.selectedParticleDetectionRun != null) {
 			this.runPanel
-			        .updateAnalysisFields(this.selectedParticleDetectionRun);
+			.updateAnalysisFields(this.selectedParticleDetectionRun);
 			if (this.particlesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.particlesToProcess
-				        .get(this.selectedImage));
+						.get(this.selectedImage));
 			} else {
 				this.addToProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFieldsDefault();
@@ -742,16 +744,17 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 
 	public boolean checkIfThisAlgorithm(final OmegaSNRRun snrRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
-		        .getPlugin();
+				.getPlugin();
 		return plugin.checkIfThisAlgorithm(snrRun);
 	}
 
 	private void updateSNRRunnerMessageStatus(final String msg,
-	        final boolean ended) {
+			final boolean ended) {
 		try {
 			this.statusPanel.updateStatus(1, msg);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
-			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex);
+			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
+			        true);
 		}
 		if (ended) {
 			this.updateRunnerEnded();
@@ -762,6 +765,6 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final SNRMessageEvent specificEvent = (SNRMessageEvent) evt;
 		this.updateSNRRunnerMessageStatus(specificEvent.getMessage(),
-		        specificEvent.isEnded());
+				specificEvent.isEnded());
 	}
 }

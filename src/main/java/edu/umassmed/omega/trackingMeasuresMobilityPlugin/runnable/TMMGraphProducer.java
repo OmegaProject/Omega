@@ -33,19 +33,19 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMMGraphProducer(
-			final TMMGraphPanel mobilityPanel,
-			final int graphType,
-			final int mobilityOption,
-			final boolean isTimepointsGraph,
-			final int tMax,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-			final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, List<Double>> distanceMap,
-			final Map<OmegaSegment, List<Double>> displacementMap,
-			final Map<OmegaSegment, Double> maxDisplacementMap,
-			final Map<OmegaSegment, Integer> totalTimeTraveledMap,
-			final Map<OmegaSegment, List<Double>> confinementRatioMap,
-			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
+	        final TMMGraphPanel mobilityPanel,
+	        final int graphType,
+	        final int mobilityOption,
+	        final boolean isTimepointsGraph,
+	        final int tMax,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+	        final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, List<Double>> distanceMap,
+	        final Map<OmegaSegment, List<Double>> displacementMap,
+	        final Map<OmegaSegment, Double> maxDisplacementMap,
+	        final Map<OmegaSegment, Integer> totalTimeTraveledMap,
+	        final Map<OmegaSegment, List<Double>> confinementRatioMap,
+	        final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.mobilityPanel = mobilityPanel;
 		this.mobilityOption = mobilityOption;
@@ -173,12 +173,12 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMMGraphProducer.this.mobilityPanel.updateStatus(
-							TMMGraphProducer.this.getCompleted(), ended,
-							TMMGraphProducer.this.graphPanel);
+					        TMMGraphProducer.this.getCompleted(), ended,
+					        TMMGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 

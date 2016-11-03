@@ -71,10 +71,10 @@ public class SNREstimator implements SNRRunnable {
 	private Double avgErrorIndexSNR, minErrorIndexSNR, maxErrorIndexSNR;
 
 	public SNREstimator(
-			final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final OmegaGateway gateway, final OmegaPlane frame,
-			final List<OmegaROI> rois, final int radius,
-			final double threshold, final String method) {
+	        final OmegaMessageDisplayerPanelInterface displayerPanel,
+	        final OmegaGateway gateway, final OmegaPlane frame,
+	        final List<OmegaROI> rois, final int radius,
+	        final double threshold, final String method) {
 		this.displayerPanel = displayerPanel;
 		this.isJobCompleted = false;
 
@@ -122,7 +122,7 @@ public class SNREstimator implements SNRRunnable {
 		final int byteWidth = this.gateway.getByteWidth(pixelsID);
 		final byte[] pixels = this.gateway.getImageData(pixelsID, z, t, c);
 		final Integer[] image = OmegaImageUtilities.convertByteToIntegerImage(
-				byteWidth, pixels);
+		        byteWidth, pixels);
 		// data = OmegaImageUtilities.normalizeImage(data);
 
 		final Integer[] minMax = OmegaMathsUtilities.getMinAndMax(image);
@@ -131,7 +131,7 @@ public class SNREstimator implements SNRRunnable {
 
 		final double thresh = ((max - min) * this.threshold) + min;
 		final Integer[] smallerValues = OmegaMathsUtilities.getSmallerValue(
-				image, thresh);
+		        image, thresh);
 		this.imageBGR = OmegaMathsUtilities.mean(smallerValues);
 		this.imageNoise = OmegaMathsUtilities.standardDeviationN(smallerValues);
 
@@ -173,19 +173,19 @@ public class SNREstimator implements SNRRunnable {
 			this.localMeanSignals.put(roi, localMeanSignal);
 			this.localSignalSizes.put(roi, counter);
 			final double localNoise = Math.sqrt(localMaxSignal
-					* ((this.imageNoise * this.imageNoise) / this.imageBGR));
+			        * ((this.imageNoise * this.imageNoise) / this.imageBGR));
 			this.localNoises.put(roi, localNoise);
 			Double localSNR = null;
 			final Double ErrorIndexSNR = (localMaxSignal - this.imageBGR)
-					/ localNoise;
+			        / localNoise;
 			if (this.method
-			        .equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON)) {
+					.equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON)) {
 				localSNR = 2 * (Math.sqrt(localMaxSignal) - Math
-				        .sqrt(this.imageBGR));
+						.sqrt(this.imageBGR));
 			} else if (this.method
-			        .equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN)) {
+					.equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN)) {
 				localSNR = (2 * (localMaxSignal - this.imageBGR))
-				        / (Math.sqrt(localMaxSignal) + Math.sqrt(this.imageBGR));
+						/ (Math.sqrt(localMaxSignal) + Math.sqrt(this.imageBGR));
 			} else {
 				localSNR = ErrorIndexSNR;
 			}
@@ -216,12 +216,12 @@ public class SNREstimator implements SNRRunnable {
 				@Override
 				public void run() {
 					SNREstimator.this.displayerPanel
-					.updateMessageStatus(new SNRMessageEvent(msg,
-							SNREstimator.this, ended));
+					        .updateMessageStatus(new SNRMessageEvent(msg,
+					                SNREstimator.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 
@@ -230,8 +230,8 @@ public class SNREstimator implements SNRRunnable {
 			@Override
 			public void run() {
 				SNREstimator.this.displayerPanel
-				.updateMessageStatus(new SNRMessageEvent(msg,
-						SNREstimator.this, ended));
+				        .updateMessageStatus(new SNRMessageEvent(msg,
+				                SNREstimator.this, ended));
 			}
 		});
 	}

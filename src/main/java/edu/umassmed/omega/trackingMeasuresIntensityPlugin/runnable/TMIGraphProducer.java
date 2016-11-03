@@ -33,14 +33,14 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
-			final int graphType, final int peakMeanBgSnrOption,
-			final int minMeanMaxOption, final int maxT,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-			final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, Double[]> peakSignalMap,
-			final Map<OmegaSegment, Double[]> meanSignalMap,
-			final Map<OmegaSegment, Double[]> localBackgroundMap,
-			final Map<OmegaSegment, Double[]> localSNRMap) {
+	        final int graphType, final int peakMeanBgSnrOption,
+	        final int minMeanMaxOption, final int maxT,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+	        final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, Double[]> peakSignalMap,
+	        final Map<OmegaSegment, Double[]> meanSignalMap,
+	        final Map<OmegaSegment, Double[]> localBackgroundMap,
+	        final Map<OmegaSegment, Double[]> localSNRMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.intensityGraphPanel = intensityGraphPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
@@ -54,9 +54,9 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	}
 
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
-			final int graphType, final int peakMeanBgSnrOption, final int maxT,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-			final OmegaSegmentationTypes segmTypes) {
+	        final int graphType, final int peakMeanBgSnrOption, final int maxT,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+	        final OmegaSegmentationTypes segmTypes) {
 		super(graphType, segmentsMap, segmTypes);
 		this.intensityGraphPanel = intensityGraphPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
@@ -159,12 +159,12 @@ public class TMIGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMIGraphProducer.this.intensityGraphPanel.updateStatus(
-							TMIGraphProducer.this.getCompleted(), ended,
-							TMIGraphProducer.this.graphPanel);
+					        TMIGraphProducer.this.getCompleted(), ended,
+					        TMIGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 

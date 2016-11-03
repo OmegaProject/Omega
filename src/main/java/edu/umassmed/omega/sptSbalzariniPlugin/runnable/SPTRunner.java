@@ -81,8 +81,8 @@ public class SPTRunner implements SPTRunnable {
 	}
 
 	public SPTRunner(final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
-	        final OmegaGateway gateway) {
+			final Map<OmegaImage, List<OmegaParameter>> imagesToProcess,
+			final OmegaGateway gateway) {
 		this.displayerPanel = displayerPanel;
 
 		this.imagesToProcess = new LinkedHashMap<>(imagesToProcess);
@@ -136,7 +136,7 @@ public class SPTRunner implements SPTRunnable {
 	private void normalModeRun() {
 		for (final OmegaImage image : this.imagesToProcess.keySet()) {
 			final List<OmegaParameter> parameters = this.imagesToProcess
-			        .get(image);
+					.get(image);
 			// while (it.hasNext()) {
 			// final ImageDataHandler imageDataHandler = it.next();
 
@@ -198,7 +198,7 @@ public class SPTRunner implements SPTRunnable {
 			}
 
 			if ((radius == null) || (cutoff == null) || (percentile == null)
-			        || (displacement == null) || (linkrange == null))
+					|| (displacement == null) || (linkrange == null))
 				// TODO ERROR
 				return;
 
@@ -225,28 +225,28 @@ public class SPTRunner implements SPTRunnable {
 
 				// Max val
 				final int bits = (int) Math.pow(2,
-				        this.gateway.getByteWidth(pixelsID) * 8);
+						this.gateway.getByteWidth(pixelsID) * 8);
 
 				SPTDLLInvoker
-				        .callSetParameter("p9", String.format("%s.", bits));
+				.callSetParameter("p9", String.format("%s.", bits));
 				// SPTDLLInvoker.callSetParameter("p9", "255.");
 
 				// set the minimun number of points
 				// SPTDLLInvoker.callSetMinPoints(minPoints);
 
 				this.updateStatusSync(SPTRunner.RUNNER
-				        + " correctly initialized.", false);
+						+ " correctly initialized.", false);
 
 				// start the Runner
 				SPTDLLInvoker.callStartRunner();
 			} catch (final Exception ex) {
-				OmegaLogFileManager.handleUncaughtException(ex);
+				OmegaLogFileManager.handleUncaughtException(ex, true);
 				dllInit = false;
 			}
 
 			if (!dllInit) {
 				this.updateStatusSync(SPTRunner.RUNNER
-				        + " unable to initialize dll.", false);
+						+ " unable to initialize dll.", false);
 				return;
 			}
 			// TODO update panel with running image name and other available
@@ -261,7 +261,7 @@ public class SPTRunner implements SPTRunnable {
 
 			// load the images into the SPT DLL
 			this.loader = new SPTLoader(this.displayerPanel, image, z, c,
-			        this.gateway);
+					this.gateway);
 			final Thread loaderT = new Thread(this.loader);
 			loaderT.setName(this.loader.getClass().getSimpleName());
 			OmegaLogFileManager.registerAsExceptionHandlerOnThread(loaderT);
@@ -277,9 +277,9 @@ public class SPTRunner implements SPTRunnable {
 			threads.add(writerT);
 
 			while (!this.loader.isJobCompleted()
-			        || !this.writer.isJobCompleted()) {
+					|| !this.writer.isJobCompleted()) {
 				this.updateStatusSync(SPTRunner.RUNNER + " waiting results.",
-				        false);
+						false);
 				if (this.isTerminated)
 					return;
 			}
@@ -299,7 +299,7 @@ public class SPTRunner implements SPTRunnable {
 						final int frameIndex = point.getFrameIndex() - 1;
 						point.setFrameIndex(frameIndex);
 						final OmegaPlane frame = defaultPixels.getFrames(c, z)
-								.get(frameIndex);
+						        .get(frameIndex);
 						// System.out.println("FI: " + frame.getIndex() + " X: "
 						// + point.getX() + " Y: " + point.getY());
 						List<OmegaROI> framePoints;
@@ -313,9 +313,9 @@ public class SPTRunner implements SPTRunnable {
 
 						final OmegaParticle p = (OmegaParticle) point;
 						final float m0 = Float
-								.valueOf(String.valueOf(p.getM0()));
+						        .valueOf(String.valueOf(p.getM0()));
 						final float m2 = Float
-								.valueOf(String.valueOf(p.getM2()));
+						        .valueOf(String.valueOf(p.getM2()));
 						final Map<String, Object> particleValues = new LinkedHashMap<String, Object>();
 						particleValues.put("m0", m0);
 						particleValues.put("m2", m2);
@@ -339,7 +339,7 @@ public class SPTRunner implements SPTRunnable {
 				loaderT.join();
 				writerT.join();
 			} catch (final Exception ex) {
-				OmegaLogFileManager.handleUncaughtException(ex);
+				OmegaLogFileManager.handleUncaughtException(ex, true);
 			}
 
 			// when done, write SPT information on file (for each image)
@@ -400,7 +400,7 @@ public class SPTRunner implements SPTRunnable {
 		try {
 			writerT.join();
 		} catch (final InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex);
+			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
 
@@ -432,8 +432,8 @@ public class SPTRunner implements SPTRunnable {
 				@Override
 				public void run() {
 					SPTRunner.this.displayerPanel
-					        .updateMessageStatus(new SPTMessageEvent(msg,
-					                SPTRunner.this, ended));
+					.updateMessageStatus(new SPTMessageEvent(msg,
+							SPTRunner.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -448,8 +448,8 @@ public class SPTRunner implements SPTRunnable {
 			@Override
 			public void run() {
 				SPTRunner.this.displayerPanel
-				        .updateMessageStatus(new SPTMessageEvent(msg,
-				                SPTRunner.this, ended));
+				.updateMessageStatus(new SPTMessageEvent(msg,
+						SPTRunner.this, ended));
 			}
 		});
 	}
