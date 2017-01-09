@@ -194,6 +194,12 @@ public class OmegaDBSaver extends OmegaDBWriter {
 							imagePixelsID = writer.saveImagePixels(pixels,
 									imageID);
 							pixels.setElementID(imagePixelsID);
+							for (final Integer key : pixels.getChannelNames()
+									.keySet()) {
+								final long channelID = writer.saveChannel(key,
+										pixels.getChannelNames().get(key));
+								writer.savePixelsChannelLink(pixels, channelID);
+							}
 							projectCounter++;
 							this.updateCurrentProgress(project, projectCounter);
 							this.counters.put(project, projectCounter);

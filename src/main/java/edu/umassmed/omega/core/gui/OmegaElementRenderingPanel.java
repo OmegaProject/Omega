@@ -201,7 +201,13 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		this.channels = new JCheckBox[n];
 
 		for (int i = 0; i < n; i++) {
-			this.channels[i] = new JCheckBox("Channel " + i);
+			final String chanName = this.sidePanel.getImagePixels()
+					.getChannelNames().get(i);
+			String chan = String.valueOf(i);
+			if (chanName != null) {
+				chan += ": " + chanName;
+			}
+			this.channels[i] = new JCheckBox(chan);
 
 			this.channels[i].setSelected(true);
 

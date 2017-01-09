@@ -483,8 +483,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
 	        final Map<OmegaSegment, Double[]> peakSignalsMap,
 	        final Map<OmegaSegment, Double[]> meanSignalsMap,
-	        final Map<OmegaSegment, Double[]> localBackgroundsMap,
-	        final Map<OmegaSegment, Double[]> localSNRsMap)
+	        final Map<OmegaSegment, Double[]> centroidSignalsMap)
 	        throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 		        OmegaMySqlCostants.ANALYSIS_TABLE,
@@ -501,8 +500,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		final OmegaTrackingMeasuresIntensityRun intRun = new OmegaTrackingMeasuresIntensityRun(
 		        experimenter, algorithmSpecification, timeStamps, name,
-		        segments, peakSignalsMap, meanSignalsMap, localBackgroundsMap,
-		        localSNRsMap);
+		        segments, peakSignalsMap, meanSignalsMap, centroidSignalsMap);
 		intRun.setElementID(id);
 		return intRun;
 	}
@@ -1018,32 +1016,65 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		                OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_LOCAL_SPEED_TABLE);
 	}
 
-	public Map<Long, Map<Integer, Double>> loadIntensityLocalSNRsMap(
+	public Map<Long, Double[]> loadIntensityCentroidSignalsMap(
 	        final long trackingMeasuresID) throws SQLException {
-		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
-		        trackingMeasuresID,
-		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_SNR_TABLE);
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
+		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
 	}
 
-	public Map<Long, Map<Integer, Double>> loadIntensityLocalBackgroundsMap(
+	public Map<Long, Double[]> loadIntensityMeanSignalsMap(
 	        final long trackingMeasuresID) throws SQLException {
-		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
-		        trackingMeasuresID,
-		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_BG_TABLE);
-	}
-
-	public Map<Long, Map<Integer, Double>> loadIntensityMeanSignalsMap(
-	        final long trackingMeasuresID) throws SQLException {
-		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
-		        trackingMeasuresID,
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_MEAN_TABLE);
 	}
 
-	public Map<Long, Map<Integer, Double>> loadIntensityPeakSignalsMap(
+	public Map<Long, Double[]> loadIntensityPeakSignalsMap(
 	        final long trackingMeasuresID) throws SQLException {
-		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
-		        trackingMeasuresID,
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_PEAK_TABLE);
+	}
+	
+	private Map<Long, Double[]> loadTrackingMeasuresValuesMap(
+	        final long trackingMeasuresID, final String table)
+	        throws SQLException {
+		final ResultSet results1 = this.load(trackingMeasuresID, table,
+		        OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
+		final Map<Long, Double[]> valuesMap = new LinkedHashMap<Long, Double[]>();
+		if (results1 == null)
+			return valuesMap;
+		do {
+			final Double[] values = new Double[3];
+			final long segmentID = results1
+			        .getLong(OmegaMySqlCostants.SEGMENT_ID_FIELD);
+			final Double min = results1
+					.getDouble(OmegaMySqlCostants.MIN_VALUE_FIELD);
+			if (results1.wasNull()) {
+				values[0] = null;
+			} else {
+				values[0] = min;
+			}
+			final Double avg = results1
+					.getDouble(OmegaMySqlCostants.AVG_VALUE_FIELD);
+			if (results1.wasNull()) {
+				values[1] = null;
+			} else {
+				values[1] = avg;
+			}
+			final Double max = results1
+					.getDouble(OmegaMySqlCostants.MAX_VALUE_FIELD);
+			if (results1.wasNull()) {
+				values[2] = null;
+			} else {
+				values[2] = max;
+			}
+			valuesMap.put(segmentID, values);
+		} while (results1.next());
+		// if (results1.next()) {
+		//
+		// }
+		results1.getStatement().close();
+		results1.close();
+		return valuesMap;
 	}
 
 	private Map<Long, Integer> loadTrackingMeasuresIntegerValuesMap(
@@ -1242,12 +1273,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final int roiIntID = results1.getInt(OmegaMySqlCostants.ROI_ID_FIELD);
 		final long roiID = OmegaMySqlUtilities.getID(roiIntID);
-		final Double intensity = results1
-		        .getDouble(OmegaMySqlCostants.INTENSITY_FIELD);
-		final Double probability = results1
-		        .getDouble(OmegaMySqlCostants.PROBABILITY_FIELD);
-		final Double m0 = results1.getDouble(OmegaMySqlCostants.M0_PROV_FIELD);
-		final Double m2 = results1.getDouble(OmegaMySqlCostants.M2_PROV_FIELD);
+		final Double peak_intensity = results1
+		        .getDouble(OmegaMySqlCostants.PEAK_INTENSITY_FIELD);
+		final Double centroid_intensity = results1
+		        .getDouble(OmegaMySqlCostants.CENTROID_INTENSITY_FIELD);
+		results1.getDouble(OmegaMySqlCostants.M0_PROV_FIELD);
+		results1.getDouble(OmegaMySqlCostants.M2_PROV_FIELD);
 		results1.getStatement().close();
 		results1.close();
 		final ResultSet results2 = this.load(roiID,
@@ -1260,19 +1291,14 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		        .getDouble(OmegaMySqlCostants.ROI_POS_Y_FIELD);
 		results2.getStatement().close();
 		results2.close();
-		OmegaParticle p = null;
-		if (probability == null) {
-			p = new OmegaParticle(frameIndex, posX, posY, intensity);
-		} else {
-			p = new OmegaParticle(frameIndex, posX, posY, intensity,
-			        probability);
-		}
-		if (m0 != null) {
-			p.setM0(m0);
-		}
-		if (m2 != null) {
-			p.setM2(m2);
-		}
+		final OmegaParticle p = new OmegaParticle(frameIndex, posX, posY,
+				peak_intensity, centroid_intensity);
+		// if (m0 != null) {
+		// p.setM0(m0);
+		// }
+		// if (m2 != null) {
+		// p.setM2(m2);
+		// }
 		p.setElementID(roiID);
 		return p;
 	}
@@ -1678,20 +1704,20 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 
 	public OmegaImagePixels loadImagePixels(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
-		        OmegaMySqlCostants.IMAGEPIXELS_TABLE,
-		        OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
+				OmegaMySqlCostants.IMAGEPIXELS_TABLE,
+				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 		if (results1 == null)
 			return null;
 		final int omeroID = results1.getInt(OmegaMySqlCostants.OMERO_ID_FIELD);
 		final long omeID = OmegaMySqlUtilities.getID(omeroID);
 		final String pixelType = results1
-		        .getString(OmegaMySqlCostants.PIXELSTYPE_FIELD);
+				.getString(OmegaMySqlCostants.PIXELSTYPE_FIELD);
 		final double pixelSizeX = results1
-		        .getDouble(OmegaMySqlCostants.PIXELSSIZE_X_FIELD);
+				.getDouble(OmegaMySqlCostants.PIXELSSIZE_X_FIELD);
 		final double pixelSizeY = results1
-		        .getDouble(OmegaMySqlCostants.PIXELSSIZE_Y_FIELD);
+				.getDouble(OmegaMySqlCostants.PIXELSSIZE_Y_FIELD);
 		final double pixelSizeZ = results1
-		        .getDouble(OmegaMySqlCostants.PIXELSSIZE_Z_FIELD);
+				.getDouble(OmegaMySqlCostants.PIXELSSIZE_Z_FIELD);
 		final int sizeX = results1.getInt(OmegaMySqlCostants.SIZE_X_FIELD);
 		final int sizeY = results1.getInt(OmegaMySqlCostants.SIZE_Y_FIELD);
 		final int sizeZ = results1.getInt(OmegaMySqlCostants.SIZE_Z_FIELD);
@@ -1699,8 +1725,33 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final int sizeT = results1.getInt(OmegaMySqlCostants.SIZE_T_FIELD);
 		results1.getStatement().close();
 		results1.close();
+		final ResultSet results2 = this.load(id,
+				OmegaMySqlCostants.PIXELS_CHANNEL_TABLE,
+				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
+		final Map<Integer, String> channelNames = new LinkedHashMap<Integer, String>();
+		if (results2 != null) {
+			do {
+				final int chanID = results2
+						.getInt(OmegaMySqlCostants.CHANNEL_ID_FIELD);
+				results2.getStatement().close();
+				results2.close();
+				final ResultSet results3 = this.load(chanID,
+						OmegaMySqlCostants.CHANNEL_TABLE,
+						OmegaMySqlCostants.CHANNEL_ID_FIELD);
+				if (results3 != null) {
+					final int index = results3
+							.getInt(OmegaMySqlCostants.CHANNEL_INDEX);
+					final String name = results3
+							.getString(OmegaMySqlCostants.NAME_FIELD);
+					results3.getStatement().close();
+					results3.close();
+					channelNames.put(index, name);
+				}
+			} while (results2.next());
+		}
 		final OmegaImagePixels pixels = new OmegaImagePixels(pixelType, sizeX,
-		        sizeY, sizeZ, sizeC, sizeT, pixelSizeX, pixelSizeY, pixelSizeZ);
+				sizeY, sizeZ, sizeC, sizeT, pixelSizeX, pixelSizeY, pixelSizeZ,
+		        channelNames);
 		pixels.setElementID(id);
 		pixels.setOmeroId(omeID);
 		return pixels;

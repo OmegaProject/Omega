@@ -1,31 +1,30 @@
 package edu.umassmed.omega.core.mysql;
 
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * AlessANDro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School AlessANDro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini AND Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it AND/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it AND/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
 import java.awt.Color;
@@ -67,7 +66,6 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
-import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
@@ -610,17 +608,15 @@ public class OmegaMySqlGatewayOld {
 		final ResultSet results1 = stat1.executeQuery();
 		while (results1.next()) {
 			final int roiID = results1.getInt(2);
-			// final double intensity = results1.getDouble(4);
-			// final double probability = results1.getDouble(5);
-			final double totalSignal = results1.getDouble(6);
-			final int numOfSignal = results1.getInt(7);
-			final double peakSignal = results1.getDouble(8);
-			final double meanSignal = results1.getDouble(9);
-			final double snr = results1.getDouble(10);
-			final double meanBg = results1.getDouble(11);
-			final double meanNoise = results1.getDouble(12);
-			final double m0 = results1.getDouble(13);
-			final double m2 = results1.getDouble(14);
+			results1.getDouble(6);
+			results1.getInt(7);
+			results1.getDouble(8);
+			results1.getDouble(9);
+			results1.getDouble(10);
+			results1.getDouble(11);
+			results1.getDouble(12);
+			results1.getDouble(13);
+			results1.getDouble(14);
 
 			final StringBuffer query2 = new StringBuffer();
 			query2.append("SELECT * FROM roi WHERE ROI_Seq_Id = ");
@@ -653,8 +649,8 @@ public class OmegaMySqlGatewayOld {
 
 			final int frameIndex = results3.getInt(4);
 
-			final double x = results2.getDouble(3);
-			final double y = results2.getDouble(4);
+			results2.getDouble(3);
+			results2.getDouble(4);
 
 			List<OmegaROI> particles;
 			final OmegaPlane frame = frames.get(frameIndex);
@@ -666,9 +662,10 @@ public class OmegaMySqlGatewayOld {
 				particles = new ArrayList<OmegaROI>();
 			}
 
-			final OmegaROI particle = new OmegaParticle(frameIndex, x, y,
-			        totalSignal, numOfSignal, meanSignal, peakSignal, snr,
-			        meanBg, meanNoise, m0, m2);
+			final OmegaROI particle = null;
+			// final OmegaROI particle = new OmegaParticle(frameIndex, x, y,
+			// totalSignal, numOfSignal, meanSignal, peakSignal, snr,
+			// meanBg, meanNoise, m0, m2);
 			particle.setElementID((long) roiID);
 
 			particles.add(particle);
@@ -684,7 +681,7 @@ public class OmegaMySqlGatewayOld {
 	}
 
 	private int saveParticle(final OmegaROI roi, final int frameID,
-	        final long analysisRunID) throws SQLException {
+			final long analysisRunID) throws SQLException {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("INSERT INTO roi (Frame_Seq_Id, Position_X, Position_Y) VALUES (");
 		query1.append(frameID);
@@ -694,30 +691,29 @@ public class OmegaMySqlGatewayOld {
 		query1.append(roi.getY());
 		query1.append(")");
 		final int roiID = this.insertAndGetId(query1.toString());
-		final OmegaParticle particle = (OmegaParticle) roi;
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("INSERT INTO particle (ROI_Seq_Id, AnalysisRun_Seq_Id, TotalSignal, NumberOfSignal, PeakSignal, MeanSignal, LocalSNR, LocalMeanBackground, LocalMeanNoise, M0, M2) VALUES (");
 		query2.append(roiID);
 		query2.append(",");
 		query2.append(analysisRunID);
 		query2.append(",");
-		query2.append(particle.getTotalSignal());
-		query2.append(",");
-		query2.append(particle.getNumOfSignals());
-		query2.append(",");
-		query2.append(particle.getPeakSignal());
-		query2.append(",");
-		query2.append(particle.getMeanSignal());
-		query2.append(",");
-		query2.append(particle.getSNR());
-		query2.append(",");
-		query2.append(particle.getMeanBackground());
-		query2.append(",");
-		query2.append(particle.getMeanNoise());
-		query2.append(",");
-		query2.append(particle.getM0());
-		query2.append(",");
-		query2.append(particle.getM2());
+		// query2.append(particle.getTotalSignal());
+		// query2.append(",");
+		// query2.append(particle.getNumOfSignals());
+		// query2.append(",");
+		// query2.append(particle.getPeakSignal());
+		// query2.append(",");
+		// query2.append(particle.getMeanSignal());
+		// query2.append(",");
+		// query2.append(particle.getSNR());
+		// query2.append(",");
+		// query2.append(particle.getMeanBackground());
+		// query2.append(",");
+		// query2.append(particle.getMeanNoise());
+		// query2.append(",");
+		// query2.append(particle.getM0());
+		// query2.append(",");
+		// query2.append(particle.getM2());
 		query2.append(")");
 		this.insertAndGetId(query2.toString());
 		return roiID;

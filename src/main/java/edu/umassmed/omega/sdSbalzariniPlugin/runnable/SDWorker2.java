@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import mosaic.core.detection.FeaturePointDetector;
+import mosaic.core.detection.MyFrame;
+import mosaic.core.detection.Particle;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
-import mosaic.core.detection.FeaturePointDetector;
-import mosaic.core.detection.MyFrame;
-import mosaic.core.detection.Particle;
 
 public class SDWorker2 implements SDRunnable {
 
@@ -84,7 +84,7 @@ public class SDWorker2 implements SDRunnable {
 			this.frame.setParentPixels(this.pixels);
 			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
 		}
-		MyFrame mosaicFrame = new MyFrame(this.is, this.frameIndex, 0);
+		MyFrame mosaicFrame = new MyFrame(this.is, this.frameIndex + 1, 0);
 		FeaturePointDetector fpd = new FeaturePointDetector(this.globalMax,
 		        this.globalMin);
 		fpd.setUserDefinedParameters(this.cutoff, this.percentile, this.radius,

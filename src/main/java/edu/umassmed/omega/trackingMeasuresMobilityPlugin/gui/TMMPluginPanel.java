@@ -76,6 +76,7 @@ import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericSegmentsBrowserPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
 import edu.umassmed.omega.commons.gui.interfaces.GenericSegmentsBrowserContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.trackingMeasuresMobilityPlugin.TMMConstants;
@@ -91,6 +92,7 @@ GenericSegmentsBrowserContainerInterface {
 	private GenericSegmentsBrowserPanel sbPanel;
 	private TMMRunPanel runPanel;
 	private GenericStatusPanel statusPanel;
+	private GenericTrackingResultsPanel localResultsPanel, globalResultsPanel;
 
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
 	trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
@@ -266,6 +268,16 @@ GenericSegmentsBrowserContainerInterface {
 
 		this.runPanel = new TMMRunPanel(this.getParentContainer(), this);
 		this.tabbedPane.add(StatsConstants.TAB_RUN, this.runPanel);
+
+		this.localResultsPanel = new GenericTrackingResultsPanel(
+		        this.getParentContainer());
+		this.tabbedPane.add(StatsConstants.TAB_RESULTS_LOCAL,
+		        this.localResultsPanel);
+
+		this.globalResultsPanel = new GenericTrackingResultsPanel(
+		        this.getParentContainer());
+		this.tabbedPane.add(StatsConstants.TAB_RESULTS_GLOBAL,
+		        this.globalResultsPanel);
 
 		final JPanel graphMainPanel = new JPanel();
 		graphMainPanel.setLayout(new BorderLayout());
@@ -521,6 +533,11 @@ GenericSegmentsBrowserContainerInterface {
 		        this.selectedTrajSegmentationRun.getSegmentationTypes(), true);
 		this.graphPanel
 		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		this.localResultsPanel.setAnalysisRun(this.selectedTrackingMeasuresRun,
+				this.selectedTrajSegmentationRun, true);
+		this.globalResultsPanel.setAnalysisRun(
+		        this.selectedTrackingMeasuresRun,
+				this.selectedTrajSegmentationRun, false);
 	}
 
 	@Override

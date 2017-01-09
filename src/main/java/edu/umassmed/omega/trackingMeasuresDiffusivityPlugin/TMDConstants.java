@@ -38,14 +38,14 @@ public class TMDConstants {
 
 	// DIFFUSIVITY
 	// GLOBAL
-	public static final String GRAPH_NAME_UNCERT_D = "D2 Uncertainty";
+	public static final String GRAPH_NAME_UNCERT_D = "Diffusion Coefficent (D2) Uncertainty";
 	public static final String GRAPH_LAB_Y_UNCERT_D = "D2 Uncertainty [a.u.]";
 	public static final String GRAPH_NAME_UNCERT_SMSS = "Slope MSS Uncertainty";
 	public static final String GRAPH_LAB_Y_UNCERT_SMSS = "Slope MSS Uncertainty [a.u.]";
-	public static final String GRAPH_NAME_DIFF = "Diffusion Coefficient";
+	public static final String GRAPH_NAME_DIFF = "Diffusion Coefficient (D2)";
 	public static final String GRAPH_LAB_Y_DIFF = "D2 ["
 			+ OmegaConstantsMathSymbols.MU + "m^2/s]";
-	public static final String GRAPH_NAME_MSD = "Slope of log-log MSD Plot";
+	public static final String GRAPH_NAME_MSD = "Slope of log-log MSD vs T Plot";
 	public static final String GRAPH_LAB_Y_MSD = "Slope of log(MSD) / log(deltaT) [a.u.]";
 	public static final String GRAPH_NAME_MSS = "Slope MSS";
 	public static final String GRAPH_LAB_Y_MSS = "Gamma [a.u.]";

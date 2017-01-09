@@ -34,7 +34,7 @@ import edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
 import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.TMDConstants;
 
 public class TMDRunPanel extends GenericPanel implements
-        OmegaMessageDisplayerPanelInterface {
+OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -1925743064869248360L;
 
@@ -57,8 +57,8 @@ public class TMDRunPanel extends GenericPanel implements
 	private OmegaSNRRun selectedSNRRun;
 
 	public TMDRunPanel(final RootPaneContainer parent,
-	        final TMDPluginPanel pluginPanel,
-	        final List<OmegaAnalysisRun> analysisRuns) {
+			final TMDPluginPanel pluginPanel,
+			final List<OmegaAnalysisRun> analysisRuns) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		this.setLayout(new BorderLayout());
@@ -86,20 +86,20 @@ public class TMDRunPanel extends GenericPanel implements
 		final JPanel parametersDiffPanel = new JPanel();
 		parametersDiffPanel.setLayout(new GridLayout(2, 1));
 		parametersDiffPanel.setBorder(new TitledBorder(
-				TMDConstants.PARAMETER_TMD));
+		        TMDConstants.PARAMETER_TMD));
 
 		final JPanel windowPanel = new JPanel();
 		windowPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel radius_lbl = new JLabel(
-				TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW + ":");
+		        TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW + ":");
 		radius_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		windowPanel.add(radius_lbl);
 		this.windowVal_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.windowVal_cmb.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW_3);
 		this.windowVal_cmb.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW_5);
 		this.windowVal_cmb
-		        .addItem(TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW_10);
+		.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW_10);
 		this.windowVal_cmb.setPreferredSize(TMDRunPanel.LBL_FIELDS_DIM);
 		windowPanel.add(this.windowVal_cmb);
 		parametersDiffPanel.add(windowPanel);
@@ -107,17 +107,17 @@ public class TMDRunPanel extends GenericPanel implements
 		final JPanel logOptionPanel = new JPanel();
 		logOptionPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel logOption_lbl = new JLabel(
-				TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION + ":");
+		        TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION + ":");
 		logOption_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		logOptionPanel.add(logOption_lbl);
 		this.logOption_cmb = new GenericComboBox<String>(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.logOption_cmb
-		.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_ONLY);
+		        .addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_ONLY);
 		this.logOption_cmb
-		.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR);
+		        .addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR);
 		this.logOption_cmb
-		.addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LINEAR_ONLY);
+		        .addItem(TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LINEAR_ONLY);
 		this.logOption_cmb.setPreferredSize(TMDRunPanel.LBL_FIELDS_DIM);
 		logOptionPanel.add(this.logOption_cmb);
 		parametersDiffPanel.add(logOptionPanel);
@@ -127,33 +127,33 @@ public class TMDRunPanel extends GenericPanel implements
 		final JPanel parametersErrPanel = new JPanel();
 		parametersErrPanel.setLayout(new GridLayout(2, 1));
 		parametersErrPanel.setBorder(new TitledBorder(
-				TMDConstants.PARAMETER_TMDE));
+		        TMDConstants.PARAMETER_TMDE));
 
 		final JPanel errorOptionPanel = new JPanel();
 		errorOptionPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel errorOption_lbl = new JLabel(
-				TMDConstants.PARAMETER_ERROR_OPTION + ":");
+		        TMDConstants.PARAMETER_ERROR_OPTION + ":");
 		errorOption_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		errorOptionPanel.add(errorOption_lbl);
 		this.errorOption_cmb = new GenericComboBox<String>(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.errorOption_cmb.setPreferredSize(TMDRunPanel.LBL_FIELDS_DIM);
 		this.errorOption_cmb
-		        .addItem(TMDConstants.PARAMETER_ERROR_OPTION_ENABLED);
-		this.errorOption_cmb.addItem(TMDConstants.PARAMETER_ERROR_OPTION_ONLY);
-		this.errorOption_cmb
 		        .addItem(TMDConstants.PARAMETER_ERROR_OPTION_DISABLED);
+		this.errorOption_cmb
+		.addItem(TMDConstants.PARAMETER_ERROR_OPTION_ENABLED);
+		this.errorOption_cmb.addItem(TMDConstants.PARAMETER_ERROR_OPTION_ONLY);
 		errorOptionPanel.add(this.errorOption_cmb);
 		parametersErrPanel.add(errorOptionPanel);
 
 		final JPanel snrRunPanel = new JPanel();
 		snrRunPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel snrRun_lbl = new JLabel(TMDConstants.PARAMETER_ERROR_SNR
-		        + ":");
+				+ ":");
 		snrRun_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		snrRunPanel.add(snrRun_lbl);
 		this.snrAnalysis_cmb = new GenericComboBox<String>(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.snrAnalysis_cmb.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrRunPanel.add(this.snrAnalysis_cmb);
 		parametersErrPanel.add(snrRunPanel);
@@ -180,6 +180,30 @@ public class TMDRunPanel extends GenericPanel implements
 				TMDRunPanel.this.selectSNRRun();
 			}
 		});
+		this.errorOption_cmb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				TMDRunPanel.this.handleErrorOptionSelection();
+			}
+		});
+	}
+
+	private void handleErrorOptionSelection() {
+		final String option = (String) this.errorOption_cmb.getSelectedItem();
+		this.run_btt.setEnabled(true);
+		if (option.equals(TMDConstants.PARAMETER_ERROR_OPTION_DISABLED)) {
+			this.snrAnalysis_cmb.setSelectedIndex(-1);
+			this.snrAnalysis_cmb.setEnabled(false);
+
+		} else {
+			this.snrAnalysis_cmb.setEnabled(true);
+			if (this.snrAnalysis_cmb.getItemCount() <= 0) {
+				this.snrAnalysis_cmb.setSelectedIndex(-1);
+				this.run_btt.setEnabled(false);
+			} else {
+				this.snrAnalysis_cmb.setSelectedIndex(0);
+			}
+		}
 	}
 
 	private void startIntensityAnalyzer() {
@@ -188,9 +212,9 @@ public class TMDRunPanel extends GenericPanel implements
 		// TODO Stop if thread already running (disable button would be better)
 		// FIXME OPTION SHOULD BE GIVIN BY GUY HERE!!!!
 		this.analyzer = new OmegaDiffusivityAnalyzer(this,
-		        this.pluginPanel.getSegments(), this.getParameters(),
-				this.selectedSNRRun,
-		        this.pluginPanel.getSelectedTrackingMeasuresDiffusivityRun());
+				this.pluginPanel.getSegments(), this.getParameters(),
+		        this.selectedSNRRun,
+				this.pluginPanel.getSelectedTrackingMeasuresDiffusivityRun());
 		this.analyzer.run();
 	}
 
@@ -209,13 +233,13 @@ public class TMDRunPanel extends GenericPanel implements
 	public void updateRunFields(final List<OmegaParameter> parameters) {
 		for (final OmegaParameter param : parameters) {
 			if (param.getName().equals(
-			        TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW)) {
+					TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW)) {
 				this.windowVal_cmb.setSelectedItem(param.getStringValue());
 			} else if (param.getName().equals(
-			        TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION)) {
+					TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION)) {
 				this.logOption_cmb.setSelectedItem(param.getStringValue());
 			} else if (param.getName().equals(
-			        TMDConstants.PARAMETER_ERROR_OPTION)) {
+					TMDConstants.PARAMETER_ERROR_OPTION)) {
 				this.errorOption_cmb.setSelectedItem(param.getValue());
 			} else if (param.getName().equals(TMDConstants.PARAMETER_ERROR_SNR)) {
 				// SNR ANALYSIS HOW TO PASS IT ?
@@ -234,16 +258,16 @@ public class TMDRunPanel extends GenericPanel implements
 			return null;
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		final int window = Integer.valueOf((String) this.windowVal_cmb
-		        .getSelectedItem());
+				.getSelectedItem());
 		params.add(new OmegaParameter(
-		        TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW, window));
+				TMDConstants.PARAMETER_DIFFUSIVITY_WINDOW, window));
 		final String logOption = (String) this.logOption_cmb.getSelectedItem();
 		params.add(new OmegaParameter(
-		        TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION, logOption));
+				TMDConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION, logOption));
 		final String errorOption = (String) this.errorOption_cmb
-				.getSelectedItem();
+		        .getSelectedItem();
 		params.add(new OmegaParameter(TMDConstants.PARAMETER_ERROR_OPTION,
-				errorOption));
+		        errorOption));
 		return params;
 	}
 
@@ -252,33 +276,33 @@ public class TMDRunPanel extends GenericPanel implements
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
 		if (siEvt.needDialog()) {
 			final GenericMessageDialog gd = new GenericMessageDialog(
-					this.getParentContainer(), "Diffusivity Analyzer Warning",
-					evt.getMessage(), false);
+			        this.getParentContainer(), "Diffusivity Analyzer Warning",
+			        evt.getMessage(), false);
 			gd.setVisible(true);
 			gd.enableClose();
 		}
 		this.pluginPanel.updateStatus(evt.getMessage());
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresDiffusivity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresDiffusivity(
-			        this.pluginPanel.getPlugin(),
-			        this.pluginPanel.getSelectedSegmentationRun(),
-			        this.analyzer.getParameters(),
-					this.analyzer.getSegments(),
-			        this.analyzer.getNyResults(),
-					this.analyzer.getMuResults(),
-			        this.analyzer.getLogMuResults(),
-			        this.analyzer.getDeltaTResults(),
-			        this.analyzer.getLogDeltaTResults(),
-			        this.analyzer.getGammaDResults(),
-			        this.analyzer.getGammaDFromLogResults(),
-			        // this.analyzer.getGammaResults(),
-			        this.analyzer.getGammaFromLogResults(),
-			        // this.analyzer.getSmssResults(),
-			        this.analyzer.getSmssFromLogResults(),
-					// this.analyzer.getErrors(),
-					this.analyzer.getErrorsFromLog(),
-					this.analyzer.getSNRRun(),
-					this.analyzer.getTrackiMeasuresDiffusivityRun());
+					this.pluginPanel.getPlugin(),
+					this.pluginPanel.getSelectedSegmentationRun(),
+					this.analyzer.getParameters(),
+			        this.analyzer.getSegments(),
+					this.analyzer.getNyResults(),
+			        this.analyzer.getMuResults(),
+					this.analyzer.getLogMuResults(),
+					this.analyzer.getDeltaTResults(),
+					this.analyzer.getLogDeltaTResults(),
+					this.analyzer.getGammaDResults(),
+					this.analyzer.getGammaDFromLogResults(),
+					// this.analyzer.getGammaResults(),
+					this.analyzer.getGammaFromLogResults(),
+					// this.analyzer.getSmssResults(),
+					this.analyzer.getSmssFromLogResults(),
+			        // this.analyzer.getErrors(),
+			        this.analyzer.getErrorsFromLog(),
+			        this.analyzer.getSNRRun(),
+			        this.analyzer.getTrackiMeasuresDiffusivityRun());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
 		}
 	}
@@ -291,7 +315,7 @@ public class TMDRunPanel extends GenericPanel implements
 		this.selectedSNRRun = null;
 
 		final OmegaParticleDetectionRun particleDetRun = this.pluginPanel
-		        .getSelectedParticleDetectionRun();
+				.getSelectedParticleDetectionRun();
 
 		if (particleDetRun == null) {
 			this.snrAnalysis_cmb.setEnabled(false);
@@ -300,7 +324,7 @@ public class TMDRunPanel extends GenericPanel implements
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if ((analysisRun instanceof OmegaSNRRun)
-					&& particleDetRun.getAnalysisRuns().contains(analysisRun)) {
+			        && particleDetRun.getAnalysisRuns().contains(analysisRun)) {
 				this.snrRuns.add((OmegaSNRRun) analysisRun);
 				this.snrAnalysis_cmb.addItem(analysisRun.getName());
 			}
@@ -333,8 +357,8 @@ public class TMDRunPanel extends GenericPanel implements
 		}
 
 		final Double minD = OmegaDiffusivityLibrary
-				.computeMinimumDetectableD(this.selectedSNRRun
-						.getResultingImageMinimumErrorIndexSNR());
+		        .computeMinimumDetectableD(this.selectedSNRRun
+		                .getResultingImageMinimumErrorIndexSNR());
 		System.out.println(minD);
 	}
 
@@ -346,7 +370,7 @@ public class TMDRunPanel extends GenericPanel implements
 		}
 		if (index == -1) {
 			this.snrAnalysis_cmb.setSelectedItem(this.snrAnalysis_cmb
-			        .getItemCount());
+					.getItemCount());
 		} else {
 			this.snrAnalysis_cmb.setSelectedIndex(index);
 		}
@@ -355,7 +379,7 @@ public class TMDRunPanel extends GenericPanel implements
 
 	private void fireEventSelectionSNRRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-				this.pluginPanel.getPlugin(), this.selectedSNRRun);
+		        this.pluginPanel.getPlugin(), this.selectedSNRRun);
 		this.pluginPanel.getPlugin().fireEvent(event);
 	}
 

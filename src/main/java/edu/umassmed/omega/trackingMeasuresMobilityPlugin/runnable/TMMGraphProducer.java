@@ -33,19 +33,19 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMMGraphProducer(
-	        final TMMGraphPanel mobilityPanel,
-	        final int graphType,
-	        final int mobilityOption,
-	        final boolean isTimepointsGraph,
-	        final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, List<Double>> distanceMap,
-	        final Map<OmegaSegment, List<Double>> displacementMap,
-	        final Map<OmegaSegment, Double> maxDisplacementMap,
-	        final Map<OmegaSegment, Integer> totalTimeTraveledMap,
-	        final Map<OmegaSegment, List<Double>> confinementRatioMap,
-	        final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
+			final TMMGraphPanel mobilityPanel,
+			final int graphType,
+			final int mobilityOption,
+			final boolean isTimepointsGraph,
+			final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, List<Double>> distanceMap,
+			final Map<OmegaSegment, List<Double>> displacementMap,
+			final Map<OmegaSegment, Double> maxDisplacementMap,
+			final Map<OmegaSegment, Integer> totalTimeTraveledMap,
+			final Map<OmegaSegment, List<Double>> confinementRatioMap,
+			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.mobilityPanel = mobilityPanel;
 		this.mobilityOption = mobilityOption;
@@ -133,10 +133,12 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		Double[] localValues = null;
 		List<Double> values = null;
 		final Double[] value = new Double[1];
+		int index = -1;
 		switch (this.mobilityOption) {
 		case TMMGraphPanel.OPTION_DISPLACEMENT:
 			values = this.displacementMap.get(segment);
-			value[0] = values.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			value[0] = values.get(index);
 			break;
 		case TMMGraphPanel.OPTION_MAX_DISPLACEMENT:
 			value[0] = this.maxDisplacementMap.get(segment);
@@ -146,22 +148,26 @@ public class TMMGraphProducer extends StatsGraphProducer {
 			break;
 		case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
 			values = this.confinementRatioMap.get(segment);
-			value[0] = values.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			value[0] = values.get(index);
 			break;
 		case TMMGraphPanel.OPTION_LOCAL_ANGLES:
 			valuesList = this.anglesAndDirectionalChangesMap.get(segment);
 			localValues = null;
-			localValues = valuesList.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			localValues = valuesList.get(index);
 			value[0] = localValues[0];
 			break;
 		case TMMGraphPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
 			valuesList = this.anglesAndDirectionalChangesMap.get(segment);
-			localValues = valuesList.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			localValues = valuesList.get(index);
 			value[0] = localValues[1];
 			break;
 		default:
 			values = this.distanceMap.get(segment);
-			value[0] = values.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			value[0] = values.get(index);
 		}
 		return value;
 	}
@@ -173,8 +179,8 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMMGraphProducer.this.mobilityPanel.updateStatus(
-					        TMMGraphProducer.this.getCompleted(), ended,
-					        TMMGraphProducer.this.graphPanel);
+							TMMGraphProducer.this.getCompleted(), ended,
+							TMMGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {

@@ -36,8 +36,7 @@ public class TMIGraphPanel extends GenericPanel {
 
 	public static final int OPTION_PEAK_SIGNAL = 0;
 	public static final int OPTION_MEAN_SIGNAL = 1;
-	public static final int OPTION_LOCAL_BACKGROUND = 2;
-	public static final int OPTION_LOCAL_SNR = 3;
+	public static final int OPTION_CENTROID_SIGNAL = 2;
 
 	public static final int OPTION_MIN = 0;
 	public static final int OPTION_MEAN = 1;
@@ -110,12 +109,9 @@ public class TMIGraphPanel extends GenericPanel {
 		this.yAxis_cmb.addItem(TMIConstants.MAX_MEAN_INTENSITY);
 		this.yAxis_cmb.addItem(TMIConstants.AVG_MEAN_INTENSITY);
 		this.yAxis_cmb.addItem(TMIConstants.MIN_MEAN_INTENSITY);
-		this.yAxis_cmb.addItem(TMIConstants.MAX_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIConstants.AVG_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIConstants.MIN_BACKGROUND);
-		this.yAxis_cmb.addItem(TMIConstants.MAX_SNR);
-		this.yAxis_cmb.addItem(TMIConstants.AVG_SNR);
-		this.yAxis_cmb.addItem(TMIConstants.MIN_SNR);
+		this.yAxis_cmb.addItem(TMIConstants.MAX_CENTROID_INTENSITY);
+		this.yAxis_cmb.addItem(TMIConstants.AVG_CENTROID_INTENSITY);
+		this.yAxis_cmb.addItem(TMIConstants.MIN_CENTROID_INTENSITY);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -252,10 +248,8 @@ public class TMIGraphPanel extends GenericPanel {
 			this.handleTimepointsChart(TMIGraphPanel.OPTION_PEAK_SIGNAL);
 		} else if (yAxisSelection.equals(TMIConstants.GRAPH_NAME_INT_MEAN)) {
 			this.handleTimepointsChart(TMIGraphPanel.OPTION_MEAN_SIGNAL);
-		} else if (yAxisSelection.equals(TMIConstants.GRAPH_NAME_INT_BG)) {
-			this.handleTimepointsChart(TMIGraphPanel.OPTION_LOCAL_BACKGROUND);
-		} else if (yAxisSelection.equals(TMIConstants.GRAPH_NAME_INT_SNR)) {
-			this.handleTimepointsChart(TMIGraphPanel.OPTION_LOCAL_SNR);
+		} else if (yAxisSelection.equals(TMIConstants.GRAPH_NAME_INT_CENT)) {
+			this.handleTimepointsChart(TMIGraphPanel.OPTION_CENTROID_SIGNAL);
 		}
 	}
 
@@ -279,23 +273,14 @@ public class TMIGraphPanel extends GenericPanel {
 		} else if (yAxisSelection.equals(TMIConstants.MAX_MEAN_INTENSITY)) {
 			this.handleTracksChart(TMIGraphPanel.OPTION_MEAN_SIGNAL,
 			        TMIGraphPanel.OPTION_MAX);
-		} else if (yAxisSelection.equals(TMIConstants.MIN_BACKGROUND)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_BACKGROUND,
+		} else if (yAxisSelection.equals(TMIConstants.MIN_CENTROID_INTENSITY)) {
+			this.handleTracksChart(TMIGraphPanel.OPTION_CENTROID_SIGNAL,
 			        TMIGraphPanel.OPTION_MIN);
-		} else if (yAxisSelection.equals(TMIConstants.AVG_BACKGROUND)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_BACKGROUND,
+		} else if (yAxisSelection.equals(TMIConstants.AVG_CENTROID_INTENSITY)) {
+			this.handleTracksChart(TMIGraphPanel.OPTION_CENTROID_SIGNAL,
 			        TMIGraphPanel.OPTION_MEAN);
-		} else if (yAxisSelection.equals(TMIConstants.MAX_BACKGROUND)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_BACKGROUND,
-			        TMIGraphPanel.OPTION_MAX);
-		} else if (yAxisSelection.equals(TMIConstants.MIN_SNR)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_SNR,
-			        TMIGraphPanel.OPTION_MIN);
-		} else if (yAxisSelection.equals(TMIConstants.AVG_SNR)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_SNR,
-			        TMIGraphPanel.OPTION_MEAN);
-		} else if (yAxisSelection.equals(TMIConstants.MAX_SNR)) {
-			this.handleTracksChart(TMIGraphPanel.OPTION_LOCAL_SNR,
+		} else if (yAxisSelection.equals(TMIConstants.MIN_CENTROID_INTENSITY)) {
+			this.handleTracksChart(TMIGraphPanel.OPTION_CENTROID_SIGNAL,
 			        TMIGraphPanel.OPTION_MAX);
 		}
 	}
@@ -351,8 +336,7 @@ public class TMIGraphPanel extends GenericPanel {
 		        selectedSegmentsMap, this.segmTypes,
 		        this.selectedTrackingMeasuresRun.getPeakSignalsResults(),
 		        this.selectedTrackingMeasuresRun.getMeanSignalsResults(),
-		        this.selectedTrackingMeasuresRun.getLocalBackgroundsResults(),
-		        this.selectedTrackingMeasuresRun.getLocalSNRsResults());
+		        this.selectedTrackingMeasuresRun.getCentroidSignalsResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 

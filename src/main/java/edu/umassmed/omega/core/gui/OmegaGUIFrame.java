@@ -91,8 +91,8 @@ public class OmegaGUIFrame extends JFrame {
 	private JMenu fileMenu, viewMenu, editMenu;
 	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem,
 	omegaDbLoadOrphanedMItem, aboutMItem, quitMItem;
-	private JMenuItem tracksImporterMItem, tracksExporterMItem,
-	diffExporterMItem, dataExporterMItem;
+	// private JMenuItem tracksImporterMItem, tracksExporterMItem,
+	// diffExporterMItem, dataExporterMItem;
 	private JMenuItem sepUnifyInterfaceMItem;
 	private JMenuItem omegaDbOptionsMItem, omegaDbUpdateTrajectoriesMItem;
 
@@ -167,26 +167,26 @@ public class OmegaGUIFrame extends JFrame {
 	private void createMenu() {
 		this.menu = new JMenuBar();
 		this.fileMenu = new JMenu(OmegaGUIConstants.MENU_FILE);
-		this.tracksImporterMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS);
-		this.tracksImporterMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
-		this.fileMenu.add(this.tracksImporterMItem);
-		this.tracksExporterMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS);
-		this.tracksExporterMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS_TT);
-		this.fileMenu.add(this.tracksExporterMItem);
-		this.diffExporterMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_FILE_EXPORT_DIFF);
-		this.diffExporterMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DIFF_TT);
-		this.fileMenu.add(this.diffExporterMItem);
-		this.dataExporterMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_FILE_EXPORT_DATA);
-		this.dataExporterMItem
-		        .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DATA_TT);
-		this.fileMenu.add(this.dataExporterMItem);
+		// this.tracksImporterMItem = new JMenuItem(
+		// OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS);
+		// this.tracksImporterMItem
+		// .setToolTipText(OmegaGUIConstants.MENU_FILE_IMPORT_TRACKS_TT);
+		// this.fileMenu.add(this.tracksImporterMItem);
+		// this.tracksExporterMItem = new JMenuItem(
+		// OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS);
+		// this.tracksExporterMItem
+		// .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_TRACKS_TT);
+		// this.fileMenu.add(this.tracksExporterMItem);
+		// this.diffExporterMItem = new JMenuItem(
+		// OmegaGUIConstants.MENU_FILE_EXPORT_DIFF);
+		// this.diffExporterMItem
+		// .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DIFF_TT);
+		// this.fileMenu.add(this.diffExporterMItem);
+		// this.dataExporterMItem = new JMenuItem(
+		// OmegaGUIConstants.MENU_FILE_EXPORT_DATA);
+		// this.dataExporterMItem
+		// .setToolTipText(OmegaGUIConstants.MENU_FILE_EXPORT_DATA_TT);
+		// this.fileMenu.add(this.dataExporterMItem);
 		this.fileMenu.add(new JSeparator());
 		this.omegaDbLoadMItem = new JMenuItem(OmegaGUIConstants.MENU_FILE_LOAD);
 		this.omegaDbLoadMItem
@@ -247,30 +247,30 @@ public class OmegaGUIFrame extends JFrame {
 						OmegaGUIFrame.this.handleSplitChange(source.getSize());
 					}
 				});
-		this.tracksImporterMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.showTracksImporter();
-			}
-		});
-		this.tracksExporterMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.showTracksExporter();
-			}
-		});
-		this.diffExporterMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.showDiffusivityExporter();
-			}
-		});
-		this.dataExporterMItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.omegaApp.exportAllData();
-			}
-		});
+		// this.tracksImporterMItem.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e) {
+		// OmegaGUIFrame.this.omegaApp.showTracksImporter();
+		// }
+		// });
+		// this.tracksExporterMItem.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e) {
+		// OmegaGUIFrame.this.omegaApp.showTracksExporter();
+		// }
+		// });
+		// this.diffExporterMItem.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e) {
+		// OmegaGUIFrame.this.omegaApp.showDiffusivityExporter();
+		// }
+		// });
+		// this.dataExporterMItem.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(final ActionEvent e) {
+		// OmegaGUIFrame.this.omegaApp.exportAllData();
+		// }
+		// });
 		this.omegaDbLoadMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {

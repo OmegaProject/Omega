@@ -94,7 +94,7 @@ import edu.umassmed.omega.plSbalzariniPlugin.runnable.PLRunner;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class PLPluginPanel extends GenericPluginPanel implements
-        OmegaMessageDisplayerPanelInterface {
+OmegaMessageDisplayerPanelInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -141,10 +141,10 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	private JMenuItem hideDataSelection_mItm;
 
 	public PLPluginPanel(final RootPaneContainer parent,
-	        final OmegaPlugin plugin, final OmegaGateway gateway,
-	        final List<OmegaImage> images,
-	        final OrphanedAnalysisContainer orphanedAnalysis,
-	        final List<OmegaAnalysisRun> analysisRuns, final int index) {
+			final OmegaPlugin plugin, final OmegaGateway gateway,
+			final List<OmegaImage> images,
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
 
 		this.gateway = gateway;
@@ -182,7 +182,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 				continue;
 			}
 			this.hideDataSelection_mItm = new JMenuItem(
-			        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+					OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 			menu.add(this.hideDataSelection_mItm);
 		}
 	}
@@ -205,10 +205,10 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		this.add(this.topPanel, BorderLayout.NORTH);
 
 		this.loadedDataBrowserPanel = new PTLoadedDataBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		this.queueRunBrowserPanel = new PLQueueRunBrowserPanel(
-		        this.getParentContainer(), this);
+				this.getParentContainer(), this);
 
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
@@ -222,7 +222,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 		final InputStream s1 = OmegaFileUtilities
-		        .getImageFilename("green_plus.png");
+				.getImageFilename("green_plus.png");
 		ImageIcon addIcon = null;
 		try {
 			addIcon = new ImageIcon(ImageIO.read(s1));
@@ -233,7 +233,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
 		final InputStream s2 = OmegaFileUtilities
-		        .getImageFilename("red_minus.png");
+				.getImageFilename("red_minus.png");
 		ImageIcon removeIcon = null;
 		try {
 			removeIcon = new ImageIcon(ImageIO.read(s2));
@@ -252,7 +252,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
 
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP,
-		        JTabbedPane.WRAP_TAB_LAYOUT);
+				JTabbedPane.WRAP_TAB_LAYOUT);
 
 		// TODO create panel for parameters
 		this.runPanel = new PLRunPanel(this.getParentContainer(), this.gateway);
@@ -260,7 +260,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		this.tabbedPane.add(PLConstants.RUN_DEFINITION, scrollPaneRun);
 
 		this.resPanel = new GenericTrackingResultsPanel(
-				this.getParentContainer());
+		        this.getParentContainer());
 		this.tabbedPane.add("Linking results", this.resPanel);
 
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -340,14 +340,14 @@ public class PLPluginPanel extends GenericPluginPanel implements
 
 	private void handleHideDataSelection() {
 		if (this.hideDataSelection_mItm.getText().equals(
-				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
+		        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
 			this.remove(this.topPanel);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+			        .setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
 		} else {
 			this.add(this.topPanel, BorderLayout.NORTH);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+			        .setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 		}
 		this.revalidate();
 		this.repaint();
@@ -374,12 +374,12 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	private void processBatch() {
 		if (this.particlesToProcess != null) {
 			for (final OmegaParticleDetectionRun detRun : this.particlesToProcess
-			        .keySet()) {
+					.keySet()) {
 				final Map<OmegaPlane, List<OmegaROI>> particles = detRun
-				        .getResultingParticles();
+						.getResultingParticles();
 				int counter = 0;
 				final List<OmegaPlane> frames = new ArrayList<OmegaPlane>(
-						particles.keySet());
+				        particles.keySet());
 				Collections.sort(frames, new Comparator<OmegaPlane>() {
 					@Override
 					public int compare(final OmegaPlane o1, final OmegaPlane o2) {
@@ -437,7 +437,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 					this.statusPanel.updateStatus(1, buf.toString());
 				} catch (final OmegaPluginExceptionStatusPanel ex) {
 					OmegaLogFileManager.handlePluginException(this.getPlugin(),
-					        ex, true);
+							ex, true);
 				}
 				break;
 				// TODO Lanciare eccezione o printare errore a schermo
@@ -445,7 +445,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 				// this.getPlugin(), exceptionError.toString());
 			}
 			this.particlesToProcess.put(this.selectedParticleDetectionRun,
-			        params);
+					params);
 			break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -459,19 +459,19 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	private void updateRunnerEnded() {
 		if (this.plRunner.isJobCompleted()) {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.plRunner
-			        .getParticleToProcess();
+					.getParticleToProcess();
 
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
-			        .keySet()) {
+					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 
 				final List<OmegaTrajectory> resultingTrajectories = this.plRunner
-				        .getResultingTrajectories().get(spotDetectionRun);
+						.getResultingTrajectories().get(spotDetectionRun);
 
 				final OmegaPluginEventResultsParticleLinking plResultsEvt = new OmegaPluginEventResultsParticleLinking(
-				        this.getPlugin(), spotDetectionRun, params,
-				        resultingTrajectories);
+						this.getPlugin(), spotDetectionRun, params,
+						resultingTrajectories);
 
 				this.particlesToProcess.remove(spotDetectionRun);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -505,7 +505,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			this.statusPanel.updateStatus(0, "Plugin ready");
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
-			        true);
+					true);
 		}
 	}
 
@@ -529,7 +529,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		}
 		final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
 		for (final OmegaAnalysisRun analysisRun : this.selectedImage
-		        .getAnalysisRuns()) {
+				.getAnalysisRuns()) {
 			if (!(analysisRun instanceof OmegaParticleDetectionRun)) {
 				continue;
 			}
@@ -560,8 +560,8 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void updateCombos(final List<OmegaImage> images,
-	        final OrphanedAnalysisContainer orphanedAnalysis,
-	        final List<OmegaAnalysisRun> analysisRuns) {
+			final OrphanedAnalysisContainer orphanedAnalysis,
+			final List<OmegaAnalysisRun> analysisRuns) {
 		this.isHandlingEvent = true;
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
@@ -577,7 +577,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		this.selectedImage = null;
 		this.images_cmb.setSelectedIndex(-1);
 		if (((this.images == null) || this.images.isEmpty())
-				&& this.orphanedAnalysis.isEmpty()) {
+		        && this.orphanedAnalysis.isEmpty()) {
 			this.images_cmb.setEnabled(false);
 			this.loadedDataBrowserPanel.updateTree(null);
 			this.queueRunBrowserPanel.updateTree(null);
@@ -605,19 +605,19 @@ public class PLPluginPanel extends GenericPluginPanel implements
 
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-		        this.getPlugin(), this.selectedImage);
+				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleDetectionRun);
+				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
 
 	private void fireEventSelectionParticleLinkingRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
-		        this.getPlugin(), this.selectedParticleLinkingRun);
+				this.getPlugin(), this.selectedParticleLinkingRun);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -637,7 +637,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		// TODO select particle detection run in list
 		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
@@ -646,7 +646,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void selectParticleLinkingRun(
-			final OmegaParticleLinkingRun analysisRun) {
+	        final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		// TODO select snr run in list
 		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
@@ -663,12 +663,12 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			this.statusPanel.updateStatus(0, s);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
-			        true);
+					true);
 		}
 	}
 
 	public void updateSelectedParticleLinkingRun(
-			final OmegaParticleLinkingRun particleLinkingRun) {
+	        final OmegaParticleLinkingRun particleLinkingRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleLinkingRun = particleLinkingRun;
 		this.fireEventSelectionParticleLinkingRun();
@@ -677,14 +677,14 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			return;
 		if (this.selectedParticleLinkingRun != null) {
 			this.runPanel.updateRunFields(this.selectedParticleLinkingRun
-					.getAlgorithmSpec().getParameters());
+			        .getAlgorithmSpec().getParameters());
 			this.addToProcess_butt.setEnabled(true);
 			this.resPanel.setAnalysisRun(this.selectedParticleLinkingRun);
 		}
 	}
 
 	public void updateSelectedParticleDetectionRun(
-	        final OmegaParticleDetectionRun particleDetectionRun) {
+			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleDetectionRun = particleDetectionRun;
 		this.fireEventSelectionParticleDetectionRun();
@@ -693,11 +693,11 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			return;
 		if (this.selectedParticleDetectionRun != null) {
 			this.runPanel
-			.updateAnalysisFields(this.selectedParticleDetectionRun);
+			        .updateAnalysisFields(this.selectedParticleDetectionRun);
 			if (this.particlesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.particlesToProcess
-				        .get(this.selectedImage));
+						.get(this.selectedImage));
 			} else {
 				this.addToProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFieldsDefault();
@@ -717,17 +717,17 @@ public class PLPluginPanel extends GenericPluginPanel implements
 
 	public boolean checkIfThisAlgorithm(final OmegaParticleLinkingRun linkingRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
-		        .getPlugin();
+				.getPlugin();
 		return plugin.checkIfThisAlgorithm(linkingRun);
 	}
 
 	private void updatePLRunnerMessageStatus(final String msg,
-	        final boolean ended) {
+			final boolean ended) {
 		try {
 			this.statusPanel.updateStatus(1, msg);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
-			        true);
+					true);
 		}
 		if (ended) {
 			this.updateRunnerEnded();
@@ -738,6 +738,6 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final PLMessageEvent specificEvent = (PLMessageEvent) evt;
 		this.updatePLRunnerMessageStatus(specificEvent.getMessage(),
-		        specificEvent.isEnded());
+				specificEvent.isEnded());
 	}
 }

@@ -1,7 +1,7 @@
 package edu.umassmed.omega.core.mysql;
 
 public class OmegaMySqlCostants {
-
+	
 	public static String OMERO_ID_FIELD = "Omero_Id";
 	public static String IMAGE_OMERO_ID_FIELD = "Image_Omero_Id";
 	public static String DATASET_OMERO_ID_FIELD = "Dataset_Omero_Id";
@@ -25,74 +25,83 @@ public class OmegaMySqlCostants {
 	public static String SEGMENTATION_TYPES_ID_FIELD = "SegmentationTypes_Seq_Id";
 	public static String SEGMENTATION_TYPE_ID_FIELD = "SegmentationType_Seq_Id";
 	public static String TRACKING_MEASURES_ID_FIELD = "TrackingMeasures_Seq_Id";
-
+	public static String CHANNEL_ID_FIELD = "Channel_Seq_Id";
+	
 	public static String NAME_FIELD = "Name";
-
+	
 	public static String AQUISITION_DATE_FIELD = "Aquisition_Date";
 	public static String IMPORT_DATE_FIELD = "Import_Date";
-
+	
 	public static String PIXELSTYPE_FIELD = "pixel_type";
 	public static String PIXELSSIZE_X_FIELD = "PixelSizeX";
 	public static String PIXELSSIZE_Y_FIELD = "PixelSizeY";
 	public static String PIXELSSIZE_Z_FIELD = "PixelSizeZ";
-
+	
 	public static String SIZE_X_FIELD = "SizeX";
 	public static String SIZE_Y_FIELD = "SizeY";
 	public static String SIZE_Z_FIELD = "SizeZ";
 	public static String SIZE_C_FIELD = "SizeC";
 	public static String SIZE_T_FIELD = "SizeT";
-
+	
 	public static String FRAME_INDEX_FIELD = "Frame_index";
 	public static String CHANNEL_FIELD = "Channel";
 	public static String PLANE_FIELD = "ZPlane";
-
+	
 	public static String FIRST_NAME_FIELD = "First_name";
 	public static String LAST_NAME_FIELD = "Last_name";
-
+	
 	public static String VERSION_FIELD = "Version";
 	public static String DESCRIPTION_FIELD = "Description";
 	public static String PUBLICATION_DATE_FIELD = "Publication_date";
 	public static String REFERENCE_FIELD = "Reference";
-
+	
 	public static String VALUE_FIELD = "Value";
 	public static String TYPE_FIELD = "Type";
-
+	
 	public static String SEGMENT_TYPE_FIELD = "SegmentationType";
 	public static String SEGMENT_START_ROI_FIELD = "StartingROI_Id";
 	public static String SEGMENT_END_ROI_FIELD = "EndingROI_Id";
-
+	
 	public static String ROI_POS_X_FIELD = "Pos_X";
 	public static String ROI_POS_Y_FIELD = "Pos_Y";
-
-	public static String INTENSITY_FIELD = "Intensity";
-	public static String PROBABILITY_FIELD = "Probability";
+	
+	public static String PEAK_INTENSITY_FIELD = "PeakIntensity";
+	public static String CENTROID_INTENSITY_FIELD = "CentroidIntensity";
 	public static String M0_PROV_FIELD = "m0_prov";
 	public static String M2_PROV_FIELD = "m2_prov";
-
+	
 	public static String NUMBER_POINTS_FIELD = "NumberOfPoints";
 	public static String COLOR_RED_FIELD = "Color_Red";
 	public static String COLOR_GREEN_FIELD = "Color_Green";
 	public static String COLOR_BLUE_FIELD = "Color_Blue";
 	public static String ANNOTATION_FILED = "Annotation";
-
+	
 	public static String SNR_VALUE_FIELD = "value";
-
+	
+	public static String MIN_VALUE_FIELD = "min";
+	public static String AVG_VALUE_FIELD = "avg";
+	public static String MAX_VALUE_FIELD = "max";
+	
 	public static String DATE_FIELD = "Date";
-
+	
 	public static String INDEX_FIELD = "val_index";
 	public static String NY_INDEX_FIELD = "ny_index";
-
+	
 	public static String ANGLE_FIELD = "angle";
 	public static String DIRECTIONAL_CHANGE_FIELD = "directionalChange";
-
+	
 	public static String D_FIELD = "d";
 	public static String SMSS_FIELD = "smss";
-
+	
+	public static String CHANNEL_INDEX = "Channel_index";
+	
 	public static String PROJECT_TABLE = "project";
 	public static String DATASET_TABLE = "dataset";
 	public static String IMAGE_DATASET_TABLE = "images_datasets_map";
 	public static String IMAGE_TABLE = "image";
 	public static String IMAGEPIXELS_TABLE = "pixels";
+	public static String CHANNEL_TABLE = "channel";
+	public static String PIXELS_CHANNEL_TABLE = "pixels_channel_map";
 	public static String FRAME_TABLE = "frame";
 	public static String EXPERIMENTER_TABLE = "experimenter";
 	public static String PERSON_TABLE = "person";
@@ -116,8 +125,7 @@ public class OmegaMySqlCostants {
 	public static String TRACKING_MEASURES_SEGMENT_TABLE = "trackingMeasures_segment_map";
 	public static String TRACKING_MEASURES_INTENSITY_PEAK_TABLE = "intensity_peak_signal";
 	public static String TRACKING_MEASURES_INTENSITY_MEAN_TABLE = "intensity_mean_signal";
-	public static String TRACKING_MEASURES_INTENSITY_BG_TABLE = "intensity_bg";
-	public static String TRACKING_MEASURES_INTENSITY_SNR_TABLE = "intensity_snr";
+	public static String TRACKING_MEASURES_INTENSITY_CENTROID_TABLE = "intensity_centroid_signal";
 	public static String TRACKING_MEASURES_VELOCITY_LOCAL_VELOCITY_TABLE = "velocity_local_velocity";
 	public static String TRACKING_MEASURES_VELOCITY_AVERAGE_STRAIGHT_LINE_VELOCITY_TABLE = "velocity_avg_straight_line_velocity";
 	public static String TRACKING_MEASURES_VELOCITY_LOCAL_SPEED_TABLE = "velocity_local_speed";
@@ -142,10 +150,10 @@ public class OmegaMySqlCostants {
 	public static String TRACKING_MEASURES_DIFFUSIVITY_SMSS_TABLE = "diffusivity_smss";
 	public static String TRACKING_MEASURES_DIFFUSIVITY_ERRORS_LOG_TABLE = "diffusivity_errors_log";
 	public static String TRACKING_MEASURES_DIFFUSIVITY_ERRORS_TABLE = "diffusivity_errors";
-
+	
 	public static String TRACKING_MEASURES_DIFFUSIVITY_SNR_TABLE = "trackingMeasures_diff_snr_map";
 	public static String TRACKING_MEASURES_DIFFUSIVITY_PARENT_TABLE = "trackingMeasures_diff_parent_map";
-
+	
 	public static String SNR_LOCAL_SNR_TABLE = "snr_local_snr";
 	public static String SNR_LOCAL_SNR_TABLE_ERROR_INDEX = "snr_local_snr_error_index";
 	public static String SNR_LOCAL_NOISE_TABLE = "snr_local_noise";

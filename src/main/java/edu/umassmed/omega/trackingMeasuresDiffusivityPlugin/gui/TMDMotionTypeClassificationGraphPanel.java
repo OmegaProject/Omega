@@ -38,11 +38,11 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	public static final int OPTION_SHOW_MSD_ONLY = 2;
 	public static final int OPTION_SHOW_MSS_ONLY = 3;
 	public static final int OPTION_SHOW_PHASE_ONLY = 4;
-	public static final String OPTION_SHOW_ALL_TEXT = "All graphs";
-	public static final String OPTION_SHOW_TRACK_ONLY_TEXT = "Only track graph";
-	public static final String OPTION_SHOW_MSD_ONLY_TEXT = "Only MSD graph";
-	public static final String OPTION_SHOW_MSS_ONLY_TEXT = "Only MSS graph";
-	public static final String OPTION_SHOW_PHASE_ONLY_TEXT = "Only phase graph";
+	public static final String OPTION_SHOW_ALL_TEXT = "Complete set";
+	public static final String OPTION_SHOW_TRACK_ONLY_TEXT = "Trajectory plot";
+	public static final String OPTION_SHOW_MSD_ONLY_TEXT = "Log-log MSD vs T plot";
+	public static final String OPTION_SHOW_MSS_ONLY_TEXT = "MSS plot";
+	public static final String OPTION_SHOW_PHASE_ONLY_TEXT = "D2 vs. Slope MSS scatter plot";
 
 	private final TMDPluginPanel pluginPanel;
 

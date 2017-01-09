@@ -31,14 +31,14 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 
 	public TMVGraphProducer(final TMVGraphPanel velocityPanel,
-			final int graphType, final int velocityOption, final int tMax,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, List<Double>> localSpeedMap,
-			final Map<OmegaSegment, List<Double>> localVelocityMap,
-			final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
-			final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
-			final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
+	        final int graphType, final int velocityOption, final int tMax,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, List<Double>> localSpeedMap,
+	        final Map<OmegaSegment, List<Double>> localVelocityMap,
+	        final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
+	        final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
+	        final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.velocityPanel = velocityPanel;
 		this.velocityOption = velocityOption;
@@ -115,6 +115,7 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		List<Double> values = null;
 		final Double[] value = new Double[1];
+		int index = -1;
 		switch (this.velocityOption) {
 		case TMVGraphPanel.OPTION_MEAN_VELOCITY:
 			value[0] = this.averageStraightLineVelocityMap.get(segment);
@@ -124,11 +125,13 @@ public class TMVGraphProducer extends StatsGraphProducer {
 			break;
 		case TMVGraphPanel.OPTION_LOCAL_VELOCITY:
 			values = this.localVelocityMap.get(segment);
-			value[0] = values.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			value[0] = values.get(index);
 			break;
 		default:
 			values = this.localSpeedMap.get(segment);
-			value[0] = values.get(roi.getFrameIndex());
+			index = roi.getFrameIndex() - 1;
+			value[0] = values.get(index);
 		}
 		return value;
 	}
@@ -140,8 +143,8 @@ public class TMVGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMVGraphProducer.this.velocityPanel.updateStatus(
-							TMVGraphProducer.this.getCompleted(), ended,
-							TMVGraphProducer.this.graphPanel);
+					        TMVGraphProducer.this.getCompleted(), ended,
+					        TMVGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
