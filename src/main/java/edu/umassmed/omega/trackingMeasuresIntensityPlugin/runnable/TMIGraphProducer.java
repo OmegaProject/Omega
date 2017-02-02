@@ -46,12 +46,12 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	        final Map<OmegaSegment, Double[]> meanSignalsMap,
 	        final Map<OmegaSegment, Double[]> noisesMap,
 	        final Map<OmegaSegment, Double[]> areasMap,
-	        final Map<OmegaSegment, Double[]> snrsMap) {
+	        final Map<OmegaSegment, Double[]> snrsMap, final boolean isTimePoint) {
 		super(graphType, segmentsMap, segmTypes);
 		this.intensityGraphPanel = intensityGraphPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
 		this.minMeanMaxOption = minMeanMaxOption;
-		this.isTimepointsGraph = true;
+		this.isTimepointsGraph = isTimePoint;
 		this.maxT = maxT;
 		this.peakSignalMap = peakSignalMap;
 		this.centroidSignalsMap = centroidSignalsMap;
@@ -85,7 +85,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		if (this.isTimepointsGraph) {
 			this.graphPanel = this.prepareTimepointsGraph(this.maxT);
 		} else {
-			this.graphPanel = this.prepareTracksGraph(false);
+			this.graphPanel = this.prepareTracksGraph(true);
 		}
 		this.updateStatus(true);
 	}

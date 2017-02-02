@@ -75,20 +75,20 @@ public class SDWorker2 implements SDRunnable {
 
 	private void normalProcessingModeRun() {
 		final List<OmegaPlane> frames = this.pixels.getFrames(this.channel,
-		        this.zSection);
+				this.zSection);
 		if (!frames.isEmpty() && (frames.size() > this.frameIndex)) {
 			this.frame = frames.get(this.frameIndex);
 		} else {
 			this.frame = new OmegaPlane(this.frameIndex, this.channel,
-			        this.zSection);
+					this.zSection);
 			this.frame.setParentPixels(this.pixels);
 			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
 		}
 		MyFrame mosaicFrame = new MyFrame(this.is, this.frameIndex + 1, 0);
 		FeaturePointDetector fpd = new FeaturePointDetector(this.globalMax,
-		        this.globalMin);
+				this.globalMin);
 		fpd.setUserDefinedParameters(this.cutoff, this.percentile, this.radius,
-		        this.percentile * 100, this.percAbs);
+				this.percentile * 100, this.percAbs);
 		fpd.featurePointDetection(mosaicFrame);
 
 		if (this.isTerminated)
@@ -97,9 +97,11 @@ public class SDWorker2 implements SDRunnable {
 		final Vector<Particle> mosaicParticles = mosaicFrame.getParticles();
 		for (final Particle p : mosaicParticles) {
 			final int fi = p.getFrame();
-			final double x = p.getCoord_X();
-			final double y = p.getCoord_Y();
-			final double intensity = p.getIntensity();
+			final double x = p.x;
+			final double y = p.y;
+			final int x_i = (int) p.x;
+			final int y_i = (int) p.y;
+			final double intensity = this.is.getProcessor(1).get(x_i, y_i);
 			final float m0 = p.m0;
 			final float m1 = p.m1;
 			final float m2 = p.m2;
