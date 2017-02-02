@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.plSbalzariniPlugin.runnable;
 
@@ -36,6 +35,12 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
+import mosaic.core.detection.MyFrame;
+import mosaic.core.detection.Particle;
+import mosaic.core.particleLinking.ParticleLinker;
+import mosaic.core.particleLinking.ParticleLinkerBestOnePerm;
+import mosaic.core.particleLinking.ParticleLinkerHun;
+import mosaic.core.particleLinking.linkerOptions;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -44,12 +49,6 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
-import mosaic.core.detection.MyFrame;
-import mosaic.core.detection.Particle;
-import mosaic.core.particleLinking.ParticleLinker;
-import mosaic.core.particleLinking.ParticleLinkerBestOnePerm;
-import mosaic.core.particleLinking.ParticleLinkerHun;
-import mosaic.core.particleLinking.linkerOptions;
 
 public class PLRunner implements PLRunnable {
 	private static final String RUNNER = "Runner service: ";
@@ -155,6 +154,7 @@ public class PLRunner implements PLRunnable {
 			Float objectFeature = null;
 			Float dynamics = null;
 			String optimizer = null;
+			Integer minLength = null;
 			for (int i = 0; i < parameters.size(); i++) {
 				final OmegaParameter param = parameters.get(i);
 				if (param.getName() == PLConstants.PARAM_DISPLACEMENT) {
@@ -169,6 +169,8 @@ public class PLRunner implements PLRunnable {
 					dynamics = Float.valueOf(param.getStringValue());
 				} else if (param.getName() == PLConstants.PARAM_OPTIMIZER) {
 					optimizer = param.getStringValue();
+				} else if (param.getName() == PLConstants.PARAM_MINPOINTS) {
+					minLength = Integer.valueOf(param.getStringValue());
 				}
 			}
 
@@ -252,15 +254,19 @@ public class PLRunner implements PLRunnable {
 			final List<OmegaTrajectory> tracks = new ArrayList<OmegaTrajectory>();
 			int counter = 0;
 			for (final List<Particle> mosaicTrack : mosaicTracks) {
+				final String trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME + "_"
+				        + counter;
 				final OmegaTrajectory track = new OmegaTrajectory(
-						mosaicTrack.size());
-				track.setName(track.getName() + "_" + counter);
+						mosaicTrack.size(), trajName);
+				// track.setName(track.getName() + "_" + counter);
 				counter++;
 				for (final Particle p : mosaicTrack) {
 					final OmegaROI particle = particlesMap.get(p);
 					track.addROI(particle);
 				}
-				tracks.add(track);
+				if (track.getLength() > minLength) {
+					tracks.add(track);
+				}
 			}
 			this.resultingTrajectories.put(spotDetRun, tracks);
 		}

@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.omegaDataBrowserPlugin.gui;
 
@@ -144,7 +143,7 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 		this.add(this.infoPanel/* , BorderLayout.SOUTH */);
 	}
 
-	public void addListeners() {
+	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final MouseEvent evt) {
@@ -239,12 +238,29 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 	        final CheckBoxStatus status) {
 		final String s = node.toString();
 		final OmegaElement element = this.nodeMap.get(s);
+		final OmegaAnalysisRun analysis = (OmegaAnalysisRun) element;
 		if (status == CheckBoxStatus.SELECTED) {
-			this.loadedAnalysisRun.add((OmegaAnalysisRun) element);
+			this.loadedAnalysisRun.add(analysis);
 		} else if (status == CheckBoxStatus.DESELECTED) {
-			this.loadedAnalysisRun.remove(element);
+			this.loadedAnalysisRun.remove(analysis);
+			this.browserPanel.deselectAllChildren(analysis);
 		}
 		this.browserPanel.fireDataChangedEvent();
+	}
+	
+	public void deselectAll() {
+		// this.deselectNode(this.root);
+		for (int i = 0; i < this.root.getChildCount(); i++) {
+			this.deselectNode((DefaultMutableTreeNode) this.root.getChildAt(i));
+		}
+	}
+	
+	private void deselectNode(final DefaultMutableTreeNode node) {
+		final CheckBoxNode c = (CheckBoxNode) node.getUserObject();
+		c.setStatus(CheckBoxStatus.DESELECTED);
+		for (int i = 0; i < node.getChildCount(); i++) {
+			this.deselectNode((DefaultMutableTreeNode) node.getChildAt(i));
+		}
 	}
 
 	public void updateTree(
@@ -266,8 +282,8 @@ public class OmegaDataBrowserAnalysisBrowserPanel extends GenericPanel {
 				s = "[" + analysisRun.getElementID() + "] "
 				        + analysisRun.getName();
 				this.nodeMap.put(s, analysisRun);
-				status = this.loadedAnalysisRun.contains(analysisRun) ? CheckBoxStatus.SELECTED
-				        : CheckBoxStatus.DESELECTED;
+				status = this.loadedAnalysisRun.contains(analysisRun)
+						? CheckBoxStatus.SELECTED : CheckBoxStatus.DESELECTED;
 				node.setUserObject(new CheckBoxNode(s, status));
 				this.root.add(node);
 			}

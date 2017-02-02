@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.sptSbalzariniPlugin.gui;
 
@@ -49,9 +48,11 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
+import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContainerInterface;
 import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
-public class SPTRunPanel extends GenericPanel {
+public class SPTRunPanel extends GenericPanel implements
+GenericElementInformationContainerInterface {
 
 	private static final long serialVersionUID = -2109646064541873817L;
 
@@ -69,15 +70,17 @@ public class SPTRunPanel extends GenericPanel {
 	private JLabel maxSection_lbl;
 
 	private GenericElementInformationPanel infoPanel;
-
+	private final GenericElementInformationContainerInterface infoContainer;
 	private OmegaGateway gateway;
 
 	public SPTRunPanel(final RootPaneContainer parent,
-	        final OmegaGateway gateway) {
+	        final OmegaGateway gateway,
+	        final GenericElementInformationContainerInterface infoContainer) {
 		super(parent);
 
 		this.gateway = gateway;
-
+		this.infoContainer = infoContainer;
+		
 		this.setLayout(new GridLayout(2, 2));
 
 		this.createAndAddWidgets();
@@ -85,7 +88,7 @@ public class SPTRunPanel extends GenericPanel {
 
 	private void createAndAddWidgets() {
 		this.infoPanel = new GenericElementInformationPanel(
-		        this.getParentContainer());
+		        this.getParentContainer(), this);
 		this.infoPanel.setBorder(new TitledBorder(
 		        OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
 		this.add(this.infoPanel);
@@ -431,5 +434,10 @@ public class SPTRunPanel extends GenericPanel {
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.infoPanel.updateParentContainer(parent);
+	}
+
+	@Override
+	public void fireElementChanged() {
+		this.infoContainer.fireElementChanged();
 	}
 }

@@ -35,30 +35,30 @@ import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.utilities.OmegaColorManagerUtilities;
 
 public class TSSegmentPreferencesDialog extends GenericDialog {
-
+	
 	private static final long serialVersionUID = -915728874655718206L;
 	private static final String CREATE_NEW = "Create new segmentation types";
 	private static final String NEW_TYPE_NAME = "New segmentation type";
-
+	
 	private final TSPluginPanel pluginPanel;
-
+	
 	private JPanel mainPanel;
 	private List<OmegaSegmentationTypes> segmTypesList;
 	private OmegaSegmentationTypes actualSegmTypes, oldSegmTypes;
-
+	
 	private final List<OmegaSegmentationType> types;
-
+	
 	private final Map<String, JPanel> segmPanels;
 	private final Map<String, JTextField> segmNames_txt, segmVal_txt;
 	private final Map<Document, JTextField> namesDoc, valsDoc;
 	private final Map<String, JButton> segmColors_btt;
 	private final Map<String, JButton> segmRemove_btt;
-
+	
 	private final Map<JPanel, String> panelsToAdd, panelsToRemove;
-
+	
 	private final Map<String, String> newNames;
 	private final Map<String, String> newValues;
-
+	
 	private JComboBox<String> segmTypesList_cmb;
 	private final Map<String, OmegaSegmentationTypes> segmTypesComboMap;
 	private JTextField segmTypesName_txt;
@@ -66,65 +66,65 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 	private ActionListener removeButt_al, colorButt_al;
 	private DocumentListener changeName_dl;
 	private DocumentListener changeVal_dl;
-
+	
 	private boolean isPopulating, isSegmTypesChanged;
-
+	
 	private int actualCounter;
-
+	
 	public TSSegmentPreferencesDialog(final TSPluginPanel pluginPanel,
-	        final RootPaneContainer parent,
-	        final List<OmegaSegmentationTypes> segmTypesList) {
+			final RootPaneContainer parent,
+			final List<OmegaSegmentationTypes> segmTypesList) {
 		super(parent, "Trajectory segmentation preferences", true);
 		this.pluginPanel = pluginPanel;
 		this.segmTypesList = new ArrayList<OmegaSegmentationTypes>(
-		        segmTypesList);
-
+				segmTypesList);
+		
 		this.actualCounter = -1;
-
+		
 		this.isSegmTypesChanged = false;
 		this.oldSegmTypes = null;
 		this.actualSegmTypes = null;
-
+		
 		this.removeButt_al = null;
 		this.changeName_dl = null;
 		this.changeVal_dl = null;
-
+		
 		this.types = new ArrayList<OmegaSegmentationType>();
-
+		
 		this.panelsToAdd = new LinkedHashMap<JPanel, String>();
 		this.panelsToRemove = new LinkedHashMap<JPanel, String>();
-
+		
 		this.segmPanels = new LinkedHashMap<String, JPanel>();
 		this.segmNames_txt = new LinkedHashMap<String, JTextField>();
 		this.segmVal_txt = new LinkedHashMap<String, JTextField>();
 		this.segmColors_btt = new LinkedHashMap<String, JButton>();
 		this.segmRemove_btt = new LinkedHashMap<String, JButton>();
-
+		
 		this.newNames = new LinkedHashMap<String, String>();
 		this.newValues = new LinkedHashMap<String, String>();
-
+		
 		this.namesDoc = new LinkedHashMap<Document, JTextField>();
 		this.valsDoc = new LinkedHashMap<Document, JTextField>();
-
+		
 		this.segmTypesComboMap = new LinkedHashMap<String, OmegaSegmentationTypes>();
-
+		
 		final Dimension dim = new Dimension(400, 600);
 		this.setPreferredSize(dim);
 		this.setSize(dim);
-
+		
 		this.populateSegmTypesCombo();
-
+		
 		this.setModal(true);
 	}
-
+	
 	private void selectSegmentationTypes(final OmegaSegmentationTypes segmTypes) {
 		this.clearAllMaps();
-
+		
 		this.types.addAll(segmTypes.getTypes());
-
+		
 		this.mainPanel.removeAll();
 		this.createAndAddSinglePanels();
-
+		
 		final String name = segmTypes.getName();
 		this.segmTypesName_txt.setText(name);
 		if (name.equals(OmegaSegmentationTypes.DEFAULT_NAME)) {
@@ -132,31 +132,31 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		} else {
 			this.segmTypesName_txt.setEnabled(true);
 		}
-
+		
 		this.resizePanels();
 	}
-
+	
 	private void resetSegmentationTypes() {
 		this.actualCounter = -1;
 		this.clearAllMaps();
-
+		
 		this.types.add(OmegaSegmentationTypes.getDefaultNotAssigned());
-
+		
 		this.mainPanel.removeAll();
 		this.createAndAddSinglePanels();
-
+		
 		this.segmTypesName_txt.setText("New segmentation types");
 		this.segmTypesName_txt.setEnabled(true);
-
+		
 		this.resizePanels();
 	}
-
+	
 	private void clearAllMaps() {
 		this.types.clear();
-
+		
 		this.panelsToAdd.clear();
 		this.panelsToRemove.clear();
-
+		
 		for (final JButton btt : this.segmColors_btt.values()) {
 			btt.removeActionListener(this.colorButt_al);
 		}
@@ -177,13 +177,13 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		this.valsDoc.clear();
 		this.newValues.clear();
-
+		
 		for (final JPanel panel : this.segmPanels.values()) {
 			panel.removeAll();
 		}
 		this.segmPanels.clear();
 	}
-
+	
 	private void createAndAddSinglePanels() {
 		this.actualCounter = -1;
 		for (final OmegaSegmentationType segmType : this.types) {
@@ -195,11 +195,11 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			}
 			final boolean hasRemoveButton = val != 0;
 			this.createAndAddSingleSegmTypePanel(name, col, val,
-			        hasRemoveButton, false);
+					hasRemoveButton, false);
 		}
 		this.mainPanel.add(this.newSegmType_btt);
 	}
-
+	
 	private void populateSegmTypesCombo() {
 		this.isPopulating = true;
 		for (final OmegaSegmentationTypes segmTypes : this.segmTypesList) {
@@ -210,77 +210,77 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		this.isPopulating = false;
 		this.segmTypesList_cmb.setSelectedIndex(0);
 	}
-
+	
 	@Override
 	protected void createAndAddWidgets() {
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
-
+		
 		this.segmTypesList_cmb = new JComboBox<String>();
 		topPanel.add(this.segmTypesList_cmb, BorderLayout.NORTH);
-
+		
 		this.segmTypesName_txt = new JTextField();
 		topPanel.add(this.segmTypesName_txt, BorderLayout.SOUTH);
-
+		
 		this.add(topPanel, BorderLayout.NORTH);
-
+		
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
+		
 		final Dimension butt_dim = new Dimension(50, 20);
 		this.newSegmType_btt = new JButton("+");
 		this.newSegmType_btt.setPreferredSize(butt_dim);
 		this.newSegmType_btt.setSize(butt_dim);
 		this.mainPanel.add(this.newSegmType_btt);
-
+		
 		// this.createAndAddSinglePanels();
-
+		
 		final JScrollPane mainScrollPane = new JScrollPane(this.mainPanel);
 		this.add(mainScrollPane, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
+		
 		this.cancel_btt = new JButton("Cancel");
 		this.cancel_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.cancel_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		bottomPanel.add(this.cancel_btt);
-
+		
 		this.apply_btt = new JButton("Apply");
 		this.apply_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.apply_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		bottomPanel.add(this.apply_btt);
 		this.apply_btt.setEnabled(false);
-
+		
 		this.close_btt = new JButton("Close");
 		this.close_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
 		this.close_btt.setSize(OmegaConstants.BUTTON_SIZE);
 		bottomPanel.add(this.close_btt);
-
+		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void createAndAddSingleSegmTypePanel(final String s, final Color c,
-	        final Integer val, final boolean hasRemoveButton,
-	        final boolean isPanelToAdd) {
+			final Integer val, final boolean hasRemoveButton,
+			final boolean isPanelToAdd) {
 		final Dimension text_dim = new Dimension(200, 20);
 		final Dimension val_dim = new Dimension(40, 20);
 		final Dimension c_butt_dim = new Dimension(20, 20);
 		final Dimension rem_butt_dim = new Dimension(50, 20);
-
+		
 		final JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.segmPanels.put(s, panel);
-
+		
 		final JTextField name_txt = new JTextField(s);
 		name_txt.setPreferredSize(text_dim);
 		name_txt.setSize(text_dim);
 		panel.add(name_txt);
 		this.segmNames_txt.put(s, name_txt);
 		name_txt.getDocument().addDocumentListener(
-		        this.getChangeNameDocumentListener());
+				this.getChangeNameDocumentListener());
 		this.namesDoc.put(name_txt.getDocument(), name_txt);
-
+		
 		final JTextField val_txt = new JTextField(String.valueOf(val));
 		val_txt.setPreferredSize(val_dim);
 		val_txt.setSize(val_dim);
@@ -288,13 +288,13 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		this.segmVal_txt.put(s, val_txt);
 		if (hasRemoveButton) {
 			val_txt.getDocument().addDocumentListener(
-			        this.getChangeValDocumentListener());
+					this.getChangeValDocumentListener());
 		} else {
 			val_txt.setEnabled(false);
 		}
 		this.valsDoc.put(val_txt.getDocument(), val_txt);
 		val_txt.setEnabled(false);
-
+		
 		final JButton butt = new JButton();
 		butt.setPreferredSize(c_butt_dim);
 		butt.setSize(c_butt_dim);
@@ -303,7 +303,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		panel.add(butt);
 		this.segmColors_btt.put(s, butt);
 		butt.addActionListener(this.getColorButtActionListener());
-
+		
 		// TODO find a way to check the string not hardcoded
 		if (hasRemoveButton) {
 			final JButton rem_btt = new JButton("-");
@@ -316,17 +316,17 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			}
 			rem_btt.addActionListener(this.getRemoveButtActionListener());
 		}
-
+		
 		if (isPanelToAdd) {
 			panel.setBackground(Color.green);
 		}
 		this.mainPanel.add(panel);
 	}
-
+	
 	private void setButtonColor(final JButton butt, final Color c) {
 		final Dimension size = butt.getPreferredSize();
 		final BufferedImage image = new BufferedImage(size.width, size.height,
-		        BufferedImage.TYPE_INT_ARGB);
+				BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D g2d = image.createGraphics();
 		g2d.setColor(c);
 		g2d.fillRect(0, 0, size.width, size.height);
@@ -334,7 +334,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		final ImageIcon icon = new ImageIcon(image);
 		butt.setIcon(icon);
 	}
-
+	
 	@Override
 	protected void addListeners() {
 		this.segmTypesList_cmb.addActionListener(new ActionListener() {
@@ -374,23 +374,23 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			}
 		});
 		this.segmTypesName_txt.getDocument().addDocumentListener(
-		        new DocumentListener() {
+				new DocumentListener() {
+					@Override
+					public void removeUpdate(final DocumentEvent e) {
+						TSSegmentPreferencesDialog.this.changeSegmTypesName();
+					}
+			        
 			        @Override
-			        public void removeUpdate(final DocumentEvent e) {
-				        TSSegmentPreferencesDialog.this.changeSegmTypesName();
-			        }
-
+					public void insertUpdate(final DocumentEvent e) {
+						TSSegmentPreferencesDialog.this.changeSegmTypesName();
+					}
+			        
 			        @Override
-			        public void insertUpdate(final DocumentEvent e) {
-				        TSSegmentPreferencesDialog.this.changeSegmTypesName();
-			        }
-
-			        @Override
-			        public void changedUpdate(final DocumentEvent e) {
-			        }
-		        });
+					public void changedUpdate(final DocumentEvent e) {
+					}
+				});
 	}
-
+	
 	private void handleSegmTypesSelection() {
 		if (this.isPopulating)
 			return;
@@ -401,31 +401,31 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			this.actualSegmTypes = null;
 		} else {
 			final OmegaSegmentationTypes segmTypes = this.segmTypesComboMap
-			        .get(s);
+					.get(s);
 			this.oldSegmTypes = this.actualSegmTypes;
 			this.actualSegmTypes = segmTypes;
 			this.selectSegmentationTypes(segmTypes);
 		}
 		this.apply_btt.setEnabled(true);
 	}
-
+	
 	private DocumentListener getChangeValDocumentListener() {
 		if (this.changeVal_dl == null) {
 			this.changeVal_dl = new DocumentListener() {
 				@Override
 				public void removeUpdate(final DocumentEvent evt) {
 					final JTextField txt = TSSegmentPreferencesDialog.this.valsDoc
-					        .get(evt.getDocument());
+							.get(evt.getDocument());
 					TSSegmentPreferencesDialog.this.changeSegmVal(txt);
 				}
-
+				
 				@Override
 				public void insertUpdate(final DocumentEvent evt) {
 					final JTextField txt = TSSegmentPreferencesDialog.this.valsDoc
-					        .get(evt.getDocument());
+							.get(evt.getDocument());
 					TSSegmentPreferencesDialog.this.changeSegmVal(txt);
 				}
-
+				
 				@Override
 				public void changedUpdate(final DocumentEvent evt) {
 				}
@@ -433,24 +433,24 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		return this.changeVal_dl;
 	}
-
+	
 	private DocumentListener getChangeNameDocumentListener() {
 		if (this.changeName_dl == null) {
 			this.changeName_dl = new DocumentListener() {
 				@Override
 				public void removeUpdate(final DocumentEvent evt) {
 					final JTextField txt = TSSegmentPreferencesDialog.this.namesDoc
-					        .get(evt.getDocument());
+							.get(evt.getDocument());
 					TSSegmentPreferencesDialog.this.changeSegmName(txt);
 				}
-
+				
 				@Override
 				public void insertUpdate(final DocumentEvent evt) {
 					final JTextField txt = TSSegmentPreferencesDialog.this.namesDoc
-					        .get(evt.getDocument());
+							.get(evt.getDocument());
 					TSSegmentPreferencesDialog.this.changeSegmName(txt);
 				}
-
+				
 				@Override
 				public void changedUpdate(final DocumentEvent evt) {
 				}
@@ -458,33 +458,33 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		return this.changeName_dl;
 	}
-
+	
 	private ActionListener getRemoveButtActionListener() {
 		if (this.removeButt_al == null) {
 			this.removeButt_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent evt) {
 					TSSegmentPreferencesDialog.this
-					        .removeSegmType((JButton) evt.getSource());
+					.removeSegmType((JButton) evt.getSource());
 				}
 			};
 		}
 		return this.removeButt_al;
 	}
-
+	
 	private ActionListener getColorButtActionListener() {
 		if (this.colorButt_al == null) {
 			this.colorButt_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent evt) {
 					TSSegmentPreferencesDialog.this
-					        .changeSegmColor((JButton) evt.getSource());
+					.changeSegmColor((JButton) evt.getSource());
 				}
 			};
 		}
 		return this.colorButt_al;
 	}
-
+	
 	private void changeSegmColor(final JButton button) {
 		String segmName = null;
 		for (final String s : this.segmColors_btt.keySet()) {
@@ -493,54 +493,54 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 				segmName = s;
 			}
 		}
-
+		
 		if (segmName == null)
 			// TODO THROW ERROR
 			return;
-
+		
 		final OmegaSegmentationType actualSegmType = this
-		        .getSegmentationType(segmName);
+				.getSegmentationType(segmName);
 		if (actualSegmType == null)
 			// TODO THROW ERROR
 			return;
-
+		
 		final StringBuffer buf = new StringBuffer();
 		buf.append("Choose color for ");
 		buf.append(segmName);
 		final Color originalColor = actualSegmType.getColor();
-
+		
 		Color c = OmegaColorManagerUtilities.openPaletteColor(this.mainPanel,
-		        buf.toString(), originalColor);
+				buf.toString(), originalColor);
 		if ((c == null) || (c == originalColor)) {
 			c = originalColor;
 		} else {
 			this.isSegmTypesChanged = true;
 			this.apply_btt.setEnabled(true);
 		}
-
+		
 		actualSegmType.setColor(c);
 		this.setButtonColor(button, c);
 		this.resizePanels();
 	}
-
+	
 	private void createNewSegmType() {
 		final Color c = Color.black;
 		final Integer val = ++this.actualCounter;
 		final String name = TSSegmentPreferencesDialog.NEW_TYPE_NAME + " "
-		        + this.actualCounter;
+				+ this.actualCounter;
 		final OmegaSegmentationType newSegmType = new OmegaSegmentationType(
-		        name, val, c);
+				name, val, c, "");
 		this.types.add(newSegmType);
-
+		
 		this.mainPanel.remove(this.newSegmType_btt);
 		this.createAndAddSingleSegmTypePanel(name, c, val, true, true);
 		this.mainPanel.add(this.newSegmType_btt);
-
+		
 		this.isSegmTypesChanged = true;
 		this.apply_btt.setEnabled(true);
 		this.resizePanels();
 	}
-
+	
 	private void removeSegmType(final JButton button) {
 		String segmName = null;
 		for (final String s : this.segmRemove_btt.keySet()) {
@@ -552,25 +552,25 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		if (segmName == null)
 			// TODO THROW ERROR
 			return;
-
+		
 		final JPanel panelToRemove = this.segmPanels.get(segmName);
-
+		
 		panelToRemove.setEnabled(false);
 		panelToRemove.setBackground(Color.red);
-
+		
 		this.panelsToRemove.put(panelToRemove, segmName);
-
+		
 		this.isSegmTypesChanged = true;
 		this.apply_btt.setEnabled(true);
 		this.resizePanels();
 	}
-
+	
 	private void changeSegmTypesName() {
 		this.isSegmTypesChanged = true;
 		this.apply_btt.setEnabled(true);
 		this.redraw();
 	}
-
+	
 	private void changeSegmName(final JTextField textField) {
 		// TODO trying to resolve multiple call!
 		String segmOldName = null;
@@ -583,15 +583,15 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		if (segmOldName == null)
 			// TODO throw error
 			return;
-
+		
 		final String segmNewName = textField.getText();
 		this.newNames.put(segmOldName, segmNewName);
-
+		
 		this.isSegmTypesChanged = true;
 		this.apply_btt.setEnabled(true);
 		this.redraw();
 	}
-
+	
 	private void changeSegmVal(final JTextField textField) {
 		// TODO trying to resolve multiple call!
 		String segmName = null;
@@ -605,21 +605,21 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		if (segmName == null)
 			// TODO throw error
 			return;
-
+		
 		final String segmNewVals = textField.getText();
 		this.newValues.put(segmName, segmNewVals);
-
+		
 		this.isSegmTypesChanged = true;
 		this.apply_btt.setEnabled(true);
 		this.redraw();
 	}
-
+	
 	private void cancel() {
 		final Color color = UIManager.getColor("Panel.background");
 		if (this.actualSegmTypes != null) {
 			this.segmTypesName_txt.setText(this.actualSegmTypes.getName());
 		}
-
+		
 		for (final JPanel panel : this.panelsToRemove.keySet()) {
 			panel.setBackground(color);
 			panel.setEnabled(true);
@@ -631,11 +631,11 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			this.mainPanel.remove(panel);
 		}
 		this.panelsToAdd.clear();
-
+		
 		for (final String name : this.newValues.keySet()) {
 			final JTextField txt = this.segmVal_txt.get(name);
 			final OmegaSegmentationType segmType = this
-			        .getSegmentationType(name);
+					.getSegmentationType(name);
 			final Integer val = segmType.getValue();
 			txt.setText(String.valueOf(val));
 		}
@@ -645,18 +645,18 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			txt.setText(oldName);
 		}
 		this.newNames.clear();
-
+		
 		if (this.oldSegmTypes != null) {
 			this.actualSegmTypes = this.oldSegmTypes;
 		}
-
+		
 		this.isSegmTypesChanged = false;
 		this.apply_btt.setEnabled(false);
 		this.redraw();
 	}
-
+	
 	private Integer getValueOrError(final String segmName,
-	        final String segmNewVals) {
+			final String segmNewVals) {
 		Integer segmNewVal = null;
 		try {
 			segmNewVal = Integer.valueOf(segmNewVals);
@@ -666,26 +666,26 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		String error = null;
 		if (segmNewVal == null) {
 			error = "<html>Error in " + segmName + ".<br>" + segmNewVals
-			        + " is not a possible value.<html>";
+					+ " is not a possible value.<html>";
 		} else if (segmNewVal == 0) {
 			error = "<html>Error in " + segmName + ".<br>"
-			        + "0 is a reserved value.<html>";
+					+ "0 is a reserved value.<html>";
 		}
-
+		
 		if (error != null) {
 			final String title = "Change segmentation types value error";
 			final GenericMessageDialog dialog = new GenericMessageDialog(
-			        this.getParentContainer(), title, error, true);
+					this.getParentContainer(), title, error, true);
 			dialog.enableClose();
 			dialog.setVisible(true);
 		}
 		return segmNewVal;
 	}
-
+	
 	private String getNameOrError() {
 		final String name = this.segmTypesName_txt.getText();
 		String error = null;
-
+		
 		if (this.actualSegmTypes == null) {
 			if (name.isEmpty()) {
 				error = "Cannot create a new segmentation types without a name";
@@ -695,33 +695,33 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		} else {
 			for (final OmegaSegmentationTypes segmTypes : this.segmTypesList) {
 				if (!segmTypes.equals(this.actualSegmTypes)
-				        && name.equals(segmTypes.getName())) {
+						&& name.equals(segmTypes.getName())) {
 					error = "The choosen name is already present for another segmentation";
 					break;
 				}
 			}
 		}
-
+		
 		if (error != null) {
 			final String title = "Create new segmentation types error";
 			final GenericMessageDialog dialog = new GenericMessageDialog(
-			        this.getParentContainer(), title, error, true);
+					this.getParentContainer(), title, error, true);
 			dialog.enableClose();
 			dialog.setVisible(true);
 			return null;
 		}
 		return name;
 	}
-
+	
 	private String getSegmNameOrError(final String oldName) {
 		final String newName = this.newNames.get(oldName);
 		for (final OmegaSegmentationType segmType : this.types) {
 			if (!oldName.equals(segmType.getName())
-			        && newName.equals(segmType.getName())) {
+					&& newName.equals(segmType.getName())) {
 				final String title = "Add new segmentation type error";
 				final String error = newName + " is already present.";
 				final GenericMessageDialog dialog = new GenericMessageDialog(
-				        this.getParentContainer(), title, error, true);
+						this.getParentContainer(), title, error, true);
 				dialog.enableClose();
 				dialog.setVisible(true);
 				return null;
@@ -729,12 +729,12 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		return newName;
 	}
-
+	
 	private boolean areSegmentationColorsOrValuesChanged() {
 		if (this.actualSegmTypes.getTypes().size() != this.types.size())
 			return true;
 		for (final OmegaSegmentationType segmType : this.actualSegmTypes
-		        .getTypes()) {
+				.getTypes()) {
 			final String name = segmType.getName();
 			final Integer val = segmType.getValue();
 			final Color col = segmType.getColor();
@@ -743,16 +743,16 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 				final Integer val2 = segmType2.getValue();
 				final Color col2 = segmType2.getColor();
 				if ((val == val2)
-				        && (!name.equals(name2)
-				                || (col.getRed() != col2.getRed())
-				                || (col.getBlue() != col2.getBlue()) || (col
-				                .getGreen() != col2.getGreen())))
+						&& (!name.equals(name2)
+								|| (col.getRed() != col2.getRed())
+								|| (col.getBlue() != col2.getBlue()) || (col
+										.getGreen() != col2.getGreen())))
 					return true;
 			}
 		}
 		return false;
 	}
-
+	
 	private void apply() {
 		final String segmTypesName = this.getNameOrError();
 		if (segmTypesName == null)
@@ -768,7 +768,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			if (newName == null)
 				return;
 		}
-
+		
 		final Color color = UIManager.getColor("Panel.background");
 		for (final JPanel panel : this.panelsToRemove.keySet()) {
 			final String segmName = this.panelsToRemove.get(panel);
@@ -780,7 +780,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			panel.setBackground(color);
 		}
 		this.panelsToAdd.clear();
-
+		
 		for (final String s : this.newValues.keySet()) {
 			this.getSegmentationType(s);
 			// final String vals = this.newValues.get(s);
@@ -793,7 +793,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			this.updateSegmTypeEntry(oldName);
 		}
 		this.newNames.clear();
-
+		
 		if (this.actualSegmTypes != null) {
 			final String segmTypesOldName = this.actualSegmTypes.getName();
 			if (!segmTypesOldName.equals(segmTypesName)) {
@@ -812,7 +812,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			}
 		} else {
 			this.actualSegmTypes = new OmegaSegmentationTypes(segmTypesName,
-			        this.types);
+					this.types);
 			this.segmTypesList.add(this.actualSegmTypes);
 			this.isPopulating = true;
 			final int index = this.segmTypesList_cmb.getItemCount() - 1;
@@ -822,19 +822,19 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			this.isPopulating = false;
 		}
 		this.oldSegmTypes = null;
-
+		
 		this.isSegmTypesChanged = false;
 		this.apply_btt.setEnabled(false);
 		this.redraw();
 	}
-
+	
 	private void close() {
 		if (this.isSegmTypesChanged) {
 			this.cancel();
 		}
 		this.pluginPanel.handleSegmTypesChanged();
 	}
-
+	
 	private void updateSegmTypeEntry(final String oldName) {
 		final String newName = this.newNames.get(oldName);
 		final JButton color_btt = this.segmColors_btt.get(oldName);
@@ -851,12 +851,12 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			this.segmRemove_btt.remove(oldName);
 			this.segmRemove_btt.put(newName, rem_btt);
 		}
-
+		
 		final OmegaSegmentationType segmType = this
-		        .getSegmentationType(oldName);
+				.getSegmentationType(oldName);
 		segmType.setName(newName);
 	}
-
+	
 	private void removeSegmTypeEntries(final String segmName) {
 		this.segmPanels.remove(segmName);
 		final JButton col_btt = this.segmColors_btt.get(segmName);
@@ -873,12 +873,12 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		this.segmRemove_btt.remove(segmName);
 		this.newNames.remove(segmName);
 		this.newValues.remove(segmName);
-
+		
 		final OmegaSegmentationType segmType = this
-		        .getSegmentationType(segmName);
+				.getSegmentationType(segmName);
 		this.types.remove(segmType);
 	}
-
+	
 	private void resizePanels() {
 		final int width = this.mainPanel.getWidth();
 		int height = this.mainPanel.getHeight();
@@ -898,31 +898,31 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		this.redraw();
 	}
-
+	
 	private void redraw() {
 		this.revalidate();
 		this.repaint();
 	}
-
+	
 	public List<OmegaSegmentationTypes> getSegmentationTypesList() {
 		return this.segmTypesList;
 	}
-
+	
 	public OmegaSegmentationTypes getActualSegmentationTypes() {
 		return this.actualSegmTypes;
 	}
-
+	
 	public void setSegmentationTypesList(
-	        final List<OmegaSegmentationTypes> segmTypesList,
-	        final OmegaSegmentationTypes actualSegmentationTypes) {
+			final List<OmegaSegmentationTypes> segmTypesList,
+			final OmegaSegmentationTypes actualSegmentationTypes) {
 		this.segmTypesList = segmTypesList;
 		this.populateSegmTypesCombo();
 		if (actualSegmentationTypes != null) {
 			this.segmTypesList_cmb.setSelectedItem(actualSegmentationTypes
-			        .getName());
+					.getName());
 		}
 	}
-
+	
 	public OmegaSegmentationType getSegmentationType(final String name) {
 		for (final OmegaSegmentationType segmType : this.types) {
 			if (segmType.getName().equals(name))

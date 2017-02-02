@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -359,7 +360,11 @@ OmegaMessageDisplayerPanelInterface {
 		final Double minD = OmegaDiffusivityLibrary
 		        .computeMinimumDetectableD(this.selectedSNRRun
 		                .getResultingImageMinimumErrorIndexSNR());
-		System.out.println(minD);
+		if (OmegaLogFileManager.isDebug()) {
+			OmegaLogFileManager.appendToPluginLog(this.pluginPanel.getPlugin(),
+					String.valueOf(minD));
+		}
+		// System.out.println(minD);
 	}
 
 	public void selectSNRRun(final OmegaAnalysisRun analysisRun) {

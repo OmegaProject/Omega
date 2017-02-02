@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui;
 
@@ -57,6 +56,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresVelocityRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
@@ -74,6 +74,7 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionIm
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericSegmentInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericSegmentsBrowserPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
@@ -93,6 +94,8 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 	private TMVRunPanel runPanel;
 	private GenericTrackingResultsPanel localResultsPanel, globalResultsPanel;
 	private GenericStatusPanel statusPanel;
+
+	private GenericSegmentInformationPanel currentSegmInfoPanel;
 
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
 	        trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
@@ -293,6 +296,10 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
+		
+		this.currentSegmInfoPanel = new GenericSegmentInformationPanel(
+				this.getParentContainer(), this);
+		bottomPanel.add(this.currentSegmInfoPanel, BorderLayout.NORTH);
 
 		this.statusPanel = new GenericStatusPanel(1);
 		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
@@ -374,6 +381,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.selectedImage = null;
 		if (index == -1) {
 			this.populateParticlesCombo();
+			this.updateSelectedInformation(null);
 			// this.resetTrajectories();
 			return;
 		}
@@ -401,6 +409,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.selectedParticleDetectionRun = null;
 		if (index == -1) {
 			this.populateTrajectoriesCombo();
+			this.updateSelectedInformation(null);
 			// this.resetTrajectories();
 			return;
 		}
@@ -419,6 +428,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.selectedParticleLinkingRun = null;
 		if (index == -1) {
 			this.populateTrajectoriesRelinkingCombo();
+			this.updateSelectedInformation(null);
 			// this.populateTrackingMeasuresCombo();
 			// this.resetTrajectories();
 			return;
@@ -447,6 +457,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.selectedTrajRelinkingRun = null;
 		if (index == -1) {
 			this.populateTrajectoriesSegmentationCombo();
+			this.updateSelectedInformation(null);
 			// this.resetTrajectories();
 			return;
 		}
@@ -490,6 +501,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 			return;
 		final int index = this.trajectoriesSegmentation_cmb.getSelectedIndex();
 		this.selectedTrajSegmentationRun = null;
+		this.updateSelectedInformation(null);
 		if (index == -1)
 			return;
 
@@ -528,9 +540,19 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 			// this.fireEventSelectionTrajectoriesSegmentationRun();
 		}
 
-		this.sbPanel.updateSegments(
-				this.selectedTrackingMeasuresRun.getSegments(),
-				this.selectedTrajSegmentationRun.getSegmentationTypes(), true);
+		this.updatePanels();
+	}
+
+	private void updatePanels() {
+		Map<OmegaTrajectory, List<OmegaSegment>> segments = null;
+		OmegaSegmentationTypes segmTypes = null;
+		if (this.selectedTrackingMeasuresRun != null) {
+			segments = this.selectedTrackingMeasuresRun.getSegments();
+		}
+		if (this.selectedTrajSegmentationRun != null) {
+			segmTypes = this.selectedTrajSegmentationRun.getSegmentationTypes();
+		}
+		this.sbPanel.updateSegments(segments, segmTypes, true);
 		this.graphPanel
 		        .updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.localResultsPanel.setAnalysisRun(this.selectedTrackingMeasuresRun,
@@ -604,6 +626,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if ((this.selectedImage == null)) {
 			this.particles_cmb.setEnabled(false);
 			this.populateTrajectoriesCombo();
+			this.updateSelectedInformation(null);
 			this.popParticles = false;
 			return;
 		}
@@ -643,15 +666,17 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if ((this.selectedParticleDetectionRun == null)) {
 			this.trajectories_cmb.setEnabled(false);
 			this.populateTrajectoriesRelinkingCombo();
+			this.updateSelectedInformation(null);
+			this.popTrajectories = false;
 			// this.populateTrackingMeasuresCombo();
 			// this.resetTrajectories();
 			return;
 		}
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
-			if ((analysisRun instanceof OmegaParticleLinkingRun)
-					&& this.selectedParticleDetectionRun.getAnalysisRuns()
-			                .contains(analysisRun)) {
+			if (this.selectedParticleDetectionRun.getAnalysisRuns().contains(
+			        analysisRun)
+			        && (analysisRun instanceof OmegaParticleLinkingRun)) {
 				this.particleLinkingRuns
 				        .add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
@@ -660,6 +685,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if (this.particleLinkingRuns.isEmpty()) {
 			this.trajectories_cmb.setEnabled(false);
 			this.populateTrajectoriesRelinkingCombo();
+			this.updateSelectedInformation(null);
 			// this.populateTrackingMeasuresCombo();
 			this.popTrajectories = false;
 			return;
@@ -684,6 +710,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if (this.selectedParticleLinkingRun == null) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.populateTrajectoriesSegmentationCombo();
+			this.updateSelectedInformation(null);
 			this.popTrajRelinking = false;
 			return;
 		}
@@ -700,6 +727,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if (this.trajRelinkingRuns.isEmpty()) {
 			this.trajectoriesRelinking_cmb.setEnabled(false);
 			this.populateTrajectoriesSegmentationCombo();
+			this.updateSelectedInformation(null);
 			this.popTrajRelinking = false;
 			return;
 		}
@@ -722,12 +750,14 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if (this.selectedTrajRelinkingRun == null) {
 			this.trajectoriesSegmentation_cmb.setEnabled(false);
 			this.populateTrackingMeasuresCombo();
+			this.updateSelectedInformation(null);
 			this.popTrajSegmentation = false;
 			return;
 		}
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if (this.selectedTrajRelinkingRun.getAnalysisRuns().contains(
-			        analysisRun)) {
+			        analysisRun)
+			        && (analysisRun instanceof OmegaTrajectoriesSegmentationRun)) {
 				this.trajSegmentationRuns
 				        .add((OmegaTrajectoriesSegmentationRun) analysisRun);
 				this.trajectoriesSegmentation_cmb
@@ -737,6 +767,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		if (this.trajSegmentationRuns.isEmpty()) {
 			this.trajectoriesSegmentation_cmb.setEnabled(false);
 			this.populateTrackingMeasuresCombo();
+			this.updateSelectedInformation(null);
 			this.popTrajSegmentation = false;
 			return;
 		}
@@ -758,6 +789,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.selectedTrackingMeasuresRun = null;
 		if (this.selectedTrajSegmentationRun == null) {
 			this.trackingMeasures_cmb.setEnabled(false);
+			this.updatePanels();
 			this.popTrackingMeasures = false;
 			return;
 		}
@@ -772,6 +804,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		}
 		if (this.trackingMeasuresRuns.isEmpty()) {
 			this.trackingMeasures_cmb.setEnabled(false);
+			this.updatePanels();
 			this.popTrackingMeasures = false;
 			return;
 		}
@@ -877,6 +910,14 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		this.trajectoriesSegmentation_cmb.setSelectedIndex(index);
 		this.isHandlingEvent = false;
 	}
+	
+	public void selectTrackingMeasuresRun(
+	        final OmegaTrackingMeasuresRun analysisRun) {
+		this.isHandlingEvent = true;
+		final int index = this.trackingMeasuresRuns.indexOf(analysisRun);
+		this.trackingMeasures_cmb.setSelectedIndex(index);
+		this.isHandlingEvent = false;
+	}
 
 	public void selectCurrentTrajectoriesSegmentationRun(
 	        final OmegaAnalysisRun analysisRun) {
@@ -915,6 +956,13 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 	public void sendEventSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegments,
 			final boolean selected) {
+		if (selected) {
+			final List<OmegaSegment> segments = new ArrayList<OmegaSegment>();
+			for (final OmegaTrajectory track : selectedSegments.keySet()) {
+				segments.addAll(selectedSegments.get(track));
+			}
+			this.currentSegmInfoPanel.setSelectedSegments(segments);
+		}
 		this.graphPanel.setSelectedSegments(selectedSegments);
 		this.fireEventSegments(selectedSegments,
 		        this.selectedTrajSegmentationRun.getSegmentationTypes(),
@@ -952,6 +1000,11 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 			final OmegaSegmentationTypes segmTypes, final boolean selection) {
 		this.sbPanel.updateSegments(segments, segmTypes, selection);
 		if (selection) {
+			final List<OmegaSegment> segms = new ArrayList<OmegaSegment>();
+			for (final OmegaTrajectory track : segments.keySet()) {
+				segms.addAll(segments.get(track));
+			}
+			this.currentSegmInfoPanel.setSelectedSegments(segms);
 			this.graphPanel.setSelectedSegments(segments);
 		}
 	}
@@ -974,4 +1027,7 @@ public class TMVPluginPanel extends GenericPluginPanel implements
 		return this.selectedTrajSegmentationRun.getResultingSegments();
 	}
 
+	private void updateSelectedInformation(final List<OmegaSegment> segments) {
+		this.currentSegmInfoPanel.setSelectedSegments(segments);
+	}
 }

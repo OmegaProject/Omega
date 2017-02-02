@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.core.gui;
 
@@ -83,14 +82,17 @@ import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericFrame;
 import edu.umassmed.omega.commons.gui.GenericImageCanvas;
 import edu.umassmed.omega.commons.gui.GenericPanel;
+import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContainerInterface;
 import edu.umassmed.omega.commons.gui.interfaces.GenericImageCanvasContainer;
 
 public class OmegaSidePanel extends GenericPanel implements
-GenericImageCanvasContainer {
+GenericImageCanvasContainer,
+GenericElementInformationContainerInterface {
 
 	private static final long serialVersionUID = -4565126277733287950L;
 
 	private GenericImageCanvas canvas;
+	private OmegaElement currentElement;
 
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
@@ -121,6 +123,7 @@ GenericImageCanvasContainer {
 		this.isAttached = true;
 		this.isHandlingEvent = false;
 		this.loadedData = null;
+		this.currentElement = null;
 
 		this.setLayout(new BorderLayout());
 
@@ -162,7 +165,7 @@ GenericImageCanvasContainer {
 				JTabbedPane.WRAP_TAB_LAYOUT);
 
 		this.infoPanel = new GenericElementInformationPanel(
-				this.getParentContainer());
+				this.getParentContainer(), this);
 		this.resizeInfoPanel();
 		// final JScrollPane infoScrollPane = new JScrollPane(this.infoPanel);
 		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_GENERAL,
@@ -437,6 +440,7 @@ GenericImageCanvasContainer {
 
 	private void updateCurrentElement(final OmegaElement element) {
 		// TODO see where overlays are set
+		this.currentElement = element;
 		this.canvas.resetOverlays();
 		this.infoPanel.update(element);
 		this.overlaysPanel.resetMaps();
@@ -468,8 +472,8 @@ GenericImageCanvasContainer {
 				pixels = null;
 			} else {
 				// TODO manage exception
-				System.out
-				        .println("OmegaElementImagePanel: update case not supported");
+				// System.out
+				// .println("OmegaElementImagePanel: update case not supported");
 				this.setBorderTitle(OmegaGUIConstants.SIDEPANEL_NO_DETAILS);
 				pixels = null;
 			}
@@ -587,6 +591,7 @@ GenericImageCanvasContainer {
 		if (image == null)
 			return;
 		this.isHandlingEvent = true;
+		this.infoPanel.update((OmegaElement) image);
 		if (image instanceof OrphanedAnalysisContainer) {
 			this.itemIndex = 0;
 			this.manageItemChanged();
@@ -595,6 +600,7 @@ GenericImageCanvasContainer {
 				final int newItemIndex = this.loadedData
 						.getElementIndex((OmegaElement) image);
 				if (this.itemIndex != newItemIndex) {
+					this.itemIndex = newItemIndex;
 					this.manageItemChanged();
 				}
 			} catch (final OmegaCoreExceptionLoadedElementNotFound ex) {
@@ -713,8 +719,8 @@ GenericImageCanvasContainer {
 
 	public void updateSegments(
 	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-			final boolean selection) {
-		this.canvas.updateSegments(segments, selection);
+	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+		this.canvas.updateSegments(segments, segmTypes, selection);
 	}
 
 	public void updateParticles(final List<OmegaROI> particles) {
@@ -744,5 +750,14 @@ GenericImageCanvasContainer {
 
 	public void setShowTrajectoriesOnlyStartingAtT(final boolean enabled) {
 		this.canvas.setShowTrajectoriesOnlyStartingAtT(enabled);
+	}
+
+	@Override
+	public void fireElementChanged() {
+		if (this.currentElement instanceof OmegaImage) {
+			this.sendCoreEventSelectionImage((OmegaImage) this.currentElement);
+		} else {
+			this.sendCoreEventSelectionImage(null);
+		}
 	}
 }

@@ -14,10 +14,11 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.RootPaneContainer;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
@@ -38,7 +39,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 	private JPanel mainPanel;
 	private final Map<Long, ? extends OmegaPlugin> plugins;
 	private final List<JButton> buttons;
-	private final List<JLabel> descriptions;
+	private final List<JTextArea> descriptions;
 	private final Map<Long, JButton> pluginLauncherbuttons, detailsButtons;
 
 	private JButton close_btt;
@@ -51,7 +52,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 
 		this.plugins = plugins;
 		this.buttons = new ArrayList<JButton>();
-		this.descriptions = new ArrayList<JLabel>();
+		this.descriptions = new ArrayList<JTextArea>();
 		this.pluginLauncherbuttons = new LinkedHashMap<>();
 		this.detailsButtons = new LinkedHashMap<>();
 		final Dimension dialogDim = new Dimension(
@@ -126,9 +127,19 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 			final JPanel descPanel = new JPanel();
 			descPanel.setBorder(new TitledBorder(plugin.getName()));
 			descPanel.setLayout(new BorderLayout());
-			final JLabel plugDescLbl = new JLabel(plugin.getDescription());
+			final JTextArea plugDescLbl = new JTextArea(
+					plugin.getDescription(), 6, 40);
+			plugDescLbl.setWrapStyleWord(true);
+			plugDescLbl.setLineWrap(true);
+			plugDescLbl.setEditable(false);
+			plugDescLbl.setFocusable(false);
+			plugDescLbl.setOpaque(false);
+			// final JLabel plugDescLbl = new JLabel(plugin.getDescription());
 			this.descriptions.add(plugDescLbl);
-			descPanel.add(plugDescLbl, BorderLayout.CENTER);
+			final JScrollPane sp = new JScrollPane(plugDescLbl,
+			        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+			        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			descPanel.add(sp, BorderLayout.CENTER);
 
 			if (plugin instanceof OmegaAlgorithmPlugin) {
 				final JPanel buttPanel = new JPanel();
@@ -212,11 +223,11 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 					SwingConstants.CENTER);
 			butt.setText(name);
 		}
-		for (final JLabel lbl : this.descriptions) {
-			final String s = lbl.getText();
-			final String desc = OmegaStringUtilities.getHtmlString(s, " ",
-					SwingConstants.LEADING);
-			lbl.setText(desc);
-		}
+		// for (final JTextArea lbl : this.descriptions) {
+		// final String s = lbl.getText();
+		// final String desc = OmegaStringUtilities.getHtmlString(s, " ",
+		// SwingConstants.LEADING);
+		// lbl.setText(desc);
+		// }
 	}
 }

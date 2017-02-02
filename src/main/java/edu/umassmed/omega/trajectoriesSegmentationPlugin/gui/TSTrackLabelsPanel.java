@@ -110,8 +110,10 @@ public class TSTrackLabelsPanel extends GenericPanel {
 	}
 
 	private void paintMetricsFromZero(final Graphics2D g2D) {
-		final int numOfLabels = this.panelSize
-		        / TSTrackPanel.SPACE_BETWEEN_LABELS;
+		int numOfLabels = this.panelSize / TSTrackPanel.SPACE_BETWEEN_LABELS;
+		if (numOfLabels == 0) {
+			numOfLabels = 1;
+		}
 		final double offsetCoord = (double) this.panelSize
 		        / (double) numOfLabels;
 		final double offsetVal = this.realSize / numOfLabels;

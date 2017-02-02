@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -80,7 +81,7 @@ public class TMIRunPanel extends GenericPanel implements
 		this.snrEnable_ckb = new JCheckBox(TMIConstants.PARAMETER_ERROR_SNR_USE);
 		this.snrEnable_ckb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		snrEnablePanel.add(this.snrEnable_ckb);
-		// mainPanel.add(snrEnablePanel);
+		mainPanel.add(snrEnablePanel);
 		
 		final JPanel snrRunPanel = new JPanel();
 		snrRunPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
@@ -92,7 +93,7 @@ public class TMIRunPanel extends GenericPanel implements
 		        this.getParentContainer());
 		this.snrAnalysis_cmb.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrRunPanel.add(this.snrAnalysis_cmb);
-		// mainPanel.add(snrRunPanel);
+		mainPanel.add(snrRunPanel);
 		
 		mainPanel.add(new JLabel(""));
 		mainPanel.add(new JLabel(""));
@@ -131,9 +132,15 @@ public class TMIRunPanel extends GenericPanel implements
 		if (this.snrEnable_ckb.isSelected()) {
 			this.snrAnalysis_cmb.setSelectedIndex(0);
 			this.snrAnalysis_cmb.setEnabled(true);
+			if (this.snrAnalysis_cmb.getItemCount() == 0) {
+				this.run_btt.setEnabled(false);
+			} else {
+				this.run_btt.setEnabled(true);
+			}
 		} else {
 			this.snrAnalysis_cmb.setSelectedIndex(-1);
 			this.snrAnalysis_cmb.setEnabled(false);
+			this.run_btt.setEnabled(true);
 		}
 	}
 	
@@ -142,9 +149,9 @@ public class TMIRunPanel extends GenericPanel implements
 			return;
 		this.analyzer = new OmegaIntensityAnalyzer(this,
 				this.pluginPanel.getSegments());
-		// if (this.snrEnable_ckb.isEnabled()) {
-		// this.analyzer.setSNRRun(this.selectedSNRRun);
-		// }
+		if (this.snrEnable_ckb.isEnabled()) {
+			this.analyzer.setSNRRun(this.selectedSNRRun);
+		}
 		this.analyzer.run();
 	}
 	
@@ -160,13 +167,16 @@ public class TMIRunPanel extends GenericPanel implements
 		this.pluginPanel.updateStatus(evt.getMessage());
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresIntensity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresIntensity(
-			        this.pluginPanel.getPlugin(),
-			        this.pluginPanel.getSelectedSegmentationRun(),
-			        new ArrayList<OmegaParameter>(),
-			        this.analyzer.getSegments(),
-			        this.analyzer.getPeakSignalsResults(),
-			        this.analyzer.getMeanSignalsResults(),
-					this.analyzer.getCentroidSignalsResults());
+					this.pluginPanel.getPlugin(),
+					this.pluginPanel.getSelectedSegmentationRun(),
+					new ArrayList<OmegaParameter>(),
+					this.analyzer.getSegments(),
+					this.analyzer.getPeakSignalsResults(),
+					this.analyzer.getCentroidSignalsResults(),
+					this.analyzer.getMeanSignalsResults(),
+					this.analyzer.getNoisesResults(),
+					this.analyzer.getSNRsResults(),
+					this.analyzer.getAreasResults(), this.analyzer.getSNRRun());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
 		}
 	}
@@ -223,7 +233,11 @@ public class TMIRunPanel extends GenericPanel implements
 		final Double minD = OmegaDiffusivityLibrary
 		        .computeMinimumDetectableD(this.selectedSNRRun
 		                .getResultingImageMinimumErrorIndexSNR());
-		System.out.println(minD);
+		if (OmegaLogFileManager.isDebug()) {
+			OmegaLogFileManager.appendToPluginLog(this.pluginPanel.getPlugin(),
+			        String.valueOf(minD));
+		}
+		// System.out.println(minD);
 	}
 
 	public void selectSNRRun(final OmegaAnalysisRun analysisRun) {

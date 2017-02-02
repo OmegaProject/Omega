@@ -162,6 +162,12 @@ public class TSPanel extends GenericPanel {
 			final JRadioButton butt = new JRadioButton(segmType.getName());
 			butt.setForeground(segmType.getColor());
 			butt.addActionListener(this.getRadioButtonActionListener());
+			if ((segmType.getDescription() != null)
+			        && !segmType.getDescription().isEmpty()) {
+				butt.setToolTipText("<html><p width=\"500\">"
+				        + segmType.getDescription() + "</p></html>");
+			}
+			// butt.setToolTipText(segmType.getDescription());
 			this.buttonGroup.add(butt);
 			if (segmType.getValue() == OmegaSegmentationTypes.NOT_ASSIGNED_VAL) {
 				butt.setSelected(true);
@@ -263,6 +269,8 @@ public class TSPanel extends GenericPanel {
 	}
 
 	private void setSegmentationType(final String segmName) {
+		if (this.currentPanelIndex == -1)
+			return;
 		String s = null;
 		if (this.segmentationEnded) {
 			if (this.isSegmentOnSpotsSelection()) {

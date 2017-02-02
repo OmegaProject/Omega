@@ -37,11 +37,11 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaMySqlWriter extends OmegaMySqlGateway {
-	
+
 	public OmegaMySqlWriter() {
-		
+
 	}
-	
+
 	private long insertAndGetId(final String query) throws SQLException {
 		final Statement stat = this.connection.createStatement();
 		final int error = stat.executeUpdate(query,
@@ -60,7 +60,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = OmegaMySqlUtilities.getID(dbID);
 		return id;
 	}
-	
+
 	private void insert(final String query) throws SQLException {
 		final Statement stat = this.connection.createStatement();
 		final int count = stat.executeUpdate(query);
@@ -72,10 +72,16 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// this.commit();
 		stat.close();
 	}
-	
+
 	// ****** SNR elements ****** //
 	public long saveSNRRun(final OmegaSNRRun snrRun) throws SQLException {
 		final long id = snrRun.getElementID();
+		this.saveSNRGlobalGenericValues(snrRun.getResultingBackground(),
+		        snrRun.getResultingNoise(), snrRun.getResultingAvgSNR(),
+		        snrRun.getResultingMinSNR(), snrRun.getResultingMaxSNR(),
+				snrRun.getResultingAvgErrorIndexSNR(),
+				snrRun.getResultingMinErrorIndexSNR(),
+				snrRun.getResultingMaxErrorIndexSNR(), id);
 		this.saveROISNR(OmegaMySqlCostants.SNR_LOCAL_CENTER_SIGNAL_TABLE,
 				snrRun.getResultingLocalCenterSignals(), id);
 		this.saveROISNR(OmegaMySqlCostants.SNR_LOCAL_MEAN_SIGNAL_TABLE,
@@ -93,17 +99,17 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		this.saveFrameSNR(OmegaMySqlCostants.SNR_IMAGE_MIN_SNR_TABLE,
 				snrRun.getResultingImageMinimumSNR(), id);
 		this.saveFrameSNR(
-		        OmegaMySqlCostants.SNR_IMAGE_MIN_ERROR_INDEX_SNR_TABLE,
+				OmegaMySqlCostants.SNR_IMAGE_MIN_ERROR_INDEX_SNR_TABLE,
 				snrRun.getResultingImageMinimumErrorIndexSNR(), id);
 		this.saveFrameSNR(OmegaMySqlCostants.SNR_IMAGE_AVG_SNR_TABLE,
 				snrRun.getResultingImageAverageSNR(), id);
 		this.saveFrameSNR(
-		        OmegaMySqlCostants.SNR_IMAGE_AVG_ERROR_INDEX_SNR_TABLE,
+				OmegaMySqlCostants.SNR_IMAGE_AVG_ERROR_INDEX_SNR_TABLE,
 				snrRun.getResultingImageAverageErrorIndexSNR(), id);
 		this.saveFrameSNR(OmegaMySqlCostants.SNR_IMAGE_MAX_SNR_TABLE,
 				snrRun.getResultingImageMaximumSNR(), id);
 		this.saveFrameSNR(
-		        OmegaMySqlCostants.SNR_IMAGE_MAX_ERROR_INDEX_SNR_TABLE,
+				OmegaMySqlCostants.SNR_IMAGE_MAX_ERROR_INDEX_SNR_TABLE,
 				snrRun.getResultingImageMaximumErrorIndexSNR(), id);
 		this.saveFrameSNR(OmegaMySqlCostants.SNR_IMAGE_NOISE_TABLE,
 				snrRun.getResultingImageNoise(), id);
@@ -112,8 +118,54 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		return id;
 	}
 	
+	private void saveSNRGlobalGenericValues(final Double background,
+			final Double noise, final Double avgSNR, final Double minSNR,
+			final Double maxSNR, final Double avgErrorIndexSNR,
+			final Double minErrorIndexSNR, final Double maxErrorIndexSNR,
+			final Long analysisID) throws SQLException {
+		final StringBuffer query = new StringBuffer();
+		query.append("INSERT INTO ");
+		query.append(OmegaMySqlCostants.SNR_GLOBAL_GENERIC_VALUES_TABLE);
+		query.append(" (");
+		query.append(OmegaMySqlCostants.SNR_BACKGROUND);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_NOISE);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_AVG_SNR);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_MIN_SNR);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_MAX_SNR);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_AVG_ERRORINDEX_SNR);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_MIN_ERRORINDEX_SNR);
+		query.append(",");
+		query.append(OmegaMySqlCostants.SNR_MAX_ERRORINDEX_SNR);
+		query.append(") VALUES (");
+		query.append(analysisID);
+		query.append(",");
+		query.append(background);
+		query.append(",");
+		query.append(noise);
+		query.append(",");
+		query.append(avgSNR);
+		query.append(",");
+		query.append(minSNR);
+		query.append(",");
+		query.append(maxSNR);
+		query.append(",");
+		query.append(avgErrorIndexSNR);
+		query.append(",");
+		query.append(minErrorIndexSNR);
+		query.append(",");
+		query.append(maxErrorIndexSNR);
+		query.append(")");
+		this.insert(query.toString());
+	}
+
 	private void saveROISNR(final String tableID,
-	        final Map<OmegaROI, ? extends Number> roiValues,
+			final Map<OmegaROI, ? extends Number> roiValues,
 			final long analysisRunID) throws SQLException {
 		for (final OmegaROI roi : roiValues.keySet()) {
 			final StringBuffer query = new StringBuffer();
@@ -135,7 +187,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			this.insert(query.toString());
 		}
 	}
-	
+
 	private void saveFrameSNR(final String tableID,
 			final Map<OmegaPlane, ? extends Number> frameValues,
 			final long analysisRunID) throws SQLException {
@@ -159,11 +211,11 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			this.insert(query.toString());
 		}
 	}
-	
+
 	// ****** Tracking measures elements ****** //
 	public long saveTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresRun trackingMeasuresRun,
-	        final long analysisRunID) throws SQLException, ParseException {
+			final OmegaTrackingMeasuresRun trackingMeasuresRun,
+			final long analysisRunID) throws SQLException, ParseException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(OmegaMySqlCostants.TRACKING_MEASURES_TABLE);
@@ -184,7 +236,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public void saveTrackingMeasuresSegmentLink(final long trackingMeasuresID,
 			final long segmentID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -201,10 +253,10 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveDiffusivityTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresDiffusivityRun trackingMeasuresRun,
-	        final long trackingMeasuresID) throws SQLException {
+			final OmegaTrackingMeasuresDiffusivityRun trackingMeasuresRun,
+			final long trackingMeasuresID) throws SQLException {
 		final OmegaTrackingMeasuresDiffusivityRun diffRun = trackingMeasuresRun
 				.getTrackingMeasuresDiffusivityRun();
 		if (diffRun != null) {
@@ -219,36 +271,36 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			if (snrRun.getElementID() == -1) {
 				// TODO error
 			}
-			this.saveTrackingMeasuresDiffusivitySNR(trackingMeasuresID,
+			this.saveTrackingMeasuresSNR(trackingMeasuresID,
 					snrRun.getElementID());
 		}
 		final Map<OmegaSegment, Double[]> gammaLogs = trackingMeasuresRun
-		        .getGammaFromLogResults();
+				.getGammaFromLogResults();
 		// final Map<OmegaSegment, Double[]> gamma = trackingMeasuresRun
 		// .getGammaResults();
 		final Map<OmegaSegment, Double[][]> gammaDLogs = trackingMeasuresRun
-		        .getGammaDFromLogResults();
+				.getGammaDFromLogResults();
 		final Map<OmegaSegment, Double[][]> gammaD = trackingMeasuresRun
-		        .getGammaDResults();
+				.getGammaDResults();
 		final Map<OmegaSegment, Double[][]> deltaT = trackingMeasuresRun
-		        .getDeltaTResults();
+				.getDeltaTResults();
 		final Map<OmegaSegment, Double[][]> logDeltaT = trackingMeasuresRun
-		        .getLogDeltaTResults();
+				.getLogDeltaTResults();
 		final Map<OmegaSegment, Double[]> ny = trackingMeasuresRun
-		        .getNyResults();
+				.getNyResults();
 		final Map<OmegaSegment, Double[][]> mu = trackingMeasuresRun
-		        .getMuResults();
+				.getMuResults();
 		final Map<OmegaSegment, Double[][]> logMu = trackingMeasuresRun
 				.getLogMuResults();
 		// final Map<OmegaSegment, Double[]> smss = trackingMeasuresRun
 		// .getSmssResults();
 		final Map<OmegaSegment, Double[]> smssLog = trackingMeasuresRun
-		        .getSmssFromLogResults();
+				.getSmssFromLogResults();
 		// final Map<OmegaSegment, Double[]> errors = trackingMeasuresRun
 		// .getErrorsResults();
 		final Map<OmegaSegment, Double[]> errorsLog = trackingMeasuresRun
-		        .getErrosFromLogResults();
-		
+				.getErrosFromLogResults();
+
 		for (final OmegaSegment segment : gammaLogs.keySet()) {
 			final long segmentID = segment.getElementID();
 			final Double[] segmentGammaLogs = gammaLogs.get(segment);
@@ -295,11 +347,11 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			}
 			for (int i = 0; i < segmentGammaLogs.length; i++) {
 				this.saveTrackingMeasuresIndexValue(
-				        trackingMeasuresID,
-				        segmentID,
-				        i,
-				        segmentGammaLogs[i],
-				        OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_GAMMA_LOG_TABLE);
+						trackingMeasuresID,
+						segmentID,
+						i,
+						segmentGammaLogs[i],
+						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_GAMMA_LOG_TABLE);
 			}
 			for (int i = 0; i < segmentGammaDLogs.length; i++) {
 				for (int k = 0; k < segmentGammaDLogs[i].length; k++) {
@@ -383,19 +435,19 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			}
 			for (int i = 0; i < segmentNy.length; i++) {
 				this.saveTrackingMeasuresIndexValue(
-				        trackingMeasuresID,
-				        segmentID,
-				        i,
-				        segmentNy[i],
-				        OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_NY_TABLE);
+						trackingMeasuresID,
+						segmentID,
+						i,
+						segmentNy[i],
+						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_NY_TABLE);
 			}
 			for (int i = 0; i < segmentSmssLog.length; i++) {
 				this.saveTrackingMeasuresIndexValue(
-				        trackingMeasuresID,
-				        segmentID,
-				        i,
-				        segmentSmssLog[i],
-				        OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_SMSS_LOG_TABLE);
+						trackingMeasuresID,
+						segmentID,
+						i,
+						segmentSmssLog[i],
+						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_SMSS_LOG_TABLE);
 			}
 			// for (int i = 0; i < segmentSmss.length; i++) {
 			// this.saveTrackingMeasuresIndexValue(
@@ -415,19 +467,19 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			// }
 			if (segmentErrorsLog != null) {
 				this.saveTrackingMeasuresErrors(
-				        trackingMeasuresID,
-				        segmentID,
-				        segmentErrorsLog[0],
-				        segmentErrorsLog[1],
-				        OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_ERRORS_LOG_TABLE);
+						trackingMeasuresID,
+						segmentID,
+						segmentErrorsLog[0],
+						segmentErrorsLog[1],
+						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_ERRORS_LOG_TABLE);
 			}
 		}
 		return trackingMeasuresID;
 	}
-	
+
 	public long saveMobilityTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresMobilityRun trackingMeasuresRun,
-	        final long trackingMeasuresID) throws SQLException {
+			final OmegaTrackingMeasuresMobilityRun trackingMeasuresRun,
+			final long trackingMeasuresID) throws SQLException {
 		final Map<OmegaSegment, List<Double>> distances = trackingMeasuresRun
 				.getDistancesResults();
 		final Map<OmegaSegment, List<Double>> displacements = trackingMeasuresRun
@@ -437,7 +489,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final Map<OmegaSegment, Integer> totalTimeTraveled = trackingMeasuresRun
 				.getTotalTimeTraveledResults();
 		final Map<OmegaSegment, List<Double>> confinementRatios = trackingMeasuresRun
-		        .getConfinementRatioResults();
+				.getConfinementRatioResults();
 		final Map<OmegaSegment, List<Double[]>> angleAndDirectionalChange = trackingMeasuresRun
 				.getAnglesAndDirectionalChangesResults();
 		for (final OmegaSegment segment : distances.keySet()) {
@@ -449,7 +501,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 			final Integer segmentTotalTimeTraveled = totalTimeTraveled
 					.get(segment);
 			final List<Double> segmentConfinementRatios = confinementRatios
-			        .get(segment);
+					.get(segment);
 			final List<Double[]> segmentAngleAndDirectionalChange = angleAndDirectionalChange
 					.get(segment);
 			for (int i = 0; i < segmentDistances.size(); i++) {
@@ -500,30 +552,30 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		}
 		return trackingMeasuresID;
 	}
-	
+
 	public long saveVelocityTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresVelocityRun trackingMeasuresRun,
-	        final long trackingMeasuresID) throws SQLException {
+			final OmegaTrackingMeasuresVelocityRun trackingMeasuresRun,
+			final long trackingMeasuresID) throws SQLException {
 		final Map<OmegaSegment, List<Double>> localVelocities = trackingMeasuresRun
-		        .getLocalVelocityResults();
+				.getLocalVelocityResults();
 		final Map<OmegaSegment, Double> averageStraightLineVelocities = trackingMeasuresRun
-		        .getAverageStraightLineVelocityMapResults();
+				.getAverageStraightLineVelocityMapResults();
 		final Map<OmegaSegment, List<Double>> localSpeeds = trackingMeasuresRun
-		        .getLocalSpeedResults();
+				.getLocalSpeedResults();
 		final Map<OmegaSegment, Double> averageCurilinearSpeeds = trackingMeasuresRun
-		        .getAverageCurvilinearSpeedMapResults();
+				.getAverageCurvilinearSpeedMapResults();
 		final Map<OmegaSegment, Double> forwardProgressionLinearities = trackingMeasuresRun
-		        .getForwardProgressionLinearityMapResults();
+				.getForwardProgressionLinearityMapResults();
 		for (final OmegaSegment segment : localVelocities.keySet()) {
 			final long segmentID = segment.getElementID();
 			final List<Double> segmentVelocities = localVelocities.get(segment);
 			final List<Double> segmentSpeeds = localSpeeds.get(segment);
 			final Double segmentAverageStraightLineVelocity = averageStraightLineVelocities
-			        .get(segment);
+					.get(segment);
 			final Double segmentAverageCurvilinearSpeed = averageCurilinearSpeeds
-			        .get(segment);
+					.get(segment);
 			final Double segmentForwardProgressionLinearity = forwardProgressionLinearities
-			        .get(segment);
+					.get(segment);
 			for (int i = 0; i < segmentVelocities.size(); i++) {
 				this.saveTrackingMeasuresIndexValue(
 						trackingMeasuresID,
@@ -558,46 +610,66 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		}
 		return trackingMeasuresID;
 	}
-	
+
 	public long saveIntensityTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresIntensityRun trackingMeasuresRun,
-	        final long trackingMeasuresID) throws SQLException {
+			final OmegaTrackingMeasuresIntensityRun trackingMeasuresRun,
+			final long trackingMeasuresID) throws SQLException {
+		final OmegaSNRRun snrRun = trackingMeasuresRun.getSNRRun();
+		if (snrRun != null) {
+			if (snrRun.getElementID() == -1) {
+				// TODO error
+			}
+			this.saveTrackingMeasuresSNR(trackingMeasuresID,
+			        snrRun.getElementID());
+		}
 		final Map<OmegaSegment, Double[]> peakSignals = trackingMeasuresRun
 				.getPeakSignalsResults();
-		final Map<OmegaSegment, Double[]> meanSignals = trackingMeasuresRun
-				.getMeanSignalsResults();
 		final Map<OmegaSegment, Double[]> centroidSignals = trackingMeasuresRun
 				.getCentroidSignalsResults();
+		final Map<OmegaSegment, Double[]> meanSignals = trackingMeasuresRun
+				.getMeanSignalsResults();
+		final Map<OmegaSegment, Double[]> noises = trackingMeasuresRun
+				.getNoisesResults();
+		final Map<OmegaSegment, Double[]> areas = trackingMeasuresRun
+				.getAreasResults();
+		final Map<OmegaSegment, Double[]> snr = trackingMeasuresRun
+				.getSNRsResults();
 		for (final OmegaSegment segment : peakSignals.keySet()) {
 			final long segmentID = segment.getElementID();
 			final Double[] segmentPeakSignals = peakSignals.get(segment);
-			final Double[] segmentMeanSignals = meanSignals.get(segment);
 			final Double[] segmentCentroiSignal = centroidSignals.get(segment);
+			final Double[] segmentMeanSignal = meanSignals.get(segment);
+			final Double[] segmentNoise = noises.get(segment);
+			final Double[] segmentArea = areas.get(segment);
+			final Double[] segmentSNR = snr.get(segment);
+			this.saveTrackingMeasuresValues(trackingMeasuresID, segmentID,
+					segmentPeakSignals[0], segmentPeakSignals[1],
+					segmentPeakSignals[2],
+					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_PEAK_TABLE);
 			this.saveTrackingMeasuresValues(
-			        trackingMeasuresID,
+					trackingMeasuresID,
 					segmentID,
-					segmentPeakSignals[0],
-			        segmentPeakSignals[1],
-			        segmentPeakSignals[2],
+					segmentCentroiSignal[0],
+					segmentCentroiSignal[1],
+					segmentCentroiSignal[2],
 					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
-			this.saveTrackingMeasuresValues(
-			        trackingMeasuresID,
-					segmentID,
-					segmentMeanSignals[0],
-			        segmentMeanSignals[1],
-			        segmentMeanSignals[2],
-					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
-			this.saveTrackingMeasuresValues(
-			        trackingMeasuresID,
-			        segmentID,
-			        segmentCentroiSignal[0],
-			        segmentCentroiSignal[1],
-			        segmentCentroiSignal[2],
-			        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
+			this.saveTrackingMeasuresValues(trackingMeasuresID, segmentID,
+					segmentMeanSignal[0], segmentMeanSignal[1],
+					segmentMeanSignal[2],
+					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_MEAN_TABLE);
+			this.saveTrackingMeasuresValues(trackingMeasuresID, segmentID,
+					segmentNoise[0], segmentNoise[1], segmentNoise[2],
+					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_NOISE_TABLE);
+			this.saveTrackingMeasuresValues(trackingMeasuresID, segmentID,
+					segmentArea[0], segmentArea[1], segmentArea[2],
+					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_AREA_TABLE);
+			this.saveTrackingMeasuresValues(trackingMeasuresID, segmentID,
+					segmentSNR[0], segmentSNR[1], segmentSNR[2],
+					OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_SNR_TABLE);
 		}
 		return trackingMeasuresID;
 	}
-	
+
 	private void saveTrackingMeasuresDiffusivityParent(
 			final long trackingMeasuresID, final long analysisRunID)
 					throws SQLException {
@@ -617,13 +689,12 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
-	private void saveTrackingMeasuresDiffusivitySNR(
-			final long trackingMeasuresID, final long analysisRunID)
-					throws SQLException {
+
+	private void saveTrackingMeasuresSNR(final long trackingMeasuresID,
+			final long analysisRunID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
-		query.append(OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_SNR_TABLE);
+		query.append(OmegaMySqlCostants.TRACKING_MEASURES_SNR_TABLE);
 		query.append(" (");
 		query.append(OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		query.append(",");
@@ -637,9 +708,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresErrors(final long trackingMeasuresID,
-	        final long segmentID, final Double d, final Double smss,
+			final long segmentID, final Double d, final Double smss,
 			final String table) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -673,9 +744,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresValue(final long trackingMeasuresID,
-	        final long segmentID, final Double value, final String table)
+			final long segmentID, final Double value, final String table)
 					throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -697,9 +768,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresValue(final long trackingMeasuresID,
-	        final long segmentID, final Integer value, final String table)
+			final long segmentID, final Integer value, final String table)
 					throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -721,9 +792,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresValues(final long trackingMeasuresID,
-	        final long segmentID, final Double min, final Double avg,
+			final long segmentID, final Double min, final Double avg,
 			final Double max, final String table) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -753,10 +824,10 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresIndexValue(final long trackingMeasuresID,
-	        final long segmentID, final Integer index, final Double value,
-	        final String table) throws SQLException {
+			final long segmentID, final Integer index, final Double value,
+			final String table) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(table);
@@ -785,11 +856,11 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresNyIndexValue(
 			final long trackingMeasuresID, final long segmentID,
 			final int index, final Integer nyIndex, final Double value,
-	        final String table) throws SQLException {
+			final String table) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(table);
@@ -822,9 +893,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	private void saveTrackingMeasuresAngleValues(final long trackingMeasuresID,
-	        final long segmentID, final Integer index, final Double angle,
+			final long segmentID, final Integer index, final Double angle,
 			final Double directionChange, final String table)
 					throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -863,11 +934,11 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		// return id;
 		this.insert(query.toString());
 	}
-	
+
 	// ****** Analysis elements ****** //
 	public long saveAnalysisRun(final OmegaAnalysisRun analysisRun,
-	        final long experimenterID, final long algoSpecID)
-	        throws SQLException, ParseException {
+			final long experimenterID, final long algoSpecID)
+					throws SQLException, ParseException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(OmegaMySqlCostants.ANALYSIS_TABLE);
@@ -889,7 +960,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(analysisRun.getName());
 		query.append("','");
 		final DateFormat format = new SimpleDateFormat(
-		        OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaConstants.OMEGA_DATE_FORMAT);
 		if (analysisRun.getTimeStamps() != null) {
 			query.append(format.format(analysisRun.getTimeStamps()));
 		} else {
@@ -901,7 +972,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public void saveAnalysisRunElementLink(final long analysisRunID,
 			final String parentElementField, final long parentElementID)
 					throws SQLException {
@@ -919,9 +990,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public void saveAnalysisSegmentationTypesLink(final long analysisID,
-	        final long segmentationTypesID) throws SQLException {
+			final long segmentationTypesID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(OmegaMySqlCostants.ANALYSIS_SEGMENTATION_TYPES_MAP);
@@ -936,7 +1007,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveSegmentationTypes(final OmegaSegmentationTypes segmTypes)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -950,7 +1021,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveSegmentationType(final OmegaSegmentationType segmType)
 			throws SQLException {
 		final Color color = segmType.getColor();
@@ -959,6 +1030,8 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(OmegaMySqlCostants.SEGMENTATION_TYPE_TABLE);
 		query.append(" (");
 		query.append(OmegaMySqlCostants.NAME_FIELD);
+		query.append(",");
+		query.append(OmegaMySqlCostants.DESCRIPTION_FIELD);
 		query.append(",");
 		query.append(OmegaMySqlCostants.VALUE_FIELD);
 		query.append(",");
@@ -969,6 +1042,8 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(OmegaMySqlCostants.COLOR_GREEN_FIELD);
 		query.append(") VALUES ('");
 		query.append(segmType.getName());
+		query.append("','");
+		query.append(segmType.getDescription());
 		query.append("',");
 		query.append(segmType.getValue());
 		query.append(",");
@@ -981,7 +1056,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public void saveSegmentationTypesTypeLink(final long segmTypesID,
 			final long segmTypeID) throws SQLException {
 		final StringBuffer query2 = new StringBuffer();
@@ -998,7 +1073,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query2.append(")");
 		this.insert(query2.toString());
 	}
-	
+
 	// ****** Tracks elements ****** //
 	public void saveTrajectoryROILink(final long trajectoryID, final long roiID)
 			throws SQLException {
@@ -1016,7 +1091,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveROI(final OmegaROI roi, final long frameID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1038,7 +1113,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public Map<String, Long> saveROIValues(final Map<String, Object> roiValues,
 			final long analysisID, final long roiID) throws SQLException {
 		final Map<String, Long> ids = new LinkedHashMap<String, Long>();
@@ -1073,7 +1148,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		}
 		return ids;
 	}
-	
+
 	public long saveParticle(final OmegaParticle particle, final long roiID,
 			final long analysisRunID) throws SQLException {
 		final StringBuffer query2 = new StringBuffer();
@@ -1107,7 +1182,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query2.toString());
 		return id;
 	}
-	
+
 	public void saveAnalysisRunTrajectoryLink(final long analysisRunID,
 			final long trackID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1124,7 +1199,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveTrajectory(final OmegaTrajectory track) throws SQLException {
 		final StringBuffer query2 = new StringBuffer();
 		query2.append("INSERT INTO ");
@@ -1157,10 +1232,10 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query2.toString());
 		return id;
 	}
-	
+
 	public long saveSegment(final OmegaSegment segment,
 			final long trajectoryID, final long analysisRunID,
-	        final long startingROIID, final long endingROIID)
+			final long startingROIID, final long endingROIID)
 					throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -1175,6 +1250,8 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(OmegaMySqlCostants.SEGMENT_START_ROI_FIELD);
 		query.append(",");
 		query.append(OmegaMySqlCostants.SEGMENT_END_ROI_FIELD);
+		query.append(",");
+		query.append(OmegaMySqlCostants.NAME_FIELD);
 		query.append(") VALUES (");
 		query.append(analysisRunID);
 		query.append(",");
@@ -1185,13 +1262,15 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(startingROIID);
 		query.append(",");
 		query.append(endingROIID);
-		query.append(")");
+		query.append(",'");
+		query.append(segment.getName());
+		query.append("')");
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	// ****** Algorithm info, specs and params ****** //
-	
+
 	public long saveAlgorithmSpecification(final OmegaRunDefinition algoSpec,
 			final long algoInfoID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1205,7 +1284,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveParameter(final OmegaParameter param, final long algoSpecID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1231,10 +1310,10 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveAlgorithmInformation(
-	        final OmegaAlgorithmInformation algoInfo, final long personID)
-	        throws SQLException {
+			final OmegaAlgorithmInformation algoInfo, final long personID)
+					throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(OmegaMySqlCostants.ALGO_INFO_TABLE);
@@ -1260,7 +1339,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(algoInfo.getDescription());
 		query.append("','");
 		final DateFormat format = new SimpleDateFormat(
-		        OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaConstants.OMEGA_DATE_FORMAT);
 		if (algoInfo.getPublicationData() != null) {
 			final String s = format.format(algoInfo.getPublicationData());
 			query.append(s);
@@ -1273,9 +1352,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	// ****** OMERO elements ****** //
-	
+
 	public long saveProject(final OmegaProject project) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
@@ -1292,7 +1371,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveDataset(final OmegaDataset dataset, final long projectID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1314,7 +1393,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public void saveImageDatasetLink(final OmegaImage image,
 			final OmegaDataset dataset) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1339,7 +1418,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveImage(final OmegaImage image, // final long datasetID,
 			final long experimenterID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1383,7 +1462,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveImagePixels(final OmegaImagePixels pixels,
 			final long imageID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1433,9 +1512,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public long saveChannel(final Integer index, final String name)
-	        throws SQLException {
+			throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");
 		query.append(OmegaMySqlCostants.CHANNEL_TABLE);
@@ -1451,7 +1530,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	public void savePixelsChannelLink(final OmegaImagePixels pixels,
 			final long channelId) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1468,7 +1547,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		query.append(")");
 		this.insert(query.toString());
 	}
-	
+
 	public long saveFrame(final OmegaPlane frame, final long pixelsID)
 			throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1494,9 +1573,9 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long id = this.insertAndGetId(query.toString());
 		return id;
 	}
-	
+
 	// ****** People ****** //
-	
+
 	public long saveExperimenter(final OmegaExperimenter experimenter,
 			final long personID) throws SQLException {
 		final StringBuffer query = new StringBuffer();
@@ -1514,7 +1593,7 @@ public class OmegaMySqlWriter extends OmegaMySqlGateway {
 		final long experimenterID = this.insertAndGetId(query.toString());
 		return experimenterID;
 	}
-	
+
 	public long savePerson(final OmegaPerson person) throws SQLException {
 		final StringBuffer query = new StringBuffer();
 		query.append("INSERT INTO ");

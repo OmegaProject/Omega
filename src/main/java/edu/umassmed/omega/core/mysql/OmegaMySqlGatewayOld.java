@@ -666,7 +666,7 @@ public class OmegaMySqlGatewayOld {
 			// final OmegaROI particle = new OmegaParticle(frameIndex, x, y,
 			// totalSignal, numOfSignal, meanSignal, peakSignal, snr,
 			// meanBg, meanNoise, m0, m2);
-			particle.setElementID((long) roiID);
+			// particle.setElementID((long) roiID);
 
 			particles.add(particle);
 			particlesMap.put(frame, particles);
@@ -757,7 +757,7 @@ public class OmegaMySqlGatewayOld {
 		        parentAnalysisRunID);
 		trRun.setElementID(tmpAnalysisRunID);
 		final long analysisRunID = tmpAnalysisRunID;
-		final Long startingTime = System.currentTimeMillis();
+		// final Long startingTime = System.currentTimeMillis();
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
 		final List<OmegaTrajectory> trajectories = trRun
@@ -803,8 +803,8 @@ public class OmegaMySqlGatewayOld {
 				}
 			}
 		}
-		final Long totalTime = System.currentTimeMillis() - startingTime;
-		System.out.println("TotalTime: " + (totalTime / 1000));
+		// final Long totalTime = System.currentTimeMillis() - startingTime;
+		// System.out.println("TotalTime: " + (totalTime / 1000));
 		return analysisRunID;
 	}
 
@@ -824,7 +824,7 @@ public class OmegaMySqlGatewayOld {
 		final long analysisRunID = tmpAnalysisRunID;
 		this.saveAnalysisSegmentationTypesLinkIfNeeded(analysisRunID,
 		        segmTypesID);
-		final Long startingTime = System.currentTimeMillis();
+		// final Long startingTime = System.currentTimeMillis();
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = tsRun
@@ -866,8 +866,8 @@ public class OmegaMySqlGatewayOld {
 				}
 			}
 		}
-		final Long totalTime = System.currentTimeMillis() - startingTime;
-		System.out.println("TotalTime: " + (totalTime / 1000));
+		// final Long totalTime = System.currentTimeMillis() - startingTime;
+		// System.out.println("TotalTime: " + (totalTime / 1000));
 		return analysisRunID;
 	}
 
@@ -910,7 +910,7 @@ public class OmegaMySqlGatewayOld {
 		        experimenterID, parentAnalysisRunID);
 		particleLinkingRun.setElementID(tmpAnalysisRunID);
 		final long analysisRunID = tmpAnalysisRunID;
-		final Long startingTime = System.currentTimeMillis();
+		// final Long startingTime = System.currentTimeMillis();
 		final List<Thread> threads = new ArrayList<Thread>();
 		int counter = 0;
 		for (final OmegaTrajectory trajectory : particleLinkingRun
@@ -955,8 +955,8 @@ public class OmegaMySqlGatewayOld {
 				}
 			}
 		}
-		final Long totalTime = System.currentTimeMillis() - startingTime;
-		System.out.println("TotalTime: " + (totalTime / 1000));
+		// final Long totalTime = System.currentTimeMillis() - startingTime;
+		// System.out.println("TotalTime: " + (totalTime / 1000));
 		return analysisRunID;
 	}
 
@@ -992,9 +992,9 @@ public class OmegaMySqlGatewayOld {
 				final int color_g = results2.getInt(5);
 				final int color_b = results2.getInt(6);
 				if (trajectory == null) {
-					trajectory = new OmegaTrajectory(length);
+					trajectory = new OmegaTrajectory(length, name);
 					trajectory.setElementID((long) trajectoryID);
-					trajectory.setName(name);
+					// trajectory.setName(name);
 					trajectory.setColor(new Color(color_r, color_g, color_b));
 					trajsLoaded.add(trajectory);
 					trajectories.add(trajectory);
@@ -1132,7 +1132,7 @@ public class OmegaMySqlGatewayOld {
 				        endingROI_ID);
 
 				final OmegaSegment segment = new OmegaSegment(startingROI,
-				        endingROI);
+				        endingROI, OmegaSegment.DEFAULT_SEGM_NAME);
 				segment.setSegmentationType(segmType);
 				segment.setElementID((long) segmentID);
 				segments.add(segment);
@@ -1865,7 +1865,7 @@ public class OmegaMySqlGatewayOld {
 			final Integer green = results2.getInt(6);
 			final Color col = new Color(red, green, blue);
 			final OmegaSegmentationType segmType = new OmegaSegmentationType(s,
-			        val, col);
+			        val, col, "");
 			types.add(segmType);
 			results3.close();
 			stat3.close();

@@ -594,6 +594,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 	}
 
 	protected List<OmegaROI> getFrameParticlesOverlay(final int t) {
+		if (this.selectedParticleDetectionRun == null)
+			return null;
 		for (final OmegaPlane frame : this.selectedParticleDetectionRun
 		        .getResultingParticles().keySet()) {
 			if (frame.getIndex() == t) {

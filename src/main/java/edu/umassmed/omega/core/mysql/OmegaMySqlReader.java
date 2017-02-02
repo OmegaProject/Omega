@@ -355,6 +355,28 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final Date timeStamps = format.parse(dateS);
 		results1.getStatement().close();
 		results1.close();
+		final ResultSet results2 = this.load(id,
+		        OmegaMySqlCostants.SNR_GLOBAL_GENERIC_VALUES_TABLE,
+		        OmegaMySqlCostants.ANALYSIS_ID_FIELD);
+		if (results2 == null)
+			return null;
+		final Double background = results2
+				.getDouble(OmegaMySqlCostants.SNR_BACKGROUND);
+		final Double noise = results2.getDouble(OmegaMySqlCostants.SNR_NOISE);
+		final Double avgSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_AVG_SNR);
+		final Double minSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_MIN_SNR);
+		final Double maxSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_MAX_SNR);
+		final Double avgErrorIndexSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_AVG_ERRORINDEX_SNR);
+		final Double minErrorIndexSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_MIN_ERRORINDEX_SNR);
+		final Double maxErrorIndexSNR = results2
+				.getDouble(OmegaMySqlCostants.SNR_MAX_ERRORINDEX_SNR);
+		results2.getStatement().close();
+		results2.close();
 		final OmegaSNRRun snrRun = new OmegaSNRRun(experimenter,
 		        algorithmSpecification, timeStamps, name, resultingImageNoise,
 		        resultingImageBGR, resultingImageAverageSNR,
@@ -364,7 +386,9 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		        resultingImageMaximumErrorIndexSNR, resultingLocalCenterSignal,
 		        resultingLocalMeanSignal, resultingLocalParticleArea,
 		        resultingLocalPeakSignal, resultingLocalNoise,
-		        resultingLocalSNR, resultingLocalErrorIndexSNR);
+		        resultingLocalSNR, resultingLocalErrorIndexSNR, background,
+		        noise, avgSNR, minSNR, maxSNR, avgErrorIndexSNR,
+		        minErrorIndexSNR, maxErrorIndexSNR);
 		snrRun.setElementID(id);
 		return snrRun;
 	}
@@ -482,8 +506,11 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 	        final OmegaRunDefinition algorithmSpecification,
 	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
 	        final Map<OmegaSegment, Double[]> peakSignalsMap,
+	        final Map<OmegaSegment, Double[]> centroidSignalsMap,
 	        final Map<OmegaSegment, Double[]> meanSignalsMap,
-	        final Map<OmegaSegment, Double[]> centroidSignalsMap)
+	        final Map<OmegaSegment, Double[]> noisesMap,
+	        final Map<OmegaSegment, Double[]> areasMap,
+	        final Map<OmegaSegment, Double[]> snrsMap, final OmegaSNRRun snrRun)
 	        throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 		        OmegaMySqlCostants.ANALYSIS_TABLE,
@@ -500,7 +527,8 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		final OmegaTrackingMeasuresIntensityRun intRun = new OmegaTrackingMeasuresIntensityRun(
 		        experimenter, algorithmSpecification, timeStamps, name,
-		        segments, peakSignalsMap, meanSignalsMap, centroidSignalsMap);
+		        segments, peakSignalsMap, centroidSignalsMap, noisesMap,
+				snrsMap, areasMap, meanSignalsMap, snrRun);
 		intRun.setElementID(id);
 		return intRun;
 	}
@@ -787,11 +815,11 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		        OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 	}
 
-	public List<Long> getTrackingMeasuresDiffusivitySNRIDs(
-	        final long trackingMeasuresID) throws SQLException {
+	public List<Long> getTrackingMeasuresSNRIDs(final long trackingMeasuresID)
+			throws SQLException {
 		return this.getAllIDFieldByID(trackingMeasuresID,
 		        OmegaMySqlCostants.ANALYSIS_ID_FIELD,
-		        OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_PARENT_TABLE,
+		        OmegaMySqlCostants.TRACKING_MEASURES_SNR_TABLE,
 		        OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 	}
 
@@ -1016,16 +1044,34 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		                OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_LOCAL_SPEED_TABLE);
 	}
 
-	public Map<Long, Double[]> loadIntensityCentroidSignalsMap(
+	public Map<Long, Double[]> loadIntensitySNRsMap(
 	        final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
-		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
+		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_SNR_TABLE);
+	}
+
+	public Map<Long, Double[]> loadIntensityAreasMap(
+	        final long trackingMeasuresID) throws SQLException {
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
+		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_AREA_TABLE);
+	}
+
+	public Map<Long, Double[]> loadIntensityNoisesMap(
+	        final long trackingMeasuresID) throws SQLException {
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
+		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_NOISE_TABLE);
 	}
 
 	public Map<Long, Double[]> loadIntensityMeanSignalsMap(
 	        final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_MEAN_TABLE);
+	}
+
+	public Map<Long, Double[]> loadIntensityCentroidSignalsMap(
+	        final long trackingMeasuresID) throws SQLException {
+		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
+		        OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
 	}
 
 	public Map<Long, Double[]> loadIntensityPeakSignalsMap(
@@ -1372,8 +1418,8 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		        .getInt(OmegaMySqlCostants.COLOR_BLUE_FIELD);
 		results1.getStatement().close();
 		results1.close();
-		final OmegaTrajectory track = new OmegaTrajectory(length);
-		track.setName(name);
+		final OmegaTrajectory track = new OmegaTrajectory(length, name);
+		// track.setName(name);
 		track.setColor(new Color(color_r, color_g, color_b));
 		track.setElementID(id);
 		return track;
@@ -1395,6 +1441,8 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		if (results1 == null)
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
+		final String desc = results1
+				.getString(OmegaMySqlCostants.DESCRIPTION_FIELD);
 		final int value = results1.getInt(OmegaMySqlCostants.VALUE_FIELD);
 		final int red = results1.getInt(OmegaMySqlCostants.COLOR_RED_FIELD);
 		final int blue = results1.getInt(OmegaMySqlCostants.COLOR_BLUE_FIELD);
@@ -1403,7 +1451,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.getStatement().close();
 		results1.close();
 		final OmegaSegmentationType segmentationType = new OmegaSegmentationType(
-		        name, value, color);
+		        name, value, color, desc);
 		segmentationType.setElementID(id);
 		return segmentationType;
 	}
@@ -1465,11 +1513,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		        .getLong(OmegaMySqlCostants.SEGMENT_START_ROI_FIELD);
 		final long endingROI_ID = results1
 		        .getLong(OmegaMySqlCostants.SEGMENT_END_ROI_FIELD);
+		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		results1.getStatement().close();
 		results1.close();
 		final OmegaROI start = rois.get(startingROI_ID);
 		final OmegaROI end = rois.get(endingROI_ID);
-		final OmegaSegment segment = new OmegaSegment(start, end);
+		final OmegaSegment segment = new OmegaSegment(start, end, name);
 		segment.setElementID(id);
 		segment.setSegmentationType(segmType);
 

@@ -77,19 +77,19 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTr
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.GenericSegmentInformationPanel;
+import edu.umassmed.omega.commons.gui.GenericSegmentsBrowserPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
-import edu.umassmed.omega.commons.gui.GenericTrajectoriesBrowserPanel;
-import edu.umassmed.omega.commons.gui.GenericTrajectoryInformationPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericConfirmationDialog;
-import edu.umassmed.omega.commons.gui.interfaces.GenericTrajectoriesBrowserContainerInterface;
+import edu.umassmed.omega.commons.gui.interfaces.GenericSegmentsBrowserContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.actions.SegmentationAction;
 
-public class TSPluginPanel extends GenericPluginPanel implements
-GenericTrajectoriesBrowserContainerInterface {
+public class TSPluginPanelNew extends GenericPluginPanel implements
+GenericSegmentsBrowserContainerInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
@@ -113,10 +113,10 @@ GenericTrajectoriesBrowserContainerInterface {
 
 	private GenericTrackingResultsPanel resPanel;
 
-	private GenericTrajectoriesBrowserPanel tbPanel;
+	private GenericSegmentsBrowserPanel tbPanel;
 	private TSPanel tsPanel;
 	private GenericStatusPanel statusPanel;
-	private GenericTrajectoryInformationPanel currentTrajInfoPanel;
+	private GenericSegmentInformationPanel currentTrajInfoPanel;
 	private TSSegmentPreferencesDialog segmentPreferencesDialog;
 
 	private List<OmegaImage> images;
@@ -141,7 +141,7 @@ GenericTrajectoriesBrowserContainerInterface {
 	private JPanel topPanel;
 	private JMenuItem hideDataSelection_mItm;
 
-	public TSPluginPanel(final RootPaneContainer parent,
+	public TSPluginPanelNew(final RootPaneContainer parent,
 			final OmegaPlugin plugin, final OmegaGateway gateway,
 			final List<OmegaImage> images,
 			final OrphanedAnalysisContainer orphanedAnalysis,
@@ -229,8 +229,8 @@ GenericTrajectoriesBrowserContainerInterface {
 	}
 
 	private void createAndAddWidgets() {
-		this.segmentPreferencesDialog = new TSSegmentPreferencesDialog(this,
-				this.getParentContainer(), this.segmTypesList);
+		// this.segmentPreferencesDialog = new TSSegmentPreferencesDialog(this,
+		// this.getParentContainer(), this.segmTypesList);
 
 		this.topPanel = new JPanel();
 		this.topPanel.setLayout(new GridLayout(5, 1));
@@ -298,12 +298,14 @@ GenericTrajectoriesBrowserContainerInterface {
 
 		this.tabbedPane = new JTabbedPane();
 
-		this.tbPanel = new GenericTrajectoriesBrowserPanel(
+		// this.tbPanel = new GenericTrajectoriesBrowserPanel(
+		// this.getParentContainer(), this, this.gateway, true, true);
+		this.tbPanel = new GenericSegmentsBrowserPanel(
 				this.getParentContainer(), this, this.gateway, true, true);
 		this.tabbedPane.add(TSConstants.BROWSER_TABNAME, this.tbPanel);
 
-		this.tsPanel = new TSPanel(this.getParentContainer(), this,
-				this.currentSegmentationTypes);
+		// this.tsPanel = new TSPanel(this.getParentContainer(), this,
+		// this.currentSegmentationTypes);
 		this.tabbedPane.add(TSConstants.SEGMENTATION_TABNAME, this.tsPanel);
 
 		this.resPanel = new GenericTrackingResultsPanel(
@@ -318,7 +320,7 @@ GenericTrajectoriesBrowserContainerInterface {
 		final JPanel bottomSubPanel = new JPanel();
 		bottomSubPanel.setLayout(new BorderLayout());
 
-		this.currentTrajInfoPanel = new GenericTrajectoryInformationPanel(
+		this.currentTrajInfoPanel = new GenericSegmentInformationPanel(
 				this.getParentContainer(), this);
 		bottomSubPanel.add(this.currentTrajInfoPanel, BorderLayout.NORTH);
 
@@ -367,32 +369,33 @@ GenericTrajectoriesBrowserContainerInterface {
 		this.images_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TSPluginPanel.this.selectImage();
+				TSPluginPanelNew.this.selectImage();
 			}
 		});
 		this.particles_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				TSPluginPanel.this.selectParticleDetectionRun();
+				TSPluginPanelNew.this.selectParticleDetectionRun();
 			}
 		});
 		this.trajectories_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				TSPluginPanel.this.selectParticleLinkingRun();
+				TSPluginPanelNew.this.selectParticleLinkingRun();
 			}
 		});
 		this.trajectoriesRelinking_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TSPluginPanel.this.selectTrajectoriesRelinkingRun();
+				TSPluginPanelNew.this.selectTrajectoriesRelinkingRun();
 			}
 		});
 		this.trajectoriesSegmentation_cmb
 		.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TSPluginPanel.this.selectTrajectoriesSegmentationRun();
+				TSPluginPanelNew.this
+				.selectTrajectoriesSegmentationRun();
 			}
 		});
 		this.save_btt.addActionListener(this
@@ -409,14 +412,14 @@ GenericTrajectoriesBrowserContainerInterface {
 				.getCancelAllActionsActionListener());
 		// this.preferences_itm.addActionListener(new ActionListener() {
 			// @Override
-		// public void actionPerformed(final ActionEvent e) {
+			// public void actionPerformed(final ActionEvent e) {
 		// TSPluginPanel.this.openPreferencesDialog();
 		// }
 		// });
 		this.hideDataSelection_mItm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TSPluginPanel.this.handleHideDataSelection();
+				TSPluginPanelNew.this.handleHideDataSelection();
 			}
 		});
 	}
@@ -466,7 +469,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.save_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					TSPluginPanel.this.saveAllActions();
+					TSPluginPanelNew.this.saveAllActions();
 				}
 			};
 		}
@@ -478,7 +481,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.undo_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					TSPluginPanel.this.undoLastAction();
+					TSPluginPanelNew.this.undoLastAction();
 				}
 			};
 		}
@@ -490,7 +493,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.redo_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					TSPluginPanel.this.redoLastAction();
+					TSPluginPanelNew.this.redoLastAction();
 				}
 			};
 		}
@@ -502,7 +505,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.cancel_al = new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					TSPluginPanel.this.cancelAllActions();
+					TSPluginPanelNew.this.cancelAllActions();
 				}
 			};
 		}
@@ -712,7 +715,8 @@ GenericTrajectoriesBrowserContainerInterface {
 			} else if ((edgeStartingIndex > startingIndex)
 					&& (edgeEndingIndex < endingIndex)) {
 				// Case new edge include old edge
-				final String name = OmegaSegment.DEFAULT_SEGM_NAME + "_"
+				final String name = trackName + "-"
+				        + OmegaSegment.DEFAULT_SEGM_NAME + "_"
 				        + edgesToAdd.size();
 				final OmegaSegment newEdge = new OmegaSegment(startingROI,
 						endingROI, name);
@@ -722,20 +726,20 @@ GenericTrajectoriesBrowserContainerInterface {
 			} else if ((edgeEndingIndex > startingIndex)
 					&& (edgeEndingIndex <= endingIndex)) {
 				// Case new edge is at the end
-				this.createEdgeAtTheEnd(edge, startingROI, endingROI,
-						segmValue, edgesToAdd);
+				this.createEdgeAtTheEnd(trackName, edge, startingROI,
+						endingROI, segmValue, edgesToAdd);
 				edgesToRemove.add(edge);
 			} else if ((edgeStartingIndex >= startingIndex)
 					&& (edgeStartingIndex < endingIndex)) {
 				// Case new edge is at the beginning
-				this.createEdgeAtTheBeginning(edge, startingROI, endingROI,
-						segmValue, edgesToAdd);
+				this.createEdgeAtTheBeginning(trackName, edge, startingROI,
+						endingROI, segmValue, edgesToAdd);
 				edgesToRemove.add(edge);
 			} else if ((edgeStartingIndex <= startingIndex)
 					&& (edgeEndingIndex >= endingIndex)) {
 				// Case new edge is in between another edge
-				this.createEdgeInBetween(edge, startingROI, endingROI,
-						segmValue, edgesToAdd);
+				this.createEdgeInBetween(trackName, edge, startingROI,
+						endingROI, segmValue, edgesToAdd);
 				edgesToRemove.add(edge);
 			} else {
 				needCheckIteration = false;
@@ -748,7 +752,7 @@ GenericTrajectoriesBrowserContainerInterface {
 		segmentationResults.addAll(edgesToAdd);
 		if (needCheckIteration) {
 			for (final OmegaSegment edge : edgesToAdd) {
-				this.segmentTrajectory(segmentationResults, edge);
+				this.segmentTrajectory(trackName, segmentationResults, edge);
 			}
 		}
 
@@ -793,7 +797,7 @@ GenericTrajectoriesBrowserContainerInterface {
 		this.resPanel.populateSegmentsResults(segmentsMap);
 	}
 
-	private void segmentTrajectory(
+	private void segmentTrajectory(final String trackName,
 			final List<OmegaSegment> segmentationResults,
 			final OmegaSegment newEdge) {
 		final List<OmegaSegment> edgesToAdd = new ArrayList<OmegaSegment>();
@@ -819,7 +823,8 @@ GenericTrajectoriesBrowserContainerInterface {
 				needCheckIteration = false;
 				// Case new edge is at the end
 				if (edgeStartingIndex != startingIndex) {
-					final String name = OmegaSegment.DEFAULT_SEGM_NAME + "_"
+					final String name = trackName + "-"
+							+ OmegaSegment.DEFAULT_SEGM_NAME + "_"
 					        + edgesToAdd.size();
 					final OmegaSegment trunk = new OmegaSegment(
 							edge.getStartingROI(), newEdge.getStartingROI(),
@@ -834,7 +839,8 @@ GenericTrajectoriesBrowserContainerInterface {
 				edgesToRemove.add(edge);
 				needCheckIteration = false;
 				if (edgeEndingIndex != endingIndex) {
-					final String name = OmegaSegment.DEFAULT_SEGM_NAME + "_"
+					final String name = trackName + "-"
+							+ OmegaSegment.DEFAULT_SEGM_NAME + "_"
 					        + edgesToAdd.size();
 					final OmegaSegment trunk = new OmegaSegment(
 							newEdge.getEndingROI(), edge.getEndingROI(), name);
@@ -848,69 +854,69 @@ GenericTrajectoriesBrowserContainerInterface {
 		segmentationResults.removeAll(edgesToRemove);
 		if (needCheckIteration) {
 			for (final OmegaSegment edge : edgesToAdd) {
-				this.segmentTrajectory(segmentationResults, edge);
+				this.segmentTrajectory(trackName, segmentationResults, edge);
 			}
 		}
 	}
 
-	private void createEdgeAtTheBeginning(final OmegaSegment edge,
-	        final OmegaROI startingROI, final OmegaROI endingROI,
-	        final int actualSegmentationType,
+	private void createEdgeAtTheBeginning(final String trackName,
+			final OmegaSegment edge, final OmegaROI startingROI,
+			final OmegaROI endingROI, final int actualSegmentationType,
 			final List<OmegaSegment> edgesToAdd) {
-		final String name1 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name1 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment newEdge = new OmegaSegment(startingROI, endingROI,
 				name1);
 		newEdge.setSegmentationType(actualSegmentationType);
 		edgesToAdd.add(newEdge);
 		
-		final String name2 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name2 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+		        + "_" + edgesToAdd.size();
 		final OmegaSegment oldEdge = new OmegaSegment(endingROI,
 				edge.getEndingROI(), name2);
 		oldEdge.setSegmentationType(edge.getSegmentationType());
 		edgesToAdd.add(oldEdge);
 	}
 
-	private void createEdgeAtTheEnd(final OmegaSegment edge,
-			final OmegaROI startingROI, final OmegaROI endingROI,
-			final int actualSegmentationType,
+	private void createEdgeAtTheEnd(final String trackName,
+			final OmegaSegment edge, final OmegaROI startingROI,
+			final OmegaROI endingROI, final int actualSegmentationType,
 			final List<OmegaSegment> edgesToAdd) {
-		final String name1 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name1 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment oldEdge = new OmegaSegment(edge.getStartingROI(),
 				startingROI, name1);
 		oldEdge.setSegmentationType(edge.getSegmentationType());
 		edgesToAdd.add(oldEdge);
 
-		final String name2 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name2 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment newEdge = new OmegaSegment(startingROI, endingROI,
 				name2);
 		newEdge.setSegmentationType(actualSegmentationType);
 		edgesToAdd.add(newEdge);
 	}
 
-	private void createEdgeInBetween(final OmegaSegment edge,
-			final OmegaROI startingROI, final OmegaROI endingROI,
-			final int actualSegmentationType,
+	private void createEdgeInBetween(final String trackName,
+			final OmegaSegment edge, final OmegaROI startingROI,
+			final OmegaROI endingROI, final int actualSegmentationType,
 	        final List<OmegaSegment> edgesToAdd) {
-		final String name1 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name1 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment trunk1 = new OmegaSegment(edge.getStartingROI(),
 				startingROI, name1);
 		trunk1.setSegmentationType(edge.getSegmentationType());
 		edgesToAdd.add(trunk1);
 		
-		final String name2 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name2 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment newEdge = new OmegaSegment(startingROI, endingROI,
 				name2);
 		newEdge.setSegmentationType(actualSegmentationType);
 		edgesToAdd.add(newEdge);
 
-		final String name3 = OmegaSegment.DEFAULT_SEGM_NAME + "_"
-		        + edgesToAdd.size();
+		final String name3 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
+				+ "_" + edgesToAdd.size();
 		final OmegaSegment trunk2 = new OmegaSegment(endingROI,
 				edge.getEndingROI(), name3);
 		trunk2.setSegmentationType(edge.getSegmentationType());
@@ -1058,9 +1064,13 @@ GenericTrajectoriesBrowserContainerInterface {
 			}
 		}
 
-		this.tbPanel
-		.updateTrajectories(this.selectedTrajRelinkingRun
-				.getResultingTrajectories(), false);
+		// this.tbPanel
+		// .updateTrajectories(this.selectedTrajRelinkingRun
+		// .getResultingTrajectories(), false);
+		final Map<OmegaTrajectory, List<OmegaSegment>> segments = this
+				.getSegmentsMap();
+		this.tbPanel.updateSegments(segments, this.currentSegmentationTypes,
+		        false);
 		if (this.selectedTrajSegmentationRun != null) {
 			this.updateSegmentTrajectories(this.tbPanel
 					.getSelectedTrajectories());
@@ -1192,9 +1202,13 @@ GenericTrajectoriesBrowserContainerInterface {
 
 	}
 
-	private void updateSelectedInformation(
-			final List<OmegaTrajectory> trajectories) {
-		this.currentTrajInfoPanel.setSelectedTrajectories(trajectories);
+	// private void updateSelectedInformation(
+	// final List<OmegaTrajectory> trajectories) {
+	// this.currentTrajInfoPanel.setSelectedTrajectories(trajectories);
+	// }
+	
+	private void updateSelectedInformation(final List<OmegaSegment> segments) {
+		this.currentTrajInfoPanel.setSelectedSegments(segments);
 	}
 
 	private void resetTrajectories() {
@@ -1206,11 +1220,18 @@ GenericTrajectoriesBrowserContainerInterface {
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
 		// TODO modify to keep changes if needed
-		this.tbPanel.updateTrajectories(trajectories, selection);
+		// this.tbPanel.updateTrajectories(trajectories, selection);
+
 		// TODO refactoring ?
 		if (selection) {
 			this.updateSegmentTrajectories(trajectories);
 		}
+	}
+
+	public void updateSegments(
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+		this.tbPanel.updateSegments(segments, segmTypes, selection);
 	}
 
 	public void updateSegmentTrajectories(
@@ -1219,7 +1240,7 @@ GenericTrajectoriesBrowserContainerInterface {
 			this.tsPanel.resetSegmentation();
 			return;
 		}
-		this.updateSelectedInformation(trajectories);
+		// this.updateSelectedInformation(trajectories);
 		OmegaTrajectoriesSegmentationRun currentSegmentation = this.selectedTrajSegmentationRun;
 		if (currentSegmentation == null) {
 			currentSegmentation = this.startingPointTrajSegmentationRun;
@@ -1227,9 +1248,12 @@ GenericTrajectoriesBrowserContainerInterface {
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = new LinkedHashMap<>();
 		final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = currentSegmentation
 				.getResultingSegments();
+		final List<OmegaSegment> segments = new ArrayList<OmegaSegment>();
 		for (final OmegaTrajectory traj : trajectories) {
+			segments.addAll(resultingSegments.get(traj));
 			segmentsMap.put(traj, resultingSegments.get(traj));
 		}
+		this.updateSelectedInformation(segments);
 		this.tsPanel.createSegmentSingleTrajectoryPanels(segmentsMap);
 		// TODO Apply default segmentation here
 		this.updateCurrentSegmentedTrajectories();
@@ -1619,6 +1643,14 @@ GenericTrajectoriesBrowserContainerInterface {
 			final boolean selected) {
 		this.updateSegmentTrajectories(selectedTrajectories);
 		this.fireEventTrajectories(selectedTrajectories, selected);
+	}
+	
+	@Override
+	public void sendEventSegments(
+			final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegments,
+			final boolean selected) {
+		this.fireEventSegments(selectedSegments, selected);
+
 	}
 
 	@Override
