@@ -725,9 +725,10 @@ OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
 		if (source == null)
 			// TODO gestire errore
 			return;
-		if (this.experimenter == null)
-			// TODO gestire errore
-			return;
+		if (this.experimenter == null) {
+			this.experimenter = OmegaConstants.OMEGA_DEFAULT_EXPERIMENTER;
+			// TODO should be handled differently
+		}
 		final OmegaElement element = event.getElement();
 		if (!(element instanceof OmegaAnalysisRunContainer))
 			// TODO gestire errore
