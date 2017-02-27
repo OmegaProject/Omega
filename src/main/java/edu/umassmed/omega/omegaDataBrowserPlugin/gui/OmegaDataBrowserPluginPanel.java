@@ -70,6 +70,7 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAn
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
+import edu.umassmed.omega.commons.gui.dialogs.GenericResultsDialog;
 import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContainerInterface;
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksExporter;
@@ -97,13 +98,15 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 	private final OmegaData omegaData;
 	private final OmegaLoadedData loadedData;
 	private final List<OmegaAnalysisRun> loadedAnalysisRuns;
+	
+	private GenericResultsDialog resultsDialog;
 
 	private OmegaAnalysisRunContainer selectedDataElement,
 	        selectedDetectionRun, selectedLinkingRun, selectedTrajRelinkingRun,
 	        selectedTrajSegmentationRun, selectedTrackingMeasuresRun,
 	        selectedSNRRun;
 
-	private JButton import_btt, export_btt;
+	private JButton import_btt, export_btt, results_btt;
 
 	private MouseMotionListener splitPaneDivider_mml;
 	private ComponentListener resize_cl;
@@ -141,6 +144,9 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 	}
 
 	public void createAndAddWidgets() {
+		this.resultsDialog = new GenericResultsDialog(
+		        this.getParentContainer(), "Analysis results", true);
+
 		final JPanel dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
 		this.loadedDataPanel = new OmegaDataBrowserLoadedDataBrowserPanel(
@@ -222,7 +228,12 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 		analysisPanel.add(this.tabbedPane, BorderLayout.CENTER);
 		final JPanel buttPanel2 = new JPanel();
 		buttPanel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		this.export_btt = new JButton("Export data");
+		this.results_btt = new JButton("See results");
+		this.results_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
+		this.results_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
+		this.results_btt.setEnabled(false);
+		buttPanel2.add(this.results_btt);
+		this.export_btt = new JButton("Export results");
 		this.export_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.export_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.export_btt.setEnabled(false);
@@ -286,8 +297,43 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 				OmegaDataBrowserPluginPanel.this.handleDataExporter();
 			}
 		});
+		this.results_btt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaDataBrowserPluginPanel.this.handleDataViewer();
+			}
+		});
 		((BasicSplitPaneUI) this.splitPane.getUI()).getDivider()
 		.addMouseMotionListener(this.splitPaneDivider_mml);
+	}
+	
+	private void handleDataViewer() {
+		if ((this.selectedTrackingMeasuresRun != null)
+				&& (this.selectedTrajSegmentationRun != null)) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedTrackingMeasuresRun,
+			        (OmegaAnalysisRun) this.selectedTrajSegmentationRun);
+		} else if (this.selectedTrajSegmentationRun != null) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedTrajSegmentationRun, null);
+		} else if (this.selectedTrajRelinkingRun != null) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedTrajRelinkingRun, null);
+		} else if (this.selectedLinkingRun != null) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedLinkingRun, null);
+		} else if (this.selectedSNRRun != null) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedSNRRun,
+			        (OmegaAnalysisRun) this.selectedDetectionRun);
+		} else if (this.selectedDetectionRun != null) {
+			this.resultsDialog.setAnalysis(
+			        (OmegaAnalysisRun) this.selectedDetectionRun, null);
+		} else {
+			this.resultsDialog.setAnalysis(null, null);
+		}
+		this.resultsDialog.setVisible(true);
 	}
 
 	private void handleDataExporter() {
@@ -345,6 +391,7 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 		this.trackSegmPanel.updateParentContainer(parent);
 		this.trackingMeasuresPanel.updateParentContainer(parent);
 		this.snrPanel.updateParentContainer(parent);
+		this.resultsDialog.updateParentContainer(parent);
 	}
 
 	public void setSelectedAnalysisContainer(
@@ -363,12 +410,14 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 			this.import_btt.setEnabled(false);
 		}
 		this.export_btt.setEnabled(false);
+		this.results_btt.setEnabled(false);
 		this.repaint();
 	}
 
 	public void setSelectedSubAnalysisContainer(
 	        final OmegaAnalysisRunContainer analysisRunContainer) {
 		this.export_btt.setEnabled(true);
+		this.results_btt.setEnabled(true);
 		if (analysisRunContainer instanceof OmegaSNRRun) {
 			this.selectedSNRRun = analysisRunContainer;
 			this.fireEventSelectionSNRRun();
@@ -412,6 +461,7 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 			        .updateTree(this.selectedTrajSegmentationRun);
 		} else {
 			this.export_btt.setEnabled(false);
+			this.results_btt.setEnabled(false);
 			this.selectedDetectionRun = null;
 			this.selectedLinkingRun = null;
 			this.selectedTrajRelinkingRun = null;
