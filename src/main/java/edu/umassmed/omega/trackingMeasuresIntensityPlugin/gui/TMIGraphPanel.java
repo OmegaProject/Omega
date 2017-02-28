@@ -221,7 +221,7 @@ public class TMIGraphPanel extends GenericPanel {
 		if (height > width) {
 			size = width;
 		}
-		final Dimension graphDim = new Dimension(size, size);
+		final Dimension graphDim = new Dimension(size + (size / 2), size);
 		this.graphPanel.setSize(graphDim);
 		this.graphPanel.setPreferredSize(graphDim);
 		this.repaint();

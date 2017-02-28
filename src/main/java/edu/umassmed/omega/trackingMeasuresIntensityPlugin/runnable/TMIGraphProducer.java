@@ -17,36 +17,36 @@ import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
 import edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel;
 
 public class TMIGraphProducer extends StatsGraphProducer {
-
+	
 	private final TMIGraphPanel intensityGraphPanel;
-
+	
 	private final int peakMeanBgSnrOption, minMeanMaxOption;
 	private final boolean isTimepointsGraph;
 	private final int maxT;
-
+	
 	private final Map<OmegaSegment, Double[]> peakSignalMap;
 	private final Map<OmegaSegment, Double[]> centroidSignalsMap;
-	
+
 	// SNR related START
 	private final Map<OmegaSegment, Double[]> meanSignalsMap;
 	private final Map<OmegaSegment, Double[]> noisesMap;
 	private final Map<OmegaSegment, Double[]> areasMap;
 	private final Map<OmegaSegment, Double[]> snrsMap;
 	// SNR related END
-
+	
 	private JPanel graphPanel;
-
+	
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
-	        final int graphType, final int peakMeanBgSnrOption,
-	        final int minMeanMaxOption, final int maxT,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, Double[]> peakSignalMap,
-	        final Map<OmegaSegment, Double[]> centroidSignalsMap,
-	        final Map<OmegaSegment, Double[]> meanSignalsMap,
-	        final Map<OmegaSegment, Double[]> noisesMap,
-	        final Map<OmegaSegment, Double[]> areasMap,
-	        final Map<OmegaSegment, Double[]> snrsMap, final boolean isTimePoint) {
+			final int graphType, final int peakMeanBgSnrOption,
+			final int minMeanMaxOption, final int maxT,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, Double[]> peakSignalMap,
+			final Map<OmegaSegment, Double[]> centroidSignalsMap,
+			final Map<OmegaSegment, Double[]> meanSignalsMap,
+			final Map<OmegaSegment, Double[]> noisesMap,
+			final Map<OmegaSegment, Double[]> areasMap,
+			final Map<OmegaSegment, Double[]> snrsMap, final boolean isTimePoint) {
 		super(graphType, segmentsMap, segmTypes);
 		this.intensityGraphPanel = intensityGraphPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
@@ -60,7 +60,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		this.areasMap = areasMap;
 		this.snrsMap = snrsMap;
 	}
-
+	
 	// public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
 	// final int graphType, final int peakMeanBgSnrOption, final int maxT,
 	// final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
@@ -78,18 +78,18 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	// this.areasMap = null;
 	// this.snrsMap = null;
 	// }
-
+	
 	@Override
 	public void run() {
 		super.run();
 		if (this.isTimepointsGraph) {
-			this.graphPanel = this.prepareTimepointsGraph(this.maxT);
+			this.graphPanel = this.prepareTimepointsGraph(this.maxT, true);
 		} else {
-			this.graphPanel = this.prepareTracksGraph(true);
+			this.graphPanel = this.prepareTracksGraph(true, true);
 		}
 		this.updateStatus(true);
 	}
-
+	
 	@Override
 	public String getTitle() {
 		String title = "";
@@ -127,12 +127,12 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		}
 		return title;
 	}
-
+	
 	@Override
 	public String getYAxisTitle() {
 		return TMIConstants.GRAPH_LAB_Y_INT;
 	}
-
+	
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		Double[] values = null;
@@ -159,7 +159,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		value[0] = values[this.minMeanMaxOption];
 		return value;
 	}
-
+	
 	@Override
 	public void updateStatus(final boolean ended) {
 		try {
@@ -167,15 +167,15 @@ public class TMIGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMIGraphProducer.this.intensityGraphPanel.updateStatus(
-					        TMIGraphProducer.this.getCompleted(), ended,
-					        TMIGraphProducer.this.graphPanel);
+							TMIGraphProducer.this.getCompleted(), ended,
+							TMIGraphProducer.this.graphPanel);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
-
+	
 	public JPanel getGraph() {
 		return this.graphPanel;
 	}
