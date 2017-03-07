@@ -104,7 +104,8 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 
 	@Override
 	protected void handleMouseClick(final Point clickP,
-			final boolean isRightButton, final boolean isCtrlDown) {
+			final boolean isRightButton, final boolean isCtrlDown,
+			final boolean isTrackPanel) {
 		final OmegaTrajectory oldTraj = this.getSelectedTrajectory();
 		this.resetClickReferences();
 		this.findSelectedTrajectory(clickP);
@@ -113,7 +114,7 @@ public class TRPanel extends GenericTrajectoriesBrowserPanel {
 				this.findSelectedParticle(clickP);
 			}
 			this.createTrajectoryMenu();
-			this.showTrajectoryMenu(clickP);
+			this.showTrajectoryMenu(clickP, isTrackPanel);
 			this.getSelectedTrajectories().clear();
 		} else {
 			if (this.getSelectedTrajectory() != null) {

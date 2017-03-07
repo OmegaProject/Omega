@@ -59,12 +59,12 @@ OmegaMessageDisplayerPanelInterface {
 		this.run_btt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				TMVRunPanel.this.startIntensityAnalyzer();
+				TMVRunPanel.this.startVelocityAnalyzer();
 			}
 		});
 	}
 
-	private void startIntensityAnalyzer() {
+	private void startVelocityAnalyzer() {
 		if (this.pluginPanel == null)
 			return;
 		// TODO Stop if thread already running (disable button would be better)
@@ -72,6 +72,7 @@ OmegaMessageDisplayerPanelInterface {
 		        .getSizeT();
 		this.analyzer = new OmegaVelocityAnalyzer(this, maxT,
 		        this.pluginPanel.getSegments());
+		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
 
@@ -97,6 +98,7 @@ OmegaMessageDisplayerPanelInterface {
 			        this.analyzer.getAverageStraightLineVelocityResults(),
 			        this.analyzer.getForwardProgressionLinearityResults());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
+			this.run_btt.setEnabled(true);
 		}
 	}
 }

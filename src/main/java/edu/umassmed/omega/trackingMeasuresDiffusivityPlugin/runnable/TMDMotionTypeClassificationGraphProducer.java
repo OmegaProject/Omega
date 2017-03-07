@@ -16,15 +16,15 @@ import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
 import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel;
 
 public class TMDMotionTypeClassificationGraphProducer extends
-StatsGraphProducer implements Runnable {
-
+        StatsGraphProducer implements Runnable {
+	
 	private final static int TRACK = 0;
 	private final static int MSD = 1;
 	private final static int MSS = 2;
 	private final static int PHASE = 3;
-
+	
 	private final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel;
-
+	
 	private final int motionTypeOption, showOption;
 	private int currentGraph;
 	private int countCurrentGraph;
@@ -42,27 +42,27 @@ StatsGraphProducer implements Runnable {
 	// private final Map<OmegaSegment, Double[]> smssMap;
 	// private final Map<OmegaSegment, Double[]> errorMap;
 	private final Map<OmegaSegment, Double[]> errorFromLogMap;
-
+	
 	private final JPanel[] chartPanels;
-
+	
 	public TMDMotionTypeClassificationGraphProducer(
-			final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
-			final int motionTypeOption, final int showOption,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-			final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, Double[]> nyMap,
-			final Map<OmegaSegment, Double[][]> muMap,
-			final Map<OmegaSegment, Double[][]> logMuMap,
-			final Map<OmegaSegment, Double[][]> deltaTMap,
-			final Map<OmegaSegment, Double[][]> logDeltaTMap,
-			final Map<OmegaSegment, Double[][]> gammaDMap,
-			final Map<OmegaSegment, Double[][]> gammaDLogMap,
-			// final Map<OmegaSegment, Double[]> gammaMap,
-			final Map<OmegaSegment, Double[]> gammaLogMap,
-			// final Map<OmegaSegment, Double[]> smssMap,
-			final Map<OmegaSegment, Double[]> smssLogMap,
-			// final Map<OmegaSegment, Double[]> errorMap,
-			final Map<OmegaSegment, Double[]> errorLogMap) {
+	        final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
+	        final int motionTypeOption, final int showOption,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+	        final OmegaSegmentationTypes segmTypes,
+	        final Map<OmegaSegment, Double[]> nyMap,
+	        final Map<OmegaSegment, Double[][]> muMap,
+	        final Map<OmegaSegment, Double[][]> logMuMap,
+	        final Map<OmegaSegment, Double[][]> deltaTMap,
+	        final Map<OmegaSegment, Double[][]> logDeltaTMap,
+	        final Map<OmegaSegment, Double[][]> gammaDMap,
+	        final Map<OmegaSegment, Double[][]> gammaDLogMap,
+	        // final Map<OmegaSegment, Double[]> gammaMap,
+	        final Map<OmegaSegment, Double[]> gammaLogMap,
+	        // final Map<OmegaSegment, Double[]> smssMap,
+	        final Map<OmegaSegment, Double[]> smssLogMap,
+	        // final Map<OmegaSegment, Double[]> errorMap,
+	        final Map<OmegaSegment, Double[]> errorLogMap) {
 		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes);
 		this.motionTypeClassificationPanel = motionTypeClassificationPanel;
 		this.motionTypeOption = motionTypeOption;
@@ -85,7 +85,7 @@ StatsGraphProducer implements Runnable {
 		this.errorFromLogMap = errorLogMap;
 		this.chartPanels = new JPanel[4];
 	}
-
+	
 	// public TMMGraphProducer(final int distDispOption,final int tMax,
 	// final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 	// final Map<OmegaTrajectory, List<Double[]>> motilityMap) {
@@ -98,7 +98,7 @@ StatsGraphProducer implements Runnable {
 	//
 	// this.graphPanel = null;
 	// }
-
+	
 	@Override
 	public void run() {
 		super.run();
@@ -159,34 +159,34 @@ StatsGraphProducer implements Runnable {
 						// this.prepareSMSSvsDFromLogGraph();
 				}
 		}
-
+		
 		this.updateStatus(true);
 	}
-
+	
 	@Override
 	public void updateStatus(final boolean ended) {
-
+		
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					TMDMotionTypeClassificationGraphProducer.this.motionTypeClassificationPanel
-					.updateStatus(
-							TMDMotionTypeClassificationGraphProducer.this
-					                        .getCompleted(),
-							ended,
-							TMDMotionTypeClassificationGraphProducer.this.chartPanels);
+					        .updateStatus(
+					                TMDMotionTypeClassificationGraphProducer.this
+							.getCompleted(),
+					                ended,
+					                TMDMotionTypeClassificationGraphProducer.this.chartPanels);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
-
+	
 	public JPanel[] getGraphs() {
 		return this.chartPanels;
 	}
-
+	
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		Double[] value = null;
@@ -203,8 +203,9 @@ StatsGraphProducer implements Runnable {
 						muMap = this.muMap;
 						deltaTMap = this.deltaTMap;
 				}
-				if (muMap.containsKey(segment)
-						&& deltaTMap.containsKey(segment)) {
+				if ((muMap != null) && (deltaTMap != null)
+				        && muMap.containsKey(segment)
+				        && deltaTMap.containsKey(segment)) {
 					if (this.countCurrentGraph == 0) {
 						final Double[] msd = muMap.get(segment)[2];
 						value = msd;
@@ -228,7 +229,8 @@ StatsGraphProducer implements Runnable {
 						gammaMap = null;
 				}
 				if ((gammaMap != null) && gammaMap.containsKey(segment)
-						&& this.nyMap.containsKey(segment)) {
+				        && (this.nyMap != null)
+				        && this.nyMap.containsKey(segment)) {
 					if (this.countCurrentGraph == 0) {
 						final Double[] gamma = gammaMap.get(segment);
 						value = gamma;
@@ -259,8 +261,8 @@ StatsGraphProducer implements Runnable {
 						errorMap = null;
 				}
 				value = new Double[4];
-				if (gammaDMap.containsKey(segment) && (smssMap != null)
-						&& smssMap.containsKey(segment)) {
+				if ((gammaDMap != null) && gammaDMap.containsKey(segment)
+						&& (smssMap != null) && smssMap.containsKey(segment)) {
 					final Double d = gammaDMap.get(segment)[2][3];
 					final Double smss = smssMap.get(segment)[0];
 					Double dError = 0.0;
@@ -284,12 +286,12 @@ StatsGraphProducer implements Runnable {
 		}
 		return value;
 	}
-
+	
 	@Override
 	public String getTitle() {
 		return null;
 	}
-
+	
 	@Override
 	public String getYAxisTitle() {
 		return null;

@@ -216,6 +216,7 @@ OmegaMessageDisplayerPanelInterface {
 				this.pluginPanel.getSegments(), this.getParameters(),
 		        this.selectedSNRRun,
 				this.pluginPanel.getSelectedTrackingMeasuresDiffusivityRun());
+		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
 
@@ -305,6 +306,7 @@ OmegaMessageDisplayerPanelInterface {
 			        this.analyzer.getSNRRun(),
 			        this.analyzer.getTrackiMeasuresDiffusivityRun());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
+			this.run_btt.setEnabled(true);
 		}
 	}
 
