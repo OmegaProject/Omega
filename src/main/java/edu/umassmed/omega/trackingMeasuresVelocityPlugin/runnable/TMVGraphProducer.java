@@ -70,10 +70,12 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		switch (this.velocityOption) {
 			case TMVGraphPanel.OPTION_LOCAL_VELOCITY:
 			case TMVGraphPanel.OPTION_LOCAL_SPEED:
-				this.graphPanel = this.prepareTimepointsGraph(this.maxT, true);
+				this.prepareTimepointsGraph(this.maxT);
+				this.graphPanel = this.getGraphPanel();
 				break;
 			default:
-				this.graphPanel = this.prepareTracksGraph(false, true);
+				this.prepareTracksGraph(false);
+				this.graphPanel = this.getGraphPanel();
 		}
 		this.updateStatus(true);
 	}
@@ -143,16 +145,11 @@ public class TMVGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMVGraphProducer.this.velocityPanel.updateStatus(
-							TMVGraphProducer.this.getCompleted(), ended,
-							TMVGraphProducer.this.graphPanel);
+							TMVGraphProducer.this.getCompleted(), ended);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
-	}
-	
-	public JPanel getGraph() {
-		return this.graphPanel;
 	}
 }

@@ -43,7 +43,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 	// private final Map<OmegaSegment, Double[]> errorMap;
 	private final Map<OmegaSegment, Double[]> errorFromLogMap;
 	
-	private final JPanel[] chartPanels;
+	private final JPanel[] chartPanels, legendPanels;
 	
 	public TMDMotionTypeClassificationGraphProducer(
 	        final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
@@ -84,6 +84,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 		// this.errorMap = errorMap;
 		this.errorFromLogMap = errorLogMap;
 		this.chartPanels = new JPanel[4];
+		this.legendPanels = new JPanel[4];
 	}
 	
 	// public TMMGraphProducer(final int distDispOption,final int tMax,
@@ -105,33 +106,44 @@ public class TMDMotionTypeClassificationGraphProducer extends
 		switch (this.showOption) {
 			case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_TRACK_ONLY:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
-				this.chartPanels[0] = this.prepareTrackGraph(true);
+				this.prepareTrackGraph();
+				this.chartPanels[0] = this.getGraphPanel();
+				this.legendPanels[0] = this.getGraphLegendPanel();
 				break;
 			case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSD_ONLY:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
 				switch (this.motionTypeOption) {
 					case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-						this.chartPanels[1] = this.prepareMSDGraph(true);
-						break;
+						this.prepareMSDGraph();
+						this.chartPanels[1] = this.getGraphPanel();
+						this.legendPanels[1] = this.getGraphLegendPanel();
 					default:
-						this.chartPanels[1] = this.prepareMSDGraph(true);
+						this.prepareMSDGraph();
+						this.chartPanels[1] = this.getGraphPanel();
+						this.legendPanels[1] = this.getGraphLegendPanel();
 				}
 				break;
 			case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSS_ONLY:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
 				switch (this.motionTypeOption) {
 					case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-						this.chartPanels[2] = this.prepareMSSGraph(true);
+						this.prepareMSSGraph();
+						this.chartPanels[2] = this.getGraphPanel();
+						this.legendPanels[2] = this.getGraphLegendPanel();
 						break;
 					default:
-						this.chartPanels[2] = this.prepareMSSGraph(true);
+						this.prepareMSSGraph();
+						this.chartPanels[2] = this.getGraphPanel();
+						this.legendPanels[2] = this.getGraphLegendPanel();
 				}
 				break;
 			case TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_PHASE_ONLY:
 				this.currentGraph = TMDMotionTypeClassificationGraphProducer.PHASE;
 				switch (this.motionTypeOption) {
 					case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-						this.chartPanels[3] = this.prepareSMSSvsDGraph(true);
+						this.prepareSMSSvsDGraph();
+						this.chartPanels[3] = this.getGraphPanel();
+						this.legendPanels[3] = this.getGraphLegendPanel();
 						break;
 					default:
 						// this.prepareMSSGraph();
@@ -141,21 +153,36 @@ public class TMDMotionTypeClassificationGraphProducer extends
 				switch (this.motionTypeOption) {
 					case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
-						this.chartPanels[0] = this.prepareTrackGraph(false);
+						this.prepareTrackGraph();
+						this.chartPanels[0] = this.getGraphPanel();
+						this.legendPanels[0] = this.getGraphLegendPanel();
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
-						this.chartPanels[1] = this.prepareMSDGraph(true);
+						this.prepareMSDGraph();
+						this.chartPanels[1] = this.getGraphPanel();
+						this.legendPanels[1] = this.getGraphLegendPanel();
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
-						this.chartPanels[2] = this.prepareMSSGraph(false);
+						this.prepareMSSGraph();
+						this.chartPanels[2] = this.getGraphPanel();
+						this.legendPanels[2] = this.getGraphLegendPanel();
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.PHASE;
-						this.chartPanels[3] = this.prepareSMSSvsDGraph(true);
+						this.prepareSMSSvsDGraph();
+						this.chartPanels[3] = this.getGraphPanel();
+						this.legendPanels[3] = this.getGraphLegendPanel();
+						
 						break;
 					default:
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
-						this.chartPanels[0] = this.prepareTrackGraph(false);
+						this.prepareTrackGraph();
+						this.chartPanels[0] = this.getGraphPanel();
+						this.legendPanels[0] = this.getGraphLegendPanel();
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSD;
-						this.chartPanels[1] = this.prepareMSDGraph(true);
+						this.prepareMSDGraph();
+						this.chartPanels[1] = this.getGraphPanel();
+						this.legendPanels[1] = this.getGraphLegendPanel();
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.MSS;
-						this.chartPanels[2] = this.prepareMSSGraph(false);
+						this.prepareMSSGraph();
+						this.chartPanels[2] = this.getGraphPanel();
+						this.legendPanels[2] = this.getGraphLegendPanel();
 						// this.prepareSMSSvsDFromLogGraph();
 				}
 		}
@@ -173,9 +200,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 					TMDMotionTypeClassificationGraphProducer.this.motionTypeClassificationPanel
 					        .updateStatus(
 					                TMDMotionTypeClassificationGraphProducer.this
-							.getCompleted(),
-					                ended,
-					                TMDMotionTypeClassificationGraphProducer.this.chartPanels);
+							.getCompleted(), ended);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
@@ -185,6 +210,10 @@ public class TMDMotionTypeClassificationGraphProducer extends
 	
 	public JPanel[] getGraphs() {
 		return this.chartPanels;
+	}
+	
+	public JPanel[] getLegends() {
+		return this.legendPanels;
 	}
 	
 	@Override

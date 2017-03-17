@@ -53,14 +53,14 @@ public class TSTrackPanel extends GenericPanel {
 	
 	private final OmegaTrajectory trajectory;
 	
-	private OmegaROI startingROI, endingROI;
+	private OmegaROI startingROI, endingROI, lastSelection;
 	
 	private int segmType;
 	private final List<OmegaSegment> segmentationResults;
 	
 	private final Map<OmegaROI, Point> points;
 	
-	boolean scaleToFit;
+	private static boolean scaleToFit = false;
 	private double scale;
 	
 	private int radius;
@@ -71,7 +71,7 @@ public class TSTrackPanel extends GenericPanel {
 	private int maxXP, maxYP, minXP, minYP;
 	private Point mousePosition;
 	
-	private boolean segmOnROISelection;
+	private boolean segmOnROISelection, rescaling;
 	
 	public TSTrackPanel(final RootPaneContainer parent,
 			final TSPluginPanel pluginPanel, final int sizeX, final int sizeY,
@@ -90,7 +90,6 @@ public class TSTrackPanel extends GenericPanel {
 		this.points = new LinkedHashMap<>();
 		
 		this.scale = 1;
-		this.scaleToFit = false;
 		
 		this.radius = 4;
 		this.imgWidth = sizeX;
@@ -99,6 +98,7 @@ public class TSTrackPanel extends GenericPanel {
 		this.pixelSizeY = pixelSizeY;
 		
 		this.segmOnROISelection = true;
+		this.rescaling = false;
 		
 		this.setLayout(new BorderLayout());
 		
@@ -233,6 +233,7 @@ public class TSTrackPanel extends GenericPanel {
 	}
 	
 	private void rescale() {
+		this.rescaling = true;
 		int width = this.getWidth() - (TSTrackPanel.LABELS_PANEL_SIZE + 3) - 20;
 		int height = this.getHeight() - TSTrackPanel.LABELS_PANEL_SIZE - 20;
 		int neededWidth = (int) (this.imgWidth * this.scale);
@@ -266,6 +267,7 @@ public class TSTrackPanel extends GenericPanel {
 		this.trackDisplayScrollPane.getViewport().setSize(dim);
 		this.validate();
 		this.repaint();
+		this.rescaling = false;
 	}
 	
 	private void handleResize() {
@@ -355,15 +357,21 @@ public class TSTrackPanel extends GenericPanel {
 	}
 	
 	private void handleHorizontalScrollBarChanged() {
+		if (this.rescaling)
+			return;
 		final int value = this.trackDisplayScrollPane.getHorizontalScrollBar()
 				.getValue();
 		this.hLabelsScrollPane.getHorizontalScrollBar().setValue(value);
+		// System.out.println(value);
 	}
 	
 	private void handleVerticalScrollBarChanged() {
+		if (this.rescaling)
+			return;
 		final int value = this.trackDisplayScrollPane.getVerticalScrollBar()
 				.getValue();
 		this.vLabelsScrollPane.getVerticalScrollBar().setValue(value);
+		// System.out.println(value);
 	}
 	
 	private void handleZoom(final double modifier) {
@@ -475,6 +483,7 @@ public class TSTrackPanel extends GenericPanel {
 		}
 		if (roi == null)
 			return;
+		this.lastSelection = roi;
 		if (this.startingROI == null) {
 			this.startingROI = roi;
 			this.pluginPanel.selectSegmentStartingPoint(this.startingROI);
@@ -510,8 +519,32 @@ public class TSTrackPanel extends GenericPanel {
 		this.resetSegmentation();
 	}
 	
+	protected OmegaROI getSelectedStartingROI() {
+		return this.startingROI;
+	}
+	
+	protected OmegaROI getSelectedEndingROI() {
+		return this.endingROI;
+	}
+
+	public void setInitialScale() {
+		if (TSTrackPanel.scaleToFit) {
+			this.computeAndSetScaleToFit();
+			this.rescale();
+			this.computePoints();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					TSTrackPanel.this.setScaleToFitScrollBarPosition();
+				}
+			});
+
+		}
+	}
+	
 	public void setScaleToFit() {
-		this.scaleToFit = true;
+		TSTrackPanel.scaleToFit = true;
 		// this.restoreSizes();
 		this.computeAndSetScaleToFit();
 		this.rescale();
@@ -520,7 +553,7 @@ public class TSTrackPanel extends GenericPanel {
 	}
 	
 	public void setScaleOneOne() {
-		this.scaleToFit = false;
+		TSTrackPanel.scaleToFit = false;
 		this.scale = 1;
 		// this.restoreSizes();
 		this.rescale();
@@ -536,6 +569,14 @@ public class TSTrackPanel extends GenericPanel {
 	public void selectTrajectoryEnd() {
 		final List<OmegaROI> rois = new ArrayList<>();
 		rois.add(this.trajectory.getROIs().get(this.trajectory.getLength() - 1));
+		this.handleROISelection(rois);
+	}
+	
+	public void selectTrajectoryLast() {
+		final List<OmegaROI> rois = new ArrayList<>();
+		if (this.lastSelection != null) {
+			rois.add(this.lastSelection);
+		}
 		this.handleROISelection(rois);
 	}
 	

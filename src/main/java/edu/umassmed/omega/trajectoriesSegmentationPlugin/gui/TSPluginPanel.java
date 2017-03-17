@@ -62,6 +62,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingR
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
@@ -298,9 +299,18 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		
 		this.tabbedPane = new JTabbedPane();
 		
+		final JPanel browser = new JPanel();
+		browser.setLayout(new BorderLayout());
+		
 		this.tbPanel = new GenericTrajectoriesBrowserPanel(
 		        this.getParentContainer(), this, this.gateway, true, true);
-		this.tabbedPane.add(TSConstants.BROWSER_TABNAME, this.tbPanel);
+		browser.add(this.tbPanel, BorderLayout.CENTER);
+		
+		this.currentTrajInfoPanel = new GenericTrajectoryInformationPanel(
+		        this.getParentContainer(), this);
+		browser.add(this.currentTrajInfoPanel, BorderLayout.SOUTH);
+		
+		this.tabbedPane.add(TSConstants.BROWSER_TABNAME, browser);
 		
 		this.tsPanel = new TSPanel(this.getParentContainer(), this,
 		        this.currentSegmentationTypes);
@@ -314,14 +324,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-		
-		final JPanel bottomSubPanel = new JPanel();
-		bottomSubPanel.setLayout(new BorderLayout());
-		
-		this.currentTrajInfoPanel = new GenericTrajectoryInformationPanel(
-		        this.getParentContainer(), this);
-		bottomSubPanel.add(this.currentTrajInfoPanel, BorderLayout.NORTH);
-		
+
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 		
@@ -348,8 +351,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		buttonPanel.add(this.cancel_btt);
 		this.cancel_btt.setEnabled(false);
 		
-		bottomSubPanel.add(buttonPanel, BorderLayout.SOUTH);
-		bottomPanel.add(bottomSubPanel, BorderLayout.NORTH);
+		bottomPanel.add(buttonPanel, BorderLayout.NORTH);
 		
 		this.statusPanel = new GenericStatusPanel(1);
 		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
@@ -520,13 +522,21 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		if (!dialog.getConfirmation())
 			return;
 		
+		final List<OmegaElement> selection = new ArrayList<OmegaElement>();
+		selection.add((OmegaElement) this.selectedImage);
+		selection.add(this.selectedParticleDetectionRun);
+		selection.add(this.selectedParticleLinkingRun);
+		selection.add(this.selectedTrajRelinkingRun);
+		
 		final OmegaPluginEvent event = new OmegaPluginEventResultsTrajectoriesSegmentation(
-		        this.getPlugin(), this.selectedTrajRelinkingRun,
+		        this.getPlugin(), selection, this.selectedTrajRelinkingRun,
 		        this.getSegmentsMap(), this.currentSegmentationTypes);
 		// TODO BUG HERE : mark actions should be on starting point of this
 		// segmentation
 		// this.markActionsApplied(this.selectedTrajRelinkingRun);
 		// FIXME changed to avoid messing up with subsequent segmentation
+		final List<OmegaTrajectory> selectedTracks = new ArrayList<OmegaTrajectory>(
+		        this.tbPanel.getSelectedTrajectories());
 		OmegaTrajectoriesSegmentationRun currentSegmentation = this.selectedTrajSegmentationRun;
 		if (currentSegmentation == null) {
 			currentSegmentation = this.startingPointTrajSegmentationRun;
@@ -534,13 +544,18 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		this.markActionsApplied(currentSegmentation);
 		// end changed
 		this.getPlugin().fireEvent(event);
+
+		//
 		final OmegaTrajectoriesSegmentationRun newSegmentation = this.trajSegmentationRuns
-		        .get(this.trajSegmentationRuns.size() - 1);
-		// TODO ACTIONS SHOULD BE MOVED TO THE NEWLY CREATED SEGMENTATION
+		        .get(TSPluginPanel.this.trajSegmentationRuns.size() - 1);
+		// TODO ACTIONS SHOULD BE MOVED TO THE NEWLY CREATED
+		// SEGMENTATION
 		// HERE!?? TO BE VERIFIED
 		this.moveActionsToNewSegmentation(currentSegmentation, newSegmentation);
-		this.trajectoriesSegmentation_cmb.setSelectedItem(newSegmentation
-		        .getName());
+		// this.trajectoriesSegmentation_cmb.setSelectedItem(newSegmentation
+		// .getName());
+		this.updateTrajectories(selectedTracks, true);
+		this.fireEventTrajectories(selectedTracks, true);
 	}
 	
 	private void undoLastAction() {
@@ -1226,7 +1241,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 	}
 	
 	public void updateSegmentTrajectories(
-	        final List<OmegaTrajectory> trajectories) {
+			final List<OmegaTrajectory> trajectories) {
 		if (trajectories == null) {
 			this.tsPanel.resetSegmentation();
 			return;
@@ -1238,7 +1253,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		}
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = new LinkedHashMap<>();
 		final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = currentSegmentation
-		        .getResultingSegments();
+				.getResultingSegments();
 		for (final OmegaTrajectory traj : trajectories) {
 			segmentsMap.put(traj, resultingSegments.get(traj));
 		}
@@ -1516,7 +1531,8 @@ public class TSPluginPanel extends GenericPluginPanel implements
 			index = this.images.indexOf(image);
 		}
 		if (index == -1) {
-			this.images_cmb.setSelectedItem(this.images_cmb.getItemCount());
+			final int count = this.images_cmb.getItemCount() - 1;
+			this.images_cmb.setSelectedIndex(count);
 		} else {
 			this.images_cmb.setSelectedIndex(index);
 		}
@@ -1565,7 +1581,6 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		// analysisRun);
 		this.updateCurrentSegmentedTrajectories();
 		this.isHandlingEvent = false;
-		
 	}
 	
 	public void setGateway(final OmegaGateway gateway) {

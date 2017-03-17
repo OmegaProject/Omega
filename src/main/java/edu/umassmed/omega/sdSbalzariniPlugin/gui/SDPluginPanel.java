@@ -35,7 +35,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
@@ -103,6 +105,7 @@ GenericElementInformationContainerInterface {
 	private OmegaImage selectedImage;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	
+	private final Map<OmegaImage, List<OmegaElement>> selections;
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
 	
 	private Thread sdThread;
@@ -119,7 +122,8 @@ GenericElementInformationContainerInterface {
 		this.sdThread = null;
 		this.sdRunner2 = null;
 		
-		this.imagesToProcess = new HashMap<OmegaImage, List<OmegaParameter>>();
+		this.imagesToProcess = new LinkedHashMap<OmegaImage, List<OmegaParameter>>();
+		this.selections = new LinkedHashMap<OmegaImage, List<OmegaElement>>();
 		
 		this.selectedImage = null;
 		this.selectedParticleDetectionRun = null;
@@ -341,6 +345,7 @@ GenericElementInformationContainerInterface {
 			
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
+				final List<OmegaElement> selection = this.selections.get(image);
 				
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
@@ -348,7 +353,7 @@ GenericElementInformationContainerInterface {
 						.get(image);
 				
 				final OmegaPluginEventResultsParticleDetection particleDetectionEvt = new OmegaPluginEventResultsParticleDetection(
-						this.getPlugin(), image, params, particles,
+						this.getPlugin(), selection, image, params, particles,
 						particlesValues);
 				
 				this.imagesToProcess.remove(image);
@@ -382,6 +387,7 @@ GenericElementInformationContainerInterface {
 			
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
+				final List<OmegaElement> selection = this.selections.get(image);
 				
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
@@ -392,8 +398,8 @@ GenericElementInformationContainerInterface {
 				} else {
 					for (final OmegaPlane frame : particles.keySet()) {
 						final OmegaPluginEventPreviewParticleDetection particleDetectionEvt = new OmegaPluginEventPreviewParticleDetection(
-								this.getPlugin(), image, params, frame,
-						        particles.get(frame));
+								this.getPlugin(), selection, image, params,
+						        frame, particles.get(frame));
 						this.getPlugin().fireEvent(particleDetectionEvt);
 					}
 				}
@@ -423,6 +429,7 @@ GenericElementInformationContainerInterface {
 		switch (action) {
 			case 1:
 				this.imagesToProcess.remove(this.selectedImage);
+				this.selections.remove(this.selectedImage);
 				break;
 			default:
 				final List<OmegaParameter> params = this.runPanel
@@ -455,6 +462,9 @@ GenericElementInformationContainerInterface {
 					// this.getPlugin(), exceptionError.toString());
 				}
 				this.imagesToProcess.put(this.selectedImage, params);
+				final List<OmegaElement> selection = new ArrayList<OmegaElement>();
+				selection.add(this.selectedImage);
+				this.selections.put(this.selectedImage, selection);
 				break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.imagesToProcess);

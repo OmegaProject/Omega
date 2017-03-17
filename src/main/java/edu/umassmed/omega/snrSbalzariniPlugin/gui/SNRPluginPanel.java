@@ -131,6 +131,7 @@ OmegaMessageDisplayerPanelInterface,
 
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 
+	private final Map<OmegaParticleDetectionRun, List<OmegaElement>> selections;
 	private final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess;
 
 	private Thread snrThread;
@@ -150,7 +151,8 @@ OmegaMessageDisplayerPanelInterface,
 
 		this.gateway = gateway;
 
-		this.particlesToProcess = new LinkedHashMap<>();
+		this.particlesToProcess = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParameter>>();
+		this.selections = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaElement>>();
 
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
@@ -406,6 +408,7 @@ OmegaMessageDisplayerPanelInterface,
 			case 1:
 				this.particlesToProcess
 				.remove(this.selectedParticleDetectionRun);
+				this.selections.remove(this.selectedParticleDetectionRun);
 				break;
 			default:
 				final List<OmegaParameter> params = this.runPanel
@@ -439,6 +442,11 @@ OmegaMessageDisplayerPanelInterface,
 				}
 				this.particlesToProcess.put(this.selectedParticleDetectionRun,
 						params);
+				final List<OmegaElement> selection = new ArrayList<OmegaElement>();
+				selection.add((OmegaElement) this.selectedImage);
+				selection.add(this.selectedParticleDetectionRun);
+				this.selections.put(this.selectedParticleDetectionRun,
+						selection);
 				break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -505,6 +513,8 @@ OmegaMessageDisplayerPanelInterface,
 					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
 						.get(spotDetectionRun);
+				final List<OmegaElement> selection = this.selections
+				        .get(spotDetectionRun);
 				final Map<OmegaPlane, Double> noises = imageNoises
 						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> backgrounds = imageBackgrounds
@@ -548,9 +558,9 @@ OmegaMessageDisplayerPanelInterface,
 						.get(spotDetectionRun);
 
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
-						this.getPlugin(), spotDetectionRun, params, noises,
-						backgrounds, averageSNR, minimumSNR, maximumSNR,
-				        averageErrorIndexSNR, minimumErrorIndexSNR,
+						this.getPlugin(), selection, spotDetectionRun, params,
+				        noises, backgrounds, averageSNR, minimumSNR,
+				        maximumSNR, averageErrorIndexSNR, minimumErrorIndexSNR,
 						maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
 						lSignalSizes, lPeakSignals, lNoises, lSNRs,
 						lErrorIndexSNRs, lbackground, lnoise, lavgSNR, lminSNR,
@@ -709,7 +719,8 @@ OmegaMessageDisplayerPanelInterface,
 			index = this.images.indexOf(image);
 		}
 		if (index == -1) {
-			this.images_cmb.setSelectedItem(this.images_cmb.getItemCount());
+			final int count = this.images_cmb.getItemCount() - 1;
+			this.images_cmb.setSelectedIndex(count);
 		} else {
 			this.images_cmb.setSelectedIndex(index);
 		}

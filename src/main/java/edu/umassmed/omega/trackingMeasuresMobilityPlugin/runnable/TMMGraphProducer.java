@@ -17,9 +17,9 @@ import edu.umassmed.omega.trackingMeasuresMobilityPlugin.TMMConstants;
 import edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui.TMMGraphPanel;
 
 public class TMMGraphProducer extends StatsGraphProducer {
-	
+
 	private final TMMGraphPanel mobilityPanel;
-	
+
 	private final int mobilityOption;
 	private final boolean isTimepointsGraph;
 	private final int maxT;
@@ -29,23 +29,23 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Integer> totalTimeTraveledMap;
 	private final Map<OmegaSegment, List<Double>> confinementRatioMap;
 	private final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap;
-	
+
 	private JPanel graphPanel;
-	
+
 	public TMMGraphProducer(
-	        final TMMGraphPanel mobilityPanel,
-	        final int graphType,
-	        final int mobilityOption,
-	        final boolean isTimepointsGraph,
-	        final int tMax,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes,
-	        final Map<OmegaSegment, List<Double>> distanceMap,
-	        final Map<OmegaSegment, List<Double>> displacementMap,
-	        final Map<OmegaSegment, Double> maxDisplacementMap,
-	        final Map<OmegaSegment, Integer> totalTimeTraveledMap,
-	        final Map<OmegaSegment, List<Double>> confinementRatioMap,
-	        final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
+			final TMMGraphPanel mobilityPanel,
+			final int graphType,
+			final int mobilityOption,
+			final boolean isTimepointsGraph,
+			final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes,
+			final Map<OmegaSegment, List<Double>> distanceMap,
+			final Map<OmegaSegment, List<Double>> displacementMap,
+			final Map<OmegaSegment, Double> maxDisplacementMap,
+			final Map<OmegaSegment, Integer> totalTimeTraveledMap,
+			final Map<OmegaSegment, List<Double>> confinementRatioMap,
+			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.mobilityPanel = mobilityPanel;
 		this.mobilityOption = mobilityOption;
@@ -59,18 +59,20 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		this.anglesAndDirectionalChangesMap = anglesAndDirectionalChangesMap;
 		this.graphPanel = null;
 	}
-	
+
 	@Override
 	public void run() {
 		super.run();
 		if (this.isTimepointsGraph) {
-			this.graphPanel = this.prepareTimepointsGraph(this.maxT, true);
+			this.prepareTimepointsGraph(this.maxT);
+			this.graphPanel = this.getGraphPanel();
 		} else {
-			this.graphPanel = this.prepareTracksGraph(true, true);
+			this.prepareTracksGraph(true);
+			this.graphPanel = this.getGraphPanel();
 		}
 		this.updateStatus(true);
 	}
-	
+
 	@Override
 	public String getTitle() {
 		String title;
@@ -98,7 +100,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		}
 		return title;
 	}
-	
+
 	@Override
 	public String getYAxisTitle() {
 		String yAxisTitle;
@@ -126,7 +128,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		}
 		return yAxisTitle;
 	}
-	
+
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		List<Double[]> valuesList = null;
@@ -145,7 +147,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				break;
 			case TMMGraphPanel.OPTION_TOTAL_TIME_TRAVELED:
 				value[0] = Double.valueOf(this.totalTimeTraveledMap
-				        .get(segment));
+						.get(segment));
 				break;
 			case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
 				values = this.confinementRatioMap.get(segment);
@@ -172,7 +174,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		}
 		return value;
 	}
-	
+
 	@Override
 	public void updateStatus(final boolean ended) {
 		try {
@@ -180,16 +182,11 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMMGraphProducer.this.mobilityPanel.updateStatus(
-					        TMMGraphProducer.this.getCompleted(), ended,
-					        TMMGraphProducer.this.graphPanel);
+							TMMGraphProducer.this.getCompleted(), ended);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
-	}
-	
-	public JPanel getGraph() {
-		return this.graphPanel;
 	}
 }

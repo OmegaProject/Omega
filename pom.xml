@@ -13,7 +13,7 @@
 
 	<groupId>edu.umassmed.omega</groupId>
 	<artifactId>omega</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.26-beta</version>
 	<packaging>jar</packaging>
 
 	<name>omega</name>

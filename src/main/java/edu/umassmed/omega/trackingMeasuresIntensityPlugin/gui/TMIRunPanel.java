@@ -20,6 +20,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresIntensity;
@@ -147,8 +148,15 @@ OmegaMessageDisplayerPanelInterface {
 	private void startIntensityAnalyzer() {
 		if (this.pluginPanel == null)
 			return;
+		final List<OmegaElement> selection = new ArrayList<OmegaElement>();
+		selection.add(this.pluginPanel.getSelectedImage());
+		selection.add(this.pluginPanel.getSelectedParticleDetectionRun());
+		selection.add(this.pluginPanel.getSelectedParticleLinkingRun());
+		selection.add(this.pluginPanel.getSelectedRelinkingRun());
+		selection.add(this.pluginPanel.getSelectedSegmentationRun());
 		this.analyzer = new OmegaIntensityAnalyzer(this,
-		        this.pluginPanel.getSegments());
+				this.pluginPanel.getSelectedSegmentationRun(),
+		        this.pluginPanel.getSegments(), selection);
 		if (this.snrEnable_ckb.isEnabled()) {
 			this.analyzer.setSNRRun(this.selectedSNRRun);
 		}
@@ -169,7 +177,8 @@ OmegaMessageDisplayerPanelInterface {
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresIntensity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresIntensity(
 			        this.pluginPanel.getPlugin(),
-			        this.pluginPanel.getSelectedSegmentationRun(),
+			        this.analyzer.getSelections(),
+			        this.analyzer.getTrajectorySegmentationRun(),
 			        new ArrayList<OmegaParameter>(),
 			        this.analyzer.getSegments(),
 			        this.analyzer.getPeakSignalsResults(),

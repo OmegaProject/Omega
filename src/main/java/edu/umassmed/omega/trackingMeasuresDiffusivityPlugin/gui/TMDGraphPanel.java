@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.StatsConstants;
@@ -48,11 +49,9 @@ public class TMDGraphPanel extends GenericPanel {
 
 	private Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap;
 	private int maxT;
-	private String oldXAxisSelection, oldYAxisSelection;
+	private String oldXAxisSelection, oldYAxisSelection, oldGraphTypeSelection;
 
-	private final String oldGraphTypeSelection;
-
-	private JPanel graphPanel;
+	private JPanel graphPanel, legendPanel;
 	private final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap;
 
 	private OmegaTrackingMeasuresDiffusivityRun selectedTrackingMeasuresRun;
@@ -146,12 +145,12 @@ public class TMDGraphPanel extends GenericPanel {
 		this.drawGraph_btt = new JButton(StatsConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
-		leftPanel.add(this.drawGraph_btt);
+		// leftPanel.add(this.drawGraph_btt);
 
 		this.add(leftPanel, BorderLayout.WEST);
 
 		this.centerPanel = new JPanel();
-		this.centerPanel.setLayout(new FlowLayout());
+		this.centerPanel.setLayout(new BorderLayout());
 
 		this.add(this.centerPanel, BorderLayout.CENTER);
 
@@ -202,15 +201,28 @@ public class TMDGraphPanel extends GenericPanel {
 		if (height > width) {
 			size = width;
 		}
-		final Dimension graphDim = new Dimension(size + (size / 2), size);
+		final Dimension graphDim = new Dimension(size, size);
 		this.graphPanel.setSize(graphDim);
 		this.graphPanel.setPreferredSize(graphDim);
+		this.graphPanel.setMaximumSize(graphDim);
 		this.repaint();
+	}
+	
+	private void handleDrawChartLater() {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				TMDGraphPanel.this.handleDrawChart();
+			}
+		});
 	}
 
 	private void handleDrawChart() {
 		if (this.centerPanel.getComponentCount() > 0) {
 			this.centerPanel.remove(this.graphPanel);
+			this.centerPanel.remove(this.legendPanel);
+			
 		}
 		this.revalidate();
 		this.repaint();
@@ -225,6 +237,7 @@ public class TMDGraphPanel extends GenericPanel {
 			return;
 		this.oldYAxisSelection = yAxisSelection;
 		this.oldXAxisSelection = xAxisSelection;
+		this.oldGraphTypeSelection = graphTypeSelection;
 		if (xAxisSelection.equals(StatsConstants.GRAPH_LAB_X_TRACK)) {
 			this.handleDrawTracksChart();
 		} else {
@@ -256,16 +269,21 @@ public class TMDGraphPanel extends GenericPanel {
 		this.drawGraph_btt.setEnabled(false);
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
 		final String xAxisSelection = (String) this.xAxis_cmb.getSelectedItem();
+		final String graphSelection = (String) this.graphType_cmb
+		        .getSelectedItem();
 		if (((this.oldYAxisSelection != null) && this.oldYAxisSelection
 				.equals(yAxisSelection))
 				&& ((this.oldXAxisSelection != null) && this.oldXAxisSelection
-						.equals(xAxisSelection)))
+						.equals(xAxisSelection))
+						&& (this.oldGraphTypeSelection != null)
+						&& this.oldGraphTypeSelection.equals(graphSelection))
 			return;
 		if (xAxisSelection.equals(StatsConstants.GRAPH_LAB_X_TRACK)) {
 			//
 		} else {
 			//
 		}
+		this.handleDrawChartLater();
 		this.drawGraph_btt.setEnabled(true);
 	}
 
@@ -298,7 +316,8 @@ public class TMDGraphPanel extends GenericPanel {
 		        // this.selectedTrackingMeasuresRun.getGammaResults(),
 		        this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
 		        // this.selectedTrackingMeasuresRun.getSmssResults(),
-		        this.selectedTrackingMeasuresRun.getSmssFromLogResults());
+		        this.selectedTrackingMeasuresRun.getSmssFromLogResults(),
+		        this.selectedTrackingMeasuresRun.getErrosFromLogResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 
@@ -335,7 +354,8 @@ public class TMDGraphPanel extends GenericPanel {
 		        // this.selectedTrackingMeasuresRun.getGammaResults(),
 		        this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
 		        // this.selectedTrackingMeasuresRun.getSmssResults(),
-		        this.selectedTrackingMeasuresRun.getSmssFromLogResults());
+		        this.selectedTrackingMeasuresRun.getSmssFromLogResults(),
+		        this.selectedTrackingMeasuresRun.getErrosFromLogResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 
@@ -372,12 +392,13 @@ public class TMDGraphPanel extends GenericPanel {
 		this.selectedSegmentsMap.clear();
 		this.selectedSegmentsMap.putAll(selectedSegmentsMap);
 		// this.handleChangeChart();
-		this.handleDrawChart();
+		this.handleDrawChartLater();
 	}
 
 	public void updateSelectedTrackingMeasuresRun(
 			final OmegaTrackingMeasuresDiffusivityRun trackingMeasuresRun) {
 		this.selectedTrackingMeasuresRun = trackingMeasuresRun;
+		this.handleDrawChartLater();
 	}
 
 	public void updateSelectedSegmentationTypes(
@@ -385,15 +406,16 @@ public class TMDGraphPanel extends GenericPanel {
 		this.segmTypes = segmentationTypes;
 	}
 
-	public void updateStatus(final double completed, final boolean ended,
-			final JPanel graphPanel) {
+	public void updateStatus(final double completed, final boolean ended) {
 		if (ended) {
-			this.graphPanel = graphPanel;
+			this.graphPanel = this.graphProducer.getGraphPanel();
+			this.legendPanel = this.graphProducer.getGraphLegendPanel();
 			this.handleComponentResized();
 			// this.graphPanel.updateParentContainer(this.getParentContainer());
 			this.pluginPanel.updateStatus("Plugin ready");
 			// this.add(this.graphPanel, BorderLayout.CENTER);
-			this.centerPanel.add(this.graphPanel);
+			this.centerPanel.add(this.graphPanel, BorderLayout.CENTER);
+			this.centerPanel.add(this.legendPanel, BorderLayout.EAST);
 			this.drawGraph_btt.setEnabled(false);
 			this.revalidate();
 			this.repaint();

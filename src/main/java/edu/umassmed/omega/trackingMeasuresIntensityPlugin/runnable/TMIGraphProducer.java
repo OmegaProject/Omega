@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
@@ -32,9 +31,8 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Double[]> noisesMap;
 	private final Map<OmegaSegment, Double[]> areasMap;
 	private final Map<OmegaSegment, Double[]> snrsMap;
+
 	// SNR related END
-	
-	private JPanel graphPanel;
 	
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
 			final int graphType, final int peakMeanBgSnrOption,
@@ -83,9 +81,9 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	public void run() {
 		super.run();
 		if (this.isTimepointsGraph) {
-			this.graphPanel = this.prepareTimepointsGraph(this.maxT, true);
+			this.prepareTimepointsGraph(this.maxT);
 		} else {
-			this.graphPanel = this.prepareTracksGraph(true, true);
+			this.prepareTracksGraph(true);
 		}
 		this.updateStatus(true);
 	}
@@ -167,16 +165,11 @@ public class TMIGraphProducer extends StatsGraphProducer {
 				@Override
 				public void run() {
 					TMIGraphProducer.this.intensityGraphPanel.updateStatus(
-							TMIGraphProducer.this.getCompleted(), ended,
-							TMIGraphProducer.this.graphPanel);
+							TMIGraphProducer.this.getCompleted(), ended);
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
-	}
-	
-	public JPanel getGraph() {
-		return this.graphPanel;
 	}
 }

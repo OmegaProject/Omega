@@ -61,6 +61,7 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasures
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
@@ -872,7 +873,8 @@ GenericSegmentsBrowserContainerInterface {
 			index = this.images.indexOf(image);
 		}
 		if (index == -1) {
-			this.images_cmb.setSelectedItem(this.images_cmb.getItemCount());
+			final int count = this.images_cmb.getItemCount() - 1;
+			this.images_cmb.setSelectedIndex(count);
 		} else {
 			this.images_cmb.setSelectedIndex(index);
 		}
@@ -1009,12 +1011,20 @@ GenericSegmentsBrowserContainerInterface {
 		}
 	}
 	
-	public OmegaImage getSelectedImage() {
-		return (OmegaImage) this.selectedImage;
+	public OmegaElement getSelectedImage() {
+		return (OmegaElement) this.selectedImage;
 	}
 	
-	public OmegaParticleLinkingRun getSelectedLinkingRun() {
+	public OmegaParticleDetectionRun getSelectedParticleDetectionRun() {
+		return this.selectedParticleDetectionRun;
+	}
+
+	public OmegaParticleLinkingRun getSelectedParticleLinkingRun() {
 		return this.selectedParticleLinkingRun;
+	}
+
+	public OmegaTrajectoriesRelinkingRun getSelectedRelinkingRun() {
+		return this.selectedTrajRelinkingRun;
 	}
 	
 	public OmegaTrajectoriesSegmentationRun getSelectedSegmentationRun() {

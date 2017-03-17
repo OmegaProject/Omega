@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,6 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresVelocity;
 import edu.umassmed.omega.commons.gui.GenericPanel;
@@ -68,10 +72,29 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.pluginPanel == null)
 			return;
 		// TODO Stop if thread already running (disable button would be better)
-		final int maxT = this.pluginPanel.getSelectedImage().getDefaultPixels()
-		        .getSizeT();
+		int maxT = -1;
+		if (this.pluginPanel.getSelectedImage() instanceof OmegaImage) {
+			maxT = ((OmegaImage) this.pluginPanel.getSelectedImage())
+			        .getDefaultPixels().getSizeT();
+		} else {
+			for (final OmegaPlane f : this.pluginPanel
+			        .getSelectedParticleDetectionRun().getResultingParticles()
+			        .keySet()) {
+				final int index = f.getIndex();
+				if (maxT < index) {
+					maxT = index;
+				}
+			}
+		}
+		final List<OmegaElement> selection = new ArrayList<OmegaElement>();
+		selection.add(this.pluginPanel.getSelectedImage());
+		selection.add(this.pluginPanel.getSelectedParticleDetectionRun());
+		selection.add(this.pluginPanel.getSelectedParticleLinkingRun());
+		selection.add(this.pluginPanel.getSelectedRelinkingRun());
+		selection.add(this.pluginPanel.getSelectedSegmentationRun());
 		this.analyzer = new OmegaVelocityAnalyzer(this, maxT,
-		        this.pluginPanel.getSegments());
+				this.pluginPanel.getSelectedSegmentationRun(),
+		        this.pluginPanel.getSegments(), selection);
 		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
@@ -89,7 +112,8 @@ OmegaMessageDisplayerPanelInterface {
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresVelocity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresVelocity(
 			        this.pluginPanel.getPlugin(),
-			        this.pluginPanel.getSelectedSegmentationRun(),
+					this.analyzer.getSelections(),
+			        this.analyzer.getTrajectorySegmentationRun(),
 			        new ArrayList<OmegaParameter>(),
 			        this.analyzer.getSegments(),
 			        this.analyzer.getLocalSpeedResults(),
