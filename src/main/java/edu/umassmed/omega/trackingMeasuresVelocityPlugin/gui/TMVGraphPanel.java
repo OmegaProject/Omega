@@ -401,6 +401,8 @@ public class TMVGraphPanel extends GenericPanel {
 			this.handleComponentResized();
 			// this.graphPanel.updateParentContainer(this.getParentContainer());
 			this.pluginPanel.updateStatus("Plugin ready");
+			if ((this.graphPanel == null) || (this.legendPanel == null))
+				return;
 			// this.add(this.graphPanel, BorderLayout.CENTER);
 			this.centerPanel.add(this.graphPanel, BorderLayout.CENTER);
 			this.centerPanel.add(this.legendPanel, BorderLayout.EAST);

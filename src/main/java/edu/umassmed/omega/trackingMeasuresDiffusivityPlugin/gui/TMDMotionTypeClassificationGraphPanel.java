@@ -30,10 +30,10 @@ import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.runnable.TMDMotionTy
 
 public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	private static final long serialVersionUID = 1124434645792957106L;
-
+	
 	public static final int OPTION_LINEAR = 0;
 	public static final int OPTION_LOG = 1;
-
+	
 	public static final int OPTION_SHOW_ALL = 0;
 	public static final int OPTION_SHOW_TRACK_ONLY = 1;
 	public static final int OPTION_SHOW_MSD_ONLY = 2;
@@ -44,46 +44,46 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 	public static final String OPTION_SHOW_MSD_ONLY_TEXT = "Log-log MSD vs T plot";
 	public static final String OPTION_SHOW_MSS_ONLY_TEXT = "MSS plot";
 	public static final String OPTION_SHOW_PHASE_ONLY_TEXT = "D2 vs. Slope MSS scatter plot";
-
+	
 	private final TMDPluginPanel pluginPanel;
-
+	
 	private JPanel mainPanel, centerPanel, legendLeft, legendRight;
-
+	
 	private GenericComboBox<String> showOption_cmb;
 	private String oldOptionSelection;
-	
-	private JButton drawGraph_btt;
 
+	private JButton drawGraph_btt;
+	
 	private Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	selectedSegments;
+	        selectedSegments;
 	private OmegaSegmentationTypes segmTypes;
 	// private final OmegaTrajectory selectedTrack;
 	// private List<OmegaSegment> selectedSegments;
 	private int maxT, imgWidth, imgHeight;
-
+	
 	private JPanel[] chartPanels, legendPanels;
-
+	
 	private OmegaTrackingMeasuresDiffusivityRun selectedTrackingMeasuresRun;
 	private Thread t;
 	private TMDMotionTypeClassificationGraphProducer graphProducer;
-
+	
 	public TMDMotionTypeClassificationGraphPanel(
-	        final RootPaneContainer parent, final TMDPluginPanel pluginPanel,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final RootPaneContainer parent, final TMDPluginPanel pluginPanel,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		super(parent);
-
+		
 		this.pluginPanel = pluginPanel;
 		this.segmentsMap = segmentsMap;
 		this.maxT = 0;
 		this.imgWidth = 0;
 		this.imgHeight = 0;
-
+		
 		this.selectedTrackingMeasuresRun = null;
 		this.segmTypes = null;
-
+		
 		// this.selectedTrack = null;
 		this.selectedSegments = null;
-
+		
 		this.chartPanels = new JPanel[4];
 		for (int i = 0; i < this.chartPanels.length; i++) {
 			this.chartPanels[i] = null;
@@ -93,77 +93,77 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			this.legendPanels[i] = null;
 		}
 		this.t = null;
-		
+
 		this.oldOptionSelection = null;
-
+		
 		this.setLayout(new BorderLayout());
-
+		
 		this.createAndAddWidgets();
-
+		
 		this.addListeners();
 	}
-
+	
 	private void createAndAddWidgets() {
 		final JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new FlowLayout());
 		leftPanel.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
-
+		
 		final JLabel yAxis_lbl = new JLabel("Select graph to show");
 		yAxis_lbl
-		.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+		        .setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		leftPanel.add(yAxis_lbl);
 		this.showOption_cmb = new GenericComboBox<>(this.getParentContainer());
 		this.showOption_cmb
-		.addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_ALL_TEXT);
+		        .addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_ALL_TEXT);
 		this.showOption_cmb
-		.addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_TRACK_ONLY_TEXT);
+		        .addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_TRACK_ONLY_TEXT);
 		this.showOption_cmb
-		.addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSD_ONLY_TEXT);
+		        .addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSD_ONLY_TEXT);
 		this.showOption_cmb
-		.addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSS_ONLY_TEXT);
+		        .addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_MSS_ONLY_TEXT);
 		this.showOption_cmb
-		.addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_PHASE_ONLY_TEXT);
+		        .addItem(TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_PHASE_ONLY_TEXT);
 		this.showOption_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.showOption_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.showOption_cmb);
-
+		
 		// this.drawGraph_btt = new JButton(StatsConstants.GRAPH_DRAW);
 		// this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		// this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		// leftPanel.add(this.drawGraph_btt);
-
+		
 		this.add(leftPanel, BorderLayout.WEST);
-
+		
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new BorderLayout());
-
+		
 		this.centerPanel = new JPanel();
 		this.centerPanel.setLayout(new GridLayout(2, 2));
 		// final JPanel layerPanel = new JPanel();
 		// layerPanel.setLayout(new FlowLayout());
 		// layerPanel.add(this.centerPanel);
 		this.mainPanel.add(this.centerPanel, BorderLayout.CENTER);
-
+		
 		this.legendLeft = new JPanel();
 		this.legendLeft.setLayout(new GridLayout(2, 1));
 		this.mainPanel.add(this.legendLeft, BorderLayout.WEST);
-
+		
 		this.legendRight = new JPanel();
 		this.legendRight.setLayout(new GridLayout(2, 1));
 		this.mainPanel.add(this.legendRight, BorderLayout.EAST);
-
+		
 		this.add(this.mainPanel, BorderLayout.CENTER);
 		// this.handleDrawChart();
 	}
-
+	
 	private void addListeners() {
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(final ComponentEvent evt) {
 				TMDMotionTypeClassificationGraphPanel.this
-				.handleComponentResized();
+				        .handleComponentResized();
 			}
 		});
 		this.showOption_cmb.addActionListener(new ActionListener() {
@@ -179,7 +179,7 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 		// }
 		// });
 	}
-
+	
 	private void handleComponentResized() {
 		int charts = 0;
 		for (final JPanel chartPanel : this.chartPanels) {
@@ -204,23 +204,23 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			}
 		}
 	}
-
+	
 	private void handleDrawChartLater() {
 		SwingUtilities.invokeLater(new Runnable() {
-
+			
 			@Override
 			public void run() {
 				TMDMotionTypeClassificationGraphPanel.this.handleDrawChart();
 			}
 		});
 	}
-
+	
 	private void handleDrawChart() {
 		if (this.selectedTrackingMeasuresRun == null)
 			return;
 		final String selection = (String) this.showOption_cmb.getSelectedItem();
 		if ((this.oldOptionSelection != null)
-				&& this.oldOptionSelection.equals(selection))
+		        && this.oldOptionSelection.equals(selection))
 			return;
 		this.oldOptionSelection = selection;
 		this.pluginPanel.updateStatus("Preparing graphs");
@@ -238,7 +238,7 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 				this.legendRight.remove(legendPanel);
 				this.mainPanel.remove(legendPanel);
 			}
-			
+
 			this.legendPanels[i] = null;
 		}
 		this.mainPanel.remove(this.legendLeft);
@@ -258,11 +258,11 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			showOption = TMDMotionTypeClassificationGraphPanel.OPTION_SHOW_PHASE_ONLY;
 		}
 		this.handleDrawChart(TMDMotionTypeClassificationGraphPanel.OPTION_LOG,
-		        showOption);
+				showOption);
 	}
-
+	
 	private void handleDrawChart(final int motionTypeOption,
-	        final int showOption) {
+			final int showOption) {
 		this.pluginPanel.updateStatus("Preparing log graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> segments = null;
 		if ((this.selectedSegments != null) && !this.selectedSegments.isEmpty()) {
@@ -271,25 +271,25 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			segments = this.segmentsMap;
 		}
 		final TMDMotionTypeClassificationGraphProducer graphProducer = new TMDMotionTypeClassificationGraphProducer(
-		        this, motionTypeOption, showOption, segments, this.segmTypes,
-		        this.selectedTrackingMeasuresRun.getNyResults(),
-		        this.selectedTrackingMeasuresRun.getMuResults(),
-		        this.selectedTrackingMeasuresRun.getLogMuResults(),
-		        this.selectedTrackingMeasuresRun.getDeltaTResults(),
-		        this.selectedTrackingMeasuresRun.getLogDeltaTResults(),
-		        this.selectedTrackingMeasuresRun.getGammaDResults(),
-		        this.selectedTrackingMeasuresRun.getGammaDFromLogResults(),
-		        // this.selectedTrackingMeasuresRun.getGammaResults(),
-		        this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
-		        // this.selectedTrackingMeasuresRun.getSmssResults(),
-		        this.selectedTrackingMeasuresRun.getSmssFromLogResults(),
-		        // this.selectedTrackingMeasuresRun.getErrorsResults(),
-		        this.selectedTrackingMeasuresRun.getErrosFromLogResults());
+				this, motionTypeOption, showOption, segments, this.segmTypes,
+				this.selectedTrackingMeasuresRun.getNyResults(),
+				this.selectedTrackingMeasuresRun.getMuResults(),
+				this.selectedTrackingMeasuresRun.getLogMuResults(),
+				this.selectedTrackingMeasuresRun.getDeltaTResults(),
+				this.selectedTrackingMeasuresRun.getLogDeltaTResults(),
+				this.selectedTrackingMeasuresRun.getGammaDResults(),
+				this.selectedTrackingMeasuresRun.getGammaDFromLogResults(),
+				// this.selectedTrackingMeasuresRun.getGammaResults(),
+				this.selectedTrackingMeasuresRun.getGammaFromLogResults(),
+				// this.selectedTrackingMeasuresRun.getSmssResults(),
+				this.selectedTrackingMeasuresRun.getSmssFromLogResults(),
+				// this.selectedTrackingMeasuresRun.getErrorsResults(),
+				this.selectedTrackingMeasuresRun.getErrosFromLogResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
-
+	
 	private void launchGraphProducerThread(
-	        final TMDMotionTypeClassificationGraphProducer graphProducer) {
+			final TMDMotionTypeClassificationGraphProducer graphProducer) {
 		if ((this.t != null) && this.t.isAlive()) {
 			this.graphProducer.terminate();
 		}
@@ -298,38 +298,38 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 		this.t.setName("MotionTypeGraphProducer");
 		this.t.start();
 	}
-
+	
 	public void setMaximumT(final int maxT) {
 		this.maxT = maxT;
 	}
-
+	
 	public void setImageWidth(final int width) {
 		this.imgWidth = width;
 	}
-
+	
 	public void setImageHeight(final int height) {
 		this.imgHeight = height;
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.showOption_cmb.updateParentContainer(parent);
 		// Bottom down menu here
 	}
-
+	
 	public void setSegmentsMap(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
-	        final OmegaSegmentationTypes segmTypes) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+			final OmegaSegmentationTypes segmTypes) {
 		this.segmentsMap = segmentsMap;
 		this.segmTypes = segmTypes;
 		// this.selectedTrack = null;
 		// this.handleChangeChart();
 		// this.handleDrawChart();
 	}
-
+	
 	public void setSelectedSegments(
-			final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap) {
+	        final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap) {
 		// this.selectedTrack = null;
 		// this.selectedSegments = null;
 		this.selectedSegments = selectedSegmentsMap;
@@ -345,23 +345,27 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 		// this.handleChangeChart();
 		this.handleDrawChartLater();
 	}
-
+	
 	public void updateSelectedTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresDiffusivityRun trackingMeasuresRun) {
+			final OmegaTrackingMeasuresDiffusivityRun trackingMeasuresRun) {
 		this.selectedTrackingMeasuresRun = trackingMeasuresRun;
 		this.handleDrawChartLater();
 	}
-
+	
 	public void updateSelectedSegmentationTypes(
-	        final OmegaSegmentationTypes segmentationTypes) {
+			final OmegaSegmentationTypes segmentationTypes) {
 		this.segmTypes = segmentationTypes;
-
+		
 	}
-
+	
 	public void updateStatus(final double completed, final boolean ended) {
 		if (ended) {
 			this.chartPanels = this.graphProducer.getGraphs();
 			this.legendPanels = this.graphProducer.getLegends();
+			this.handleComponentResized();
+			this.pluginPanel.updateStatus("Plugin ready");
+			if ((this.chartPanels == null) || (this.legendPanels == null))
+				return;
 			int charts = 0;
 			for (final JPanel chartPanel : this.chartPanels) {
 				if (chartPanel != null) {
@@ -397,15 +401,13 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 					}
 				}
 			}
-			this.handleComponentResized();
-			this.pluginPanel.updateStatus("Plugin ready");
 			this.revalidate();
 			this.repaint();
 		} else {
 			final String completedS = new BigDecimal(completed).setScale(2,
-			        RoundingMode.HALF_UP).toString();
+					RoundingMode.HALF_UP).toString();
 			this.pluginPanel
-			        .updateStatus("Graph " + completedS + " completed.");
+			.updateStatus("Graph " + completedS + " completed.");
 		}
 	}
 }

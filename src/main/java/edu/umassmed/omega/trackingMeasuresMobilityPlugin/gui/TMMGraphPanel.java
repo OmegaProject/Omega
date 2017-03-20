@@ -418,6 +418,8 @@ public class TMMGraphPanel extends GenericPanel {
 			// this.graphPanel.updateParentContainer(this.getParentContainer());
 			this.pluginPanel.updateStatus("Plugin ready");
 			// this.add(this.graphPanel, BorderLayout.CENTER);
+			if ((this.graphPanel == null) || (this.legendPanel == null))
+				return;
 			this.centerPanel.add(this.graphPanel, BorderLayout.CENTER);
 			this.centerPanel.add(this.legendPanel, BorderLayout.EAST);
 			this.drawGraph_btt.setEnabled(false);
@@ -425,9 +427,9 @@ public class TMMGraphPanel extends GenericPanel {
 			this.repaint();
 		} else {
 			final String completedS = new BigDecimal(completed).setScale(2,
-			        RoundingMode.HALF_UP).toString();
+					RoundingMode.HALF_UP).toString();
 			this.pluginPanel
-			        .updateStatus("Graph " + completedS + " completed.");
+			.updateStatus("Graph " + completedS + " completed.");
 		}
 	}
 }
