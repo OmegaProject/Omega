@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>Mosaic_ToolSuite</groupId>
 			<artifactId>Mosaic_ToolSuite</artifactId>
-			<version>1</version>
+			<version>1.0.3_Full</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql-connector-java-5.1.31-bin</groupId>

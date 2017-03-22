@@ -10,18 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import mosaic.core.detection.FeaturePointDetector;
+import mosaic.core.detection.Particle;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.utilities.OmegaImageUtilities;
-import mosaic.core.detection.FeaturePointDetector;
-import mosaic.core.detection.MyFrame;
-import mosaic.core.detection.Particle;
 
 public class SDWorker implements SDRunnable {
-
+	
 	private final OmegaGateway gateway;
 	private final OmegaImagePixels pixels;
 	private OmegaPlane frame;
@@ -35,14 +34,14 @@ public class SDWorker implements SDRunnable {
 	private Float globalMin, globalMax;
 	private final boolean isDebugMode;
 	private boolean isJobCompleted, isTerminated, isLoading;
-
+	
 	private ImageProcessor ip;
-
+	
 	private final Map<OmegaROI, Map<String, Object>> values;
-
+	
 	public SDWorker(final OmegaGateway gateway, final OmegaImagePixels pixels,
-	        final int frameIndex, final Integer radius, final Double cutoff,
-	        final Float percentile, final Boolean percAbs,
+			final int frameIndex, final Integer radius, final Double cutoff,
+			final Float percentile, final Boolean percAbs,
 			final Integer channel, final Integer zSection) {
 		this.isDebugMode = false;
 		this.isLoading = true;
@@ -60,20 +59,20 @@ public class SDWorker implements SDRunnable {
 		this.particles = new ArrayList<OmegaROI>();
 		this.values = new LinkedHashMap<OmegaROI, Map<String, Object>>();
 	}
-
+	
 	@Override
 	public void run() {
 		Thread.currentThread().setName(
-		        "Mosaic2D_SpotDetector_SDWorker_" + this.frameIndex);
+				"Mosaic2D_SpotDetector_SDWorker_" + this.frameIndex);
 		if (this.isDebugMode) {
 			this.debugModeRun();
 		} else {
 			this.normalModeRun();
 		}
-
+		
 		this.isJobCompleted = true;
 	}
-
+	
 	private void normalModeRun() {
 		if (this.isLoading) {
 			this.normalLoadingModeRun();
@@ -81,7 +80,7 @@ public class SDWorker implements SDRunnable {
 			this.normalProcessingModeRun();
 		}
 	}
-
+	
 	private void normalLoadingModeRun() {
 		final Long pixelsID = this.pixels.getOmeroId();
 		final int sizeX = this.pixels.getSizeX();
@@ -98,12 +97,12 @@ public class SDWorker implements SDRunnable {
 			// this.pixels.addFrame(this.channel, this.zSection, this.frame);
 		}
 		final byte[] pixels = this.gateway.getImageData(pixelsID,
-		        this.zSection, this.frameIndex, this.channel);
+				this.zSection, this.frameIndex, this.channel);
 		final int[] values = OmegaImageUtilities.convertByteToIntImage(
 				byteWidth, pixels);
 		this.ip = new ColorProcessor(sizeX, sizeY, values);
 	}
-
+	
 	private void normalProcessingModeRun() {
 		final Long pixelsID = this.pixels.getOmeroId();
 		final int sizeX = this.pixels.getSizeX();
@@ -111,25 +110,23 @@ public class SDWorker implements SDRunnable {
 		this.gateway.getByteWidth(pixelsID);
 		final ImageStack is = new ImageStack(sizeX, sizeY);
 		is.addSlice(this.ip);
-
+		
 		if (this.isTerminated)
 			return;
-
-		final MyFrame mosaicFrame = new MyFrame(is, this.frameIndex, 0);
+		
 		final FeaturePointDetector fpd = new FeaturePointDetector(
-		        this.globalMax, this.globalMin);
-		fpd.setUserDefinedParameters(this.cutoff, this.percentile, this.radius,
+				this.globalMax, this.globalMin);
+		fpd.setDetectionParameters(this.cutoff, this.percentile, this.radius,
 				this.percentile * 100, this.percAbs);
-		fpd.featurePointDetection(mosaicFrame);
-
+		final Vector<Particle> mosaicParticles = fpd.featurePointDetection(is);
+		
 		if (this.isTerminated)
 			return;
 
-		final Vector<Particle> mosaicParticles = mosaicFrame.getParticles();
 		for (final Particle p : mosaicParticles) {
-			final int fi = p.getFrame();
-			final double x = p.getCoord_X();
-			final double y = p.getCoord_Y();
+			final int fi = this.frameIndex;
+			final double x = p.getX();
+			final double y = p.getY();
 			final double intensity = p.getIntensity();
 			final float m0 = p.m0;
 			final float m1 = p.m1;
@@ -147,49 +144,49 @@ public class SDWorker implements SDRunnable {
 			this.values.put(particle, particleValues);
 		}
 	}
-
+	
 	private void debugModeRun() {
-
+		
 	}
-
+	
 	@Override
 	public boolean isJobCompleted() {
 		return this.isJobCompleted;
 	}
-
+	
 	@Override
 	public void terminate() {
 		this.isTerminated = true;
 	}
-
+	
 	public OmegaPlane getFrame() {
 		return this.frame;
 	}
-
+	
 	public int getIndex() {
 		return this.frameIndex;
 	}
-
+	
 	public ImageProcessor getProcessor() {
 		return this.ip;
 	}
-
+	
 	public void setGlobalMin(final Float globalMin) {
 		this.globalMin = globalMin;
 	}
-
+	
 	public void setGlobalMax(final Float globalMax) {
 		this.globalMax = globalMax;
 	}
-
+	
 	public void setLoadingEnded() {
 		this.isLoading = false;
 	}
-
+	
 	public Map<OmegaROI, Map<String, Object>> getParticlesAdditionalValues() {
 		return this.values;
 	}
-
+	
 	public List<OmegaROI> getResultingParticles() {
 		return this.particles;
 	}

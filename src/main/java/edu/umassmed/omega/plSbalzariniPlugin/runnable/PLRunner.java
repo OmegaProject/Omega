@@ -35,12 +35,11 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
-import mosaic.core.detection.MyFrame;
 import mosaic.core.detection.Particle;
+import mosaic.core.particleLinking.LinkerOptions;
 import mosaic.core.particleLinking.ParticleLinker;
-import mosaic.core.particleLinking.ParticleLinkerBestOnePerm;
-import mosaic.core.particleLinking.ParticleLinkerHun;
-import mosaic.core.particleLinking.linkerOptions;
+import mosaic.core.particleLinking.ParticleLinkerGreedy;
+import mosaic.core.particleLinking.ParticleLinkerHungarian;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -178,12 +177,13 @@ public class PLRunner implements PLRunnable {
 					+ " rebuilding MOSAIC structures.", false);
 
 			final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
-			final MyFrame[] mosaicFrames = new MyFrame[sizeT];
+			// final MyFrame[] mosaicFrames = new MyFrame[sizeT];
+			final List<Vector<Particle>> mosaicParticlesList = new ArrayList<Vector<Particle>>();
+			final Map<Integer, Vector<Particle>> mosaicParticlesMap = new LinkedHashMap<Integer, Vector<Particle>>();
 			for (final OmegaPlane frame : resultingParticles.keySet()) {
 				final List<OmegaROI> particles = resultingParticles.get(frame);
-				final MyFrame mosaicFrame = new MyFrame();
 				final int index = frame.getIndex();
-				mosaicFrame.frame_number = index;
+				// final MyFrame mosaicFrame = new MyFrame(index);
 				// mosaicFrame.real_particles_number = particles.size();
 				// final Integer radius = (Integer) spotDetRun
 				// .getAlgorithmSpec()
@@ -197,8 +197,7 @@ public class PLRunner implements PLRunnable {
 							.getX()));
 					final float y = Float.valueOf(String.valueOf(particle
 							.getY()));
-					final Particle p = new Particle(x, y, 0, frame.getIndex(),
-							linkrange);
+					final Particle p = new Particle(x, y, 0, frame.getIndex());
 					p.m0 = (Float) resultingParticlesValues.get(particle).get(
 							"m0");
 					// p.m1 = (Float)
@@ -215,47 +214,57 @@ public class PLRunner implements PLRunnable {
 					particlesMap.put(p, particle);
 					mosaicParticles.add(p);
 				}
-				mosaicFrame.setParticles(mosaicParticles, particles.size());
-				mosaicFrames[index] = mosaicFrame;
+				// mosaicFrame.setParticles(mosaicParticles);
+				// mosaicFrames[index] = mosaicFrame;
+				mosaicParticlesMap.put(index, mosaicParticles);
 			}
+
+			for (int i = 0; i < sizeT; i++) {
+				final Vector<Particle> mosaicParticles = mosaicParticlesMap
+						.get(i);
+				mosaicParticlesList.add(mosaicParticles);
+			}
+
 			ParticleLinker linker = null;
 			if (optimizer == PLConstants.PARAM_OPTIMIZER_GREEDY) {
-				linker = new ParticleLinkerBestOnePerm();
+				linker = new ParticleLinkerGreedy();
+				// linker = new ParticleLinkerBestOnePerm();
 			} else {
-				linker = new ParticleLinkerHun();
+				linker = new ParticleLinkerHungarian();
+				// linker = new ParticleLinkerHun();
 			}
-			final linkerOptions options = new linkerOptions();
-			options.displacement = displacement;
-			options.linkrange = linkrange;
+			final LinkerOptions options = new LinkerOptions();
+			options.maxDisplacement = displacement;
+			options.linkRange = linkrange;
 			if (movType == PLConstants.PARAM_MOVTYPE_BROWNIAN) {
 				options.force = false;
-				options.straight_line = false;
+				options.straightLine = false;
 			} else if (movType == PLConstants.PARAM_MOVTYPE_COSVEL) {
 				options.force = true;
-				options.straight_line = true;
+				options.straightLine = true;
 			} else if (movType == PLConstants.PARAM_MOVTYPE_STRAIGHT) {
 				options.force = false;
-				options.straight_line = true;
+				options.straightLine = true;
 			}
-			options.l_s = 1f;
-			options.l_f = objectFeature;
-			options.l_d = dynamics;
+			options.lSpace = 1f;
+			options.lFeature = objectFeature;
+			options.lDynamic = dynamics;
 
 			this.updateStatusSync(
 					PLRunner.RUNNER + " launching MOSAIC linker.", false);
 
-			linker.linkParticles(mosaicFrames, sizeT, options);
+			linker.linkParticles(mosaicParticlesList, options);
 
 			this.updateStatusSync(
 					PLRunner.RUNNER + " generating trajectories.", false);
 
 			final List<List<Particle>> mosaicTracks = this
-					.generateTrajectories(mosaicFrames, sizeT, linkrange);
+					.generateTrajectories(mosaicParticlesList, sizeT, linkrange);
 			final List<OmegaTrajectory> tracks = new ArrayList<OmegaTrajectory>();
 			int counter = 0;
 			for (final List<Particle> mosaicTrack : mosaicTracks) {
 				final String trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME + "_"
-				        + counter;
+						+ counter;
 				final OmegaTrajectory track = new OmegaTrajectory(
 						mosaicTrack.size(), trajName);
 				// track.setName(track.getName() + "_" + counter);
@@ -272,7 +281,8 @@ public class PLRunner implements PLRunnable {
 		}
 	}
 
-	private List<List<Particle>> generateTrajectories(final MyFrame[] frames,
+	private List<List<Particle>> generateTrajectories(
+			final List<Vector<Particle>> mosaicParticlesList,
 			final int frames_number, final int linkrange) {
 		int i, j, k;
 		int found, n, m;
@@ -280,15 +290,15 @@ public class PLRunner implements PLRunnable {
 		final List<List<Particle>> tracks = new ArrayList<List<Particle>>();
 		final List<Particle> curr_track_particles = new ArrayList<Particle>();
 		for (i = 0; i < frames_number; i++) {
-			for (j = 0; j < frames[i].getParticles().size(); j++) {
-				if (!frames[i].getParticles().elementAt(j).special) {
-					frames[i].getParticles().elementAt(j).special = true;
+			for (j = 0; j < mosaicParticlesList.get(i).size(); j++) {
+				if (!mosaicParticlesList.get(i).elementAt(j).special) {
+					mosaicParticlesList.get(i).elementAt(j).special = true;
 					found = -1;
 					// go over all particles that this particle (particles[j])
 					// is linked to
 					for (n = 0; n < linkrange; n++) {
 						// if it is NOT a dummy particle - stop looking
-						if (frames[i].getParticles().elementAt(j).next[n] != -1) {
+						if (mosaicParticlesList.get(i).elementAt(j).next[n] != -1) {
 							found = n;
 							break;
 						}
@@ -303,26 +313,26 @@ public class PLRunner implements PLRunnable {
 					// implementation if this particle is linkd to a "real"
 					// paritcle that was already linked break the trajectory and
 					// start again from the next particle. dont add a trajectory
-					if (frames[i + n + 1].getParticles().elementAt(
-							frames[i].getParticles().elementAt(j).next[n]).special) {
+					if (mosaicParticlesList.get(i + n + 1).elementAt(
+							mosaicParticlesList.get(i).elementAt(j).next[n]).special) {
 						continue;
 					}
 
-					curr_track_particles.add(frames[i].getParticles()
+					curr_track_particles.add(mosaicParticlesList.get(i)
 							.elementAt(j));
 					k = i;
 					m = j;
 					do {
 						found = -1;
 						for (n = 0; n < linkrange; n++) {
-							if (frames[k].getParticles().elementAt(m).next[n] != -1) {
+							if (mosaicParticlesList.get(k).elementAt(m).next[n] != -1) {
 								// If this particle is linked to a "real"
 								// particle that that is NOT already linked,
 								// continue with building the trajectory
-								if (frames[k + n + 1].getParticles()
+								if (mosaicParticlesList.get(k + n + 1)
 										.elementAt(
-												frames[k].getParticles()
-												.elementAt(m).next[n]).special == false) {
+												mosaicParticlesList.get(k)
+														.elementAt(m).next[n]).special == false) {
 									found = n;
 									break;
 									// Added by Guy Levy, 18.08.06 - A change
@@ -338,13 +348,13 @@ public class PLRunner implements PLRunnable {
 						if (found == -1) {
 							break;
 						}
-						m = frames[k].getParticles().elementAt(m).next[found];
+						m = mosaicParticlesList.get(k).elementAt(m).next[found];
 						k += (found + 1);
-						curr_track_particles.add(frames[k].getParticles()
+						curr_track_particles.add(mosaicParticlesList.get(k)
 								.elementAt(m));
 						if ((k == 90) && (m == 6)) {
 						}
-						frames[k].getParticles().elementAt(m).special = true;
+						mosaicParticlesList.get(k).elementAt(m).special = true;
 					} while (m != -1);
 
 					tracks.add(new ArrayList<Particle>(curr_track_particles));
