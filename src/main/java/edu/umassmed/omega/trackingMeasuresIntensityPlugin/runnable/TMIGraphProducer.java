@@ -31,8 +31,9 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Double[]> noisesMap;
 	private final Map<OmegaSegment, Double[]> areasMap;
 	private final Map<OmegaSegment, Double[]> snrsMap;
-
 	// SNR related END
+	
+	private boolean itsLocal;
 	
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
 			final int graphType, final int peakMeanBgSnrOption,
@@ -57,6 +58,8 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		this.noisesMap = noisesMap;
 		this.areasMap = areasMap;
 		this.snrsMap = snrsMap;
+		
+		this.itsLocal = true;
 	}
 	
 	// public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
@@ -79,7 +82,13 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	
 	@Override
 	public void run() {
-		super.run();
+		this.itsLocal = false;
+		this.doRun();
+	}
+	
+	@Override
+	public void doRun() {
+		super.doRun();
 		if (this.isTimepointsGraph) {
 			this.prepareTimepointsGraph(this.maxT);
 		} else {
@@ -135,6 +144,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		Double[] values = null;
 		final Double[] value = new Double[1];
+		value[0] = null;
 		switch (this.peakMeanBgSnrOption) {
 			case TMIGraphPanel.OPTION_AREA:
 				values = this.areasMap.get(segment);
@@ -154,22 +164,28 @@ public class TMIGraphProducer extends StatsGraphProducer {
 			default:
 				values = this.peakSignalMap.get(segment);
 		}
-		value[0] = values[this.minMeanMaxOption];
+		if (values != null) {
+			value[0] = values[this.minMeanMaxOption];
+		}
 		return value;
 	}
 	
 	@Override
 	public void updateStatus(final boolean ended) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					TMIGraphProducer.this.intensityGraphPanel.updateStatus(
-							TMIGraphProducer.this.getCompleted(), ended);
-				}
-			});
-		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex, true);
+		if (this.itsLocal) {
+			this.intensityGraphPanel.updateStatus(this.getCompleted(), ended);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						TMIGraphProducer.this.intensityGraphPanel.updateStatus(
+						        TMIGraphProducer.this.getCompleted(), ended);
+					}
+				});
+			} catch (final InvocationTargetException | InterruptedException ex) {
+				OmegaLogFileManager.handleUncaughtException(ex, true);
+			}
 		}
 	}
 }

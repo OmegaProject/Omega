@@ -17,9 +17,9 @@ import edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVConstants;
 import edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVGraphPanel;
 
 public class TMVGraphProducer extends StatsGraphProducer {
-	
+
 	private final TMVGraphPanel velocityPanel;
-	
+
 	private final int velocityOption;
 	private final int maxT;
 	private final Map<OmegaSegment, List<Double>> localSpeedMap;
@@ -27,18 +27,19 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Double> averageCurvilinearSpeedMap;
 	private final Map<OmegaSegment, Double> averageStraightLineVelocityMap;
 	private final Map<OmegaSegment, Double> forwardProgressionLinearityMap;
-	
+
 	private JPanel graphPanel;
-	
+	private boolean itsLocal;
+
 	public TMVGraphProducer(final TMVGraphPanel velocityPanel,
-			final int graphType, final int velocityOption, final int tMax,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
+	        final int graphType, final int velocityOption, final int tMax,
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 	        final OmegaSegmentationTypes segmTypes,
-			final Map<OmegaSegment, List<Double>> localSpeedMap,
-			final Map<OmegaSegment, List<Double>> localVelocityMap,
-			final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
-			final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
-			final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
+	        final Map<OmegaSegment, List<Double>> localSpeedMap,
+	        final Map<OmegaSegment, List<Double>> localVelocityMap,
+	        final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
+	        final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
+	        final Map<OmegaSegment, Double> forwardProgressionLinearityMap) {
 		super(graphType, segmentsMap, segmTypes);
 		this.velocityPanel = velocityPanel;
 		this.velocityOption = velocityOption;
@@ -49,8 +50,9 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		this.averageStraightLineVelocityMap = averageStraightLineVelocityMap;
 		this.forwardProgressionLinearityMap = forwardProgressionLinearityMap;
 		this.graphPanel = null;
+		this.itsLocal = true;
 	}
-	
+
 	// public TMMGraphProducer(final int distDispOption,final int tMax,
 	// final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 	// final Map<OmegaTrajectory, List<Double[]>> motilityMap) {
@@ -63,10 +65,16 @@ public class TMVGraphProducer extends StatsGraphProducer {
 	//
 	// this.graphPanel = null;
 	// }
-	
+
 	@Override
 	public void run() {
-		super.run();
+		this.itsLocal = false;
+		this.doRun();
+	}
+
+	@Override
+	public void doRun() {
+		super.doRun();
 		switch (this.velocityOption) {
 			case TMVGraphPanel.OPTION_LOCAL_VELOCITY:
 			case TMVGraphPanel.OPTION_LOCAL_SPEED:
@@ -79,7 +87,7 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		}
 		this.updateStatus(true);
 	}
-	
+
 	@Override
 	public String getTitle() {
 		String title;
@@ -98,7 +106,7 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		}
 		return title;
 	}
-	
+
 	@Override
 	public String getYAxisTitle() {
 		String yAxisTitle;
@@ -112,11 +120,12 @@ public class TMVGraphProducer extends StatsGraphProducer {
 		}
 		return yAxisTitle;
 	}
-	
+
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		List<Double> values = null;
 		final Double[] value = new Double[1];
+		value[0] = null;
 		int index = -1;
 		switch (this.velocityOption) {
 			case TMVGraphPanel.OPTION_MEAN_VELOCITY:
@@ -128,28 +137,38 @@ public class TMVGraphProducer extends StatsGraphProducer {
 			case TMVGraphPanel.OPTION_LOCAL_VELOCITY:
 				values = this.localVelocityMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
 				value[0] = values.get(index);
 				break;
 			default:
 				values = this.localSpeedMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
 				value[0] = values.get(index);
 		}
 		return value;
 	}
-	
+
 	@Override
 	public void updateStatus(final boolean ended) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					TMVGraphProducer.this.velocityPanel.updateStatus(
-							TMVGraphProducer.this.getCompleted(), ended);
-				}
-			});
-		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex, true);
+		if (this.itsLocal) {
+			this.velocityPanel.updateStatus(this.getCompleted(), ended);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						TMVGraphProducer.this.velocityPanel.updateStatus(
+						        TMVGraphProducer.this.getCompleted(), ended);
+					}
+				});
+			} catch (final InvocationTargetException | InterruptedException ex) {
+				OmegaLogFileManager.handleUncaughtException(ex, true);
+			}
 		}
 	}
 }

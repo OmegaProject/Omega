@@ -251,7 +251,6 @@ public class TSPanel extends GenericPanel {
 				trackPanel.segmentOnROISelection();
 				this.segm_btt.get(0).setSelected(true);
 				this.setSegmentationType(this.segm_btt.get(0).getText());
-				
 			} else {
 				trackPanel.segmentOnMotionSelection();
 				this.buttonGroup.clearSelection();
@@ -348,7 +347,6 @@ public class TSPanel extends GenericPanel {
 		if (!this.isSegmentOnSpotsSelection()) {
 			this.buttonGroup.clearSelection();
 			singleTrajPanel.segmentTrajectory();
-
 		}
 	}
 	
@@ -403,6 +401,7 @@ public class TSPanel extends GenericPanel {
 			// panel.setTrajectory(traj);
 			panel.setSegmentationType(this.segmTypes
 			        .getSegmentationValue(this.segmentationName));
+			this.handleSegmentationOptionChanged();
 		}
 		this.currentPanelIndex = 0;
 		this.revalidate();
@@ -487,7 +486,7 @@ public class TSPanel extends GenericPanel {
 		} else {
 			buf.append(TSConstants.SELECT_FROM_UPPER_SPACE);
 		}
-		buf.append(startingROI.getFrameIndex() + 1);
+		buf.append(startingROI.getFrameIndex());
 		buf.append(TSConstants.SELECT_PUNCT);
 		this.updateSegmentationStatus(buf.toString());
 	}
@@ -497,7 +496,7 @@ public class TSPanel extends GenericPanel {
 		buf.append(this.segment_lbl.getText().replace(TSConstants.SELECT_PUNCT,
 		        ""));
 		buf.append(TSConstants.SELECT_TO_LOWER_SPACE);
-		buf.append(endingROI.getFrameIndex() + 1);
+		buf.append(endingROI.getFrameIndex());
 		buf.append(TSConstants.SELECT_PUNCT);
 		this.updateSegmentationStatus(buf.toString());
 	}

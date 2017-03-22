@@ -42,7 +42,8 @@ public class TMVGraphPanel extends GenericPanel {
 	private final TMVPluginPanel pluginPanel;
 
 	private JPanel centerPanel;
-	private GenericComboBox<String> xAxis_cmb, yAxis_cmb, graphType_cmb;
+	private GenericComboBox<String> xAxis_cmb, yAxis_cmb, graphType_cmb,
+	globalOrLocal_cmb;
 	private JTextField selection_txt;
 	private JButton drawGraph_btt;
 
@@ -57,8 +58,10 @@ public class TMVGraphPanel extends GenericPanel {
 
 	private OmegaTrackingMeasuresVelocityRun selectedTrackingMeasuresRun;
 	private OmegaSegmentationTypes segmTypes;
-	private Thread t;
+	private final Thread t;
 	private TMVGraphProducer graphProducer;
+
+	private boolean handlingEvent;
 
 	public TMVGraphPanel(final RootPaneContainer parent,
 	        final TMVPluginPanel pluginPanel,
@@ -79,6 +82,8 @@ public class TMVGraphPanel extends GenericPanel {
 		this.selectedSegmentsMap = new LinkedHashMap<>();
 		this.t = null;
 
+		this.handlingEvent = false;
+
 		this.setLayout(new BorderLayout());
 
 		this.createAndAddWidgets();
@@ -91,6 +96,22 @@ public class TMVGraphPanel extends GenericPanel {
 		leftPanel.setLayout(new FlowLayout());
 		leftPanel.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
+		
+		final JLabel globalOrLocal_lbl = new JLabel(
+				StatsConstants.GRAPH_RESULTSTYPE_LBL);
+		globalOrLocal_lbl
+		        .setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+		globalOrLocal_lbl
+		        .setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+		leftPanel.add(globalOrLocal_lbl);
+		this.globalOrLocal_cmb = new GenericComboBox<>(
+		        this.getParentContainer());
+		this.globalOrLocal_cmb.addItem(StatsConstants.TAB_RESULTS_LOCAL);
+		this.globalOrLocal_cmb.addItem(StatsConstants.TAB_RESULTS_GLOBAL);
+		this.globalOrLocal_cmb
+		        .setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
+		this.globalOrLocal_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
+		leftPanel.add(this.globalOrLocal_cmb);
 
 		final JLabel yAxis_lbl = new JLabel(StatsConstants.GRAPH_Y_LBL);
 		yAxis_lbl
@@ -100,8 +121,6 @@ public class TMVGraphPanel extends GenericPanel {
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED_LOCAL);
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_VEL_LOCAL);
-		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED);
-		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_VEL);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
@@ -113,7 +132,6 @@ public class TMVGraphPanel extends GenericPanel {
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
 		this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TPT);
-		this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TRACK);
 		// this.xAxis_cmb.addItem("Segments");
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
@@ -159,6 +177,12 @@ public class TMVGraphPanel extends GenericPanel {
 	}
 
 	private void addListeners() {
+		this.globalOrLocal_cmb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				TMVGraphPanel.this.handleChangeResultsType();
+			}
+		});
 		this.xAxis_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
@@ -189,6 +213,24 @@ public class TMVGraphPanel extends GenericPanel {
 				TMVGraphPanel.this.handleComponentResized();
 			}
 		});
+	}
+
+	private void handleChangeResultsType() {
+		this.handlingEvent = true;
+		this.yAxis_cmb.removeAllItems();
+		this.xAxis_cmb.removeAllItems();
+		if (this.globalOrLocal_cmb.getSelectedItem().equals(
+		        StatsConstants.TAB_RESULTS_GLOBAL)) {
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED);
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_VEL);
+			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TRACK);
+		} else {
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED_LOCAL);
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_VEL_LOCAL);
+			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TPT);
+		}
+		this.handlingEvent = false;
+		this.handleDrawChartLater();
 	}
 
 	private void handleComponentResized() {
@@ -261,6 +303,8 @@ public class TMVGraphPanel extends GenericPanel {
 	}
 
 	private void handleChangeAxis() {
+		if (this.handlingEvent)
+			return;
 		this.drawGraph_btt.setEnabled(false);
 		final String xAxisSelection = (String) this.xAxis_cmb.getSelectedItem();
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
@@ -348,21 +392,22 @@ public class TMVGraphPanel extends GenericPanel {
 	}
 
 	private void launchGraphProducerThread(final TMVGraphProducer graphProducer) {
-		if ((this.t != null) && this.t.isAlive()) {
-			this.graphProducer.terminate();
-		}
-		this.t = new Thread(graphProducer);
+		// if ((this.t != null) && this.t.isAlive()) {
+		// this.graphProducer.terminate();
+		// }
+		// this.t = new Thread(graphProducer);
 		this.graphProducer = graphProducer;
-		this.t.setName("VelocityGraphProducer");
-		this.t.start();
+		this.graphProducer.doRun();
+		// this.t.setName("VelocityGraphProducer");
+		// this.t.start();
 	}
-
+	
 	public void setMaximumT(final int maxT) {
 		this.maxT = maxT;
 	}
-
+	
 	public void setSegmentsMap(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.segmentsMap = segmentsMap;
 		// this.handleChangeChart();
 		// this.handleDrawChart();

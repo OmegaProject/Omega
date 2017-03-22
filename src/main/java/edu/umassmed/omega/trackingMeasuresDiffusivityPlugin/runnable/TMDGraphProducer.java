@@ -36,6 +36,7 @@ public class TMDGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Double[]> errors;
 
 	private JPanel graphPanel;
+	private boolean itsLocal;
 
 	public TMDGraphProducer(final TMDGraphPanel diffusivityPanel,
 	        final int graphType, final int diffusivityOption, final int tMax,
@@ -70,6 +71,8 @@ public class TMDGraphProducer extends StatsGraphProducer {
 		// this.smssMap = smssMap;
 		this.errors = errors;
 		this.graphPanel = null;
+		
+		this.itsLocal = true;
 	}
 
 	// public TMMGraphProducer(final int distDispOption,final int tMax,
@@ -87,7 +90,13 @@ public class TMDGraphProducer extends StatsGraphProducer {
 
 	@Override
 	public void run() {
-		super.run();
+		this.itsLocal = false;
+		this.doRun();
+	}
+
+	@Override
+	public void doRun() {
+		super.doRun();
 		switch (this.diffusivityOption) {
 			default:
 				this.prepareTracksGraph(false);
@@ -146,8 +155,9 @@ public class TMDGraphProducer extends StatsGraphProducer {
 		Double[][] array = null;
 		Double[] values = null;
 		final Double[] value = new Double[1];
+		value[0] = null;
 		if (!this.nyMap.containsKey(segment))
-			return null;
+			return value;
 		switch (this.diffusivityOption) {
 			case TMDGraphPanel.OPTION_TRACK_SLOPE_MSS:
 				values = this.smssFromLogMap.get(segment);
@@ -159,14 +169,16 @@ public class TMDGraphProducer extends StatsGraphProducer {
 				value[0] = values[3];
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_SMSS:
-				if (this.errors == null)
-					return null;
+				if (this.errors == null) {
+					break;
+				}
 				values = this.errors.get(segment);
 				value[0] = values[1];
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_D:
-				if (this.errors == null)
-					return null;
+				if (this.errors == null) {
+					break;
+				}
 				values = this.errors.get(segment);
 				value[0] = values[0];
 				break;
@@ -182,16 +194,20 @@ public class TMDGraphProducer extends StatsGraphProducer {
 	public void updateStatus(final boolean ended) {
 		if (this.isTerminated())
 			return;
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					TMDGraphProducer.this.diffusivityPanel.updateStatus(
-					        TMDGraphProducer.this.getCompleted(), ended);
-				}
-			});
-		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex, true);
+		if (this.itsLocal) {
+			this.diffusivityPanel.updateStatus(this.getCompleted(), ended);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						TMDGraphProducer.this.diffusivityPanel.updateStatus(
+								TMDGraphProducer.this.getCompleted(), ended);
+					}
+				});
+			} catch (final InvocationTargetException | InterruptedException ex) {
+				OmegaLogFileManager.handleUncaughtException(ex, true);
+			}
 		}
 	}
 

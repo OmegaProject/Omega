@@ -57,7 +57,7 @@ public class TMDGraphPanel extends GenericPanel {
 	private OmegaTrackingMeasuresDiffusivityRun selectedTrackingMeasuresRun;
 	private OmegaSegmentationTypes segmTypes;
 	
-	private Thread t;
+	private final Thread t;
 	private TMDGraphProducer graphProducer;
 	
 	public TMDGraphPanel(final RootPaneContainer parent,
@@ -360,13 +360,15 @@ public class TMDGraphPanel extends GenericPanel {
 	}
 	
 	private void launchGraphProducerThread(final TMDGraphProducer graphProducer) {
-		if ((this.t != null) && this.t.isAlive()) {
-			this.graphProducer.terminate();
-		}
-		this.t = new Thread(graphProducer);
+		// if ((this.t != null) && this.t.isAlive()) {
+		// this.graphProducer.terminate();
+		// }
+		// this.t = new Thread(graphProducer);
+		// this.graphProducer.terminate();
 		this.graphProducer = graphProducer;
-		this.t.setName("DiffusivityGraphProducer");
-		this.t.start();
+		this.graphProducer.doRun();
+		// this.t.setName("DiffusivityGraphProducer");
+		// this.t.start();
 	}
 	
 	public void setMaximumT(final int maxT) {

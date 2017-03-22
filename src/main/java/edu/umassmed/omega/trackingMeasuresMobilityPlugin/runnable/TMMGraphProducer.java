@@ -32,6 +32,8 @@ public class TMMGraphProducer extends StatsGraphProducer {
 
 	private JPanel graphPanel;
 
+	private boolean itsLocal;
+
 	public TMMGraphProducer(
 			final TMMGraphPanel mobilityPanel,
 			final int graphType,
@@ -58,11 +60,18 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		this.confinementRatioMap = confinementRatioMap;
 		this.anglesAndDirectionalChangesMap = anglesAndDirectionalChangesMap;
 		this.graphPanel = null;
+		this.itsLocal = true;
 	}
 
 	@Override
 	public void run() {
-		super.run();
+		this.itsLocal = false;
+		this.doRun();
+	}
+
+	@Override
+	public void doRun() {
+		super.doRun();
 		if (this.isTimepointsGraph) {
 			this.prepareTimepointsGraph(this.maxT);
 			this.graphPanel = this.getGraphPanel();
@@ -135,11 +144,15 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		Double[] localValues = null;
 		List<Double> values = null;
 		final Double[] value = new Double[1];
+		value[0] = null;
 		int index = -1;
 		switch (this.mobilityOption) {
 			case TMMGraphPanel.OPTION_DISPLACEMENT:
 				values = this.displacementMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
 				value[0] = values.get(index);
 				break;
 			case TMMGraphPanel.OPTION_MAX_DISPLACEMENT:
@@ -152,24 +165,36 @@ public class TMMGraphProducer extends StatsGraphProducer {
 			case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
 				values = this.confinementRatioMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
 				value[0] = values.get(index);
 				break;
 			case TMMGraphPanel.OPTION_LOCAL_ANGLES:
 				valuesList = this.anglesAndDirectionalChangesMap.get(segment);
 				localValues = null;
 				index = roi.getFrameIndex() - 1;
+				if ((valuesList == null) || (index >= valuesList.size())) {
+					break;
+				}
 				localValues = valuesList.get(index);
 				value[0] = localValues[0];
 				break;
 			case TMMGraphPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
 				valuesList = this.anglesAndDirectionalChangesMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((valuesList == null) || (index >= valuesList.size())) {
+					break;
+				}
 				localValues = valuesList.get(index);
 				value[0] = localValues[1];
 				break;
 			default:
 				values = this.distanceMap.get(segment);
 				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
 				value[0] = values.get(index);
 		}
 		return value;
@@ -177,16 +202,20 @@ public class TMMGraphProducer extends StatsGraphProducer {
 
 	@Override
 	public void updateStatus(final boolean ended) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					TMMGraphProducer.this.mobilityPanel.updateStatus(
-							TMMGraphProducer.this.getCompleted(), ended);
-				}
-			});
-		} catch (final InvocationTargetException | InterruptedException ex) {
-			OmegaLogFileManager.handleUncaughtException(ex, true);
+		if (this.itsLocal) {
+			this.mobilityPanel.updateStatus(this.getCompleted(), ended);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						TMMGraphProducer.this.mobilityPanel.updateStatus(
+								TMMGraphProducer.this.getCompleted(), ended);
+					}
+				});
+			} catch (final InvocationTargetException | InterruptedException ex) {
+				OmegaLogFileManager.handleUncaughtException(ex, true);
+			}
 		}
 	}
 }
