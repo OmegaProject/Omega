@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.omeroPlugin.gui;
 
@@ -49,6 +48,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
@@ -82,7 +82,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 	private final OmeroGateway gateway;
 
 	public OmeroConnectionDialog(final RootPaneContainer parentContainer,
-	        final GenericPluginPanel parent, final OmeroGateway gateway) {
+			final GenericPluginPanel parent, final OmeroGateway gateway) {
 		super(parentContainer, "Omega server connection manager", false);
 		this.gateway = gateway;
 
@@ -126,8 +126,8 @@ public class OmeroConnectionDialog extends GenericDialog {
 		this.hostnameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		serverPanel.add(this.hostnameTxtFie);
 		final JLabel portLbl = new JLabel(
-		        "Insert server port (empty for default "
-		                + OmeroServerInformation.DEFAULT_PORT + "):");
+				"Insert server port (empty for default "
+						+ OmeroServerInformation.DEFAULT_PORT + "):");
 		serverPanel.add(portLbl);
 		this.portTxtFie = new JTextField();
 		this.portTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
@@ -159,22 +159,22 @@ public class OmeroConnectionDialog extends GenericDialog {
 	private void fillFields() {
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_ADRESS)) {
 			this.hostnameTxtFie.setText(this.pluginOptions
-			        .get(this.OPTION_SERVER_ADRESS));
+					.get(this.OPTION_SERVER_ADRESS));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_PORT)) {
 			this.portTxtFie.setText(this.pluginOptions
-			        .get(this.OPTION_SERVER_PORT));
+					.get(this.OPTION_SERVER_PORT));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_USERNAME)) {
 			this.usernameTxtFie.setText(this.pluginOptions
-			        .get(this.OPTION_LOGIN_USERNAME));
+					.get(this.OPTION_LOGIN_USERNAME));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_PASSWORD)) {
 			final String psw = this.pluginOptions
-			        .get(this.OPTION_LOGIN_PASSWORD);
+					.get(this.OPTION_LOGIN_PASSWORD);
 			try {
 				this.passwordPswFie.setText(OmegaDataEncryptionUtilities
-				        .decrypt(psw));
+						.decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
@@ -188,81 +188,91 @@ public class OmeroConnectionDialog extends GenericDialog {
 		this.connectButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				if (!OmeroConnectionDialog.this.gateway.isConnected()) {
-					final String hostname = OmeroConnectionDialog.this.hostnameTxtFie
-					        .getText();
-					final String portS = OmeroConnectionDialog.this.portTxtFie
-					        .getText();
-
-					OmegaServerInformation serverInfo = null;
-					if (portS.length() == 0) {
-						serverInfo = new OmeroServerInformation(hostname);
-					} else {
-						final Integer port = Integer.valueOf(portS);
-						serverInfo = new OmegaServerInformation(hostname, port);
-					}
-					final String username = OmeroConnectionDialog.this.usernameTxtFie
-					        .getText();
-					final String password = String
-					        .valueOf(OmeroConnectionDialog.this.passwordPswFie
-					                .getPassword());
-					final OmegaLoginCredentials loginCred = new OmegaLoginCredentials(
-					        username, password);
-
-					OmeroConnectionDialog.this.connectionStatusLbl
-					        .setText("Status:  connecting...");
-
-					boolean connected = false;
-					final int error = OmeroConnectionDialog.this.gateway
-					        .connect(loginCred, serverInfo);
-					connected = OmeroConnectionDialog.this.gateway
-					        .isConnected();
-					OmeroImporterUtilities.handleConnectionError(
-					        OmeroConnectionDialog.this.getParentContainer(),
-					        error);
-
-					if (connected == false) {
-						OmeroConnectionDialog.this.connectionStatusLbl
-						        .setText("Status: not connected.");
-						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
-					} else {
-						OmeroConnectionDialog.this.usernameTxtFie
-						        .setEditable(false);
-						OmeroConnectionDialog.this.passwordPswFie
-						        .setEditable(false);
-						OmeroConnectionDialog.this.hostnameTxtFie
-						        .setEditable(false);
-						OmeroConnectionDialog.this.portTxtFie
-						        .setEditable(false);
-						OmeroConnectionDialog.this.connectButt
-						        .setText("Disconnect");
-						OmeroConnectionDialog.this.connectionStatusLbl
-						        .setText("Status: connected.");
-						OmeroConnectionDialog.this.parent.firePropertyChange(
-						        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
-						OmeroConnectionDialog.this.setVisible(false);
-					}
-
-					OmeroConnectionDialog.this.saveOptions(hostname, portS,
-					        username, password);
-				} else {
-					OmeroConnectionDialog.this.gateway.disconnect();
-					OmeroConnectionDialog.this.usernameTxtFie.setEditable(true);
-					OmeroConnectionDialog.this.passwordPswFie.setEditable(true);
-					OmeroConnectionDialog.this.hostnameTxtFie.setEditable(true);
-					OmeroConnectionDialog.this.portTxtFie.setEditable(true);
-					OmeroConnectionDialog.this.connectButt.setText("Connect");
-					OmeroConnectionDialog.this.parent.firePropertyChange(
-					        OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
-
-				}
+				OmeroConnectionDialog.this.handleConnect();
 			}
 		});
 	}
+	
+	private void handleConnect() {
+		if (!OmeroConnectionDialog.this.gateway.isConnected()) {
+			final String hostname = OmeroConnectionDialog.this.hostnameTxtFie
+					.getText();
+			final String portS = OmeroConnectionDialog.this.portTxtFie
+					.getText();
+
+			OmegaServerInformation serverInfo = null;
+			if (portS.length() == 0) {
+				serverInfo = new OmeroServerInformation(hostname);
+			} else {
+				final Integer port = Integer.valueOf(portS);
+				serverInfo = new OmegaServerInformation(hostname, port);
+			}
+			final String username = OmeroConnectionDialog.this.usernameTxtFie
+					.getText();
+			final String password = String
+					.valueOf(OmeroConnectionDialog.this.passwordPswFie
+							.getPassword());
+			final OmegaLoginCredentials loginCred = new OmegaLoginCredentials(
+					username, password);
+
+			OmeroConnectionDialog.this.connectionStatusLbl
+			.setText("Status:  connecting...");
+
+			boolean connected = false;
+			int error = -1;
+			try {
+				error = this.gateway.connect(loginCred, serverInfo);
+			} catch (final Exception ex) {
+				final OmeroPluginPanel opp = (OmeroPluginPanel) this.parent;
+				OmegaLogFileManager.handlePluginException(opp.getPlugin(), ex,
+						false);
+			}
+
+			connected = OmeroConnectionDialog.this.gateway.isConnected();
+			OmeroImporterUtilities.handleConnectionError(
+					OmeroConnectionDialog.this.getParentContainer(), error);
+
+			if (connected == false) {
+				OmeroConnectionDialog.this.connectionStatusLbl
+				.setText("Status: not connected.");
+				OmeroConnectionDialog.this.parent.firePropertyChange(
+						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+			} else {
+				OmeroConnectionDialog.this.usernameTxtFie.setEditable(false);
+				OmeroConnectionDialog.this.passwordPswFie.setEditable(false);
+				OmeroConnectionDialog.this.hostnameTxtFie.setEditable(false);
+				OmeroConnectionDialog.this.portTxtFie.setEditable(false);
+				OmeroConnectionDialog.this.connectButt.setText("Disconnect");
+				OmeroConnectionDialog.this.connectionStatusLbl
+				.setText("Status: connected.");
+				OmeroConnectionDialog.this.parent.firePropertyChange(
+						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+				OmeroConnectionDialog.this.setVisible(false);
+			}
+
+			OmeroConnectionDialog.this.saveOptions(hostname, portS, username,
+					password);
+		} else {
+			try {
+				OmeroConnectionDialog.this.gateway.disconnect();
+			} catch (final Exception ex) {
+				final OmeroPluginPanel opp = (OmeroPluginPanel) this.parent;
+				OmegaLogFileManager.handlePluginException(opp.getPlugin(), ex,
+						false);
+			}
+			OmeroConnectionDialog.this.usernameTxtFie.setEditable(true);
+			OmeroConnectionDialog.this.passwordPswFie.setEditable(true);
+			OmeroConnectionDialog.this.hostnameTxtFie.setEditable(true);
+			OmeroConnectionDialog.this.portTxtFie.setEditable(true);
+			OmeroConnectionDialog.this.connectButt.setText("Connect");
+			OmeroConnectionDialog.this.parent.firePropertyChange(
+					OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+
+		}
+	}
 
 	public void saveOptions(final String hostname, final String port,
-	        final String username, final String password) {
+			final String username, final String password) {
 		OmeroPluginPanel pluginPanel = null;
 		if (OmeroConnectionDialog.this.parent instanceof OmeroPluginPanel) {
 			pluginPanel = (OmeroPluginPanel) OmeroConnectionDialog.this.parent;
@@ -272,10 +282,10 @@ public class OmeroConnectionDialog extends GenericDialog {
 			final Map<String, String> options = new LinkedHashMap<String, String>();
 			if (OmeroConnectionDialog.this.saveServerInfo.isSelected()) {
 				options.put(OmeroConnectionDialog.this.OPTION_SERVER_ADRESS,
-				        hostname);
+						hostname);
 				if (port.isEmpty()) {
 					options.put(OmeroConnectionDialog.this.OPTION_SERVER_PORT,
-					        OmeroConnectionDialog.this.portTxtFie.getText());
+							OmeroConnectionDialog.this.portTxtFie.getText());
 				}
 			}
 			if (OmeroConnectionDialog.this.saveLoginInfo.isSelected()) {

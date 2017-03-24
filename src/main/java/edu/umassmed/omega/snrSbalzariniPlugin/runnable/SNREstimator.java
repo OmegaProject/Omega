@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2014 University of Massachusetts Medical School
- * Alessandro Rigano (Program in Molecular Medicine)
- * Caterina Strambio De Castillia (Program in Molecular Medicine)
+ * Copyright (C) 2014 University of Massachusetts Medical School Alessandro
+ * Rigano (Program in Molecular Medicine) Caterina Strambio De Castillia
+ * (Program in Molecular Medicine)
  *
  * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
  * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
  * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo ErrorIndex and Mario Valle.
  *
- * Key contacts:
- * Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
+ * Key contacts: Caterina Strambio De Castillia: caterina.strambio@umassmed.edu
  * Alex Rigano: alex.rigano@umassmed.edu
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 package edu.umassmed.omega.snrSbalzariniPlugin.runnable;
 
@@ -71,10 +70,10 @@ public class SNREstimator implements SNRRunnable {
 	private Double avgErrorIndexSNR, minErrorIndexSNR, maxErrorIndexSNR;
 
 	public SNREstimator(
-	        final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final OmegaGateway gateway, final OmegaPlane frame,
-	        final List<OmegaROI> rois, final int radius,
-	        final double threshold, final String method) {
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
+			final OmegaGateway gateway, final OmegaPlane frame,
+			final List<OmegaROI> rois, final int radius,
+			final double threshold, final String method) {
 		this.displayerPanel = displayerPanel;
 		this.isJobCompleted = false;
 
@@ -119,10 +118,25 @@ public class SNREstimator implements SNRRunnable {
 		final int t = this.frame.getIndex();
 		final int c = this.frame.getChannel();
 
-		final int byteWidth = this.gateway.getByteWidth(pixelsID);
-		final byte[] pixels = this.gateway.getImageData(pixelsID, z, t, c);
+		Integer byteWidth = null;
+		try {
+			byteWidth = this.gateway.getByteWidth(pixelsID);
+		} catch (final Exception ex) {
+			// FIXME should add plugin here and direct to proper log
+			OmegaLogFileManager.handleCoreException(ex, false);
+		}
+		byte[] pixels = null;
+		try {
+			pixels = this.gateway.getImageData(pixelsID, z, t, c);
+		} catch (final Exception ex) {
+			// FIXME should add plugin here and direct to proper log
+			OmegaLogFileManager.handleCoreException(ex, false);
+		}
+		if ((byteWidth == null) || (pixels == null))
+			// FIXME should add error management here and above
+			return;
 		final Integer[] image = OmegaImageUtilities.convertByteToIntegerImage(
-		        byteWidth, pixels);
+				byteWidth, pixels);
 		// data = OmegaImageUtilities.normalizeImage(data);
 
 		final Integer[] minMax = OmegaMathsUtilities.getMinAndMax(image);
@@ -131,7 +145,7 @@ public class SNREstimator implements SNRRunnable {
 
 		final double thresh = ((max - min) * this.threshold) + min;
 		final Integer[] smallerValues = OmegaMathsUtilities.getSmallerValue(
-		        image, thresh);
+				image, thresh);
 		this.imageBGR = OmegaMathsUtilities.mean(smallerValues);
 		this.imageNoise = OmegaMathsUtilities.standardDeviationN(smallerValues);
 
@@ -173,11 +187,11 @@ public class SNREstimator implements SNRRunnable {
 			this.localMeanSignals.put(roi, localMeanSignal);
 			this.localSignalSizes.put(roi, counter);
 			final double localNoise = Math.sqrt(localMaxSignal
-			        * ((this.imageNoise * this.imageNoise) / this.imageBGR));
+					* ((this.imageNoise * this.imageNoise) / this.imageBGR));
 			this.localNoises.put(roi, localNoise);
 			Double localSNR = null;
 			final Double ErrorIndexSNR = (localMaxSignal - this.imageBGR)
-			        / localNoise;
+					/ localNoise;
 			if (this.method
 					.equals(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON)) {
 				localSNR = 2 * (Math.sqrt(localMaxSignal) - Math
@@ -216,8 +230,8 @@ public class SNREstimator implements SNRRunnable {
 				@Override
 				public void run() {
 					SNREstimator.this.displayerPanel
-					        .updateMessageStatus(new SNRMessageEvent(msg,
-					                SNREstimator.this, ended));
+					.updateMessageStatus(new SNRMessageEvent(msg,
+							SNREstimator.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
@@ -230,8 +244,8 @@ public class SNREstimator implements SNRRunnable {
 			@Override
 			public void run() {
 				SNREstimator.this.displayerPanel
-				        .updateMessageStatus(new SNRMessageEvent(msg,
-				                SNREstimator.this, ended));
+				.updateMessageStatus(new SNRMessageEvent(msg,
+						SNREstimator.this, ended));
 			}
 		});
 	}

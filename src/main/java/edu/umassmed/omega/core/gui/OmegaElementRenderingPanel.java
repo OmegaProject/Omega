@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -84,7 +85,7 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		final JPanel zPanel = new JPanel();
 		zPanel.setLayout(new GridLayout(2, 1));
 		zPanel.setBorder(new TitledBorder(
-		        OmegaGUIConstants.SIDEPANEL_RENDERING_Z));
+				OmegaGUIConstants.SIDEPANEL_RENDERING_Z));
 		
 		this.zControl_sli = new JSlider();
 		this.zControl_sli.setMinimum(0);
@@ -114,7 +115,7 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		final JPanel tPanel = new JPanel();
 		tPanel.setLayout(new GridLayout(2, 1));
 		tPanel.setBorder(new TitledBorder(
-		        OmegaGUIConstants.SIDEPANEL_RENDERING_T));
+				OmegaGUIConstants.SIDEPANEL_RENDERING_T));
 		
 		this.tControl_sli = new JSlider();
 		this.tControl_sli.setMinimum(0);
@@ -148,11 +149,11 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		// compressed panel
 		this.optionsPanel = new JPanel();
 		this.optionsPanel.setBorder(new TitledBorder(
-		        OmegaGUIConstants.SIDEPANEL_RENDERING_OPTIONS));
+				OmegaGUIConstants.SIDEPANEL_RENDERING_OPTIONS));
 		this.optionsPanel.setLayout(new GridLayout(1, 1));
 		
 		this.compressed = new JCheckBox(
-		        OmegaGUIConstants.SIDEPANEL_RENDERING_IMAGE_COMPRESSION);
+				OmegaGUIConstants.SIDEPANEL_RENDERING_IMAGE_COMPRESSION);
 		this.compressed.setSelected(false);
 		this.compressed.setEnabled(false);
 		
@@ -185,7 +186,23 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 	}
 	
 	private void handleCompressed() {
+		final boolean oldStatus = this.compressed.isEnabled();
 		this.sidePanel.setCompressed(this.compressed.isEnabled());
+		try {
+			final OmegaGateway gateway = this.sidePanel.getGateway();
+			final OmegaImagePixels pixels = this.sidePanel.getImagePixels();
+			final Long id = pixels.getOmeroId();
+			if (this.compressed.isEnabled()) {
+				gateway.setCompressionLevel(id,
+						OmegaElementRenderingPanel.COMPRESSION);
+			} else {
+				gateway.setCompressionLevel(id, 0);
+			}
+			
+		} catch (final Exception ex) {
+			this.sidePanel.setCompressed(oldStatus);
+			OmegaLogFileManager.appendToCoreLog(ex.getMessage());
+		}
 	}
 	
 	/**
@@ -202,7 +219,7 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		
 		for (int i = 0; i < n; i++) {
 			final String chanName = this.sidePanel.getImagePixels()
-			        .getChannelNames().get(i);
+					.getChannelNames().get(i);
 			String chan = String.valueOf(i);
 			if (chanName != null) {
 				chan += ": " + chanName;
@@ -226,7 +243,7 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		}
 		
 		final Dimension channelsDim = new Dimension(
-		        this.channelsPanel.getWidth(), 50 * n);
+				this.channelsPanel.getWidth(), 50 * n);
 		this.channelsPanel.setPreferredSize(channelsDim);
 		this.channelsPanel.setSize(channelsDim);
 		
@@ -349,10 +366,16 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 	private void addRenderingControl() {
 		final OmegaGateway gateway = this.sidePanel.getGateway();
 		final OmegaImagePixels pixels = this.sidePanel.getImagePixels();
+		final Long id = pixels.getOmeroId();
 		this.compressed.setEnabled(true);
 		this.compressed.setSelected(true);
-		final Long id = pixels.getOmeroId();
-		gateway.setCompressionLevel(id, OmegaElementRenderingPanel.COMPRESSION);
+		try {
+			gateway.setCompressionLevel(id,
+					OmegaElementRenderingPanel.COMPRESSION);
+		} catch (final Exception ex) {
+			OmegaLogFileManager.handleCoreException(ex, false);
+			this.compressed.setSelected(false);
+		}
 		// final PixelsData pixels = image.getDefaultPixels();
 		this.currentMaximumTValue = pixels.getSizeT();
 		this.currentMaximumZValue = pixels.getSizeZ();
@@ -367,11 +390,26 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		this.physicalSizeX = pixels.getPhysicalSizeX();
 		this.physicalSizeY = pixels.getPhysicalSizeY();
 		this.physicalSizeZ = pixels.getPhysicalSizeZ();
-		this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
-				this.currentMaximumTValue);
+		try {
+			this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
+					this.currentMaximumTValue);
+		} catch (final Exception ex) {
+			this.physicalSizeT = null;
+			OmegaLogFileManager.handleCoreException(ex, false);
+		}
 		
-		final int defaultZ = gateway.getDefaultZ(id);
-		final int defaultT = gateway.getDefaultT(id);
+		int defaultZ = 0;
+		try {
+			defaultZ = gateway.getDefaultZ(id);
+		} catch (final Exception ex) {
+			OmegaLogFileManager.handleCoreException(ex, false);
+		}
+		int defaultT = 0;
+		try {
+			defaultT = gateway.getDefaultT(id);
+		} catch (final Exception ex) {
+			OmegaLogFileManager.handleCoreException(ex, false);
+		}
 		this.zControl_sli.setValue(defaultZ + 1);
 		this.tControl_sli.setValue(defaultT + 1);
 		
