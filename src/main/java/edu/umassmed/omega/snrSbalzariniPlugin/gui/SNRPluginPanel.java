@@ -93,90 +93,90 @@ import edu.umassmed.omega.snrSbalzariniPlugin.runnable.SNRRunner;
 import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 
 public class SNRPluginPanel extends GenericPluginPanel implements
-OmegaMessageDisplayerPanelInterface,
-        GenericElementInformationContainerInterface {
-
+		OmegaMessageDisplayerPanelInterface,
+		GenericElementInformationContainerInterface {
+	
 	private static final long serialVersionUID = -5740459087763362607L;
-
+	
 	private final OmegaGateway gateway;
-
+	
 	private JComboBox<String> images_cmb;
-
+	
 	// private OmeroListPanel projectListPanel;
 	private SNRLoadedDataBrowserPanel loadedDataBrowserPanel;
 	private SNRQueueRunBrowserPanel queueRunBrowserPanel;
-
+	
 	private JButton addToProcess_butt, removeFromProcess_butt;
 	private JButton processBatch_butt, processRealTime_butt;
-
+	
 	private boolean popImages;
-
+	
 	private final boolean popParticles;
-
+	
 	private boolean isHandlingEvent;
-
+	
 	private JSplitPane mainSplitPane, browserSplitPane;
 	private JTabbedPane tabbedPane;
 	private GenericStatusPanel statusPanel;
 	private SNRRunPanel runPanel;
 	private GenericTrackingResultsPanel localResultsPanel,
-	        globalFrameResultsPanel, globalImageResultsPanel;
-
+			globalFrameResultsPanel, globalImageResultsPanel;
+	
 	private List<OmegaImage> images;
 	private OrphanedAnalysisContainer orphanedAnalysis;
-
+	
 	private OmegaAnalysisRunContainer selectedImage;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	private OmegaSNRRun selectedSNRRun;
-
+	
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
-
+	
 	private final Map<OmegaParticleDetectionRun, List<OmegaElement>> selections;
 	private final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess;
-
+	
 	private Thread snrThread;
 	private SNRRunner snrRunner;
-
+	
 	private boolean isRunningBatch;
-
+	
 	private JPanel topPanel;
 	private JMenuItem hideDataSelection_mItm;
-
+	
 	public SNRPluginPanel(final RootPaneContainer parent,
 			final OmegaPlugin plugin, final OmegaGateway gateway,
 			final List<OmegaImage> images,
 			final OrphanedAnalysisContainer orphanedAnalysis,
 			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
-
+		
 		this.gateway = gateway;
-
+		
 		this.particlesToProcess = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParameter>>();
 		this.selections = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaElement>>();
-
+		
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
-
+		
 		this.popImages = false;
 		this.popParticles = false;
 		this.isHandlingEvent = false;
-
+		
 		this.selectedImage = null;
 		this.selectedParticleDetectionRun = null;
-
+		
 		this.setPreferredSize(new Dimension(750, 500));
 		this.setLayout(new BorderLayout());
 		// this.createMenu();
 		this.createAndAddWidgets();
 		// this.loadedDataBrowserPanel.updateTree(images);
 		this.createMenu();
-
+		
 		this.addListeners();
-
+		
 		this.populateImagesCombo();
 	}
-
+	
 	private void createMenu() {
 		final JMenuBar menuBar = this.getMenu();
 		for (int i = 0; i < menuBar.getMenuCount(); i++) {
@@ -185,15 +185,15 @@ OmegaMessageDisplayerPanelInterface,
 				continue;
 			}
 			this.hideDataSelection_mItm = new JMenuItem(
-			        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+					OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 			menu.add(this.hideDataSelection_mItm);
 		}
 	}
-
+	
 	private void createAndAddWidgets() {
 		this.topPanel = new JPanel();
 		this.topPanel.setLayout(new GridLayout(1, 1));
-
+		
 		final JPanel p1 = new JPanel();
 		p1.setLayout(new BorderLayout());
 		final JLabel lbl1 = new JLabel(TRConstants.SELECT_IMAGE);
@@ -204,28 +204,28 @@ OmegaMessageDisplayerPanelInterface,
 		this.images_cmb.setEnabled(false);
 		p1.add(this.images_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p1);
-
+		
 		this.add(this.topPanel, BorderLayout.NORTH);
-
+		
 		this.loadedDataBrowserPanel = new SNRLoadedDataBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		this.queueRunBrowserPanel = new SNRQueueRunBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
-
+		
 		this.browserSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		this.browserSplitPane.setLeftComponent(this.loadedDataBrowserPanel);
 		this.browserSplitPane.setRightComponent(this.queueRunBrowserPanel);
-
+		
 		browserPanel.add(this.browserSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 		final InputStream s1 = OmegaFileUtilities
-		        .getImageFilename("green_plus.png");
+				.getImageFilename("green_plus.png");
 		ImageIcon addIcon = null;
 		try {
 			addIcon = new ImageIcon(ImageIO.read(s1));
@@ -236,7 +236,7 @@ OmegaMessageDisplayerPanelInterface,
 		this.addToProcess_butt = new JButton(addIcon);
 		this.addToProcess_butt.setPreferredSize(new Dimension(30, 30));
 		final InputStream s2 = OmegaFileUtilities
-		        .getImageFilename("red_minus.png");
+				.getImageFilename("red_minus.png");
 		ImageIcon removeIcon = null;
 		try {
 			removeIcon = new ImageIcon(ImageIO.read(s2));
@@ -246,76 +246,76 @@ OmegaMessageDisplayerPanelInterface,
 		}
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
-
+		
 		this.setAddAndRemoveButtonsEnabled(false);
-
+		
 		browserButtonPanel.add(this.addToProcess_butt);
 		browserButtonPanel.add(this.removeFromProcess_butt);
-
+		
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
-
+		
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP,
 				JTabbedPane.WRAP_TAB_LAYOUT);
-
+		
 		// TODO create panel for parameters
 		this.runPanel = new SNRRunPanel(this.getParentContainer(),
 				this.gateway, this);
 		final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
 		scrollPaneRun
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneRun
-		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-		this.tabbedPane.add(SNRConstants.RUN_DEFINITION, scrollPaneRun);
-
-		this.localResultsPanel = new GenericTrackingResultsPanel(
-		        this.getParentContainer());
-		this.tabbedPane.add(SNRConstants.TAB_ROI, this.localResultsPanel);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		
+		this.tabbedPane.add(SNRConstants.RUN_DEFINITION, scrollPaneRun);
+		
+		this.localResultsPanel = new GenericTrackingResultsPanel(
+				this.getParentContainer());
+		this.tabbedPane.add(SNRConstants.TAB_ROI, this.localResultsPanel);
+
 		this.globalFrameResultsPanel = new GenericTrackingResultsPanel(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.TAB_PLANE,
-		        this.globalFrameResultsPanel);
-
+				this.globalFrameResultsPanel);
+		
 		this.globalImageResultsPanel = new GenericTrackingResultsPanel(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.TAB_IMAGE,
-		        this.globalImageResultsPanel);
-
+				this.globalImageResultsPanel);
+		
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
 		this.mainSplitPane.setRightComponent(this.tabbedPane);
-
+		
 		this.add(this.mainSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-
+		
 		this.statusPanel = new GenericStatusPanel(2);
-
+		
 		final JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new FlowLayout());
-
+		
 		this.processRealTime_butt = new JButton("Process in real time");
 		this.processRealTime_butt.setEnabled(false);
 		// buttonsPanel.add(this.processRealTime_butt);
-
+		
 		this.processBatch_butt = new JButton(SNRConstants.EXECUTE_BUTTON);
 		buttonsPanel.add(this.processBatch_butt);
-
+		
 		this.setProcessButtonsEnabled(false);
-
+		
 		bottomPanel.add(buttonsPanel, BorderLayout.NORTH);
 		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
-
+		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void addListeners() {
 		this.tabbedPane.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
-
+				
 			}
 		});
 		this.addComponentListener(new ComponentAdapter() {
@@ -343,7 +343,7 @@ OmegaMessageDisplayerPanelInterface,
 			}
 		});
 		this.processBatch_butt.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				SNRPluginPanel.this.processBatch();
@@ -356,40 +356,40 @@ OmegaMessageDisplayerPanelInterface,
 			}
 		});
 	}
-
+	
 	private void handleHideDataSelection() {
 		if (this.hideDataSelection_mItm.getText().equals(
-		        OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
+				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
 			this.remove(this.topPanel);
 			this.hideDataSelection_mItm
-			        .setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
 		} else {
 			this.add(this.topPanel, BorderLayout.NORTH);
 			this.hideDataSelection_mItm
-			        .setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 		}
 		this.revalidate();
 		this.repaint();
 	}
-
+	
 	private void handleResize() {
 		this.browserSplitPane.setDividerLocation(0.5);
 		this.mainSplitPane.setDividerLocation(0.25);
 	}
-
+	
 	private void addToProcessList() {
 		this.updateImagesToProcess(0);
 		this.loadedDataBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void removeFromProcessList() {
 		this.updateImagesToProcess(1);
 		this.loadedDataBrowserPanel.deselect();
 		this.queueRunBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void processBatch() {
 		this.isRunningBatch = true;
 		this.setAddAndRemoveButtonsEnabled(false);
@@ -402,17 +402,17 @@ OmegaMessageDisplayerPanelInterface,
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.snrThread);
 		this.snrThread.start();
 	}
-
+	
 	private void updateImagesToProcess(final int action) {
 		switch (action) {
 			case 1:
 				this.particlesToProcess
-				.remove(this.selectedParticleDetectionRun);
+						.remove(this.selectedParticleDetectionRun);
 				this.selections.remove(this.selectedParticleDetectionRun);
 				break;
 			default:
 				final List<OmegaParameter> params = this.runPanel
-				.getParameters();
+						.getParameters();
 				if (params == null) {
 					final String[] errors = this.runPanel.getParametersError();
 					final StringBuffer exceptionError = new StringBuffer();
@@ -456,12 +456,12 @@ OmegaMessageDisplayerPanelInterface,
 			this.setProcessButtonsEnabled(true);
 		}
 	}
-
+	
 	private void updateRunnerEnded() {
 		if (this.snrRunner.isJobCompleted()) {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
 					.getParticleToProcess();
-
+			
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageNoises = this.snrRunner
 					.getResultingImageNoise();
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageBackgrounds = this.snrRunner
@@ -486,6 +486,8 @@ OmegaMessageDisplayerPanelInterface,
 					.getResultingLocalSignalSizes();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localPeakSignals = this.snrRunner
 					.getResultingLocalPeakSignals();
+			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localBackgrounds = this.snrRunner
+					.getResultingLocalBackgrounds();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localNoises = this.snrRunner
 					.getResultingLocalNoises();
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localSNRs = this.snrRunner
@@ -503,18 +505,18 @@ OmegaMessageDisplayerPanelInterface,
 			final Map<OmegaParticleDetectionRun, Double> minSNR = this.snrRunner
 					.getResultingMinSNR();
 			final Map<OmegaParticleDetectionRun, Double> avgErrorIndexSNR = this.snrRunner
-			        .getResultingAvgErrorIndexSNR();
+					.getResultingAvgErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Double> minErrorIndexSNR = this.snrRunner
-			        .getResultingMinErrorIndexSNR();
+					.getResultingMinErrorIndexSNR();
 			final Map<OmegaParticleDetectionRun, Double> maxErrorIndexSNR = this.snrRunner
-			        .getResultingMaxErrorIndexSNR();
-
+					.getResultingMaxErrorIndexSNR();
+			
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
 					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
 						.get(spotDetectionRun);
 				final List<OmegaElement> selection = this.selections
-				        .get(spotDetectionRun);
+						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> noises = imageNoises
 						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> backgrounds = imageBackgrounds
@@ -539,6 +541,8 @@ OmegaMessageDisplayerPanelInterface,
 						.get(spotDetectionRun);
 				final Map<OmegaROI, Integer> lPeakSignals = localPeakSignals
 						.get(spotDetectionRun);
+				final Map<OmegaROI, Double> lBackgrounds = localBackgrounds
+						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lNoises = localNoises
 						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lSNRs = localSNRs
@@ -556,20 +560,20 @@ OmegaMessageDisplayerPanelInterface,
 						.get(spotDetectionRun);
 				final Double lmaxErrorIndeXSNR = maxErrorIndexSNR
 						.get(spotDetectionRun);
-
+				
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
 						this.getPlugin(), selection, spotDetectionRun, params,
-				        noises, backgrounds, averageSNR, minimumSNR,
-				        maximumSNR, averageErrorIndexSNR, minimumErrorIndexSNR,
+						noises, backgrounds, averageSNR, minimumSNR,
+						maximumSNR, averageErrorIndexSNR, minimumErrorIndexSNR,
 						maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
-						lSignalSizes, lPeakSignals, lNoises, lSNRs,
-						lErrorIndexSNRs, lbackground, lnoise, lavgSNR, lminSNR,
-				        lmaxSNR, lavgErrorIndeXSNR, lminErrorIndeXSNR,
-				        lmaxErrorIndeXSNR);
-
+						lSignalSizes, lPeakSignals, lBackgrounds, lNoises,
+						lSNRs, lErrorIndexSNRs, lbackground, lnoise, lavgSNR,
+						lminSNR, lmaxSNR, lavgErrorIndeXSNR, lminErrorIndeXSNR,
+						lmaxErrorIndeXSNR);
+				
 				this.particlesToProcess.remove(spotDetectionRun);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
-
+				
 				this.getPlugin().fireEvent(snrResultsEvt);
 			}
 			if (this.snrThread.isAlive()) {
@@ -582,13 +586,13 @@ OmegaMessageDisplayerPanelInterface,
 			}
 		}
 		this.setEnabled(true);
-
+		
 		this.setProcessButtonsEnabled(true);
 		this.runPanel.setFieldsEnalbed(true);
 		this.resetStatusMessages();
 		this.isRunningBatch = false;
 	}
-
+	
 	private void resetStatusMessages() {
 		try {
 			this.statusPanel.updateStatus(0, "Plugin ready");
@@ -597,7 +601,7 @@ OmegaMessageDisplayerPanelInterface,
 					true);
 		}
 	}
-
+	
 	private void selectImage() {
 		if (this.popImages)
 			return;
@@ -617,7 +621,7 @@ OmegaMessageDisplayerPanelInterface,
 			this.fireEventSelectionImage();
 		}
 		this.runPanel.updateImageFields((OmegaElement) this.selectedImage);
-
+		
 		final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
 		for (final OmegaAnalysisRun analysisRun : this.selectedImage
 				.getAnalysisRuns()) {
@@ -628,7 +632,7 @@ OmegaMessageDisplayerPanelInterface,
 				analysisRuns.add(analysisRun);
 			}
 		}
-
+		
 		this.loadedDataBrowserPanel.updateTree(analysisRuns);
 		this.queueRunBrowserPanel.updateTree(null);
 		// this.populateTrajectoriesCombo();
@@ -636,7 +640,7 @@ OmegaMessageDisplayerPanelInterface,
 		// .getPixelSizeX(), this.selectedImage.getDefaultPixels()
 		// .getPixelSizeY());
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
@@ -644,12 +648,12 @@ OmegaMessageDisplayerPanelInterface,
 		this.queueRunBrowserPanel.updateParentContainer(parent);
 		this.runPanel.updateParentContainer(parent);
 	}
-
+	
 	@Override
 	public void onCloseOperation() {
-
+		
 	}
-
+	
 	public void updateCombos(final List<OmegaImage> images,
 			final OrphanedAnalysisContainer orphanedAnalysis,
 			final List<OmegaAnalysisRun> analysisRuns) {
@@ -657,18 +661,18 @@ OmegaMessageDisplayerPanelInterface,
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
-
+		
 		this.populateImagesCombo();
 		this.isHandlingEvent = false;
 	}
-
+	
 	private void populateImagesCombo() {
 		this.popImages = true;
 		this.images_cmb.removeAllItems();
 		this.selectedImage = null;
 		this.images_cmb.setSelectedIndex(-1);
 		if (((this.images == null) || this.images.isEmpty())
-		        && this.orphanedAnalysis.isEmpty()) {
+				&& this.orphanedAnalysis.isEmpty()) {
 			this.images_cmb.setEnabled(false);
 			this.loadedDataBrowserPanel.updateTree(null);
 			this.queueRunBrowserPanel.updateTree(null);
@@ -676,9 +680,9 @@ OmegaMessageDisplayerPanelInterface,
 			this.popImages = false;
 			return;
 		}
-
+		
 		this.images_cmb.setEnabled(true);
-
+		
 		if (this.images != null) {
 			for (final OmegaImage image : this.images) {
 				this.images_cmb.addItem(image.getName());
@@ -686,32 +690,32 @@ OmegaMessageDisplayerPanelInterface,
 		}
 		this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
 		this.popImages = false;
-
+		
 		if (this.images_cmb.getItemCount() > 0) {
 			this.images_cmb.setSelectedIndex(0);
 		} else {
 			this.images_cmb.setSelectedIndex(-1);
 		}
 	}
-
+	
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
 				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	private void fireEventSelectionSNRRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.getPlugin(), this.selectedSNRRun);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
 		int index = -1;
@@ -727,7 +731,7 @@ OmegaMessageDisplayerPanelInterface,
 		this.images_cmb.setSelectedIndex(index);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
@@ -736,7 +740,7 @@ OmegaMessageDisplayerPanelInterface,
 		// .setSelectedIndex(index);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectSNRRun(final OmegaSNRRun analysisRun) {
 		this.isHandlingEvent = true;
 		// TODO select snr run in list
@@ -744,20 +748,20 @@ OmegaMessageDisplayerPanelInterface,
 		// .setSelectedIndex(index);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void setGateway(final OmegaGateway gateway) {
-
+		
 	}
-
+	
 	public void updateStatus(final String s) {
 		try {
 			this.statusPanel.updateStatus(0, s);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
-			        true);
+					true);
 		}
 	}
-
+	
 	public void updateSelectedSNRRun(final OmegaSNRRun snrRun) {
 		// TODO capire se serve
 		this.selectedSNRRun = snrRun;
@@ -768,12 +772,12 @@ OmegaMessageDisplayerPanelInterface,
 					.getParameters());
 			this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true);
 			this.globalFrameResultsPanel.setAnalysisRun(this.selectedSNRRun,
-			        false, true);
+					false, true);
 			this.globalImageResultsPanel.setAnalysisRun(this.selectedSNRRun,
-			        this.selectedParticleDetectionRun, false, false);
+					this.selectedParticleDetectionRun, false, false);
 		}
 	}
-
+	
 	public void updateSelectedParticleDetectionRun(
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.selectedParticleDetectionRun = particleDetectionRun;
@@ -783,7 +787,7 @@ OmegaMessageDisplayerPanelInterface,
 			return;
 		if (this.selectedParticleDetectionRun != null) {
 			this.runPanel
-			.updateAnalysisFields(this.selectedParticleDetectionRun);
+					.updateAnalysisFields(this.selectedParticleDetectionRun);
 			if (this.particlesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
 				this.runPanel.updateRunFields(this.particlesToProcess
@@ -794,43 +798,43 @@ OmegaMessageDisplayerPanelInterface,
 			}
 		}
 	}
-
+	
 	private void setAddAndRemoveButtonsEnabled(final boolean enabled) {
 		this.addToProcess_butt.setEnabled(enabled);
 		this.removeFromProcess_butt.setEnabled(enabled);
 	}
-
+	
 	private void setProcessButtonsEnabled(final boolean enabled) {
 		// this.processRealTime_butt.setEnabled(enabled);
 		this.processBatch_butt.setEnabled(enabled);
 	}
-
+	
 	public boolean checkIfThisAlgorithm(final OmegaSNRRun snrRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
 				.getPlugin();
 		return plugin.checkIfThisAlgorithm(snrRun);
 	}
-
+	
 	private void updateSNRRunnerMessageStatus(final String msg,
 			final boolean ended) {
 		try {
 			this.statusPanel.updateStatus(1, msg);
 		} catch (final OmegaPluginExceptionStatusPanel ex) {
 			OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
-			        true);
+					true);
 		}
 		if (ended) {
 			this.updateRunnerEnded();
 		}
 	}
-
+	
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final SNRMessageEvent specificEvent = (SNRMessageEvent) evt;
 		this.updateSNRRunnerMessageStatus(specificEvent.getMessage(),
 				specificEvent.isEnded());
 	}
-	
+
 	@Override
 	public void fireElementChanged() {
 		this.fireEventSelectionImage();

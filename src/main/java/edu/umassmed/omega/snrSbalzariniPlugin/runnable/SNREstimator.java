@@ -44,31 +44,32 @@ import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNREstimator implements SNRRunnable {
-
+	
 	private static final String RUNNER = "SNR estimator service: ";
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private boolean isJobCompleted, isTerminated;
-
+	
 	private final OmegaGateway gateway;
 	private final OmegaPlane frame;
 	private final List<OmegaROI> rois;
-
+	
 	private final int radius;
 	private final double threshold;
 	private final String method;
-
+	
 	private Double imageBGR;
 	private Double imageNoise;
 	private Double avgSNR, minSNR, maxSNR;
 	private final Map<OmegaROI, Integer> localCenterSignals;
+	private final Map<OmegaROI, Integer> localPeakSignals;
 	private final Map<OmegaROI, Double> localMeanSignals;
 	private final Map<OmegaROI, Integer> localSignalSizes;
-	private final Map<OmegaROI, Integer> localPeakSignals;
+	private final Map<OmegaROI, Double> localBackground;
 	private final Map<OmegaROI, Double> localNoises;
 	private final Map<OmegaROI, Double> localSNRs;
 	private final Map<OmegaROI, Double> localErrorIndexSNRs;
 	private Double avgErrorIndexSNR, minErrorIndexSNR, maxErrorIndexSNR;
-
+	
 	public SNREstimator(
 			final OmegaMessageDisplayerPanelInterface displayerPanel,
 			final OmegaGateway gateway, final OmegaPlane frame,
@@ -76,15 +77,15 @@ public class SNREstimator implements SNRRunnable {
 			final double threshold, final String method) {
 		this.displayerPanel = displayerPanel;
 		this.isJobCompleted = false;
-
+		
 		this.gateway = gateway;
 		this.frame = frame;
 		this.rois = rois;
-
+		
 		this.radius = radius;
 		this.threshold = threshold;
 		this.method = method;
-
+		
 		this.avgSNR = null;
 		this.minSNR = null;
 		this.maxSNR = null;
@@ -94,19 +95,20 @@ public class SNREstimator implements SNRRunnable {
 		this.imageBGR = null;
 		this.imageNoise = null;
 		this.localCenterSignals = new LinkedHashMap<OmegaROI, Integer>();
+		this.localPeakSignals = new LinkedHashMap<OmegaROI, Integer>();
 		this.localMeanSignals = new LinkedHashMap<OmegaROI, Double>();
 		this.localSignalSizes = new LinkedHashMap<OmegaROI, Integer>();
-		this.localPeakSignals = new LinkedHashMap<OmegaROI, Integer>();
+		this.localBackground = new LinkedHashMap<OmegaROI, Double>();
 		this.localNoises = new LinkedHashMap<OmegaROI, Double>();
 		this.localSNRs = new LinkedHashMap<OmegaROI, Double>();
 		this.localErrorIndexSNRs = new LinkedHashMap<OmegaROI, Double>();
 	}
-
+	
 	@Override
 	public boolean isJobCompleted() {
 		return this.isJobCompleted;
 	}
-
+	
 	@Override
 	public void run() {
 		if (this.isTerminated)
@@ -117,7 +119,7 @@ public class SNREstimator implements SNRRunnable {
 		final int z = this.frame.getZPlane();
 		final int t = this.frame.getIndex();
 		final int c = this.frame.getChannel();
-
+		
 		Integer byteWidth = null;
 		try {
 			byteWidth = this.gateway.getByteWidth(pixelsID);
@@ -138,17 +140,17 @@ public class SNREstimator implements SNRRunnable {
 		final Integer[] image = OmegaImageUtilities.convertByteToIntegerImage(
 				byteWidth, pixels);
 		// data = OmegaImageUtilities.normalizeImage(data);
-
+		
 		final Integer[] minMax = OmegaMathsUtilities.getMinAndMax(image);
 		final int min = minMax[0];
 		final int max = minMax[1];
-
+		
 		final double thresh = ((max - min) * this.threshold) + min;
 		final Integer[] smallerValues = OmegaMathsUtilities.getSmallerValue(
 				image, thresh);
 		this.imageBGR = OmegaMathsUtilities.mean(smallerValues);
 		this.imageNoise = OmegaMathsUtilities.standardDeviationN(smallerValues);
-
+		
 		this.avgSNR = 0.0;
 		this.minSNR = Double.MAX_VALUE;
 		this.maxSNR = Double.MIN_VALUE;
@@ -223,97 +225,101 @@ public class SNREstimator implements SNRRunnable {
 		this.avgSNR /= this.rois.size();
 		this.isJobCompleted = true;
 	}
-
+	
 	private void updateStatusSync(final String msg, final boolean ended) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					SNREstimator.this.displayerPanel
-					.updateMessageStatus(new SNRMessageEvent(msg,
-							SNREstimator.this, ended));
+							.updateMessageStatus(new SNRMessageEvent(msg,
+									SNREstimator.this, ended));
 				}
 			});
 		} catch (final InvocationTargetException | InterruptedException ex) {
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 	}
-
+	
 	private void updateStatusAsync(final String msg, final boolean ended) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				SNREstimator.this.displayerPanel
-				.updateMessageStatus(new SNRMessageEvent(msg,
-						SNREstimator.this, ended));
+						.updateMessageStatus(new SNRMessageEvent(msg,
+								SNREstimator.this, ended));
 			}
 		});
 	}
-
+	
 	public void terminate() {
 		this.isTerminated = true;
 	}
-
+	
 	public OmegaPlane getFrame() {
 		return this.frame;
 	}
-
+	
 	public Double getImageNoise() {
 		return this.imageNoise;
 	}
-
+	
 	public Double getImageBackground() {
 		return this.imageBGR;
 	}
-
+	
 	public Double getAverageSNR() {
 		return this.avgSNR;
 	}
-
+	
 	public Double getMinimumSNR() {
 		return this.minSNR;
 	}
-
+	
 	public Double getMaximumSNR() {
 		return this.maxSNR;
 	}
-
+	
 	public Double getAverageErrorIndexSNR() {
 		return this.avgErrorIndexSNR;
 	}
-
+	
 	public Double getMinimumErrorIndexSNR() {
 		return this.minErrorIndexSNR;
 	}
-
+	
 	public Double getMaximumErrorIndexSNR() {
 		return this.maxErrorIndexSNR;
 	}
-
+	
 	public Map<OmegaROI, Integer> getLocalCenterSignals() {
 		return this.localCenterSignals;
 	}
-
+	
 	public Map<OmegaROI, Double> getLocalMeanSignals() {
 		return this.localMeanSignals;
 	}
-
+	
 	public Map<OmegaROI, Integer> getLocalSignalSizes() {
 		return this.localSignalSizes;
 	}
-
+	
 	public Map<OmegaROI, Integer> getLocalPeakSignals() {
 		return this.localPeakSignals;
 	}
 
+	public Map<OmegaROI, Double> getLocalBackgrounds() {
+		return this.localBackground;
+	}
+	
 	public Map<OmegaROI, Double> getLocalNoises() {
 		return this.localNoises;
 	}
-
+	
 	public Map<OmegaROI, Double> getLocalSNRs() {
 		return this.localSNRs;
 	}
-
+	
 	public Map<OmegaROI, Double> getLocalErrorIndexSNRs() {
 		return this.localErrorIndexSNRs;
 	}

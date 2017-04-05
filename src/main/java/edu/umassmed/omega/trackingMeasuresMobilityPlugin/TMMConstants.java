@@ -3,38 +3,7 @@ package edu.umassmed.omega.trackingMeasuresMobilityPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
-import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-
 public class TMMConstants {
-
-	public static final String SELECT_IMAGE = OmegaGUIConstants.SELECT_IMAGE;
-	public static final String SELECT_TRACKS_SPOT = OmegaGUIConstants.SELECT_TRACKS_SPOT;
-	public static final String SELECT_TRACKS_LINKING = OmegaGUIConstants.SELECT_TRACKS_LINKING;
-	public static final String SELECT_TRACKS_ADJ = OmegaGUIConstants.SELECT_TRACKS_ADJ;
-	public static final String SELECT_TRACKS_SEGM = OmegaGUIConstants.SELECT_TRACKS_SEGM;
-	public static final String SELECT_TRACK_MEASURES = OmegaGUIConstants.SELECT_TRACK_MEASURES;
-
-	// MOBILITY
-	// GLOBAL
-	public static final String GRAPH_NAME_MAX_DISP = "Max Displacement";
-	public static final String GRAPH_LAB_Y_MAX_DISP = "Delta max [pixel or"
-	        + OmegaConstantsMathSymbols.MU + "m]";
-	public static final String GRAPH_NAME_TOT_DISP = "Total Net Displacement";
-	public static final String GRAPH_LAB_Y_TOT_DISP = "Delta net [pixel or"
-	        + OmegaConstantsMathSymbols.MU + "m]";
-	public static final String GRAPH_NAME_TOT_DIST = "Total Distance Traveled";
-	public static final String GRAPH_LAB_Y_TOT_DIST = "D tot [pixel or"
-	        + OmegaConstantsMathSymbols.MU + "m]";
-	public static final String GRAPH_NAME_TOT_TIME = "Total Track Time";
-	public static final String GRAPH_LAB_Y_TOT_TIME = "T tot [timepoint or s]";
-	public static final String GRAPH_NAME_CONFRATIO = "Confinement Ratio";
-	public static final String GRAPH_LAB_Y_CONFRATIO = "R con [a.u.]";
-	// LOCAL
-	public static final String GRAPH_NAME_ANGLES = "Instantaneous Angle";
-	public static final String GRAPH_LAB_Y_ANGLES = "Angle alpha [rad]";
-	public static final String GRAPH_NAME_ANGLES_LOCAL = "Direction change";
-	public static final String GRAPH_LAB_Y_ANGLES_LOCAL = "Angle beta i [rad]";
 
 	// TODO TO FIX
 	public static final String PLUGIN_NAME = "OMEGA Trajectory Editor";

@@ -134,7 +134,17 @@ public class SDWorker2 implements SDRunnable {
 			particleValues.put("m2", m2);
 			particleValues.put("m3", m3);
 			particleValues.put("m4", m4);
-			final OmegaROI particle = new OmegaParticle(fi, x, y, intensity);
+			final Double physicalX = this.pixels.getPhysicalSizeX();
+			final Double physicalY = this.pixels.getPhysicalSizeY();
+			Double realX = x, realY = y;
+			if ((physicalX != null) && (physicalX != -1)) {
+				realX *= physicalX;
+			}
+			if ((physicalY != null) && (physicalY != -1)) {
+				realY *= physicalY;
+			}
+			final OmegaROI particle = new OmegaParticle(fi + 1, x, y, realX,
+					realY, intensity);
 			this.particles.add(particle);
 			this.values.put(particle, particleValues);
 		}

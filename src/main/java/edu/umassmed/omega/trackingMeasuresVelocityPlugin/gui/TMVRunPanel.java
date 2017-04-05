@@ -15,6 +15,7 @@ import javax.swing.RootPaneContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsTrackingMeasuresVelocity;
@@ -35,7 +36,7 @@ OmegaMessageDisplayerPanelInterface {
 	private OmegaVelocityAnalyzer analyzer;
 
 	public TMVRunPanel(final RootPaneContainer parent,
-	        final TMVPluginPanel pluginPanel) {
+			final TMVPluginPanel pluginPanel) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		this.setLayout(new BorderLayout());
@@ -72,14 +73,20 @@ OmegaMessageDisplayerPanelInterface {
 		if (this.pluginPanel == null)
 			return;
 		// TODO Stop if thread already running (disable button would be better)
+		double physicalT = 1.0;
 		int maxT = -1;
 		if (this.pluginPanel.getSelectedImage() instanceof OmegaImage) {
-			maxT = ((OmegaImage) this.pluginPanel.getSelectedImage())
-			        .getDefaultPixels().getSizeT();
+			final OmegaImage img = (OmegaImage) this.pluginPanel
+					.getSelectedImage();
+			final OmegaImagePixels pixels = img.getDefaultPixels();
+			maxT = pixels.getSizeT();
+			if (pixels.getPhysicalSizeT() != -1) {
+				physicalT = pixels.getPhysicalSizeT();
+			}
 		} else {
 			for (final OmegaPlane f : this.pluginPanel
-			        .getSelectedParticleDetectionRun().getResultingParticles()
-			        .keySet()) {
+					.getSelectedParticleDetectionRun().getResultingParticles()
+					.keySet()) {
 				final int index = f.getIndex();
 				if (maxT < index) {
 					maxT = index;
@@ -92,9 +99,9 @@ OmegaMessageDisplayerPanelInterface {
 		selection.add(this.pluginPanel.getSelectedParticleLinkingRun());
 		selection.add(this.pluginPanel.getSelectedRelinkingRun());
 		selection.add(this.pluginPanel.getSelectedSegmentationRun());
-		this.analyzer = new OmegaVelocityAnalyzer(this, maxT,
+		this.analyzer = new OmegaVelocityAnalyzer(this, physicalT, maxT,
 				this.pluginPanel.getSelectedSegmentationRun(),
-		        this.pluginPanel.getSegments(), selection);
+				this.pluginPanel.getSegments(), selection);
 		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
@@ -104,23 +111,24 @@ OmegaMessageDisplayerPanelInterface {
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
 		if (siEvt.needDialog()) {
 			final GenericMessageDialog gd = new GenericMessageDialog(
-			        this.getParentContainer(), "Velocity Analyzer Warning",
-			        evt.getMessage(), false);
+					this.getParentContainer(), "Velocity Analyzer Warning",
+					evt.getMessage(), false);
 			gd.setVisible(true);
 		}
 		this.pluginPanel.updateStatus(evt.getMessage());
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresVelocity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresVelocity(
-			        this.pluginPanel.getPlugin(),
+					this.pluginPanel.getPlugin(),
 					this.analyzer.getSelections(),
-			        this.analyzer.getTrajectorySegmentationRun(),
-			        new ArrayList<OmegaParameter>(),
-			        this.analyzer.getSegments(),
-			        this.analyzer.getLocalSpeedResults(),
-			        this.analyzer.getLocalVelocityResults(),
-			        this.analyzer.getAverageCurvilinearSpeedResults(),
-			        this.analyzer.getAverageStraightLineVelocityResults(),
-			        this.analyzer.getForwardProgressionLinearityResults());
+					this.analyzer.getTrajectorySegmentationRun(),
+					new ArrayList<OmegaParameter>(),
+					this.analyzer.getSegments(),
+					this.analyzer.getLocalSpeedResults(),
+					this.analyzer.getLocalSpeedFromOriginResults(),
+					this.analyzer.getLocalVelocityFromOriginResults(),
+					this.analyzer.getAverageCurvilinearSpeedResults(),
+					this.analyzer.getAverageStraightLineVelocityResults(),
+					this.analyzer.getForwardProgressionLinearityResults());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
 			this.run_btt.setEnabled(true);
 		}

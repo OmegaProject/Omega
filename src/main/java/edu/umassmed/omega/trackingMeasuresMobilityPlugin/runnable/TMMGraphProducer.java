@@ -8,12 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.StatsConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
-import edu.umassmed.omega.trackingMeasuresMobilityPlugin.TMMConstants;
 import edu.umassmed.omega.trackingMeasuresMobilityPlugin.gui.TMMGraphPanel;
 
 public class TMMGraphProducer extends StatsGraphProducer {
@@ -24,9 +24,10 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	private final boolean isTimepointsGraph;
 	private final int maxT;
 	private final Map<OmegaSegment, List<Double>> distanceMap;
-	private final Map<OmegaSegment, List<Double>> displacementMap;
-	private final Map<OmegaSegment, Double> maxDisplacementMap;
-	private final Map<OmegaSegment, Integer> totalTimeTraveledMap;
+	private final Map<OmegaSegment, List<Double>> distanceFromOriginMap;
+	private final Map<OmegaSegment, List<Double>> displacementFromOriginMap;
+	private final Map<OmegaSegment, Double> maxDisplacementFromOriginMap;
+	private final Map<OmegaSegment, List<Double>> timeTraveledMap;
 	private final Map<OmegaSegment, List<Double>> confinementRatioMap;
 	private final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap;
 
@@ -43,9 +44,10 @@ public class TMMGraphProducer extends StatsGraphProducer {
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final OmegaSegmentationTypes segmTypes,
 			final Map<OmegaSegment, List<Double>> distanceMap,
-			final Map<OmegaSegment, List<Double>> displacementMap,
-			final Map<OmegaSegment, Double> maxDisplacementMap,
-			final Map<OmegaSegment, Integer> totalTimeTraveledMap,
+			final Map<OmegaSegment, List<Double>> distanceFromOriginMap,
+			final Map<OmegaSegment, List<Double>> displacementFromOriginMap,
+			final Map<OmegaSegment, Double> maxDisplacementFromOriginMap,
+			final Map<OmegaSegment, List<Double>> timeTraveledMap,
 			final Map<OmegaSegment, List<Double>> confinementRatioMap,
 			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
 		super(graphType, segmentsMap, segmTypes);
@@ -54,9 +56,10 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		this.isTimepointsGraph = isTimepointsGraph;
 		this.maxT = tMax;
 		this.distanceMap = distanceMap;
-		this.displacementMap = displacementMap;
-		this.maxDisplacementMap = maxDisplacementMap;
-		this.totalTimeTraveledMap = totalTimeTraveledMap;
+		this.distanceFromOriginMap = distanceFromOriginMap;
+		this.displacementFromOriginMap = displacementFromOriginMap;
+		this.maxDisplacementFromOriginMap = maxDisplacementFromOriginMap;
+		this.timeTraveledMap = timeTraveledMap;
 		this.confinementRatioMap = confinementRatioMap;
 		this.anglesAndDirectionalChangesMap = anglesAndDirectionalChangesMap;
 		this.graphPanel = null;
@@ -74,11 +77,10 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		super.doRun();
 		if (this.isTimepointsGraph) {
 			this.prepareTimepointsGraph(this.maxT);
-			this.graphPanel = this.getGraphPanel();
 		} else {
 			this.prepareTracksGraph(true);
-			this.graphPanel = this.getGraphPanel();
 		}
+		this.graphPanel = this.getGraphPanel();
 		this.updateStatus(true);
 	}
 
@@ -86,26 +88,41 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	public String getTitle() {
 		String title;
 		switch (this.mobilityOption) {
-			case TMMGraphPanel.OPTION_DISPLACEMENT:
-				title = TMMConstants.GRAPH_NAME_TOT_DISP;
+			case TMMGraphPanel.OPTION_MAX_DISP_GLO:
+				title = StatsConstants.GRAPH_NAME_MAX_DISP_GLO;
 				break;
-			case TMMGraphPanel.OPTION_MAX_DISPLACEMENT:
-				title = TMMConstants.GRAPH_NAME_MAX_DISP;
+			case TMMGraphPanel.OPTION_TOT_DISP_GLO:
+				title = StatsConstants.GRAPH_NAME_DISP_GLO;
 				break;
-			case TMMGraphPanel.OPTION_TOTAL_TIME_TRAVELED:
-				title = TMMConstants.GRAPH_NAME_TOT_TIME;
+			case TMMGraphPanel.OPTION_TOT_TIME_GLO:
+				title = StatsConstants.GRAPH_NAME_TIME_GLO;
 				break;
-			case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
-				title = TMMConstants.GRAPH_NAME_CONFRATIO;
+			case TMMGraphPanel.OPTION_CONFRATIO_GLO:
+				title = StatsConstants.GRAPH_NAME_CONFRATIO_GLO;
 				break;
-			case TMMGraphPanel.OPTION_LOCAL_ANGLES:
-				title = TMMConstants.GRAPH_NAME_ANGLES;
+			case TMMGraphPanel.OPTION_DIST_P2P_LOC:
+				title = StatsConstants.GRAPH_NAME_DIST_P2P_LOC;
 				break;
-			case TMMGraphPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
-				title = TMMConstants.GRAPH_NAME_ANGLES_LOCAL;
+			case TMMGraphPanel.OPTION_DIST_LOC:
+				title = StatsConstants.GRAPH_NAME_DIST_LOC;
+				break;
+			case TMMGraphPanel.OPTION_DISP_LOC:
+				title = StatsConstants.GRAPH_NAME_DISP_LOC;
+				break;
+			case TMMGraphPanel.OPTION_CONFRATIO_LOC:
+				title = StatsConstants.GRAPH_NAME_CONFRATIO_LOC;
+				break;
+			case TMMGraphPanel.OPTION_ANGLES_LOC:
+				title = StatsConstants.GRAPH_NAME_ANGLES_LOC;
+				break;
+			case TMMGraphPanel.OPTION_DIRCHANGE_LOC:
+				title = StatsConstants.GRAPH_NAME_DIRCHANGE_LOC;
+				break;
+			case TMMGraphPanel.OPTION_TIME_LOC:
+				title = StatsConstants.GRAPH_NAME_TIME_LOC;
 				break;
 			default:
-				title = TMMConstants.GRAPH_NAME_TOT_DIST;
+				title = StatsConstants.GRAPH_NAME_DIST_GLO;
 		}
 		return title;
 	}
@@ -114,26 +131,29 @@ public class TMMGraphProducer extends StatsGraphProducer {
 	public String getYAxisTitle() {
 		String yAxisTitle;
 		switch (this.mobilityOption) {
-			case TMMGraphPanel.OPTION_DISPLACEMENT:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_TOT_DISP;
+			case TMMGraphPanel.OPTION_TOT_DISP_GLO:
+			case TMMGraphPanel.OPTION_MAX_DISP_GLO:
+			case TMMGraphPanel.OPTION_DISP_LOC:
+				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DISP;
 				break;
-			case TMMGraphPanel.OPTION_MAX_DISPLACEMENT:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_MAX_DISP;
+			case TMMGraphPanel.OPTION_TOT_TIME_GLO:
+			case TMMGraphPanel.OPTION_TIME_LOC:
+				yAxisTitle = StatsConstants.GRAPH_LAB_Y_TOT_TIME;
 				break;
-			case TMMGraphPanel.OPTION_TOTAL_TIME_TRAVELED:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_TOT_TIME;
+			case TMMGraphPanel.OPTION_CONFRATIO_GLO:
+			case TMMGraphPanel.OPTION_CONFRATIO_LOC:
+				yAxisTitle = StatsConstants.GRAPH_LAB_Y_CONFRATIO;
 				break;
-			case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_CONFRATIO;
+			case TMMGraphPanel.OPTION_TOT_DIST_GLO:
+			case TMMGraphPanel.OPTION_DIST_P2P_LOC:
+			case TMMGraphPanel.OPTION_DIST_LOC:
+				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DIST;
 				break;
-			case TMMGraphPanel.OPTION_LOCAL_ANGLES:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_ANGLES;
-				break;
-			case TMMGraphPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_ANGLES_LOCAL;
+			case TMMGraphPanel.OPTION_DIRCHANGE_LOC:
+				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DIRCHANGE;
 				break;
 			default:
-				yAxisTitle = TMMConstants.GRAPH_LAB_Y_TOT_DIST;
+				yAxisTitle = StatsConstants.GRAPH_NAME_ANGLES_LOC;
 		}
 		return yAxisTitle;
 	}
@@ -147,22 +167,39 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		value[0] = null;
 		int index = -1;
 		switch (this.mobilityOption) {
-			case TMMGraphPanel.OPTION_DISPLACEMENT:
-				values = this.displacementMap.get(segment);
+			case TMMGraphPanel.OPTION_DIST_P2P_LOC:
+				values = this.distanceMap.get(segment);
 				index = roi.getFrameIndex() - 1;
 				if ((values == null) || (index >= values.size())) {
 					break;
 				}
 				value[0] = values.get(index);
 				break;
-			case TMMGraphPanel.OPTION_MAX_DISPLACEMENT:
-				value[0] = this.maxDisplacementMap.get(segment);
+			case TMMGraphPanel.OPTION_DISP_LOC:
+			case TMMGraphPanel.OPTION_TOT_DISP_GLO:
+				values = this.displacementFromOriginMap.get(segment);
+				index = roi.getFrameIndex() - 1;
+				if ((values == null) || (index >= values.size())) {
+					break;
+				}
+				value[0] = values.get(index);
 				break;
-			case TMMGraphPanel.OPTION_TOTAL_TIME_TRAVELED:
-				value[0] = Double.valueOf(this.totalTimeTraveledMap
-						.get(segment));
+			case TMMGraphPanel.OPTION_MAX_DISP_GLO:
+				value[0] = this.maxDisplacementFromOriginMap.get(segment);
 				break;
-			case TMMGraphPanel.OPTION_CONFINEMENT_RATIO:
+			// case TMMGraphPanel.OPTION_TOT_TIME_GLO:
+			// values = this.timeTraveledMap.get(segment);
+			// index = segment.getEndingROI().getFrameIndex() - 1;
+			// value[0] = values.get(index);
+			// break;
+			case TMMGraphPanel.OPTION_TOT_TIME_GLO:
+			case TMMGraphPanel.OPTION_TIME_LOC:
+				values = this.timeTraveledMap.get(segment);
+				index = roi.getFrameIndex() - 1;
+				value[0] = values.get(index);
+				break;
+			case TMMGraphPanel.OPTION_CONFRATIO_GLO:
+			case TMMGraphPanel.OPTION_CONFRATIO_LOC:
 				values = this.confinementRatioMap.get(segment);
 				index = roi.getFrameIndex() - 1;
 				if ((values == null) || (index >= values.size())) {
@@ -170,7 +207,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				}
 				value[0] = values.get(index);
 				break;
-			case TMMGraphPanel.OPTION_LOCAL_ANGLES:
+			case TMMGraphPanel.OPTION_ANGLES_LOC:
 				valuesList = this.anglesAndDirectionalChangesMap.get(segment);
 				localValues = null;
 				index = roi.getFrameIndex() - 1;
@@ -180,7 +217,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				localValues = valuesList.get(index);
 				value[0] = localValues[0];
 				break;
-			case TMMGraphPanel.OPTION_LOCAL_DIRECTIONAL_CHANGES:
+			case TMMGraphPanel.OPTION_DIRCHANGE_LOC:
 				valuesList = this.anglesAndDirectionalChangesMap.get(segment);
 				index = roi.getFrameIndex() - 1;
 				if ((valuesList == null) || (index >= valuesList.size())) {
@@ -190,7 +227,7 @@ public class TMMGraphProducer extends StatsGraphProducer {
 				value[0] = localValues[1];
 				break;
 			default:
-				values = this.distanceMap.get(segment);
+				values = this.distanceFromOriginMap.get(segment);
 				index = roi.getFrameIndex() - 1;
 				if ((values == null) || (index >= values.size())) {
 					break;

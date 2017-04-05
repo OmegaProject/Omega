@@ -55,7 +55,7 @@ OmegaMessageDisplayerPanelInterface {
 	private OmegaSNRRun selectedSNRRun;
 
 	public TMIRunPanel(final RootPaneContainer parent,
-	        final TMIPluginPanel pluginPanel,
+			final TMIPluginPanel pluginPanel,
 			final List<OmegaAnalysisRun> analysisRuns) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
@@ -86,7 +86,7 @@ OmegaMessageDisplayerPanelInterface {
 
 		final JPanel snrRunPanel = new JPanel();
 		snrRunPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel snrRun_lbl = new JLabel(TMIConstants.PARAMETER_ERROR_SNR
+		final JLabel snrRun_lbl = new JLabel(OmegaConstants.PARAMETER_ERROR_SNR
 				+ ":");
 		snrRun_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		snrRunPanel.add(snrRun_lbl);
@@ -156,7 +156,7 @@ OmegaMessageDisplayerPanelInterface {
 		selection.add(this.pluginPanel.getSelectedSegmentationRun());
 		this.analyzer = new OmegaIntensityAnalyzer(this,
 				this.pluginPanel.getSelectedSegmentationRun(),
-		        this.pluginPanel.getSegments(), selection);
+				this.pluginPanel.getSegments(), selection);
 		if (this.snrEnable_ckb.isEnabled()) {
 			this.analyzer.setSNRRun(this.selectedSNRRun);
 		}
@@ -169,24 +169,33 @@ OmegaMessageDisplayerPanelInterface {
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
 		if (siEvt.needDialog()) {
 			final GenericMessageDialog gd = new GenericMessageDialog(
-			        this.getParentContainer(), "Intensity Analyzer Warning",
-			        evt.getMessage(), false);
+					this.getParentContainer(), "Intensity Analyzer Warning",
+					evt.getMessage(), false);
 			gd.setVisible(true);
 		}
 		this.pluginPanel.updateStatus(evt.getMessage());
 		if (siEvt.isEnded()) {
 			final OmegaPluginEventResultsTrackingMeasuresIntensity rtmiEvent = new OmegaPluginEventResultsTrackingMeasuresIntensity(
-			        this.pluginPanel.getPlugin(),
-			        this.analyzer.getSelections(),
-			        this.analyzer.getTrajectorySegmentationRun(),
-			        new ArrayList<OmegaParameter>(),
-			        this.analyzer.getSegments(),
-			        this.analyzer.getPeakSignalsResults(),
-			        this.analyzer.getCentroidSignalsResults(),
-			        this.analyzer.getMeanSignalsResults(),
-			        this.analyzer.getNoisesResults(),
-			        this.analyzer.getSNRsResults(),
-			        this.analyzer.getAreasResults(), this.analyzer.getSNRRun());
+					this.pluginPanel.getPlugin(),
+					this.analyzer.getSelections(),
+					this.analyzer.getTrajectorySegmentationRun(),
+					new ArrayList<OmegaParameter>(),
+					this.analyzer.getSegments(),
+					this.analyzer.getPeakSignalsResults(),
+					this.analyzer.getCentroidSignalsResults(),
+					this.analyzer.getPeakSignalsLocalResults(),
+					this.analyzer.getCentroidSignalsLocalResults(),
+					this.analyzer.getMeanSignalsResults(),
+					this.analyzer.getBackgroundsResults(),
+					this.analyzer.getNoisesResults(),
+					this.analyzer.getSNRsResults(),
+					this.analyzer.getAreasResults(),
+					this.analyzer.getMeanSignalsLocalResults(),
+					this.analyzer.getBackgroundsLocalResults(),
+					this.analyzer.getNoisesLocalResults(),
+					this.analyzer.getSNRsLocalResults(),
+					this.analyzer.getAreasLocalResults(),
+					this.analyzer.getSNRRun());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
 			this.run_btt.setEnabled(true);
 		}
@@ -200,7 +209,7 @@ OmegaMessageDisplayerPanelInterface {
 		this.selectedSNRRun = null;
 		
 		final OmegaParticleDetectionRun particleDetRun = this.pluginPanel
-		        .getSelectedParticleDetectionRun();
+				.getSelectedParticleDetectionRun();
 		
 		if (particleDetRun == null) {
 			this.snrAnalysis_cmb.setEnabled(false);
@@ -259,7 +268,7 @@ OmegaMessageDisplayerPanelInterface {
 		}
 		if (index == -1) {
 			this.snrAnalysis_cmb.setSelectedItem(this.snrAnalysis_cmb
-			        .getItemCount());
+					.getItemCount());
 		} else {
 			this.snrAnalysis_cmb.setSelectedIndex(index);
 		}
