@@ -412,7 +412,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaSegment, Double[]> smssLog,
 			// final Map<OmegaSegment, Double[]> errors,
 			final Map<OmegaSegment, Double[]> errorsLog,
-			final OmegaSNRRun snrRun,
+			final Double minDetectableODC, final OmegaSNRRun snrRun,
 			final OmegaTrackingMeasuresDiffusivityRun diffusivityRun)
 					throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
@@ -431,7 +431,8 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final OmegaTrackingMeasuresDiffusivityRun diffRun = new OmegaTrackingMeasuresDiffusivityRun(
 				experimenter, algorithmSpecification, timeStamps, name,
 				segments, ny, mu, logMu, deltaT, logDeltaT, gammaD, gammaDLog,
-				gammaLog, smssLog, errorsLog, snrRun, diffusivityRun);
+				gammaLog, smssLog, errorsLog, minDetectableODC, snrRun,
+				diffusivityRun);
 		diffRun.setElementID(id);
 		return diffRun;
 	}
@@ -941,6 +942,28 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_NY_TABLE);
+	}
+
+	public Double loadDiffusivityMinimumDetectableODC(
+			final long trackingMeasuresID) throws SQLException {
+		final ResultSet results1 = this.load(trackingMeasuresID,
+				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_MIN_DET_ODC,
+				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
+		Double minDetODC = null;
+		if (results1 == null)
+			return minDetODC;
+		do {
+			minDetODC = results1.getDouble(OmegaMySqlCostants.VALUE_FIELD);
+			if (results1.wasNull()) {
+				minDetODC = null;
+			}
+		} while (results1.next());
+		// if (results1.next()) {
+		//
+		// }
+		results1.getStatement().close();
+		results1.close();
+		return minDetODC;
 	}
 
 	public Map<Long, Map<Integer, Double[]>> loadMobilityAnglesAndDirectionChangesMap(

@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
@@ -33,7 +32,6 @@ import edu.umassmed.omega.commons.gui.GenericComboBox;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.commons.libraries.OmegaDiffusivityLibrary;
 import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
 import edu.umassmed.omega.commons.runnable.OmegaDiffusivityAnalyzer;
 
@@ -201,7 +199,6 @@ public class TMDRunPanel extends GenericPanel implements
 		if (option.equals(OmegaConstants.PARAMETER_ERROR_OPTION_DISABLED)) {
 			this.snrAnalysis_cmb.setSelectedIndex(-1);
 			this.snrAnalysis_cmb.setEnabled(false);
-
 		} else {
 			this.snrAnalysis_cmb.setEnabled(true);
 			if (this.snrAnalysis_cmb.getItemCount() <= 0) {
@@ -328,6 +325,7 @@ public class TMDRunPanel extends GenericPanel implements
 					this.analyzer.getSmssFromLogResults(),
 					// this.analyzer.getErrors(),
 					this.analyzer.getErrorsFromLog(),
+					this.analyzer.getMinimumDetectableODC(),
 					this.analyzer.getSNRRun(),
 					this.analyzer.getTrackingMeasuresDiffusivityRun());
 			this.pluginPanel.getPlugin().fireEvent(rtmiEvent);
@@ -349,6 +347,9 @@ public class TMDRunPanel extends GenericPanel implements
 			this.snrAnalysis_cmb.setEnabled(false);
 			return;
 		}
+
+		if (!this.snrAnalysis_cmb.isEnabled())
+			return;
 
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if ((analysisRun instanceof OmegaSNRRun)
@@ -383,20 +384,13 @@ public class TMDRunPanel extends GenericPanel implements
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionSNRRun();
 		}
-
-		final Double minD = OmegaDiffusivityLibrary
-				.computeMinimumDetectableD(this.selectedSNRRun
-						.getResultingImageMinimumErrorIndexSNR());
-		if (OmegaLogFileManager.isDebug()) {
-			OmegaLogFileManager.appendToPluginLog(this.pluginPanel.getPlugin(),
-					String.valueOf(minD));
-		}
-		// System.out.println(minD);
 	}
 
 	public void selectSNRRun(final OmegaAnalysisRun analysisRun) {
 		this.isHandlingEvent = true;
 		int index = -1;
+		if (!this.snrAnalysis_cmb.isEnabled())
+			return;
 		if (this.snrRuns != null) {
 			index = this.snrRuns.indexOf(analysisRun);
 		}

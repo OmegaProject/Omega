@@ -50,11 +50,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.RootPaneContainer;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -260,13 +258,9 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		// TODO create panel for parameters
 		this.runPanel = new SNRRunPanel(this.getParentContainer(),
 				this.gateway, this);
-		final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
-		scrollPaneRun
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneRun
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		
-		this.tabbedPane.add(SNRConstants.RUN_DEFINITION, scrollPaneRun);
+		// final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
+		this.tabbedPane.add(OmegaGUIConstants.PLUGIN_RUN_DEFINITION,
+				this.runPanel);
 		
 		this.localResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
@@ -672,7 +666,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.selectedImage = null;
 		this.images_cmb.setSelectedIndex(-1);
 		if (((this.images == null) || this.images.isEmpty())
-				&& this.orphanedAnalysis.isEmpty()) {
+		/* && this.orphanedAnalysis.isEmpty() */) {
 			this.images_cmb.setEnabled(false);
 			this.loadedDataBrowserPanel.updateTree(null);
 			this.queueRunBrowserPanel.updateTree(null);
@@ -688,7 +682,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				this.images_cmb.addItem(image.getName());
 			}
 		}
-		this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
+		// this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
 		this.popImages = false;
 		
 		if (this.images_cmb.getItemCount() > 0) {
@@ -766,15 +760,15 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		// TODO capire se serve
 		this.selectedSNRRun = snrRun;
 		this.fireEventSelectionSNRRun();
+		this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true);
+		this.globalFrameResultsPanel.setAnalysisRun(this.selectedSNRRun, false,
+				true);
+		this.globalImageResultsPanel.setAnalysisRun(this.selectedSNRRun,
+				this.selectedParticleDetectionRun, false, false);
 		if (snrRun != null) {
 			// TODO update SNR fields?
 			this.runPanel.updateRunFields(snrRun.getAlgorithmSpec()
 					.getParameters());
-			this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true);
-			this.globalFrameResultsPanel.setAnalysisRun(this.selectedSNRRun,
-					false, true);
-			this.globalImageResultsPanel.setAnalysisRun(this.selectedSNRRun,
-					this.selectedParticleDetectionRun, false, false);
 		}
 	}
 	

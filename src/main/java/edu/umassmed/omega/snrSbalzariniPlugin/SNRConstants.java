@@ -29,23 +29,11 @@ package edu.umassmed.omega.snrSbalzariniPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
-import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
-
 public class SNRConstants {
-	public static String PARAM_SNR_METHOD = "SNR Method";
-	public static String PARAM_SNR_METHOD_SBALZARINI = "Sbalzarini (TBD)";
+	public static String PARAM_SNR_METHOD = "SNR Model";
+	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum Poisson";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_POISSON = "Bhattacharyya Poisson";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN = "Bhattacharyya Gaussian";
-
-	public static final String PARAM_RADIUS = OmegaConstantsAlgorithmParameters.PARAM_RADIUS;
-	public static final String PARAM_THRESHOLD = OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD;
-
-	public static final String RUN_QUEUE = OmegaGUIConstants.PLUGIN_RUN_QUEUE;
-	public static final String LOADED_DATA = OmegaGUIConstants.PLUGIN_LOADED_DATA;
-	public static final String RUN_DEFINITION = OmegaGUIConstants.PLUGIN_RUN_DEFINITION;
-
-	public static final String PARAMETER_SNR = OmegaGUIConstants.PLUGIN_PARAMETERS_SNR;
 
 	public static final String EXECUTE_BUTTON = "Execute queue";
 
@@ -56,7 +44,7 @@ public class SNRConstants {
 	public static final String PLUGIN_DESC = "To be defined";
 	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
-	        .getTime();
+	.getTime();
 
 	public static final String TAB_ROI = "ROI results";
 	public static final String TAB_PLANE = "Plane results";

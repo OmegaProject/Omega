@@ -42,6 +42,8 @@ StatsGraphProducer implements Runnable {
 	// private final Map<OmegaSegment, Double[]> smssMap;
 	// private final Map<OmegaSegment, Double[]> errorMap;
 	private final Map<OmegaSegment, Double[]> errorFromLogMap;
+	
+	private final Double minDetectableODC;
 
 	private final JPanel[] chartPanels, legendPanels;
 
@@ -64,7 +66,8 @@ StatsGraphProducer implements Runnable {
 			// final Map<OmegaSegment, Double[]> smssMap,
 			final Map<OmegaSegment, Double[]> smssLogMap,
 			// final Map<OmegaSegment, Double[]> errorMap,
-			final Map<OmegaSegment, Double[]> errorLogMap) {
+			final Map<OmegaSegment, Double[]> errorLogMap,
+			final Double minDetectableODC) {
 		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes);
 		this.motionTypeClassificationPanel = motionTypeClassificationPanel;
 		this.motionTypeOption = motionTypeOption;
@@ -85,6 +88,8 @@ StatsGraphProducer implements Runnable {
 		// this.smssMap = smssMap;
 		// this.errorMap = errorMap;
 		this.errorFromLogMap = errorLogMap;
+		
+		this.minDetectableODC = minDetectableODC;
 		this.chartPanels = new JPanel[4];
 		this.legendPanels = new JPanel[4];
 
@@ -204,7 +209,7 @@ StatsGraphProducer implements Runnable {
 	public void updateStatus(final boolean ended) {
 		if (this.itsLocal) {
 			this.motionTypeClassificationPanel.updateStatus(
-			        this.getCompleted(), ended);
+					this.getCompleted(), ended);
 		} else {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
@@ -289,6 +294,11 @@ StatsGraphProducer implements Runnable {
 					return null;
 				break;
 			case PHASE:
+				if ((segment == null) && (roi == null)) {
+					value = new Double[1];
+					value[0] = this.minDetectableODC;
+					return value;
+				}
 				final Map<OmegaSegment, Double[][]> gammaDMap;
 				final Map<OmegaSegment, Double[]> smssMap;
 				final Map<OmegaSegment, Double[]> errorMap;
@@ -305,7 +315,7 @@ StatsGraphProducer implements Runnable {
 				}
 				value = new Double[4];
 				if ((gammaDMap != null) && gammaDMap.containsKey(segment)
-				        && (smssMap != null) && smssMap.containsKey(segment)) {
+						&& (smssMap != null) && smssMap.containsKey(segment)) {
 					final Double d = gammaDMap.get(segment)[2][3];
 					final Double smss = smssMap.get(segment)[0];
 					Double dError = 0.0;

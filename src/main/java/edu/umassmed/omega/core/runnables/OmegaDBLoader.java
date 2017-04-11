@@ -828,11 +828,14 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		} else {
 			errorLogSegmentMap = new LinkedHashMap<OmegaSegment, Double[]>();
 		}
+		final Double minDetectableODC = reader
+				.loadDiffusivityMinimumDetectableODC(trackingMeasuresID);
 		return reader.loadDiffusivityMeasuresAnalysis(analysisID, exp,
 				algoSpec, segmentsMap, nySegmentMap, muSegmentMap,
 				logMuSegmentMap, deltaTSegmentMap, logDeltaTSegmentMap,
 				gammaDSegmentMap, logGammaDSegmentMap, gammaSegmentMap,
-				smssLogSegmentMap, errorLogSegmentMap, snrRun, diffusivityRun);
+				smssLogSegmentMap, errorLogSegmentMap, minDetectableODC,
+				snrRun, diffusivityRun);
 	}
 	
 	private OmegaTrackingMeasuresMobilityRun loadTrackingMeasuresMobilityRun(

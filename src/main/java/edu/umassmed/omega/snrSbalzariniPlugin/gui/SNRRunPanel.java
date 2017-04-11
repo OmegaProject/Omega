@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -67,7 +68,7 @@ GenericElementInformationContainerInterface {
 	private final GenericElementInformationContainerInterface infoContainer;
 	
 	public SNRRunPanel(final RootPaneContainer parent,
-	        final OmegaGateway gateway,
+			final OmegaGateway gateway,
 			final GenericElementInformationContainerInterface infoContainer) {
 		super(parent);
 		
@@ -94,26 +95,29 @@ GenericElementInformationContainerInterface {
 		
 		final JPanel parametersPanel = new JPanel();
 		parametersPanel.setLayout(new GridLayout(3, 1));
-		parametersPanel.setBorder(new TitledBorder(SNRConstants.PARAMETER_SNR));
+		parametersPanel.setBorder(new TitledBorder(
+				OmegaGUIConstants.PLUGIN_PARAMETERS_SNR));
 		
 		final JPanel radiusPanel = new JPanel();
 		radiusPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel radius_lbl = new JLabel(SNRConstants.PARAM_RADIUS + ":");
+		final JLabel radius_lbl = new JLabel(
+				OmegaConstantsAlgorithmParameters.PARAM_RADIUS + ":");
 		radius_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		radiusPanel.add(radius_lbl);
 		this.radius_txtField = new GenericTextFieldValidable(
-		        GenericTextFieldValidable.CONTENT_INT);
+				GenericTextFieldValidable.CONTENT_INT);
 		this.radius_txtField.setPreferredSize(SNRRunPanel.VALUE_FIELDS_DIM);
 		radiusPanel.add(this.radius_txtField);
 		parametersPanel.add(radiusPanel);
 		
 		final JPanel threshPanel = new JPanel();
 		threshPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		final JLabel thresh_lbl = new JLabel(SNRConstants.PARAM_THRESHOLD + ":");
+		final JLabel thresh_lbl = new JLabel(
+				OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD + ":");
 		thresh_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		threshPanel.add(thresh_lbl);
 		this.threshold_txtField = new GenericTextFieldValidable(
-		        GenericTextFieldValidable.CONTENT_DOUBLE);
+				GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.threshold_txtField.setPreferredSize(SNRRunPanel.VALUE_FIELDS_DIM);
 		threshPanel.add(this.threshold_txtField);
 		parametersPanel.add(threshPanel);
@@ -121,11 +125,11 @@ GenericElementInformationContainerInterface {
 		final JPanel snrMethodPanel = new JPanel();
 		snrMethodPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel snrMethod_lbl = new JLabel(SNRConstants.PARAM_SNR_METHOD
-		        + ":");
+				+ ":");
 		snrMethod_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		snrMethodPanel.add(snrMethod_lbl);
 		this.snrMethod_cmb = new GenericComboBox<String>(
-		        this.getParentContainer());
+				this.getParentContainer());
 		this.snrMethod_cmb.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		this.snrMethod_cmb
 		.addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON);
@@ -140,7 +144,7 @@ GenericElementInformationContainerInterface {
 	
 	public boolean areParametersValidated() {
 		return this.radius_txtField.isContentValidated()
-		        && this.threshold_txtField.isContentValidated();
+				&& this.threshold_txtField.isContentValidated();
 	}
 	
 	public String[] getParametersError() {
@@ -149,12 +153,12 @@ GenericElementInformationContainerInterface {
 			errors[i] = null;
 		}
 		if (!this.radius_txtField.isContentValidated()) {
-			errors[0] = SNRConstants.PARAM_RADIUS + ": "
-			        + this.radius_txtField.getError();
+			errors[0] = OmegaConstantsAlgorithmParameters.PARAM_RADIUS + ": "
+					+ this.radius_txtField.getError();
 		}
 		if (!this.threshold_txtField.isContentValidated()) {
-			errors[1] = SNRConstants.PARAM_THRESHOLD + ": "
-			        + this.threshold_txtField.getError();
+			errors[1] = OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD
+					+ ": " + this.threshold_txtField.getError();
 		}
 		return errors;
 	}
@@ -169,9 +173,11 @@ GenericElementInformationContainerInterface {
 	
 	public void updateRunFields(final List<OmegaParameter> parameters) {
 		for (final OmegaParameter param : parameters) {
-			if (param.getName().equals(SNRConstants.PARAM_RADIUS)) {
+			if (param.getName().equals(
+					OmegaConstantsAlgorithmParameters.PARAM_RADIUS)) {
 				this.radius_txtField.setText(param.getStringValue());
-			} else if (param.getName().equals(SNRConstants.PARAM_THRESHOLD)) {
+			} else if (param.getName().equals(
+					OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD)) {
 				this.threshold_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(SNRConstants.PARAM_SNR_METHOD)) {
 				this.snrMethod_cmb.setSelectedItem(param.getValue());
@@ -195,9 +201,11 @@ GenericElementInformationContainerInterface {
 			return null;
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		final int radius = Integer.valueOf(this.radius_txtField.getText());
-		params.add(new OmegaParameter(SNRConstants.PARAM_RADIUS, radius));
+		params.add(new OmegaParameter(
+				OmegaConstantsAlgorithmParameters.PARAM_RADIUS, radius));
 		final double thresh = Double.valueOf(this.threshold_txtField.getText());
-		params.add(new OmegaParameter(SNRConstants.PARAM_THRESHOLD, thresh));
+		params.add(new OmegaParameter(
+				OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD, thresh));
 		final String snrMethod = (String) this.snrMethod_cmb.getSelectedItem();
 		params.add(new OmegaParameter(SNRConstants.PARAM_SNR_METHOD, snrMethod));
 		return params;

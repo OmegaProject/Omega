@@ -390,13 +390,14 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 		this.physicalSizeX = pixels.getPhysicalSizeX();
 		this.physicalSizeY = pixels.getPhysicalSizeY();
 		this.physicalSizeZ = pixels.getPhysicalSizeZ();
-		try {
-			this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
-					this.currentMaximumTValue);
-		} catch (final Exception ex) {
-			this.physicalSizeT = null;
-			OmegaLogFileManager.handleCoreException(ex, false);
-		}
+		this.physicalSizeT = pixels.getPhysicalSizeT();
+		// try {
+		// this.physicalSizeT = gateway.computeSizeT(id, pixels.getSizeT(),
+		// this.currentMaximumTValue);
+		// } catch (final Exception ex) {
+		// this.physicalSizeT = null;
+		// OmegaLogFileManager.handleCoreException(ex, false);
+		// }
 		
 		int defaultZ = 0;
 		try {

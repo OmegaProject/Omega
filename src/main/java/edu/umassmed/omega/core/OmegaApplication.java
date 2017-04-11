@@ -162,40 +162,40 @@ import edu.umassmed.omega.trajectoriesRelinkingPlugin.TrajectoriesRelinkingPlugi
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.TrajectoriesSegmentationPlugin;
 
 public class OmegaApplication extends OmegaGenericApplication implements
-		OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
-
+OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
+	
 	public static final boolean ISDEBUG = false;
-
+	
 	private final OmegaGUIFrame gui;
-
+	
 	private final OmegaData omegaData;
 	private final OmegaLoadedData loadedData;
 	private final List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private OmegaGateway gateway;
-
+	
 	private OmegaExperimenter experimenter;
-
+	
 	private short pluginIndex;
 	private final Map<String, Long> pluginIndexes;
 	private final List<OmegaPlugin> registeredPlugin;
 	private final Map<Long, OmegaPlugin> pluginIndexMap;
-
+	
 	private final List<OmegaIOUtility> registeredImporter;
 	private final List<OmegaIOUtility> registeredExporter;
 	private final int defaultImporterIndex, defaultExporterIndex;
-
+	
 	private final OmegaLogFileManager logFileManager;
 	private final OmegaImageManager imageManager;
-
+	
 	private final OmegaOptionsFileManager optionsFileManager;
 	private final Map<String, Map<String, String>> generalOptions;
-
+	
 	private final OmegaMySqlWriter mysqlWriter;
 	private final OmegaMySqlReader mysqlReader;
-
+	
 	private GenericProgressDialog dbDialog;
 	private Thread dbThread;
-
+	
 	public OmegaApplication() {
 		this.registeredImporter = new ArrayList<>();
 		this.registeredExporter = new ArrayList<>();
@@ -205,45 +205,45 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.pluginIndex = 0;
 		this.defaultImporterIndex = 0;
 		this.defaultExporterIndex = 0;
-
+		
 		this.logFileManager = OmegaLogFileManager.getOmegaLogFileManager(this);
 		OmegaLogFileManager.markCoreNewRun();
-
+		
 		this.imageManager = OmegaImageManager.getOmegaImageManager(this);
-
+		
 		this.optionsFileManager = new OmegaOptionsFileManager();
 		this.generalOptions = this.optionsFileManager.getGeneralOptions();
-
+		
 		this.mysqlWriter = new OmegaMySqlWriter();
 		this.mysqlReader = new OmegaMySqlReader();
-
+		
 		this.omegaData = new OmegaData();
 		this.loadedData = new OmegaLoadedData();
 		this.loadedAnalysisRuns = new ArrayList<OmegaAnalysisRun>();
 		this.gateway = null;
 		this.experimenter = null;
-
+		
 		this.registerImporters();
 		this.registerExporters();
 		this.registerCorePlugins();
 		OmegaLogFileManager.markPluginsNewRun(this.registeredPlugin);
-
+		
 		this.gui = new OmegaGUIFrame(this);
-
+		
 		this.gui.initialize(this.pluginIndexMap);
 		this.gui.setSize(1200, 800);
-
+		
 	}
-
+	
 	private void registerImporters() {
 		this.registerImporter(new OmegaTracksImporter());
-
+		
 	}
-
+	
 	private void registerExporters() {
 		this.registerExporter(new OmegaTracksExporter());
 	}
-
+	
 	private void registerCorePlugins() {
 		this.registerPlugin(new OmeroPlugin());
 		// this.registerPlugin(new SPTPlugin());
@@ -258,7 +258,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.registerPlugin(new TMVPlugin());
 		this.registerPlugin(new TMDPlugin());
 		this.registerPlugin(new OmegaDataBrowserPlugin());
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			final String optionsCategory = plugin.getOptionsCategory();
 			final Map<String, String> pluginOptions = this.optionsFileManager
@@ -266,38 +266,38 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			plugin.addPluginOptions(pluginOptions);
 			if (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
-						.setOrphanedAnalysis(this.omegaData
-								.getOrphanedContainer());
+				.setOrphanedAnalysis(this.omegaData
+						.getOrphanedContainer());
 			}
 			if (plugin instanceof OmegaMainDataConsumerPluginInterface) {
 				((OmegaMainDataConsumerPluginInterface) plugin)
-						.setMainData(this.omegaData);
+				.setMainData(this.omegaData);
 			}
 			if (plugin instanceof OmegaLoadedDataConsumerPluginInterface) {
 				((OmegaLoadedDataConsumerPluginInterface) plugin)
-						.setLoadedData(this.loadedData);
+				.setLoadedData(this.loadedData);
 			}
 			if (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface) {
 				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-						.setLoadedAnalysisRun(this.loadedAnalysisRuns);
+				.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
 			if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 				((OmegaTrajectoriesSegmentationPlugin) plugin)
-						.setSegmentationTypesList(this.omegaData
-								.getSegmentationTypesList());
+				.setSegmentationTypesList(this.omegaData
+						.getSegmentationTypesList());
 			}
-
+			
 			if (plugin instanceof OmegaBrowserPlugin) {
 				((OmegaBrowserPlugin) plugin)
-						.setTracksImporter((OmegaTracksImporter) this.registeredImporter
-								.get(this.defaultImporterIndex));
+				.setTracksImporter((OmegaTracksImporter) this.registeredImporter
+						.get(this.defaultImporterIndex));
 				((OmegaBrowserPlugin) plugin)
-						.setTracksExporter((OmegaTracksExporter) this.registeredExporter
-								.get(this.defaultExporterIndex));
+				.setTracksExporter((OmegaTracksExporter) this.registeredExporter
+						.get(this.defaultExporterIndex));
 			}
 		}
 	}
-
+	
 	private void registerImporter(final OmegaIOUtility tracksIOUtility) {
 		tracksIOUtility.addOmegaImporterListener(this);
 		// final String name = importer.getName();
@@ -307,7 +307,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		// this.pluginIndexes.put(name, index);
 		this.registeredImporter.add(tracksIOUtility);
 	}
-
+	
 	private void registerExporter(final OmegaIOUtility tracksIOUtility) {
 		tracksIOUtility.addOmegaImporterListener(this);
 		// final String name = importer.getName();
@@ -317,7 +317,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		// this.pluginIndexes.put(name, index);
 		this.registeredExporter.add(tracksIOUtility);
 	}
-
+	
 	private void registerPlugin(final OmegaPlugin plugin) {
 		plugin.addOmegaPluginListener(this);
 		final String name = plugin.getName();
@@ -327,46 +327,46 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.pluginIndexes.put(name, index);
 		this.registeredPlugin.add(plugin);
 	}
-
+	
 	protected void showGUI() {
 		this.gui.setVisible(true);
 		this.gui.reinitializeStrings();
 	}
-
+	
 	@Override
 	public void quit() {
 		this.gui.handleQuit();
 	}
-
+	
 	public OmegaPlugin getPlugin(final long pluginIndex) {
 		return this.pluginIndexMap.get(pluginIndex);
 	}
-
+	
 	public void addGeneralOptions(final String category,
 			final Map<String, String> options) {
 		this.generalOptions.put(category, options);
 	}
-
+	
 	public Map<String, String> getGeneralOptions(final String category) {
 		if (!this.generalOptions.containsKey(category))
 			return new LinkedHashMap<String, String>();
 		else
 			return this.generalOptions.get(category);
 	}
-
+	
 	public void saveOptions() {
 		for (final String category : this.generalOptions.keySet()) {
 			this.optionsFileManager.addOptions(category,
 					this.generalOptions.get(category));
 		}
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			this.optionsFileManager.addOptions(plugin.getOptionsCategory(),
 					plugin.getPluginOptions());
 		}
 		this.optionsFileManager.saveOptionsToFile();
 	}
-
+	
 	private void loadSelectedData(final List<OmegaElement> selectedData) {
 		for (final OmegaElement element : selectedData) {
 			if ((element instanceof OmegaProject)
@@ -380,7 +380,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				this.loadedData.addImage((OmegaImage) element);
 			} else if ((element instanceof OmegaImagePixels)
 					&& !this.loadedData
-							.containsImagePixels((OmegaImagePixels) element)) {
+					.containsImagePixels((OmegaImagePixels) element)) {
 				this.loadedData.addImagePixels((OmegaImagePixels) element);
 			} else if ((element instanceof OmegaPlane)
 					&& !this.loadedData.containsFrame((OmegaPlane) element)) {
@@ -388,7 +388,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 		}
 	}
-
+	
 	public void handleCoreEvent(final OmegaCoreEvent event) {
 		if (event instanceof OmegaCoreEventSegments) {
 			this.handleCoreEventSegments((OmegaCoreEventSegments) event);
@@ -400,7 +400,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			this.handleCoreEventSelectionAnalysisRun((OmegaCoreEventSelectionAnalysisRun) event);
 		}
 	}
-
+	
 	private void handleCoreEventSelectionImage(
 			final OmegaCoreEventSelectionImage event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -410,7 +410,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 		}
 	}
-
+	
 	private void handleCoreEventSelectionAnalysisRun(
 			final OmegaCoreEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
@@ -418,37 +418,37 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			if ((event instanceof OmegaCoreEventSelectionTrajectoriesSegmentationRun)
 					&& (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
 				((OmegaTrajectoriesSegmentationPlugin) plugin)
-						.selectCurrentTrajectoriesSegmentationRun(event
-								.getAnalysisRun());
+				.selectCurrentTrajectoriesSegmentationRun(event
+						.getAnalysisRun());
 			} else if ((event instanceof OmegaCoreEventSelectionTrajectoriesRelinkingRun)
 					&& (plugin instanceof OmegaTrajectoriesRelinkingPlugin)) {
 				((OmegaTrajectoriesRelinkingPlugin) plugin)
-						.selectCurrentTrajectoriesRelinkingRun(event
-								.getAnalysisRun());
+				.selectCurrentTrajectoriesRelinkingRun(event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesSegmentationRun)
 					&& (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
 				((OmegaSelectTrajectoriesSegmentationRunPluginInterface) plugin)
-						.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
-								.getAnalysisRun());
+				.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesRelinkingRun)
 					&& (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
 				((OmegaSelectTrajectoriesRelinkingRunPluginInterface) plugin)
-						.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
-								.getAnalysisRun());
+				.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleLinkingRun)
 					&& (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
 				((OmegaSelectParticleLinkingRunPluginInterface) plugin)
-						.selectParticleLinkingRun((OmegaParticleLinkingRun) event
-								.getAnalysisRun());
+				.selectParticleLinkingRun((OmegaParticleLinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleDetectionRun)
 					&& (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
 				((OmegaSelectParticleDetectionRunPluginInterface) plugin)
-						.selectParticleDetectionRun((OmegaParticleDetectionRun) event
-								.getAnalysisRun());
+				.selectParticleDetectionRun((OmegaParticleDetectionRun) event
+						.getAnalysisRun());
 			}
 		}
 	}
-
+	
 	private void handleCoreEventTrajectories(
 			final OmegaCoreEventTrajectories event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -458,7 +458,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 		}
 	}
-
+	
 	private void handleCoreEventSegments(final OmegaCoreEventSegments event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectSegmentsInterface) {
@@ -471,7 +471,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 		}
 	}
-
+	
 	@Override
 	public void handleIOEvent(final OmegaTrajectoryIOEvent event) {
 		if (event instanceof OmegaImporterEventResultsParticleTracking) {
@@ -480,7 +480,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			this.handleImporterEventResultsParticleDetection((OmegaImporterEventResultsParticleDetection) event);
 		}
 	}
-
+	
 	private OmegaRunDefinition handleImporterEventRunDefinition(
 			final Map<String, String> analysisData,
 			final Map<String, String> paramsData) {
@@ -494,10 +494,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.get(OmegaDataToolConstants.REFERENCE);
 		final String description = analysisData
 				.get(OmegaDataToolConstants.DESCRIPTION);
-		
+
 		final String[] authorToks = author.split(" ");
 		final OmegaPerson person = new OmegaPerson(authorToks[1], authorToks[2]);
-
+		
 		final SimpleDateFormat format = new SimpleDateFormat(
 				OmegaConstants.OMEGA_DATE_FORMAT);
 		Date publicationDate;
@@ -507,13 +507,13 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// FIXME todo log error
 			publicationDate = Calendar.getInstance().getTime();
 		}
-
+		
 		final Double versionNum = Double.valueOf(version);
-
+		
 		final OmegaAlgorithmInformation algoInfo = new OmegaAlgorithmInformation(
 				algorithm, versionNum, description, person, publicationDate,
 				reference);
-		
+
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		for (final String s : paramsData.keySet()) {
 			final OmegaParameter param = new OmegaParameter(s,
@@ -524,7 +524,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				params);
 		return runDef;
 	}
-	
+
 	public void handleImporterEventResultsParticleDetection(
 			final OmegaImporterEventResultsParticleDetection event) {
 		final OmegaAnalysisRunContainer container = event.getContainer();
@@ -551,7 +551,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				// FIXME log the error
 				runDate = Calendar.getInstance().getTime();
 			}
-
+			
 			detRun = new OmegaParticleDetectionRun(exp, runDef, runDate,
 					runName, event.getResultingParticles(),
 					event.getResultingParticlesValues());
@@ -565,32 +565,32 @@ public class OmegaApplication extends OmegaGenericApplication implements
 					event.getResultingParticles(),
 					event.getResultingParticlesValues());
 		}
-		
+
 		if (container instanceof OrphanedAnalysisContainer) {
 			this.omegaData.addOrphanedAnalysis(detRun);
 		} else {
 			container.addAnalysisRun(detRun);
 		}
 		this.loadedAnalysisRuns.add(detRun);
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if ((container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
-						.setOrphanedAnalysis(this.omegaData
-								.getOrphanedContainer());
+				.setOrphanedAnalysis(this.omegaData
+						.getOrphanedContainer());
 			} else if (!(container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface)) {
 				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-						.setLoadedAnalysisRun(this.loadedAnalysisRuns);
+				.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
-						.updateDisplayedData();
+				.updateDisplayedData();
 			}
 		}
 	}
-
+	
 	public void handleImporterEventResultsParticleTracking(
 			final OmegaImporterEventResultsParticleTracking event) {
 		final OmegaAnalysisRunContainer container = event.getContainer();
@@ -619,7 +619,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				// FIXME log the error
 				runDate = Calendar.getInstance().getTime();
 			}
-
+			
 			detRun = new OmegaParticleDetectionRun(exp, runDef, runDate,
 					runName, event.getResultingParticles(),
 					event.getResultingParticlesValues());
@@ -638,7 +638,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 					OmegaAlgorithmsUtilities.DEFAULT_IMPORTER_SPEC,
 					event.getResultingTrajectories());
 		}
-		
+
 		detRun.addAnalysisRun(linkRun);
 		this.loadedAnalysisRuns.add(linkRun);
 		if (container instanceof OrphanedAnalysisContainer) {
@@ -647,7 +647,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			container.addAnalysisRun(detRun);
 		}
 		this.loadedAnalysisRuns.add(detRun);
-
+		
 		final OmegaRunDefinition defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultRelinkingAlgorithmSpecification();
 		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
@@ -655,7 +655,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				event.getResultingTrajectories());
 		this.loadedAnalysisRuns.add(defaultRelinkingRun);
 		linkRun.addAnalysisRun(defaultRelinkingRun);
-
+		
 		final OmegaRunDefinition defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultSegmentationAlgorithmSpecification();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
@@ -666,7 +666,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
-
+		
 		int maxT = -1;
 		final double physicalT = 1.0;
 		for (final OmegaPlane f : event.getResultingParticles().keySet()) {
@@ -675,31 +675,31 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				maxT = index;
 			}
 		}
-
+		
 		if (maxT != -1) {
 			this.handleTrackingMeasures(
 					(OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
 					physicalT, maxT);
 		}
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if ((container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
-						.setOrphanedAnalysis(this.omegaData
-								.getOrphanedContainer());
+				.setOrphanedAnalysis(this.omegaData
+						.getOrphanedContainer());
 			} else if (!(container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface)) {
 				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-						.setLoadedAnalysisRun(this.loadedAnalysisRuns);
+				.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
-						.updateDisplayedData();
+				.updateDisplayedData();
 			}
 		}
 	}
-
+	
 	@Override
 	public void handlePluginEvent(final OmegaPluginEvent event) {
 		if (event instanceof OmegaPluginEventGateway) {
@@ -718,10 +718,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			this.handlePluginEventSegments((OmegaPluginEventSegments) event);
 		}
 	}
-
+	
 	private void handlePluginEventAlgorithm(
 			final OmegaPluginEventAlgorithm event) {
-		
+
 		final OmegaAlgorithmPlugin source = (OmegaAlgorithmPlugin) event
 				.getSource();
 		if (source == null)
@@ -736,7 +736,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		if (!(element instanceof OmegaAnalysisRunContainer))
 			// TODO gestire errore
 			return;
-
+		
 		final OmegaAlgorithmInformation algoInfo = source
 				.getAlgorithmInformation();
 		final OmegaRunDefinition algoSpec = new OmegaRunDefinition(algoInfo);
@@ -745,10 +745,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				algoSpec.addParameter(param);
 			}
 		}
-
+		
 		// TODO separare i parameteri e fare 2 algoSpec diverse
 		// capire se necessario
-
+		
 		final OmegaAnalysisRun analysisRun;
 		if (event instanceof OmegaPluginEventResultsTrackingMeasuresDiffusivity) {
 			analysisRun = this
@@ -796,7 +796,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		} else
 			// TODO gestire errore
 			return;
-
+		
 		((OmegaAnalysisRunContainer) element).addAnalysisRun(analysisRun);
 		this.loadedAnalysisRuns.add(analysisRun);
 		this.omegaData.consolidateData();
@@ -815,14 +815,17 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.handleCoreEventSelectionAnalysisRun(new OmegaCoreEventSelectionAnalysisRun(
 				analysisRun));
 	}
-	
+
 	private OmegaTrackingMeasuresDiffusivityRun handlePluginEventAlgorithmResultsTrackingMeasuresDiffusivity(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrackingMeasuresDiffusivity specificEvent = (OmegaPluginEventResultsTrackingMeasuresDiffusivity) event;
-		return new OmegaTrackingMeasuresDiffusivityRun(this.experimenter,
-				algoSpec, specificEvent.getResultingSegments(),
-				specificEvent.getResultingNy(), specificEvent.getResultingMu(),
+		return new OmegaTrackingMeasuresDiffusivityRun(
+				this.experimenter,
+				algoSpec,
+				specificEvent.getResultingSegments(),
+				specificEvent.getResultingNy(),
+				specificEvent.getResultingMu(),
 				specificEvent.getResultingLogMu(),
 				specificEvent.getResultingDeltaT(),
 				specificEvent.getResultingLogDeltaT(),
@@ -833,10 +836,12 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				// specificEvent.getResultingSmss(),
 				specificEvent.getResultingSmssFromLog(),
 				// specificEvent.getErrors(),
-				specificEvent.getErrorsFromLog(), specificEvent.getSNRRun(),
+				specificEvent.getErrorsFromLog(),
+				specificEvent.getMinimumDetectableODC(),
+				specificEvent.getSNRRun(),
 				specificEvent.getTrackigMeasuresDiffusivityRun());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresVelocity(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -850,7 +855,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				specificEvent.getResultingAverageStraightLineVelocity(),
 				specificEvent.getResultingForwardProgressionLinearity());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresMobility(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -865,7 +870,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				specificEvent.getResultingConfinementRatio(),
 				specificEvent.getResultingAnglesAndDirectionalChanges());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackingMeasuresIntensity(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -888,7 +893,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				specificEvent.getResultingMeanSignalsLocal(),
 				specificEvent.getSNRRun());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsSNR(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -919,7 +924,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				specificEvent.getResultingMinErrorIndexSNR(),
 				specificEvent.getResultingMaxErrorIndexSNR());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackSegmentationRun(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -928,17 +933,17 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				algoSpec, specificEvent.getResultingSegments(),
 				specificEvent.getSegmentationTypes());
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsTrackRelinkingRun(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
 		final OmegaPluginEventResultsTrajectoriesRelinking specificEvent = (OmegaPluginEventResultsTrajectoriesRelinking) event;
 		final List<OmegaTrajectory> resultingTrajectories = specificEvent
 				.getResultingTrajectories();
-		
+
 		final OmegaTrajectoriesRelinkingRun relinkingRun = new OmegaTrajectoriesRelinkingRun(
 				this.experimenter, algoSpec, resultingTrajectories);
-		
+
 		final OmegaRunDefinition defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultSegmentationAlgorithmSpecification();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
@@ -949,10 +954,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		relinkingRun.addAnalysisRun(defaultSegmentationRun);
-		
+
 		return relinkingRun;
 	}
-	
+
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleLinkingRun(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -961,7 +966,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.getResultingTrajectories();
 		final OmegaParticleLinkingRun particleLinkingRun = new OmegaParticleLinkingRun(
 				this.experimenter, algoSpec, resultingTrajectories);
-		
+
 		final OmegaRunDefinition defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultRelinkingAlgorithmSpecification();
 		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
@@ -969,7 +974,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				"Default relinking run", resultingTrajectories);
 		this.loadedAnalysisRuns.add(defaultRelinkingRun);
 		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
-		
+
 		final OmegaRunDefinition defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultSegmentationAlgorithmSpecification();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
@@ -980,7 +985,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
-		
+
 		if (event.getElement() instanceof OmegaParticleDetectionRun) {
 			final OmegaParticleDetectionRun detectionRun = (OmegaParticleDetectionRun) event
 					.getElement();
@@ -991,7 +996,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 						.getResultingParticles().keySet()) {
 					if (plane.getParentPixels() != null) {
 						maxT = plane.getParentPixels().getSizeT();
-						physicalT = plane.getParentPixels().getPhysicalSizeT();
+						if (plane.getParentPixels().getPhysicalSizeT() != -1) {
+							physicalT = plane.getParentPixels()
+									.getPhysicalSizeT();
+						}
 						break;
 					} else {
 						final int index = plane.getIndex();
@@ -1020,7 +1028,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 		return particleLinkingRun;
 	}
-
+	
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleDetectionRun(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -1029,7 +1037,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				specificEvent.getResultingParticles(),
 				specificEvent.getResultingParticlesValues());
 	}
-
+	
 	private OmegaAnalysisRun handlePluginEventAlgorithmResultsParticleTrackingRun(
 			final OmegaRunDefinition algoSpec,
 			final OmegaPluginEventAlgorithm event) {
@@ -1047,7 +1055,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.getResultingTrajectories();
 		final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = specificEvent
 				.getResultingParticlesValues();
-
+		
 		final OmegaAnalysisRun particleDetectionRun = new OmegaParticleDetectionRun(
 				this.experimenter, algoSpec, resultingParticles,
 				resultingParticlesValues);
@@ -1055,7 +1063,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				this.experimenter, algoSpec, resultingTrajectories);
 		this.loadedAnalysisRuns.add(particleLinkingRun);
 		particleDetectionRun.addAnalysisRun(particleLinkingRun);
-
+		
 		final OmegaRunDefinition defaultRelinkingAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultRelinkingAlgorithmSpecification();
 		final OmegaAnalysisRun defaultRelinkingRun = new OmegaTrajectoriesRelinkingRun(
@@ -1063,7 +1071,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				"Default relinking run", resultingTrajectories);
 		this.loadedAnalysisRuns.add(defaultRelinkingRun);
 		particleLinkingRun.addAnalysisRun(defaultRelinkingRun);
-
+		
 		final OmegaRunDefinition defaultSegmentationAlgoSpec = OmegaAlgorithmsUtilities
 				.getDefaultSegmentationAlgorithmSpecification();
 		final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap = OmegaAlgorithmsUtilities
@@ -1074,25 +1082,23 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaSegmentationTypes.getDefaultSegmentationTypes());
 		this.loadedAnalysisRuns.add(defaultSegmentationRun);
 		defaultRelinkingRun.addAnalysisRun(defaultSegmentationRun);
-
+		
 		if (event.getElement() instanceof OmegaImage) {
 			final OmegaImage img = (OmegaImage) event.getElement();
 			final int maxT = img.getDefaultPixels().getSizeT();
 			final OmegaImagePixels pixels = img.getDefaultPixels();
-			final Double physicalT;
+			Double physicalT = 1.0;
 			if (pixels.getPhysicalSizeT() != -1) {
 				physicalT = pixels.getPhysicalSizeT();
-			} else {
-				physicalT = 1.0;
 			}
 			this.handleTrackingMeasures(
 					(OmegaTrajectoriesSegmentationRun) defaultSegmentationRun,
 					physicalT, maxT);
 		}
-
+		
 		return particleDetectionRun;
 	}
-
+	
 	private void handleTrackingMeasures(
 			final OmegaTrajectoriesSegmentationRun segmentationRun,
 			final double physicalT, final int maxT) {
@@ -1104,7 +1110,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		t.setName("TrackingMeasuresAnalizer");
 		t.start();
 	}
-
+	
 	// TODO to be changed somehow
 	public void updateTrackingMeasuresAnalizerResults(
 			final OmegaTrajectoriesSegmentationRun segmentationRun,
@@ -1149,17 +1155,17 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			final Map<OmegaSegment, Double[]> smssLog,
 			// final Map<OmegaSegment, Double[]> errors,
 			final Map<OmegaSegment, Double[]> errorsLog,
-			final OmegaSNRRun snrRunDiff,
+			final Double minDetectableODC, final OmegaSNRRun snrRunDiff,
 			final OmegaTrackingMeasuresDiffusivityRun parentDiffusivityRun) {
 		OmegaExperimenter exp = this.experimenter;
 		if (exp == null) {
 			exp = OmegaConstants.OMEGA_DEFAULT_EXPERIMENTER;
 		}
-
+		
 		final OmegaTrackingMeasuresIntensityRun intensityRun = new OmegaTrackingMeasuresIntensityRun(
 				exp,
 				OmegaAlgorithmsUtilities
-						.getDefaultTrackingMeasuresIntensitySpecification(),
+				.getDefaultTrackingMeasuresIntensitySpecification(),
 				segmentationRun.getResultingSegments(), peakSignalsMap,
 				centroidSignalsMap, peakSignalsLocMap, centroidSignalsLocMap,
 				backgroundsMap, noisesMap, snrsMap, areasMap, meanSignalsMap,
@@ -1167,49 +1173,50 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				meanSignalsLocMap, snrRunInt);
 		segmentationRun.addAnalysisRun(intensityRun);
 		this.loadedAnalysisRuns.add(intensityRun);
-
+		
 		final OmegaTrackingMeasuresMobilityRun mobilityRun = new OmegaTrackingMeasuresMobilityRun(
 				exp,
 				OmegaAlgorithmsUtilities
-						.getDefaultTrackingMeasuresMobilitySpecification(),
+				.getDefaultTrackingMeasuresMobilitySpecification(),
 				segmentationRun.getResultingSegments(), distancesMap,
 				distancesFromOriginMap, displacementsFromOriginMap,
 				maxDisplacementsFromOriginMap, timeTraveledMap,
 				confinementRatioMap, anglesAndDirectionalChangesMap);
 		segmentationRun.addAnalysisRun(mobilityRun);
 		this.loadedAnalysisRuns.add(mobilityRun);
-
+		
 		final OmegaTrackingMeasuresVelocityRun velocityRun = new OmegaTrackingMeasuresVelocityRun(
 				exp,
 				OmegaAlgorithmsUtilities
-						.getDefaultTrackingMeasuresVelocitySpecification(),
+				.getDefaultTrackingMeasuresVelocitySpecification(),
 				segmentationRun.getResultingSegments(), localSpeedMap,
 				localSpeedFromOriginMap, localVelocityFromOriginMap,
 				averageCurvilinearSpeedMap, averageStraightLineVelocityMap,
 				forwardProgressionLinearity);
 		segmentationRun.addAnalysisRun(velocityRun);
 		this.loadedAnalysisRuns.add(velocityRun);
-
+		
 		final OmegaTrackingMeasuresDiffusivityRun diffusivityRun = new OmegaTrackingMeasuresDiffusivityRun(
 				exp,
 				OmegaAlgorithmsUtilities
-						.getDefaultTrackingMeasuresDiffusivitySpecification(),
+				.getDefaultTrackingMeasuresDiffusivitySpecification(),
 				segmentationRun.getResultingSegments(), ny, mu, logMu, deltaT,
 				logDeltaT, gammaD, gammaDLog, /* gamma, */gammaLog, /* smss, */
 				smssLog,
-				/* errors, */errorsLog, snrRunDiff, parentDiffusivityRun);
+				/* errors, */errorsLog, minDetectableODC, snrRunDiff,
+				parentDiffusivityRun);
 		segmentationRun.addAnalysisRun(diffusivityRun);
 		this.loadedAnalysisRuns.add(diffusivityRun);
-
+		
 		this.omegaData.consolidateData();
 	}
-
+	
 	private void handlePluginEventGateway(final OmegaPluginEventGateway event) {
 		// TODO to check why replicated in 2 places
 		switch (event.getStatus()) {
 			case OmegaPluginEventGateway.STATUS_CREATED:
 				this.gateway = ((OmegaLoaderPlugin) event.getSource())
-						.getGateway();
+				.getGateway();
 				this.experimenter = null;
 				break;
 			case OmegaPluginEventGateway.STATUS_DESTROYED:
@@ -1218,7 +1225,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				break;
 			case OmegaPluginEventGateway.STATUS_CONNECTED:
 				this.gateway = ((OmegaLoaderPlugin) event.getSource())
-						.getGateway();
+				.getGateway();
 				final OmegaExperimenter exp = event.getExperimenter();
 				final OmegaExperimenter sameExperimenter = this.omegaData
 						.findSameExperiementer(exp);
@@ -1235,9 +1242,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 					if (samePerson != null) {
 						if (OmegaLogFileManager.isDebug()) {
 							OmegaLogFileManager
-									.appendToCoreLog("Experimenter: "
-											+ exp.printName()
-											+ " found as person, replacing person with exp.");
+							.appendToCoreLog("Experimenter: "
+									+ exp.printName()
+									+ " found as person, replacing person with exp.");
 						}
 						this.omegaData.changePersonWithExperimenter(samePerson,
 								exp);
@@ -1254,14 +1261,14 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				this.experimenter = null;
 				break;
 		}
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaLoaderPluginInterface) {
 				((OmegaLoaderPluginInterface) plugin).setGateway(this.gateway);
 			}
 		}
 	}
-
+	
 	private void handlePluginEventSelectionImage(
 			final OmegaPluginEventSelectionImage event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -1275,13 +1282,13 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 		this.gui.selectImage(event.getImage());
 	}
-
+	
 	private void handlePluginEventSelectionAnalysisRun(
 			final OmegaPluginEventSelectionAnalysisRun event) {
 		this.handlePluginEventSelectionAnalysisRunPlugins(event);
 		this.handlePluginEventSelectionAnalysisRunGUI(event);
 	}
-
+	
 	private void handlePluginEventSelectionAnalysisRunPlugins(
 			final OmegaPluginEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
@@ -1292,51 +1299,51 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			if (event instanceof OmegaPluginEventSelectionTrajectoriesSegmentationRun) {
 				if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 					((OmegaTrajectoriesSegmentationPlugin) plugin)
-							.selectCurrentTrajectoriesSegmentationRun(event
-									.getAnalysisRun());
+					.selectCurrentTrajectoriesSegmentationRun(event
+							.getAnalysisRun());
 				}
 			} else if (event instanceof OmegaPluginEventSelectionTrajectoriesRelinkingRun) {
 				if (plugin instanceof OmegaTrajectoriesRelinkingPlugin) {
 					((OmegaTrajectoriesRelinkingPlugin) plugin)
-							.selectCurrentTrajectoriesRelinkingRun(event
-									.getAnalysisRun());
+					.selectCurrentTrajectoriesRelinkingRun(event
+							.getAnalysisRun());
 				} else if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
 					((OmegaTrajectoriesSegmentationPlugin) plugin)
-							.selectTrajectoriesRelinkingRun(null);
+					.selectTrajectoriesRelinkingRun(null);
 				}
 			} else if ((analysisRun instanceof OmegaTrackingMeasuresRun)
 					&& (plugin instanceof OmegaSelectTrackingMeasuresRunPluginInterface)) {
 				((OmegaSelectTrackingMeasuresRunPluginInterface) plugin)
-						.selectTrackingMeasuresRun((OmegaTrackingMeasuresRun) event
-								.getAnalysisRun());
+				.selectTrackingMeasuresRun((OmegaTrackingMeasuresRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesSegmentationRun)
 					&& (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
 				((OmegaSelectTrajectoriesSegmentationRunPluginInterface) plugin)
-						.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
-								.getAnalysisRun());
+				.selectTrajectoriesSegmentationRun((OmegaTrajectoriesSegmentationRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaTrajectoriesRelinkingRun)
 					&& (plugin instanceof OmegaSelectTrajectoriesRelinkingRunPluginInterface)) {
 				((OmegaSelectTrajectoriesRelinkingRunPluginInterface) plugin)
-						.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
-								.getAnalysisRun());
+				.selectTrajectoriesRelinkingRun((OmegaTrajectoriesRelinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleLinkingRun)
 					&& (plugin instanceof OmegaSelectParticleLinkingRunPluginInterface)) {
 				((OmegaSelectParticleLinkingRunPluginInterface) plugin)
-						.selectParticleLinkingRun((OmegaParticleLinkingRun) event
-								.getAnalysisRun());
+				.selectParticleLinkingRun((OmegaParticleLinkingRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaParticleDetectionRun)
 					&& (plugin instanceof OmegaSelectParticleDetectionRunPluginInterface)) {
 				((OmegaSelectParticleDetectionRunPluginInterface) plugin)
-						.selectParticleDetectionRun((OmegaParticleDetectionRun) event
-								.getAnalysisRun());
+				.selectParticleDetectionRun((OmegaParticleDetectionRun) event
+						.getAnalysisRun());
 			} else if ((analysisRun instanceof OmegaSNRRun)
 					&& (plugin instanceof OmegaSelectSNRRunPluginInterface)) {
 				((OmegaSelectSNRRunPluginInterface) plugin)
-						.selectSNRRun((OmegaSNRRun) event.getAnalysisRun());
+				.selectSNRRun((OmegaSNRRun) event.getAnalysisRun());
 			}
 		}
 	}
-
+	
 	private void handlePluginEventSelectionAnalysisRunGUI(
 			final OmegaPluginEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
@@ -1356,7 +1363,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			this.gui.selectParticleDetectionRun((OmegaParticleDetectionRun) analysisRun);
 		}
 	}
-
+	
 	private void handlePluginEventTrajectories(
 			final OmegaPluginEventTrajectories event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -1371,7 +1378,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.gui.updateTrajectories(event.getTrajectories(),
 				event.isSelectionEvent());
 	}
-
+	
 	private void handlePluginEventSegments(final OmegaPluginEventSegments event) {
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			if (plugin.equals(event.getSource())) {
@@ -1389,7 +1396,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.gui.updateSegments(event.getSegments(),
 				event.getSegmentationTypes(), event.isSelectionEvent());
 	}
-
+	
 	private void handlePluginEventDataChanged(
 			final OmegaPluginEventDataChanged event) {
 		this.omegaData.consolidateData();
@@ -1401,7 +1408,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 					event.getSelectedData().size() > 0);
 		}
 	}
-
+	
 	private void updateGUI(final OmegaPlugin source, final boolean dataLoaded) {
 		if (dataLoaded) {
 			for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -1411,18 +1418,18 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				}
 				if (plugin instanceof OmegaImageConsumerPluginInterface) {
 					((OmegaImageConsumerPluginInterface) plugin)
-							.setLoadedImages(this.loadedData.getImages());
+					.setLoadedImages(this.loadedData.getImages());
 				}
 				if (plugin instanceof OmegaLoadedAnalysisConsumerPluginInterface) {
 					((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
-							.setLoadedAnalysisRun(this.loadedAnalysisRuns);
+					.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 				}
 			}
 			this.gui.updateGUI(this.loadedData,
 					this.omegaData.getOrphanedContainer(),
 					this.loadedAnalysisRuns, this.gateway);
 		}
-
+		
 		for (final OmegaPlugin plugin : this.registeredPlugin) {
 			// if (dataLoaded && (plugin instanceof OmegaBrowserPlugin)) {
 			// continue;
@@ -1432,11 +1439,11 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
 				((OmegaDataDisplayerPluginInterface) plugin)
-						.updateDisplayedData();
+				.updateDisplayedData();
 			}
 		}
 	}
-
+	
 	public static void main(final String[] args) {
 		for (final String arg : args) {
 			// System.out.println(arg);
@@ -1455,11 +1462,11 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		// // System.exit(0);
 		// }
 		// }
-
+		
 		final OmegaApplication instance = new OmegaApplication();
 		instance.showGUI();
 	}
-
+	
 	public void loadOrphanedAnalysis() {
 		final OmegaDBServerInformation serverInfo = this.gui
 				.getOmegaDBServerInformation();
@@ -1467,7 +1474,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.getOmegaLoginCredentials();
 		this.mysqlReader.setServerInformation(serverInfo);
 		this.mysqlReader.setLoginCredentials(loginCred);
-
+		
 		try {
 			this.mysqlReader.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
@@ -1475,7 +1482,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// TODO manage the case somehow
 			return;
 		}
-
+		
 		this.dbDialog = new GenericProgressDialog(this.gui,
 				"Loading analysis from Omega server",
 				"Starting loading analysis from Omega Server", false);
@@ -1486,9 +1493,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaDBRunnable.LOAD_TYPE_ORPHANED_IMAGE);
 		this.dbThread = new Thread(loader);
 		this.dbThread.start();
-
+		
 	}
-
+	
 	public void loadAnalysis() {
 		final OmegaDBServerInformation serverInfo = this.gui
 				.getOmegaDBServerInformation();
@@ -1496,7 +1503,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.getOmegaLoginCredentials();
 		this.mysqlReader.setServerInformation(serverInfo);
 		this.mysqlReader.setLoginCredentials(loginCred);
-
+		
 		try {
 			this.mysqlReader.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
@@ -1504,7 +1511,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// TODO manage the case somehow
 			return;
 		}
-
+		
 		this.dbDialog = new GenericProgressDialog(this.gui,
 				"Loading analysis from Omega server",
 				"Starting loading analysis from Omega Server", false);
@@ -1515,9 +1522,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				OmegaDBRunnable.LOAD_TYPE_LOADED_IMAGE);
 		this.dbThread = new Thread(loader);
 		this.dbThread.start();
-
+		
 	}
-
+	
 	public void updateTrajectories() {
 		final OmegaDBServerInformation serverInfo = this.gui
 				.getOmegaDBServerInformation();
@@ -1525,7 +1532,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				.getOmegaLoginCredentials();
 		this.mysqlWriter.setServerInformation(serverInfo);
 		this.mysqlWriter.setLoginCredentials(loginCred);
-
+		
 		try {
 			this.mysqlWriter.connect();
 		} catch (ClassNotFoundException | SQLException ex) {
@@ -1533,7 +1540,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// TODO manage the case somehow
 			return;
 		}
-
+		
 		this.dbDialog = new GenericProgressDialog(this.gui,
 				"Updating analysis in Omega server",
 				"Starting updating analysis in Omega Server", false);
@@ -1543,9 +1550,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				this.mysqlWriter, this.dbDialog, this.omegaData.getProjects());
 		this.dbThread = new Thread(updater);
 		this.dbThread.start();
-
+		
 	}
-
+	
 	public void saveAnalysis() {
 		final OmegaDBServerInformation serverInfo = this.gui
 				.getOmegaDBServerInformation();
@@ -1558,7 +1565,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		final StringBuffer dialogTitleBuf = new StringBuffer();
 		dialogTitleBuf.append("Saving analysis to Omega server");
 		final StringBuffer dialogMsgBuf = new StringBuffer();
-
+		
 		try {
 			this.mysqlWriter.connect();
 			this.mysqlReader.connect();
@@ -1575,7 +1582,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// this.gui.setEnabled(false);
 			return;
 		}
-
+		
 		// try {
 		// for (final OmegaSegmentationTypes segmTypes : this.omegaData
 		// .getSegmentationTypesList()) {
@@ -1600,7 +1607,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		// // TODO manage the case somehow
 		// return;
 		// }
-
+		
 		dialogMsgBuf.append("Starting saving analysis to Omega Server");
 		this.dbDialog = new GenericProgressDialog(this.gui,
 				dialogTitleBuf.toString(), dialogMsgBuf.toString(), false);
@@ -1612,7 +1619,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.dbThread = new Thread(saver);
 		this.dbThread.start();
 	}
-
+	
 	public void handleRunnableProcessTermination(final OmegaDBRunnable runnable) {
 		// this.dbDialog.enableClose();
 		this.dbDialog.updateTotalMessage("Operation completed");
@@ -1631,7 +1638,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				return;
 			}
 		}
-
+		
 		try {
 			if (runnable instanceof OmegaDBWriter) {
 				this.mysqlWriter.disconnect();
@@ -1642,7 +1649,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// TODO manage the case somehow
 			return;
 		}
-
+		
 		try {
 			this.dbThread.join();
 		} catch (final InterruptedException ex) {
@@ -1650,7 +1657,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// TODO manage the case somehow
 			return;
 		}
-
+		
 		if (runnable instanceof OmegaDBLoader) {
 			this.omegaData.updateSegmentationTypes();
 			for (final OmegaPlugin plugin : this.registeredPlugin) {
@@ -1666,7 +1673,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			// WAIT
 		}
 	}
-
+	
 	// public void showTracksImporter() {
 	// // TODO to find a better way
 	// final OmegaTracksToolTargetSelectorDialog ts = new
@@ -1732,7 +1739,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	// e.printStackTrace();
 	// }
 	// }
-
+	
 	public void showDiffusivityExporter() {
 		// TODO to find a better way
 		final OmegaTracksToolTargetSelectorDialog ts = new OmegaTracksToolTargetSelectorDialog(
@@ -1772,9 +1779,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 							+ segm.getStartingROI().getFrameIndex() + " to "
 							+ segm.getEndingROI().getFrameIndex() + "\t"
 							+ diffRun.getGammaDFromLogResults().get(segm)[2][3]
-							+ "\t"
-							+ diffRun.getSmssFromLogResults().get(segm)[0]
-							+ "\n");
+									+ "\t"
+									+ diffRun.getSmssFromLogResults().get(segm)[0]
+											+ "\n");
 				} catch (final IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

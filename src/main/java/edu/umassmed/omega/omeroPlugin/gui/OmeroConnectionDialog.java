@@ -48,6 +48,11 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
+import omero.ServerError;
+import Glacier2.CannotCreateSessionException;
+import Glacier2.PermissionDeniedException;
+import Ice.ConnectionRefusedException;
+import Ice.DNSException;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
@@ -55,44 +60,44 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCrede
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
+import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
 import edu.umassmed.omega.omero.commons.OmeroGateway;
-import edu.umassmed.omega.omero.commons.OmeroImporterUtilities;
 import edu.umassmed.omega.omero.commons.data.OmeroServerInformation;
 
 public class OmeroConnectionDialog extends GenericDialog {
-
+	
 	public String OPTION_SERVER_ADRESS = "Omero server adress";
 	public String OPTION_SERVER_PORT = "Omero server port";
 	public String OPTION_LOGIN_USERNAME = "Omero login username";
 	public String OPTION_LOGIN_PASSWORD = "Omero login password";
-
+	
 	private final GenericPluginPanel parent;
 	private final Map<String, String> pluginOptions;
-
+	
 	private static final long serialVersionUID = -1021787512167305062L;
-
+	
 	private JPanel mainPanel;
 	private JTextField usernameTxtFie, hostnameTxtFie, portTxtFie;
 	private JPasswordField passwordPswFie;
 	private JCheckBox saveServerInfo, saveLoginInfo;
 	private JLabel connectionStatusLbl;
 	private JButton connectButt;
-
+	
 	private final OmeroGateway gateway;
-
+	
 	public OmeroConnectionDialog(final RootPaneContainer parentContainer,
 			final GenericPluginPanel parent, final OmeroGateway gateway) {
 		super(parentContainer, "Omega server connection manager", false);
 		this.gateway = gateway;
-
+		
 		this.parent = parent;
 		this.pluginOptions = parent.getPlugin().getPluginOptions();
-
+		
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		this.fillFields();
 	}
-
+	
 	@Override
 	protected void createAndAddWidgets() {
 		this.setLayout(new BorderLayout());
@@ -115,7 +120,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 		bottomPanel.add(this.connectionStatusLbl, BorderLayout.SOUTH);
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void createAndAddServerPanel() {
 		final JPanel serverPanel = new JPanel();
 		serverPanel.setLayout(new GridLayout(3, 0));
@@ -136,7 +141,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 		serverPanel.add(this.saveServerInfo);
 		this.mainPanel.add(serverPanel);
 	}
-
+	
 	private void createAndAddLoginPanel() {
 		final JPanel loginPanel = new JPanel();
 		loginPanel.setLayout(new GridLayout(3, 0));
@@ -155,7 +160,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 		loginPanel.add(this.saveLoginInfo);
 		this.mainPanel.add(loginPanel);
 	}
-
+	
 	private void fillFields() {
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_ADRESS)) {
 			this.hostnameTxtFie.setText(this.pluginOptions
@@ -182,7 +187,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 			}
 		}
 	}
-
+	
 	@Override
 	protected void addListeners() {
 		this.connectButt.addActionListener(new ActionListener() {
@@ -192,14 +197,14 @@ public class OmeroConnectionDialog extends GenericDialog {
 			}
 		});
 	}
-	
+
 	private void handleConnect() {
 		if (!OmeroConnectionDialog.this.gateway.isConnected()) {
 			final String hostname = OmeroConnectionDialog.this.hostnameTxtFie
 					.getText();
 			final String portS = OmeroConnectionDialog.this.portTxtFie
 					.getText();
-
+			
 			OmegaServerInformation serverInfo = null;
 			if (portS.length() == 0) {
 				serverInfo = new OmeroServerInformation(hostname);
@@ -214,27 +219,43 @@ public class OmeroConnectionDialog extends GenericDialog {
 							.getPassword());
 			final OmegaLoginCredentials loginCred = new OmegaLoginCredentials(
 					username, password);
-
+			
 			OmeroConnectionDialog.this.connectionStatusLbl
-			.setText("Status:  connecting...");
-
+					.setText("Status:  connecting...");
+			
 			boolean connected = false;
-			int error = -1;
+			String errorMsg = null;
 			try {
-				error = this.gateway.connect(loginCred, serverInfo);
+				this.gateway.connect(loginCred, serverInfo);
+			} catch (final CannotCreateSessionException ex) {
+				errorMsg = "Unable to create a session.";
+			} catch (final PermissionDeniedException ex) {
+				errorMsg = "<html>Access denied.<br>Verify username and/or password.</html>";
+			} catch (final ServerError ex) {
+				errorMsg = "Server error.";
+			} catch (final DNSException ex) {
+				errorMsg = "<html>Unable to find the server<br>Verify server address.</html>";
+			} catch (final ConnectionRefusedException ex) {
+				errorMsg = "<html>Server refused the connection.<br>Verify port.</html>";
 			} catch (final Exception ex) {
-				final OmeroPluginPanel opp = (OmeroPluginPanel) this.parent;
-				OmegaLogFileManager.handlePluginException(opp.getPlugin(), ex,
-						false);
+				errorMsg = "Unknown error.";
+				// OmegaLogFileManager.handleUncaughtException(ex, true);
 			}
-
+			if (errorMsg != null) {
+				final GenericMessageDialog errorDialog = new GenericMessageDialog(
+						this.getParentContainer(),
+						"Omero server connection error", errorMsg, true);
+				errorDialog.enableClose();
+				errorDialog.setVisible(true);
+			}
+			
 			connected = OmeroConnectionDialog.this.gateway.isConnected();
-			OmeroImporterUtilities.handleConnectionError(
-					OmeroConnectionDialog.this.getParentContainer(), error);
-
+			// OmeroImporterUtilities.handleConnectionError(
+			// OmeroConnectionDialog.this.getParentContainer(), error);
+			
 			if (connected == false) {
 				OmeroConnectionDialog.this.connectionStatusLbl
-				.setText("Status: not connected.");
+						.setText("Status: not connected.");
 				OmeroConnectionDialog.this.parent.firePropertyChange(
 						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
 			} else {
@@ -244,12 +265,12 @@ public class OmeroConnectionDialog extends GenericDialog {
 				OmeroConnectionDialog.this.portTxtFie.setEditable(false);
 				OmeroConnectionDialog.this.connectButt.setText("Disconnect");
 				OmeroConnectionDialog.this.connectionStatusLbl
-				.setText("Status: connected.");
+						.setText("Status: connected.");
 				OmeroConnectionDialog.this.parent.firePropertyChange(
 						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
 				OmeroConnectionDialog.this.setVisible(false);
 			}
-
+			
 			OmeroConnectionDialog.this.saveOptions(hostname, portS, username,
 					password);
 		} else {
@@ -267,17 +288,17 @@ public class OmeroConnectionDialog extends GenericDialog {
 			OmeroConnectionDialog.this.connectButt.setText("Connect");
 			OmeroConnectionDialog.this.parent.firePropertyChange(
 					OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
-
+			
 		}
 	}
-
+	
 	public void saveOptions(final String hostname, final String port,
 			final String username, final String password) {
 		OmeroPluginPanel pluginPanel = null;
 		if (OmeroConnectionDialog.this.parent instanceof OmeroPluginPanel) {
 			pluginPanel = (OmeroPluginPanel) OmeroConnectionDialog.this.parent;
 		}
-
+		
 		if (pluginPanel != null) {
 			final Map<String, String> options = new LinkedHashMap<String, String>();
 			if (OmeroConnectionDialog.this.saveServerInfo.isSelected()) {
@@ -298,7 +319,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 				} catch (final GeneralSecurityException e) {
 					e.printStackTrace();
 				}
-
+				
 				if (loginPsw != null) {
 					options.put(this.OPTION_LOGIN_PASSWORD, loginPsw);
 				}

@@ -17,15 +17,15 @@ import edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
 import edu.umassmed.omega.core.OmegaApplication;
 
 public class OmegaTrackingMeasuresAnalizer implements Runnable {
-
+	
 	private final OmegaApplication omegaApp;
 	private final OmegaTrajectoriesSegmentationRun segmentationRun;
-
+	
 	private final OmegaIntensityAnalyzer intensityAnalizer;
 	private final OmegaMobilityAnalyzer mobilityAnalizer;
 	private final OmegaVelocityAnalyzer velocityAnalizer;
 	private final OmegaDiffusivityAnalyzer diffusivityAnalizer;
-
+	
 	public OmegaTrackingMeasuresAnalizer(final OmegaApplication omegaApp,
 			final OmegaTrajectoriesSegmentationRun segmentationRun,
 			final double physicalT, final int tMax) {
@@ -44,16 +44,16 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 				OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW,
 				OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW_3));
 		diffParams
-				.add(new OmegaParameter(
-						OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION,
-						OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR));
+		.add(new OmegaParameter(
+				OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION,
+				OmegaConstants.PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR));
 		diffParams.add(new OmegaParameter(
 				OmegaConstants.PARAMETER_ERROR_OPTION,
 				OmegaConstants.PARAMETER_ERROR_OPTION_DISABLED));
 		this.diffusivityAnalizer = new OmegaDiffusivityAnalyzer(physicalT,
 				segmentationRun, segments, diffParams);
 	}
-
+	
 	@Override
 	public void run() {
 		Thread t1 = null;
@@ -62,19 +62,19 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 			t1.setName("IntensityAnalizer");
 			t1.start();
 		}
-
+		
 		final Thread t2 = new Thread(this.mobilityAnalizer);
 		t2.setName("MobilityAnalizer");
 		t2.start();
-
+		
 		final Thread t3 = new Thread(this.velocityAnalizer);
 		t3.setName("VelocityAnalizer");
 		t3.start();
-
+		
 		final Thread t4 = new Thread(this.diffusivityAnalizer);
 		t4.setName("DiffusivityAnalizer");
 		t4.start();
-
+		
 		try {
 			if (this.intensityAnalizer != null) {
 				t1.join();
@@ -85,7 +85,7 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 		} catch (final InterruptedException ex) {
 			OmegaLogFileManager.handleCoreException(ex, true);
 		}
-
+		
 		// TODO to be changed somehow
 		this.omegaApp.updateTrackingMeasuresAnalizerResults(
 				this.segmentationRun,
@@ -130,6 +130,7 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 				this.diffusivityAnalizer.getSmssFromLogResults(),
 				// this.diffusivityAnalizer.getErrors(),
 				this.diffusivityAnalizer.getErrorsFromLog(),
+				this.diffusivityAnalizer.getMinimumDetectableODC(),
 				this.diffusivityAnalizer.getSNRRun(),
 				this.diffusivityAnalizer.getTrackingMeasuresDiffusivityRun());
 	}
