@@ -50,11 +50,13 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaNamedElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
@@ -80,91 +82,91 @@ import edu.umassmed.omega.sdSbalzariniPlugin.runnable.SDRunner2;
 public class SDPluginPanel extends GenericPluginPanel implements
 		OmegaMessageDisplayerPanelInterface,
 		GenericElementInformationContainerInterface {
-
+	
 	private static final long serialVersionUID = -5740459087763362607L;
-
+	
 	private JSplitPane mainSplitPane, browserSplitPane;
-
+	
 	private JTabbedPane tabPanel;
-
+	
 	private SDRunPanel runPanel;
 	private GenericTrackingResultsPanel resPanel;
-
+	
 	// private OmeroListPanel projectListPanel;
 	private SDLoadedDataBrowserPanel loadedDataBrowserPanel;
 	private SDQueueRunBrowserPanel queueRunBrowserPanel;
-
+	
 	private JButton addToProcess_butt, removeFromProcess_butt;
 	private JButton processBatch_butt, processPreview_butt;
-
+	
 	private GenericStatusPanel statusPanel;
-
+	
 	private OmegaGateway gateway;
-
+	
 	private OmegaImage selectedImage;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
-
+	
 	private final Map<OmegaImage, List<OmegaElement>> selections;
 	private final Map<OmegaImage, List<OmegaParameter>> imagesToProcess;
-
+	
 	private Thread sdThread;
 	// private SDRunner sdRunner;
 	private SDRunner2 sdRunner2;
-
+	
 	private boolean isRunningBatch, isHandlingEvent;
-
+	
 	public SDPluginPanel(final RootPaneContainer parent,
 			final OmegaPlugin plugin, final OmegaGateway gateway,
 			final List<OmegaImage> images, final int index) {
 		super(parent, plugin, index);
-
+		
 		this.sdThread = null;
 		this.sdRunner2 = null;
-
+		
 		this.imagesToProcess = new LinkedHashMap<OmegaImage, List<OmegaParameter>>();
 		this.selections = new LinkedHashMap<OmegaImage, List<OmegaElement>>();
-
+		
 		this.selectedImage = null;
 		this.selectedParticleDetectionRun = null;
-
+		
 		this.isRunningBatch = false;
 		this.isHandlingEvent = false;
-
+		
 		this.gateway = gateway;
-
+		
 		this.setPreferredSize(new Dimension(750, 500));
 		this.setLayout(new BorderLayout());
 		// this.createMenu();
 		this.createAndAddWidgets();
 		this.loadedDataBrowserPanel.updateTree(images);
 		this.addListeners();
-
+		
 		this.resetStatusMessages();
 	}
-
+	
 	private void createMenu() {
-
+		
 	}
-
+	
 	public void createAndAddWidgets() {
 		this.loadedDataBrowserPanel = new SDLoadedDataBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		this.queueRunBrowserPanel = new SDQueueRunBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
-
+		
 		this.browserSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		this.browserSplitPane.setLeftComponent(this.loadedDataBrowserPanel);
 		this.browserSplitPane.setRightComponent(this.queueRunBrowserPanel);
-
+		
 		browserPanel.add(this.browserSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
-
+		
 		final InputStream s1 = OmegaFileUtilities
 				.getImageFilename("green_plus.png");
 		ImageIcon addIcon = null;
@@ -187,56 +189,57 @@ public class SDPluginPanel extends GenericPluginPanel implements
 		}
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
-
+		
 		this.setAddAndRemoveButtonsEnabled(false);
-
+		
 		browserButtonPanel.add(this.addToProcess_butt);
 		browserButtonPanel.add(this.removeFromProcess_butt);
-
+		
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
-
+		
 		this.tabPanel = new JTabbedPane(SwingConstants.TOP,
 				JTabbedPane.WRAP_TAB_LAYOUT);
-
+		
 		// TODO create panel for parameters
 		this.runPanel = new SDRunPanel(this.getParentContainer(), this.gateway,
 				this);
 		// final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
-		this.tabPanel.add(SDConstants.RUN_DEFINITION, this.runPanel);
-
+		this.tabPanel.add(OmegaGUIConstants.PLUGIN_RUN_DEFINITION,
+				this.runPanel);
+		
 		this.resPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabPanel.add("Detection Results", this.resPanel);
-
+		
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
 		this.mainSplitPane.setRightComponent(this.tabPanel);
-
+		
 		this.add(this.mainSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-
+		
 		this.statusPanel = new GenericStatusPanel(2);
-
+		
 		final JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new FlowLayout());
-
+		
 		this.processPreview_butt = new JButton(SDConstants.PREVIEW_BUTTON);
 		this.processPreview_butt.setEnabled(false);
 		buttonsPanel.add(this.processPreview_butt);
-
+		
 		this.processBatch_butt = new JButton(SDConstants.EXECUTE_BUTTON);
 		buttonsPanel.add(this.processBatch_butt);
-
+		
 		this.setProcessButtonsEnabled(false);
-
+		
 		bottomPanel.add(buttonsPanel, BorderLayout.NORTH);
 		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
-
+		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void resetStatusMessages() {
 		try {
 			this.statusPanel.updateStatus(0, "Plugin ready");
@@ -248,7 +251,7 @@ public class SDPluginPanel extends GenericPluginPanel implements
 					true);
 		}
 	}
-
+	
 	private void addListeners() {
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -281,25 +284,25 @@ public class SDPluginPanel extends GenericPluginPanel implements
 			}
 		});
 	}
-
+	
 	private void handleResize() {
 		this.browserSplitPane.setDividerLocation(0.5);
 		this.mainSplitPane.setDividerLocation(0.25);
 	}
-
+	
 	private void addToProcessList() {
 		this.updateImagesToProcess(0);
 		this.loadedDataBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void removeFromProcessList() {
 		this.updateImagesToProcess(1);
 		this.loadedDataBrowserPanel.deselect();
 		this.queueRunBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void processPreview() {
 		// TODO add test for more than 1 image (cannot preview more than one)
 		this.isRunningBatch = true;
@@ -316,7 +319,7 @@ public class SDPluginPanel extends GenericPluginPanel implements
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.sdThread);
 		this.sdThread.start();
 	}
-
+	
 	private void processBatch() {
 		this.isRunningBatch = true;
 		this.setAddAndRemoveButtonsEnabled(false);
@@ -332,65 +335,65 @@ public class SDPluginPanel extends GenericPluginPanel implements
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.sdThread);
 		this.sdThread.start();
 	}
-
+	
 	private void updateRunnerEnded() {
-		if (this.sdRunner2.isJobCompleted()) {
-			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
-					.getImageParameters();
-			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
-					.getImageResultingParticles();
-			final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sdRunner2
-					.getImageParticlesAdditionalValues();
+		if (!this.sdRunner2.isJobCompleted())
+			return;
+		final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
+				.getImageParameters();
+		final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
+				.getImageResultingParticles();
+		final Map<OmegaImage, Map<OmegaROI, Map<String, Object>>> resultingParticlesValues = this.sdRunner2
+				.getImageParticlesAdditionalValues();
 
-			for (final OmegaImage image : processedImages.keySet()) {
-				final List<OmegaParameter> params = processedImages.get(image);
-				final List<OmegaElement> selection = this.selections.get(image);
+		for (final OmegaImage image : processedImages.keySet()) {
+			final List<OmegaParameter> params = processedImages.get(image);
+			final List<OmegaElement> selection = this.selections.get(image);
 
-				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
-						.get(image);
-				final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
-						.get(image);
+			final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
+					.get(image);
+			final Map<OmegaROI, Map<String, Object>> particlesValues = resultingParticlesValues
+					.get(image);
 
-				final OmegaPluginEventResultsParticleDetection particleDetectionEvt = new OmegaPluginEventResultsParticleDetection(
-						this.getPlugin(), selection, image, params, particles,
-						particlesValues);
+			final OmegaPluginEventResultsParticleDetection particleDetectionEvt = new OmegaPluginEventResultsParticleDetection(
+					this.getPlugin(), selection, image, params, particles,
+					particlesValues);
 
-				this.imagesToProcess.remove(image);
-				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
+			this.imagesToProcess.remove(image);
+			this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
 
-				this.getPlugin().fireEvent(particleDetectionEvt);
-			}
-			if (this.sdThread.isAlive()) {
-				try {
-					this.sdThread.join();
-				} catch (final InterruptedException e) {
-					// TODO gestire
-					e.printStackTrace();
-				}
+			this.getPlugin().fireEvent(particleDetectionEvt);
+		}
+		if (this.sdThread.isAlive()) {
+			try {
+				this.sdThread.join();
+			} catch (final InterruptedException e) {
+				// TODO gestire
+				e.printStackTrace();
 			}
 		}
-		this.setEnabled(true);
+		// this.setEnabled(true);
 
 		this.setProcessButtonsEnabled(true);
 		this.runPanel.setFieldsEnalbed(true);
 		this.resetStatusMessages();
 		this.isRunningBatch = false;
 	}
-
+	
 	private void updatePreviewEnded() {
 		if (this.sdRunner2.isJobCompleted()) {
 			final Map<OmegaImage, List<OmegaParameter>> processedImages = this.sdRunner2
 					.getImageParameters();
 			final Map<OmegaImage, Map<OmegaPlane, List<OmegaROI>>> resultingParticles = this.sdRunner2
 					.getImageResultingParticles();
-
+			
 			for (final OmegaImage image : processedImages.keySet()) {
 				final List<OmegaParameter> params = processedImages.get(image);
 				final List<OmegaElement> selection = this.selections.get(image);
-
+				
 				final Map<OmegaPlane, List<OmegaROI>> particles = resultingParticles
 						.get(image);
-
+				
 				if (particles.size() > 1) {
 					// TODO problem
 					// System.out.println("more than 1 frame error!!!");
@@ -402,10 +405,10 @@ public class SDPluginPanel extends GenericPluginPanel implements
 						this.getPlugin().fireEvent(particleDetectionEvt);
 					}
 				}
-
+				
 				this.imagesToProcess.remove(image);
 				this.queueRunBrowserPanel.updateTree(this.imagesToProcess);
-
+				
 			}
 			if (this.sdThread.isAlive()) {
 				try {
@@ -416,14 +419,14 @@ public class SDPluginPanel extends GenericPluginPanel implements
 				}
 			}
 		}
-		this.setEnabled(true);
-
+		// this.setEnabled(true);
+		
 		this.setProcessButtonsEnabled(true);
 		this.runPanel.setFieldsEnalbed(true);
 		this.resetStatusMessages();
 		this.isRunningBatch = false;
 	}
-
+	
 	private void updateImagesToProcess(final int action) {
 		switch (action) {
 			case 1:
@@ -433,29 +436,33 @@ public class SDPluginPanel extends GenericPluginPanel implements
 			default:
 				final List<OmegaParameter> params = this.runPanel
 						.getParameters();
-				if (params == null) {
+				if (params != null) {
 					final String[] errors = this.runPanel.getParametersError();
 					final StringBuffer exceptionError = new StringBuffer();
+					int countErrors = 0;
 					for (int index = 0; index < errors.length; index++) {
 						final String error = errors[index];
 						if (error == null) {
 							continue;
 						}
+						countErrors++;
 						exceptionError.append(error);
 						if (index != (errors.length - 1)) {
 							exceptionError.append(" & ");
 						}
 					}
-					final StringBuffer buf = new StringBuffer();
-					buf.append("Wrong parameters type -> ");
-					buf.append(exceptionError.toString());
-					try {
-						this.statusPanel.updateStatus(1, buf.toString());
-					} catch (final OmegaPluginExceptionStatusPanel ex) {
-						OmegaLogFileManager.handlePluginException(
-								this.getPlugin(), ex, true);
+					if (countErrors > 0) {
+						final StringBuffer buf = new StringBuffer();
+						buf.append("Error in parameters -> ");
+						buf.append(exceptionError.toString());
+						try {
+							this.statusPanel.updateStatus(1, buf.toString());
+						} catch (final OmegaPluginExceptionStatusPanel ex) {
+							OmegaLogFileManager.handlePluginException(
+									this.getPlugin(), ex, true);
+						}
+						break;
 					}
-					break;
 					// Lanciare eccezione o printare errore a schermo
 					// throw new OmegaAlgorithmParametersTypeException(
 					// this.getPlugin(), exceptionError.toString());
@@ -473,7 +480,7 @@ public class SDPluginPanel extends GenericPluginPanel implements
 			this.setProcessButtonsEnabled(true);
 		}
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
@@ -482,54 +489,56 @@ public class SDPluginPanel extends GenericPluginPanel implements
 		this.runPanel.updateParentContainer(parent);
 		// this.projectListPanel.updateParentContainer(parent);
 	}
-
+	
 	@Override
 	public void onCloseOperation() {
-
+		
 	}
-
+	
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
 				this.getPlugin(), this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	public void setGateway(final OmegaGateway gateway) {
 		this.gateway = gateway;
 		this.runPanel.setGateway(gateway);
 	}
-
+	
 	public void updateSelectedParticleDetectionRun(
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleDetectionRun = particleDetectionRun;
-		this.fireEventSelectionParticleDetectionRun();
 		this.setAddAndRemoveButtonsEnabled(false);
-		if (this.isRunningBatch)
-			return;
 		if (this.selectedParticleDetectionRun != null) {
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionParticleDetectionRun();
+			}
+			if (this.isRunningBatch)
+				return;
 			this.runPanel.updateRunFields(this.selectedParticleDetectionRun
 					.getAlgorithmSpec().getParameters());
 			this.resPanel.setAnalysisRun(this.selectedParticleDetectionRun);
 		}
 	}
-
+	
 	protected void updateSelectedImage(final OmegaImage image) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedImage = image;
-		if (!this.isHandlingEvent) {
-			this.fireEventSelectionImage();
-		}
 		this.setAddAndRemoveButtonsEnabled(false);
-		if (this.isRunningBatch)
-			return;
 		if (image != null) {
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionImage();
+			}
+			if (this.isRunningBatch)
+				return;
 			this.runPanel.updateImageFields(image);
 			if (this.imagesToProcess.containsKey(this.selectedImage)) {
 				this.removeFromProcess_butt.setEnabled(true);
@@ -541,39 +550,51 @@ public class SDPluginPanel extends GenericPluginPanel implements
 			}
 		}
 	}
-	
+
 	public void selectImage(final OmegaAnalysisRunContainer image) {
 		this.isHandlingEvent = true;
 		if (image instanceof OmegaImage) {
+			// this.updateSelectedImage((OmegaImage) image);
+			this.loadedDataBrowserPanel
+					.selectTreeElement((OmegaNamedElement) image);
 			this.updateSelectedImage((OmegaImage) image);
 		}
 		this.isHandlingEvent = false;
 	}
 
+	public void selectParticleDetectionRun(
+			final OmegaParticleDetectionRun analysisRun) {
+		this.isHandlingEvent = true;
+		// TODO select particle detection run in list
+		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
+		this.updateSelectedParticleDetectionRun(analysisRun);
+		this.isHandlingEvent = false;
+	}
+	
 	private void setAddAndRemoveButtonsEnabled(final boolean enabled) {
 		this.addToProcess_butt.setEnabled(enabled);
 		this.removeFromProcess_butt.setEnabled(enabled);
 	}
-
+	
 	private void setProcessButtonsEnabled(final boolean enabled) {
 		// this.processRealTime_butt.setEnabled(enabled);
 		this.processBatch_butt.setEnabled(enabled);
 		this.processPreview_butt.setEnabled(enabled);
 	}
-
+	
 	public void updateTrees(final List<OmegaImage> images) {
 		this.loadedDataBrowserPanel.updateTree(images);
 		this.queueRunBrowserPanel.updateTree(null);
 	}
-
+	
 	public boolean checkIfThisAlgorithm(
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
 				.getPlugin();
 		return plugin.checkIfThisAlgorithm(particleDetectionRun);
-
+		
 	}
-
+	
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final SDMessageEvent specificEvent = (SDMessageEvent) evt;
@@ -593,7 +614,7 @@ public class SDPluginPanel extends GenericPluginPanel implements
 			}
 		}
 	}
-	
+
 	@Override
 	public void fireElementChanged() {
 		this.fireEventSelectionImage();

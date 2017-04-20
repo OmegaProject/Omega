@@ -36,6 +36,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -44,7 +45,6 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
-import edu.umassmed.omega.sptSbalzariniPlugin.SPTConstants;
 
 public class SPTRunner implements SPTRunnable {
 	private static final String RUNNER = "Runner service: ";
@@ -175,21 +175,21 @@ public class SPTRunner implements SPTRunnable {
 			String radius = null, cutoff = null, percentile = null, displacement = null, linkrange = null;
 			for (int i = 0; i < parameters.size(); i++) {
 				final OmegaParameter param = parameters.get(i);
-				if (param.getName() == SPTConstants.PARAM_MINPOINTS) {
+				if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS) {
 					minPoints = (Integer) param.getValue();
-				} else if (param.getName() == SPTConstants.PARAM_RADIUS) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_RADIUS) {
 					radius = param.getStringValue();
-				} else if (param.getName() == SPTConstants.PARAM_CUTOFF) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_CUTOFF) {
 					cutoff = param.getStringValue();
-				} else if (param.getName() == SPTConstants.PARAM_PERCENTILE) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_PERCENTILE) {
 					percentile = param.getStringValue();
-				} else if (param.getName() == SPTConstants.PARAM_DISPLACEMENT) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT) {
 					displacement = param.getStringValue();
-				} else if (param.getName() == SPTConstants.PARAM_LINKRANGE) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE) {
 					linkrange = param.getStringValue();
-				} else if (param.getName() == SPTConstants.PARAM_ZSECTION) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_ZSECTION) {
 					z = (int) param.getValue();
-				} else if (param.getName() == SPTConstants.PARAM_CHANNEL) {
+				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_CHANNEL) {
 					c = (int) param.getValue();
 				} else
 					return;
@@ -297,7 +297,7 @@ public class SPTRunner implements SPTRunnable {
 						final int frameIndex = point.getFrameIndex() - 1;
 						point.setFrameIndex(frameIndex);
 						final OmegaPlane frame = defaultPixels.getFrames(c, z)
-						        .get(frameIndex);
+								.get(frameIndex);
 						// System.out.println("FI: " + frame.getIndex() + " X: "
 						// + point.getX() + " Y: " + point.getY());
 						List<OmegaROI> framePoints;

@@ -50,6 +50,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -198,7 +199,8 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 		this.runPanel = new SPTRunPanel(this.getParentContainer(),
 				this.gateway, this);
 		// final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
-		this.tabPanel.add(SPTConstants.RUN_DEFINITION, this.runPanel);
+		this.tabPanel.add(OmegaGUIConstants.PLUGIN_RUN_DEFINITION,
+				this.runPanel);
 
 		this.resDetectionPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
@@ -364,30 +366,34 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			default:
 				final List<OmegaParameter> params = this.runPanel
 						.getSPTParameters();
-				if (params == null) {
+				if (params != null) {
 					final String[] errors = this.runPanel.getParametersError();
 					final StringBuffer exceptionError = new StringBuffer();
+					int countErrors = 0;
 					for (int index = 0; index < errors.length; index++) {
 						final String error = errors[index];
 						if (error == null) {
 							continue;
 						}
+						countErrors++;
 						exceptionError.append(error);
 						if (index != (errors.length - 1)) {
 							exceptionError.append(" & ");
 						}
 					}
-					final StringBuffer buf = new StringBuffer();
-					buf.append("Wrong parameters type -> ");
-					buf.append(exceptionError.toString());
-					try {
-						this.statusPanel.updateStatus(3, buf.toString());
-					} catch (final OmegaPluginExceptionStatusPanel ex) {
-						OmegaLogFileManager.handlePluginException(
-								this.getPlugin(), ex, true);
+					if (countErrors > 0) {
+						final StringBuffer buf = new StringBuffer();
+						buf.append("Error in parameters -> ");
+						buf.append(exceptionError.toString());
+						try {
+							this.statusPanel.updateStatus(1, buf.toString());
+						} catch (final OmegaPluginExceptionStatusPanel ex) {
+							OmegaLogFileManager.handlePluginException(
+									this.getPlugin(), ex, true);
+						}
+						break;
 					}
-					break;
-					// Lanciare eccezione ho printare errore a schermo
+					// Lanciare eccezione o printare errore a schermo
 					// throw new OmegaAlgorithmParametersTypeException(
 					// this.getPlugin(), exceptionError.toString());
 				}
@@ -395,7 +401,7 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 				final List<OmegaElement> selection = new ArrayList<OmegaElement>();
 				selection.add(this.selectedImage);
 				this.selections.put(this.selectedImage, selection);
-				
+
 				break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.imagesToProcess);

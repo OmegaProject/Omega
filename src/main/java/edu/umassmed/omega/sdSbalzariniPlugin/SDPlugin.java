@@ -31,16 +31,19 @@ import java.util.Date;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.sdSbalzariniPlugin.gui.SDPluginPanel;
 
 public class SDPlugin extends OmegaParticleTrackingPlugin implements
-        OmegaDataDisplayerPluginInterface {
+		OmegaDataDisplayerPluginInterface,
+		OmegaSelectParticleDetectionRunPluginInterface {
 	
 	public SDPlugin() {
 		super(1);
@@ -89,9 +92,9 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 	
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SDPluginPanel panel = new SDPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(), index);
+				this.getGateway(), this.getLoadedImages(), index);
 		return panel;
 	}
 	
@@ -117,6 +120,15 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SDPluginPanel specificPanel = (SDPluginPanel) panel;
 			specificPanel.selectImage(image);
+		}
+	}
+
+	@Override
+	public void selectParticleDetectionRun(
+			final OmegaParticleDetectionRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final SDPluginPanel specificPanel = (SDPluginPanel) panel;
+			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
 	

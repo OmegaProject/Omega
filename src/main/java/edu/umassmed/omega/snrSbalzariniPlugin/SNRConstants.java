@@ -31,12 +31,12 @@ import java.util.GregorianCalendar;
 
 public class SNRConstants {
 	public static String PARAM_SNR_METHOD = "SNR Model";
-	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum Poisson";
+	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_POISSON = "Bhattacharyya Poisson";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN = "Bhattacharyya Gaussian";
-
+	
 	public static final String EXECUTE_BUTTON = "Execute queue";
-
+	
 	public static final String PLUGIN_AUTHOR_FIRSTNAME = "Ivo";
 	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
 	public static final String PLUGIN_SHORTNAME = "MOSAIC SE";
@@ -44,10 +44,10 @@ public class SNRConstants {
 	public static final String PLUGIN_DESC = "To be defined";
 	public static final String PLUGIN_ALGO_DESC = "To be defined";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
-	.getTime();
-
+			.getTime();
+	
 	public static final String TAB_ROI = "ROI results";
 	public static final String TAB_PLANE = "Plane results";
 	public static final String TAB_IMAGE = "Image results";
-
+	
 }

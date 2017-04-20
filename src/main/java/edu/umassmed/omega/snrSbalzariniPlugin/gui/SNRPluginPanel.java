@@ -265,7 +265,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.localResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.TAB_ROI, this.localResultsPanel);
-
+		
 		this.globalFrameResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.TAB_PLANE,
@@ -407,30 +407,34 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			default:
 				final List<OmegaParameter> params = this.runPanel
 						.getParameters();
-				if (params == null) {
+				if (params != null) {
 					final String[] errors = this.runPanel.getParametersError();
 					final StringBuffer exceptionError = new StringBuffer();
+					int countErrors = 0;
 					for (int index = 0; index < errors.length; index++) {
 						final String error = errors[index];
 						if (error == null) {
 							continue;
 						}
+						countErrors++;
 						exceptionError.append(error);
 						if (index != (errors.length - 1)) {
 							exceptionError.append(" & ");
 						}
 					}
-					final StringBuffer buf = new StringBuffer();
-					buf.append("Wrong parameters type -> ");
-					buf.append(exceptionError.toString());
-					try {
-						this.statusPanel.updateStatus(1, buf.toString());
-					} catch (final OmegaPluginExceptionStatusPanel ex) {
-						OmegaLogFileManager.handlePluginException(
-								this.getPlugin(), ex, true);
+					if (countErrors > 0) {
+						final StringBuffer buf = new StringBuffer();
+						buf.append("Error in parameters -> ");
+						buf.append(exceptionError.toString());
+						try {
+							this.statusPanel.updateStatus(1, buf.toString());
+						} catch (final OmegaPluginExceptionStatusPanel ex) {
+							OmegaLogFileManager.handlePluginException(
+									this.getPlugin(), ex, true);
+						}
+						break;
 					}
-					break;
-					// TODO Lanciare eccezione o printare errore a schermo
+					// Lanciare eccezione o printare errore a schermo
 					// throw new OmegaAlgorithmParametersTypeException(
 					// this.getPlugin(), exceptionError.toString());
 				}
@@ -759,7 +763,6 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	public void updateSelectedSNRRun(final OmegaSNRRun snrRun) {
 		// TODO capire se serve
 		this.selectedSNRRun = snrRun;
-		this.fireEventSelectionSNRRun();
 		this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true);
 		this.globalFrameResultsPanel.setAnalysisRun(this.selectedSNRRun, false,
 				true);
@@ -767,6 +770,10 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				this.selectedParticleDetectionRun, false, false);
 		if (snrRun != null) {
 			// TODO update SNR fields?
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionParticleDetectionRun();
+				this.fireEventSelectionSNRRun();
+			}
 			this.runPanel.updateRunFields(snrRun.getAlgorithmSpec()
 					.getParameters());
 		}
@@ -775,11 +782,13 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	public void updateSelectedParticleDetectionRun(
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.selectedParticleDetectionRun = particleDetectionRun;
-		this.fireEventSelectionParticleDetectionRun();
 		this.setAddAndRemoveButtonsEnabled(false);
 		if (this.isRunningBatch)
 			return;
 		if (this.selectedParticleDetectionRun != null) {
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionParticleDetectionRun();
+			}
 			this.runPanel
 					.updateAnalysisFields(this.selectedParticleDetectionRun);
 			if (this.particlesToProcess.containsKey(this.selectedImage)) {
@@ -828,7 +837,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.updateSNRRunnerMessageStatus(specificEvent.getMessage(),
 				specificEvent.isEnded());
 	}
-
+	
 	@Override
 	public void fireElementChanged() {
 		this.fireEventSelectionImage();

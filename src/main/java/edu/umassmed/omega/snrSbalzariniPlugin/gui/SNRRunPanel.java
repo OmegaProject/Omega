@@ -26,6 +26,7 @@
  *******************************************************************************/
 package edu.umassmed.omega.snrSbalzariniPlugin.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
@@ -52,52 +54,65 @@ import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContai
 import edu.umassmed.omega.snrSbalzariniPlugin.SNRConstants;
 
 public class SNRRunPanel extends GenericPanel implements
-GenericElementInformationContainerInterface {
-	
+		GenericElementInformationContainerInterface {
+
 	private static final long serialVersionUID = -2109646064541873817L;
-	
+
 	private static final Dimension VALUE_FIELDS_DIM = new Dimension(45, 20);
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
-	
+
 	private GenericTextFieldValidable radius_txtField, threshold_txtField;
 	private GenericComboBox<String> snrMethod_cmb;
-	
+
 	private GenericElementInformationPanel elementInfoPanel;
 	private GenericAnalysisInformationPanel analysisInfoPanel;
 	private OmegaGateway gateway;
 	private final GenericElementInformationContainerInterface infoContainer;
-	
+
 	public SNRRunPanel(final RootPaneContainer parent,
 			final OmegaGateway gateway,
 			final GenericElementInformationContainerInterface infoContainer) {
 		super(parent);
-		
+
 		this.gateway = gateway;
 		this.infoContainer = infoContainer;
-		
+
 		this.setLayout(new GridLayout(2, 2));
-		
+
 		this.createAndAddWidgets();
 	}
-	
+
 	private void createAndAddWidgets() {
 		this.elementInfoPanel = new GenericElementInformationPanel(
 				this.getParentContainer(), this);
 		this.elementInfoPanel.setBorder(new TitledBorder(
-				OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
+				OmegaGUIConstants.PLUGIN_INPUT_INFORMATION));
 		this.add(this.elementInfoPanel);
-		
+
 		this.analysisInfoPanel = new GenericAnalysisInformationPanel(
 				this.getParentContainer());
 		this.analysisInfoPanel.setBorder(new TitledBorder(
-				OmegaGUIConstants.SIDEPANEL_TABS_GENERAL));
+				OmegaGUIConstants.PLUGIN_INPUT_INFORMATION));
 		this.add(this.analysisInfoPanel);
 		
-		final JPanel parametersPanel = new JPanel();
-		parametersPanel.setLayout(new GridLayout(3, 1));
-		parametersPanel.setBorder(new TitledBorder(
-				OmegaGUIConstants.PLUGIN_PARAMETERS_SNR));
+		final JScrollPane createSelectionParamPanel = this
+				.createSelectionParamPanel();
+		this.add(createSelectionParamPanel);
 		
+		final JScrollPane snrEstimatorParamPanel = this
+				.createSNREstimatorParamPanel();
+		this.add(snrEstimatorParamPanel);
+		
+	}
+
+	public JScrollPane createSNREstimatorParamPanel() {
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+
+		// SNR Estimator panel
+		final JPanel snrEstimatorPanel = new JPanel();
+		snrEstimatorPanel.setLayout(new GridLayout(3, 1));
+
 		final JPanel radiusPanel = new JPanel();
 		radiusPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel radius_lbl = new JLabel(
@@ -108,8 +123,8 @@ GenericElementInformationContainerInterface {
 				GenericTextFieldValidable.CONTENT_INT);
 		this.radius_txtField.setPreferredSize(SNRRunPanel.VALUE_FIELDS_DIM);
 		radiusPanel.add(this.radius_txtField);
-		parametersPanel.add(radiusPanel);
-		
+		snrEstimatorPanel.add(radiusPanel);
+
 		final JPanel threshPanel = new JPanel();
 		threshPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel thresh_lbl = new JLabel(
@@ -120,8 +135,8 @@ GenericElementInformationContainerInterface {
 				GenericTextFieldValidable.CONTENT_DOUBLE);
 		this.threshold_txtField.setPreferredSize(SNRRunPanel.VALUE_FIELDS_DIM);
 		threshPanel.add(this.threshold_txtField);
-		parametersPanel.add(threshPanel);
-		
+		snrEstimatorPanel.add(threshPanel);
+
 		final JPanel snrMethodPanel = new JPanel();
 		snrMethodPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel snrMethod_lbl = new JLabel(SNRConstants.PARAM_SNR_METHOD
@@ -132,21 +147,38 @@ GenericElementInformationContainerInterface {
 				this.getParentContainer());
 		this.snrMethod_cmb.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		this.snrMethod_cmb
-		.addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON);
+				.addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_POISSON);
 		this.snrMethod_cmb
-		.addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN);
+				.addItem(SNRConstants.PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN);
 		this.snrMethod_cmb.addItem(SNRConstants.PARAM_SNR_METHOD_SBALZARINI);
 		snrMethodPanel.add(this.snrMethod_cmb);
-		parametersPanel.add(snrMethodPanel);
+		snrEstimatorPanel.add(snrMethodPanel);
 		
-		this.add(parametersPanel);
+		mainPanel.add(snrEstimatorPanel, BorderLayout.NORTH);
+		mainPanel.add(new JLabel(), BorderLayout.CENTER);
+		
+		final JScrollPane sp = new JScrollPane(mainPanel);
+		sp.setBorder(new TitledBorder(OmegaGUIConstants.PLUGIN_PARAMETERS_SNR));
+
+		return sp;
 	}
-	
+
+	private JScrollPane createSelectionParamPanel() {
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+
+		final JScrollPane sp = new JScrollPane(mainPanel);
+		sp.setBorder(new TitledBorder(
+				OmegaGUIConstants.PLUGIN_PARAMETERS_SELECTION));
+
+		return sp;
+	}
+
 	public boolean areParametersValidated() {
 		return this.radius_txtField.isContentValidated()
 				&& this.threshold_txtField.isContentValidated();
 	}
-	
+
 	public String[] getParametersError() {
 		final String[] errors = new String[6];
 		for (int i = 0; i < 6; i++) {
@@ -162,15 +194,15 @@ GenericElementInformationContainerInterface {
 		}
 		return errors;
 	}
-	
+
 	public void updateImageFields(final OmegaElement element) {
 		this.elementInfoPanel.update(element);
 	}
-	
+
 	public void updateAnalysisFields(final OmegaAnalysisRun analysisRun) {
 		this.analysisInfoPanel.update(analysisRun);
 	}
-	
+
 	public void updateRunFields(final List<OmegaParameter> parameters) {
 		for (final OmegaParameter param : parameters) {
 			if (param.getName().equals(
@@ -186,16 +218,16 @@ GenericElementInformationContainerInterface {
 			}
 		}
 	}
-	
+
 	public void updateRunFieldsDefault() {
 		this.radius_txtField.setText("3");
 		this.threshold_txtField.setText("0.8");
 	}
-	
+
 	public void setGateway(final OmegaGateway gateway) {
 		this.gateway = gateway;
 	}
-	
+
 	public List<OmegaParameter> getParameters() {
 		if (!this.areParametersValidated())
 			return null;
@@ -210,13 +242,13 @@ GenericElementInformationContainerInterface {
 		params.add(new OmegaParameter(SNRConstants.PARAM_SNR_METHOD, snrMethod));
 		return params;
 	}
-	
+
 	public void setFieldsEnalbed(final boolean enabled) {
 		this.radius_txtField.setEnabled(enabled);
 		this.threshold_txtField.setEnabled(enabled);
 		this.snrMethod_cmb.setEnabled(enabled);
 	}
-	
+
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
@@ -224,7 +256,7 @@ GenericElementInformationContainerInterface {
 		this.elementInfoPanel.updateParentContainer(parent);
 		this.snrMethod_cmb.updateParentContainer(parent);
 	}
-
+	
 	@Override
 	public void fireElementChanged() {
 		this.infoContainer.fireElementChanged();

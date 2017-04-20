@@ -102,7 +102,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	private JComboBox<String> images_cmb;
 	
 	// private OmeroListPanel projectListPanel;
-	private PTLoadedDataBrowserPanel loadedDataBrowserPanel;
+	private PLLoadedDataBrowserPanel loadedDataBrowserPanel;
 	private PLQueueRunBrowserPanel queueRunBrowserPanel;
 	
 	private JButton addToProcess_butt, removeFromProcess_butt;
@@ -205,7 +205,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		
 		this.add(this.topPanel, BorderLayout.NORTH);
 		
-		this.loadedDataBrowserPanel = new PTLoadedDataBrowserPanel(
+		this.loadedDataBrowserPanel = new PLLoadedDataBrowserPanel(
 				this.getParentContainer(), this);
 		
 		this.queueRunBrowserPanel = new PLQueueRunBrowserPanel(
@@ -258,7 +258,8 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		// TODO create panel for parameters
 		this.runPanel = new PLRunPanel(this.getParentContainer(), this.gateway);
 		// final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
-		this.tabbedPane.add(PLConstants.RUN_DEFINITION, this.runPanel);
+		this.tabbedPane.add(OmegaGUIConstants.PLUGIN_RUN_DEFINITION,
+				this.runPanel);
 		
 		this.resPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
@@ -421,30 +422,34 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			default:
 				final List<OmegaParameter> params = this.runPanel
 						.getParameters();
-				if (params == null) {
+				if (params != null) {
 					final String[] errors = this.runPanel.getParametersError();
 					final StringBuffer exceptionError = new StringBuffer();
+					int countErrors = 0;
 					for (int index = 0; index < errors.length; index++) {
 						final String error = errors[index];
 						if (error == null) {
 							continue;
 						}
+						countErrors++;
 						exceptionError.append(error);
 						if (index != (errors.length - 1)) {
 							exceptionError.append(" & ");
 						}
 					}
-					final StringBuffer buf = new StringBuffer();
-					buf.append("Wrong parameters type -> ");
-					buf.append(exceptionError.toString());
-					try {
-						this.statusPanel.updateStatus(1, buf.toString());
-					} catch (final OmegaPluginExceptionStatusPanel ex) {
-						OmegaLogFileManager.handlePluginException(
-								this.getPlugin(), ex, true);
+					if (countErrors > 0) {
+						final StringBuffer buf = new StringBuffer();
+						buf.append("Error in parameters -> ");
+						buf.append(exceptionError.toString());
+						try {
+							this.statusPanel.updateStatus(1, buf.toString());
+						} catch (final OmegaPluginExceptionStatusPanel ex) {
+							OmegaLogFileManager.handlePluginException(
+									this.getPlugin(), ex, true);
+						}
+						break;
 					}
-					break;
-					// TODO Lanciare eccezione o printare errore a schermo
+					// Lanciare eccezione o printare errore a schermo
 					// throw new OmegaAlgorithmParametersTypeException(
 					// this.getPlugin(), exceptionError.toString());
 				}
@@ -651,18 +656,16 @@ public class PLPluginPanel extends GenericPluginPanel implements
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
-		// TODO select particle detection run in list
-		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
-		// .setSelectedIndex(index);
+		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
+		this.updateSelectedParticleDetectionRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
 	
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
-		// TODO select snr run in list
-		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
-		// .setSelectedIndex(index);
+		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
+		this.updateSelectedParticleLinkingRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
 	
@@ -683,11 +686,14 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			final OmegaParticleLinkingRun particleLinkingRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleLinkingRun = particleLinkingRun;
-		this.fireEventSelectionParticleLinkingRun();
 		this.setAddAndRemoveButtonsEnabled(false);
-		if (this.isRunningBatch)
-			return;
 		if (this.selectedParticleLinkingRun != null) {
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionParticleDetectionRun();
+				this.fireEventSelectionParticleLinkingRun();
+			}
+			if (this.isRunningBatch)
+				return;
 			this.runPanel.updateRunFields(this.selectedParticleLinkingRun
 					.getAlgorithmSpec().getParameters());
 			this.addToProcess_butt.setEnabled(true);
@@ -699,11 +705,13 @@ public class PLPluginPanel extends GenericPluginPanel implements
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.resPanel.setAnalysisRun(null);
 		this.selectedParticleDetectionRun = particleDetectionRun;
-		this.fireEventSelectionParticleDetectionRun();
 		this.setAddAndRemoveButtonsEnabled(false);
-		if (this.isRunningBatch)
-			return;
 		if (this.selectedParticleDetectionRun != null) {
+			if (!this.isHandlingEvent) {
+				this.fireEventSelectionParticleDetectionRun();
+			}
+			if (this.isRunningBatch)
+				return;
 			this.runPanel
 					.updateAnalysisFields(this.selectedParticleDetectionRun);
 			if (this.particlesToProcess
