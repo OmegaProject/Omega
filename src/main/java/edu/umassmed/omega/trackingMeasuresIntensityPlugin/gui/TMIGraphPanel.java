@@ -33,7 +33,7 @@ import edu.umassmed.omega.trackingMeasuresIntensityPlugin.runnable.TMIGraphProdu
 
 public class TMIGraphPanel extends GenericPanel {
 	private static final long serialVersionUID = 1124434645792957106L;
-
+	
 	public static final int OPTION_PEAK_SIGNAL = 0;
 	public static final int OPTION_CENTROID_SIGNAL = 1;
 	public static final int OPTION_MEAN_SIGNAL = 2;
@@ -41,67 +41,67 @@ public class TMIGraphPanel extends GenericPanel {
 	public static final int OPTION_AREA = 4;
 	public static final int OPTION_SNR = 5;
 	public static final int OPTION_BACKGROUND = 6;
-
+	
 	public static final int OPTION_MIN = 0;
 	public static final int OPTION_MEAN = 1;
 	public static final int OPTION_MAX = 2;
-
+	
 	private final TMIPluginPanel pluginPanel;
-
+	
 	private JPanel centerPanel;
 	private GenericComboBox<String> xAxis_cmb, yAxis_cmb, graphType_cmb,
 			globalOrLocal_cmb;
 	private JTextField selection_txt;
 	private JButton drawGraph_btt;
-
+	
 	private Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap;
 	private int maxT;
 	private String oldXAxisSelection, oldYAxisSelection, oldGraphTypeSelection;
-
+	
 	private JPanel graphPanel, legendPanel;
 	private final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap;
-
+	
 	private OmegaTrackingMeasuresIntensityRun selectedTrackingMeasuresRun;
 	private OmegaSegmentationTypes segmTypes;
 	private final Thread t;
 	private TMIGraphProducer graphProducer;
-	
-	private boolean handlingEvent;
 
+	private boolean handlingEvent;
+	
 	public TMIGraphPanel(final RootPaneContainer parent,
 			final TMIPluginPanel pluginPanel,
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		super(parent);
-
+		
 		this.pluginPanel = pluginPanel;
-
+		
 		this.segmentsMap = segmentsMap;
 		this.maxT = 0;
 		this.oldXAxisSelection = null;
 		this.oldYAxisSelection = null;
 		this.oldGraphTypeSelection = null;
-
+		
 		this.selectedTrackingMeasuresRun = null;
 		this.segmTypes = null;
-
+		
 		this.selectedSegmentsMap = new LinkedHashMap<>();
 		this.t = null;
-		
+
 		this.handlingEvent = false;
-
+		
 		this.setLayout(new BorderLayout());
-
+		
 		this.createAndAddWidgets();
-
+		
 		this.addListeners();
 	}
-
+	
 	private void createAndAddWidgets() {
 		final JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new FlowLayout());
 		leftPanel.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
-		
+
 		final JLabel globalOrLocal_lbl = new JLabel(
 				StatsConstants.GRAPH_RESULTSTYPE_LBL);
 		globalOrLocal_lbl
@@ -117,7 +117,7 @@ public class TMIGraphPanel extends GenericPanel {
 				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.globalOrLocal_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.globalOrLocal_cmb);
-
+		
 		final JLabel yAxis_lbl = new JLabel(StatsConstants.GRAPH_Y_LBL);
 		yAxis_lbl
 				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
@@ -136,7 +136,7 @@ public class TMIGraphPanel extends GenericPanel {
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.yAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.yAxis_cmb);
-
+		
 		final JLabel xAxis_lbl = new JLabel(StatsConstants.GRAPH_X_LBL);
 		xAxis_lbl
 				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
@@ -149,7 +149,7 @@ public class TMIGraphPanel extends GenericPanel {
 		this.xAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.xAxis_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.xAxis_cmb);
-
+		
 		final JLabel selection_lbl = new JLabel(StatsConstants.GRAPH_VAL_RANGE);
 		selection_lbl.setToolTipText(StatsConstants.GRAPH_VAL_RANGE_TT);
 		selection_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
@@ -159,7 +159,7 @@ public class TMIGraphPanel extends GenericPanel {
 		this.selection_txt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.selection_txt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.selection_txt);
-
+		
 		final JLabel graphType_lbl = new JLabel(StatsConstants.GRAPH_TYPE);
 		graphType_lbl.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		graphType_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
@@ -172,23 +172,23 @@ public class TMIGraphPanel extends GenericPanel {
 		this.graphType_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.graphType_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.graphType_cmb);
-
+		
 		this.drawGraph_btt = new JButton(StatsConstants.GRAPH_DRAW);
 		this.drawGraph_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.drawGraph_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		// leftPanel.add(this.drawGraph_btt);
-
+		
 		this.add(leftPanel, BorderLayout.WEST);
-
+		
 		this.centerPanel = new JPanel();
 		this.centerPanel.setLayout(new BorderLayout());
-
+		
 		this.add(this.centerPanel, BorderLayout.CENTER);
-
+		
 		// this.handleChangeChart();
 		// this.handleDrawChart();
 	}
-
+	
 	private void addListeners() {
 		this.globalOrLocal_cmb.addActionListener(new ActionListener() {
 			@Override
@@ -227,7 +227,7 @@ public class TMIGraphPanel extends GenericPanel {
 			}
 		});
 	}
-	
+
 	private void handleChangeResultsType() {
 		this.handlingEvent = true;
 		this.yAxis_cmb.removeAllItems();
@@ -269,7 +269,7 @@ public class TMIGraphPanel extends GenericPanel {
 		this.handlingEvent = false;
 		this.handleDrawChartLater();
 	}
-
+	
 	private void handleComponentResized() {
 		if (this.graphPanel == null)
 			return;
@@ -285,17 +285,17 @@ public class TMIGraphPanel extends GenericPanel {
 		this.graphPanel.setPreferredSize(graphDim);
 		this.repaint();
 	}
-	
+
 	private void handleDrawChartLater() {
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				TMIGraphPanel.this.handleDrawChart();
 			}
 		});
 	}
-
+	
 	private void handleDrawChart() {
 		if (this.selectedTrackingMeasuresRun == null)
 			return;
@@ -323,7 +323,7 @@ public class TMIGraphPanel extends GenericPanel {
 			this.handleDrawTracksChart();
 		}
 	}
-
+	
 	private void handleDrawTimepointsChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
 		if (yAxisSelection.equals(StatsConstants.PEAK_INTENSITY_LOC)) {
@@ -342,7 +342,7 @@ public class TMIGraphPanel extends GenericPanel {
 			this.handleTimepointsChart(TMIGraphPanel.OPTION_AREA);
 		}
 	}
-
+	
 	private void handleDrawTracksChart() {
 		final String yAxisSelection = (String) this.yAxis_cmb.getSelectedItem();
 		if (yAxisSelection.equals(StatsConstants.MIN_PEAK_INTENSITY_GLO)) {
@@ -413,7 +413,7 @@ public class TMIGraphPanel extends GenericPanel {
 					TMIGraphPanel.OPTION_MAX);
 		}
 	}
-
+	
 	private void handleChangeAxis() {
 		if (this.handlingEvent)
 			return;
@@ -432,7 +432,7 @@ public class TMIGraphPanel extends GenericPanel {
 		this.handleDrawChartLater();
 		this.drawGraph_btt.setEnabled(true);
 	}
-
+	
 	private void handleTracksChart(final int peakMeanBgSnrOption,
 			final int minMeanMaxOption) {
 		this.pluginPanel.updateStatus("Preparing tracks graph");
@@ -470,7 +470,7 @@ public class TMIGraphPanel extends GenericPanel {
 				this.selectedTrackingMeasuresRun.getSNRsLocalResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
-
+	
 	private void handleTimepointsChart(final int peakMeanBgSnrOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
@@ -507,7 +507,7 @@ public class TMIGraphPanel extends GenericPanel {
 				this.selectedTrackingMeasuresRun.getSNRsLocalResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
-
+	
 	private void launchGraphProducerThread(final TMIGraphProducer graphProducer) {
 		// if ((this.t != null) && this.t.isAlive()) {
 		// this.graphProducer.terminate();
@@ -518,25 +518,25 @@ public class TMIGraphPanel extends GenericPanel {
 		// this.t.setName("IntensityGraphProducer");
 		// this.t.start();
 	}
-
+	
 	public void setMaximumT(final int maxT) {
 		this.maxT = maxT;
 	}
-
+	
 	public void setSegmentsMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.segmentsMap = segmentsMap;
 		// this.handleChangeChart();
 		// this.handleDrawChart();
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.xAxis_cmb.updateParentContainer(parent);
 		this.yAxis_cmb.updateParentContainer(parent);
 	}
-
+	
 	public void setSelectedSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap) {
 		this.selectedSegmentsMap.clear();
@@ -544,7 +544,7 @@ public class TMIGraphPanel extends GenericPanel {
 		// this.handleChangeChart();
 		this.handleDrawChartLater();
 	}
-
+	
 	public void updateSelectedTrackingMeasuresRun(
 			final OmegaTrackingMeasuresIntensityRun trackingMeasuresRun) {
 		this.selectedTrackingMeasuresRun = trackingMeasuresRun;
@@ -577,12 +577,12 @@ public class TMIGraphPanel extends GenericPanel {
 		// }
 		this.handleDrawChartLater();
 	}
-
+	
 	public void updateSelectedSegmentationTypes(
 			final OmegaSegmentationTypes segmentationTypes) {
 		this.segmTypes = segmentationTypes;
 	}
-
+	
 	public void updateStatus(final double completed, final boolean ended) {
 		if (ended) {
 			this.graphPanel = this.graphProducer.getGraphPanel();

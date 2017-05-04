@@ -31,6 +31,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,10 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 	private final SNRPluginPanel snrPanel;
 
 	private final Map<String, OmegaElement> nodeMap;
+	private final Map<String, Integer> nodeIndexes;
 	private final DefaultMutableTreeNode root;
+	
+	private Integer selectedIndex;
 
 	private JTree dataTree;
 
@@ -75,7 +79,9 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject(OmegaGUIConstants.PLUGIN_RUN_QUEUE);
 		this.nodeMap = new HashMap<String, OmegaElement>();
+		this.nodeIndexes = new LinkedHashMap<String, Integer>();
 		// this.updateTree(images);
+		this.selectedIndex = null;
 
 		this.setLayout(new BorderLayout());
 
@@ -169,6 +175,7 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 	private void handleMouseClick(final Point clickP) {
 		final TreePath path = SNRQueueRunBrowserPanel.this.dataTree
 				.getPathForLocation(clickP.x, clickP.y);
+		this.snrPanel.deselectNotListener(this);
 		if (path == null) {
 			this.snrPanel.updateSelectedParticleDetectionRun(null);
 			this.snrPanel.updateSelectedSNRRun(null);
@@ -183,6 +190,7 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 		if (element instanceof OmegaParticleDetectionRun) {
 			this.snrPanel
 					.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
+			this.snrPanel.setRemoveButtonEnabled(true);
 		}
 	}
 
@@ -192,25 +200,30 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 	}
 
 	public void updateTree(
-			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess) {
+			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.dataTree.setRootVisible(true);
 		String s = null;
+		this.selectedIndex = null;
 		final CheckBoxStatus status = CheckBoxStatus.DESELECTED;
 		this.root.removeAllChildren();
 		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
+		this.nodeIndexes.clear();
 		if (particlesToProcess != null) {
-			for (final OmegaParticleDetectionRun particleDetectionRun : particlesToProcess
-					.keySet()) {
-				final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
-				s = "[" + particleDetectionRun.getElementID() + "] "
-						+ particleDetectionRun.getName();
-				this.nodeMap.put(s, particleDetectionRun);
-				// status = this.loadedData.containsImage(image) ?
-				// CheckBoxStatus.SELECTED
-				// : CheckBoxStatus.DESELECTED;
-				imageNode.setUserObject(new CheckBoxNode(s, status));
-				this.root.add(imageNode);
+			for (final Integer index : particlesToProcess.keySet()) {
+				for (final OmegaParticleDetectionRun particleDetectionRun : particlesToProcess
+						.get(index).keySet()) {
+					final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
+					s = index + ": [" + particleDetectionRun.getElementID()
+							+ "] " + particleDetectionRun.getName();
+					this.nodeMap.put(s, particleDetectionRun);
+					this.nodeIndexes.put(s, index);
+					// status = this.loadedData.containsImage(image) ?
+					// CheckBoxStatus.SELECTED
+					// : CheckBoxStatus.DESELECTED;
+					imageNode.setUserObject(new CheckBoxNode(s, status));
+					this.root.add(imageNode);
+				}
 			}
 		}
 		this.dataTree.expandRow(0);
@@ -219,6 +232,11 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 	}
 
 	public void deselect() {
+		this.selectedIndex = null;
 		this.dataTree.setSelectionRow(-1);
+	}
+
+	public Integer getSelectedIndex() {
+		return this.selectedIndex;
 	}
 }

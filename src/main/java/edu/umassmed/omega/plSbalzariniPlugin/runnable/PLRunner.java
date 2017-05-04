@@ -54,8 +54,8 @@ public class PLRunner implements PLRunnable {
 	private static final String RUNNER = "Runner service: ";
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	
-	private final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess;
-	private final Map<OmegaParticleDetectionRun, List<OmegaTrajectory>> resultingTrajectories;
+	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess;
+	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaTrajectory>>> resultingTrajectories;
 	
 	private final boolean isDebugMode;
 	private boolean isJobCompleted, isTerminated;
@@ -75,7 +75,7 @@ public class PLRunner implements PLRunnable {
 	
 	public PLRunner(
 			final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess) {
+			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.displayerPanel = displayerPanel;
 		
 		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
@@ -124,161 +124,168 @@ public class PLRunner implements PLRunnable {
 	}
 	
 	private void normalModeRun() throws Exception {
-		for (final OmegaParticleDetectionRun spotDetRun : this.particlesToProcess
-				.keySet()) {
-			final List<OmegaParameter> parameters = this.particlesToProcess
-					.get(spotDetRun);
-			
-			final Map<OmegaPlane, List<OmegaROI>> resultingParticles = spotDetRun
-					.getResultingParticles();
-			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = spotDetRun
-					.getResultingParticlesValues();
-			
-			OmegaImagePixels pixels = null;
-			for (final OmegaPlane frame : resultingParticles.keySet()) {
-				pixels = frame.getParentPixels();
-				break;
-			}
-			
-			final int sizeT = pixels.getSizeT();
-			
-			if (sizeT < 2) {
-				// TODO throw error and skip image or stop thread?
-			}
-			
-			// this.gateway.getTotalT(pixelsID, z, sizeT, c);
-			
-			Float displacement = null;
-			Integer linkrange = null;
-			String movType = null;
-			Float objectFeature = null;
-			Float dynamics = null;
-			String optimizer = null;
-			Integer minLength = null;
-			for (int i = 0; i < parameters.size(); i++) {
-				final OmegaParameter param = parameters.get(i);
-				if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT) {
-					displacement = Float.valueOf(param.getStringValue());
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE) {
-					linkrange = Integer.valueOf(param.getStringValue());
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE) {
-					movType = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE) {
-					objectFeature = Float.valueOf(param.getStringValue());
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS) {
-					dynamics = Float.valueOf(param.getStringValue());
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER) {
-					optimizer = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS) {
-					minLength = Integer.valueOf(param.getStringValue());
+		for (final Integer index : this.particlesToProcess.keySet()) {
+			for (final OmegaParticleDetectionRun spotDetRun : this.particlesToProcess
+					.get(index).keySet()) {
+				final List<OmegaParameter> parameters = this.particlesToProcess
+						.get(index).get(spotDetRun);
+				
+				final Map<OmegaPlane, List<OmegaROI>> resultingParticles = spotDetRun
+						.getResultingParticles();
+				final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = spotDetRun
+						.getResultingParticlesValues();
+				
+				OmegaImagePixels pixels = null;
+				for (final OmegaPlane frame : resultingParticles.keySet()) {
+					pixels = frame.getParentPixels();
+					break;
 				}
-			}
-			
-			this.updateStatusSync(PLRunner.RUNNER
-					+ " rebuilding MOSAIC structures.", false);
-			
-			final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
-			// final MyFrame[] mosaicFrames = new MyFrame[sizeT];
-			final List<Vector<Particle>> mosaicParticlesList = new ArrayList<Vector<Particle>>();
-			final Map<Integer, Vector<Particle>> mosaicParticlesMap = new LinkedHashMap<Integer, Vector<Particle>>();
-			for (final OmegaPlane frame : resultingParticles.keySet()) {
-				final List<OmegaROI> particles = resultingParticles.get(frame);
-				final int index = frame.getIndex();
-				// final MyFrame mosaicFrame = new MyFrame(index);
-				// mosaicFrame.real_particles_number = particles.size();
-				// final Integer radius = (Integer) spotDetRun
-				// .getAlgorithmSpec()
-				// .getParameter(
-				// OmegaConstantsAlgorithmParameters.PARAM_RADIUS)
-				// .getValue();
-				// mosaicFrame.setParticleRadius(radius);
-				final Vector<Particle> mosaicParticles = new Vector<Particle>();
-				for (final OmegaROI particle : particles) {
-					final float x = Float.valueOf(String.valueOf(particle
-							.getX()));
-					final float y = Float.valueOf(String.valueOf(particle
-							.getY()));
-					final Particle p = new Particle(x, y, 0, frame.getIndex());
-					p.m0 = (Float) resultingParticlesValues.get(particle).get(
-							"m0");
-					// p.m1 = (Float)
-					// resultingParticlesValues.get(particle).get(
-					// "m1");
-					p.m2 = (Float) resultingParticlesValues.get(particle).get(
-							"m2");
-					// p.m3 = (Float)
-					// resultingParticlesValues.get(particle).get(
-					// "m3");
-					// p.m4 = (Float)
-					// resultingParticlesValues.get(particle).get(
-					// "m4");
-					particlesMap.put(p, particle);
-					mosaicParticles.add(p);
+				
+				final int sizeT = pixels.getSizeT();
+				
+				if (sizeT < 2) {
+					// TODO throw error and skip image or stop thread?
 				}
-				// mosaicFrame.setParticles(mosaicParticles);
-				// mosaicFrames[index] = mosaicFrame;
-				mosaicParticlesMap.put(index, mosaicParticles);
-			}
-			
-			for (int i = 0; i < sizeT; i++) {
-				final Vector<Particle> mosaicParticles = mosaicParticlesMap
-						.get(i);
-				mosaicParticlesList.add(mosaicParticles);
-			}
-			
-			ParticleLinker linker = null;
-			if (optimizer == PLConstants.PARAM_OPTIMIZER_GREEDY) {
-				linker = new ParticleLinkerGreedy();
-				// linker = new ParticleLinkerBestOnePerm();
-			} else {
-				linker = new ParticleLinkerHungarian();
-				// linker = new ParticleLinkerHun();
-			}
-			final LinkerOptions options = new LinkerOptions();
-			options.maxDisplacement = displacement;
-			options.linkRange = linkrange;
-			if (movType == PLConstants.PARAM_MOVTYPE_BROWNIAN) {
-				options.force = false;
-				options.straightLine = false;
-			} else if (movType == PLConstants.PARAM_MOVTYPE_COSVEL) {
-				options.force = true;
-				options.straightLine = true;
-			} else if (movType == PLConstants.PARAM_MOVTYPE_STRAIGHT) {
-				options.force = false;
-				options.straightLine = true;
-			}
-			options.lSpace = 1f;
-			options.lFeature = objectFeature;
-			options.lDynamic = dynamics;
-			
-			this.updateStatusSync(
-					PLRunner.RUNNER + " launching MOSAIC linker.", false);
-			
-			linker.linkParticles(mosaicParticlesList, options);
-			
-			this.updateStatusSync(
-					PLRunner.RUNNER + " generating trajectories.", false);
-			
-			final List<List<Particle>> mosaicTracks = this
-					.generateTrajectories(mosaicParticlesList, sizeT, linkrange);
-			final List<OmegaTrajectory> tracks = new ArrayList<OmegaTrajectory>();
-			int counter = 0;
-			for (final List<Particle> mosaicTrack : mosaicTracks) {
-				final String trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME + "_"
-						+ counter;
-				final OmegaTrajectory track = new OmegaTrajectory(
-						mosaicTrack.size(), trajName);
-				// track.setName(track.getName() + "_" + counter);
-				counter++;
-				for (final Particle p : mosaicTrack) {
-					final OmegaROI particle = particlesMap.get(p);
-					track.addROI(particle);
+				
+				// this.gateway.getTotalT(pixelsID, z, sizeT, c);
+				
+				Float displacement = null;
+				Integer linkrange = null;
+				String movType = null;
+				Float objectFeature = null;
+				Float dynamics = null;
+				String optimizer = null;
+				Integer minLength = null;
+				for (int i = 0; i < parameters.size(); i++) {
+					final OmegaParameter param = parameters.get(i);
+					if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT) {
+						displacement = Float.valueOf(param.getStringValue());
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE) {
+						linkrange = Integer.valueOf(param.getStringValue());
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE) {
+						movType = param.getStringValue();
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE) {
+						objectFeature = Float.valueOf(param.getStringValue());
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS) {
+						dynamics = Float.valueOf(param.getStringValue());
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER) {
+						optimizer = param.getStringValue();
+					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS) {
+						minLength = Integer.valueOf(param.getStringValue());
+					}
 				}
-				if (track.getLength() > minLength) {
-					tracks.add(track);
+				
+				this.updateStatusSync(PLRunner.RUNNER
+						+ " rebuilding MOSAIC structures.", false);
+				
+				final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
+				// final MyFrame[] mosaicFrames = new MyFrame[sizeT];
+				final List<Vector<Particle>> mosaicParticlesList = new ArrayList<Vector<Particle>>();
+				final Map<Integer, Vector<Particle>> mosaicParticlesMap = new LinkedHashMap<Integer, Vector<Particle>>();
+				for (final OmegaPlane frame : resultingParticles.keySet()) {
+					final List<OmegaROI> particles = resultingParticles
+							.get(frame);
+					final int i = frame.getIndex();
+					// final MyFrame mosaicFrame = new MyFrame(index);
+					// mosaicFrame.real_particles_number = particles.size();
+					// final Integer radius = (Integer) spotDetRun
+					// .getAlgorithmSpec()
+					// .getParameter(
+					// OmegaConstantsAlgorithmParameters.PARAM_RADIUS)
+					// .getValue();
+					// mosaicFrame.setParticleRadius(radius);
+					final Vector<Particle> mosaicParticles = new Vector<Particle>();
+					for (final OmegaROI particle : particles) {
+						final float x = Float.valueOf(String.valueOf(particle
+								.getX()));
+						final float y = Float.valueOf(String.valueOf(particle
+								.getY()));
+						final Particle p = new Particle(x, y, 0,
+								frame.getIndex());
+						p.m0 = (Float) resultingParticlesValues.get(particle)
+								.get("m0");
+						// p.m1 = (Float)
+						// resultingParticlesValues.get(particle).get(
+						// "m1");
+						p.m2 = (Float) resultingParticlesValues.get(particle)
+								.get("m2");
+						// p.m3 = (Float)
+						// resultingParticlesValues.get(particle).get(
+						// "m3");
+						// p.m4 = (Float)
+						// resultingParticlesValues.get(particle).get(
+						// "m4");
+						particlesMap.put(p, particle);
+						mosaicParticles.add(p);
+					}
+					// mosaicFrame.setParticles(mosaicParticles);
+					// mosaicFrames[index] = mosaicFrame;
+					mosaicParticlesMap.put(i, mosaicParticles);
 				}
+				
+				for (int i = 0; i < sizeT; i++) {
+					final Vector<Particle> mosaicParticles = mosaicParticlesMap
+							.get(i);
+					mosaicParticlesList.add(mosaicParticles);
+				}
+				
+				ParticleLinker linker = null;
+				if (optimizer == PLConstants.PARAM_OPTIMIZER_GREEDY) {
+					linker = new ParticleLinkerGreedy();
+					// linker = new ParticleLinkerBestOnePerm();
+				} else {
+					linker = new ParticleLinkerHungarian();
+					// linker = new ParticleLinkerHun();
+				}
+				final LinkerOptions options = new LinkerOptions();
+				options.maxDisplacement = displacement;
+				options.linkRange = linkrange;
+				if (movType == PLConstants.PARAM_MOVTYPE_BROWNIAN) {
+					options.force = false;
+					options.straightLine = false;
+				} else if (movType == PLConstants.PARAM_MOVTYPE_COSVEL) {
+					options.force = true;
+					options.straightLine = true;
+				} else if (movType == PLConstants.PARAM_MOVTYPE_STRAIGHT) {
+					options.force = false;
+					options.straightLine = true;
+				}
+				options.lSpace = 1f;
+				options.lFeature = objectFeature;
+				options.lDynamic = dynamics;
+				
+				this.updateStatusSync(PLRunner.RUNNER
+						+ " launching MOSAIC linker.", false);
+				
+				linker.linkParticles(mosaicParticlesList, options);
+				
+				this.updateStatusSync(PLRunner.RUNNER
+						+ " generating trajectories.", false);
+				
+				final List<List<Particle>> mosaicTracks = this
+						.generateTrajectories(mosaicParticlesList, sizeT,
+								linkrange);
+				final List<OmegaTrajectory> tracks = new ArrayList<OmegaTrajectory>();
+				int counter = 0;
+				for (final List<Particle> mosaicTrack : mosaicTracks) {
+					final String trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME
+							+ "_" + counter;
+					final OmegaTrajectory track = new OmegaTrajectory(
+							mosaicTrack.size(), trajName, (double) counter);
+					// track.setName(track.getName() + "_" + counter);
+					counter++;
+					for (final Particle p : mosaicTrack) {
+						final OmegaROI particle = particlesMap.get(p);
+						track.addROI(particle);
+					}
+					if (track.getLength() > minLength) {
+						tracks.add(track);
+					}
+				}
+				final Map<OmegaParticleDetectionRun, List<OmegaTrajectory>> detAndTracks = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaTrajectory>>();
+				detAndTracks.put(spotDetRun, tracks);
+				this.resultingTrajectories.put(index, detAndTracks);
 			}
-			this.resultingTrajectories.put(spotDetRun, tracks);
 		}
 	}
 	
@@ -333,7 +340,7 @@ public class PLRunner implements PLRunnable {
 								if (mosaicParticlesList.get(k + n + 1)
 										.elementAt(
 												mosaicParticlesList.get(k)
-												.elementAt(m).next[n]).special == false) {
+														.elementAt(m).next[n]).special == false) {
 									found = n;
 									break;
 									// Added by Guy Levy, 18.08.06 - A change
@@ -374,11 +381,11 @@ public class PLRunner implements PLRunnable {
 		this.isTerminated = true;
 	}
 	
-	public Map<OmegaParticleDetectionRun, List<OmegaParameter>> getParticleToProcess() {
+	public Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> getParticleToProcess() {
 		return this.particlesToProcess;
 	}
 	
-	public Map<OmegaParticleDetectionRun, List<OmegaTrajectory>> getResultingTrajectories() {
+	public Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaTrajectory>>> getResultingTrajectories() {
 		return this.resultingTrajectories;
 	}
 	

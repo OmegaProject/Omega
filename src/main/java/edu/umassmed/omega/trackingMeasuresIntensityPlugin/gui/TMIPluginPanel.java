@@ -83,7 +83,7 @@ import edu.umassmed.omega.commons.gui.interfaces.GenericSegmentsBrowserContainer
 import edu.umassmed.omega.commons.plugins.OmegaPlugin;
 
 public class TMIPluginPanel extends GenericPluginPanel implements
-GenericSegmentsBrowserContainerInterface {
+		GenericSegmentsBrowserContainerInterface {
 	
 	private static final long serialVersionUID = -5740459087763362607L;
 	
@@ -98,10 +98,10 @@ GenericSegmentsBrowserContainerInterface {
 	private GenericSegmentInformationPanel currentSegmInfoPanel;
 	
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
-	trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
-	trackingMeasures_cmb;
+			trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb,
+			trackingMeasures_cmb;
 	private boolean popImages, popParticles, popTrajectories, popTrajRelinking,
-	popTrajSegmentation, popTrackingMeasures;
+			popTrajSegmentation, popTrackingMeasures;
 	
 	private boolean isHandlingEvent;
 	
@@ -208,7 +208,7 @@ GenericSegmentsBrowserContainerInterface {
 		p2.add(lbl2, BorderLayout.WEST);
 		this.particles_cmb = new JComboBox<String>();
 		this.particles_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.particles_cmb.setEnabled(false);
 		p2.add(this.particles_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p2);
@@ -220,7 +220,7 @@ GenericSegmentsBrowserContainerInterface {
 		p3.add(lbl3, BorderLayout.WEST);
 		this.trajectories_cmb = new JComboBox<String>();
 		this.trajectories_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectories_cmb.setEnabled(false);
 		p3.add(this.trajectories_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p3);
@@ -232,7 +232,7 @@ GenericSegmentsBrowserContainerInterface {
 		p4.add(lbl4, BorderLayout.WEST);
 		this.trajectoriesRelinking_cmb = new JComboBox<String>();
 		this.trajectoriesRelinking_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesRelinking_cmb.setEnabled(false);
 		p4.add(this.trajectoriesRelinking_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p4);
@@ -244,7 +244,7 @@ GenericSegmentsBrowserContainerInterface {
 		p5.add(lbl5, BorderLayout.WEST);
 		this.trajectoriesSegmentation_cmb = new JComboBox<String>();
 		this.trajectoriesSegmentation_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesSegmentation_cmb.setEnabled(false);
 		p5.add(this.trajectoriesSegmentation_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p5);
@@ -256,7 +256,7 @@ GenericSegmentsBrowserContainerInterface {
 		p6.add(lbl6, BorderLayout.WEST);
 		this.trackingMeasures_cmb = new JComboBox<String>();
 		this.trackingMeasures_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trackingMeasures_cmb.setEnabled(false);
 		p6.add(this.trackingMeasures_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p6);
@@ -333,12 +333,12 @@ GenericSegmentsBrowserContainerInterface {
 			}
 		});
 		this.trajectoriesSegmentation_cmb
-		.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				TMIPluginPanel.this.selectTrajectoriesSegmentationRun();
-			}
-		});
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						TMIPluginPanel.this.selectTrajectoriesSegmentationRun();
+					}
+				});
 		this.trackingMeasures_cmb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -358,11 +358,11 @@ GenericSegmentsBrowserContainerInterface {
 				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
 			this.remove(this.topPanel);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
 		} else {
 			this.add(this.topPanel, BorderLayout.NORTH);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 		}
 		this.revalidate();
 		this.repaint();
@@ -514,8 +514,8 @@ GenericSegmentsBrowserContainerInterface {
 				this.selectedTrajSegmentationRun.getResultingSegments(),
 				this.selectedTrajSegmentationRun.getSegmentationTypes(), false);
 		this.graphPanel
-		.updateSelectedSegmentationTypes(this.selectedTrajSegmentationRun
-				.getSegmentationTypes());
+				.updateSelectedSegmentationTypes(this.selectedTrajSegmentationRun
+						.getSegmentationTypes());
 		this.graphPanel.setSegmentsMap(this.selectedTrajSegmentationRun
 				.getResultingSegments());
 	}
@@ -547,13 +547,19 @@ GenericSegmentsBrowserContainerInterface {
 		}
 		if (this.selectedTrajSegmentationRun != null) {
 			segmTypes = this.selectedTrajSegmentationRun.getSegmentationTypes();
+			if (segments == null) {
+				segments = this.selectedTrajSegmentationRun
+						.getResultingSegments();
+			}
 		}
 		this.sbPanel.updateSegments(segments, segmTypes, false);
+		this.graphPanel
+				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		this.graphPanel.updateSelectedSegmentationTypes(segmTypes);
+		this.graphPanel.setSegmentsMap(segments);
 		this.globalResultsPanel.setAnalysisRun(
 				this.selectedTrackingMeasuresRun,
 				this.selectedTrajSegmentationRun, true);
-		this.graphPanel
-		.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 	}
 	
 	@Override
@@ -631,7 +637,7 @@ GenericSegmentsBrowserContainerInterface {
 			if (this.selectedImage.getAnalysisRuns().contains(analysisRun)
 					&& (analysisRun instanceof OmegaParticleDetectionRun)) {
 				this.particleDetectionRuns
-				.add((OmegaParticleDetectionRun) analysisRun);
+						.add((OmegaParticleDetectionRun) analysisRun);
 				this.particles_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -676,7 +682,7 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaParticleLinkingRun)) {
 				this.particleLinkingRuns
-				.add((OmegaParticleLinkingRun) analysisRun);
+						.add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -718,7 +724,7 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
 				this.trajRelinkingRuns
-				.add((OmegaTrajectoriesRelinkingRun) analysisRun);
+						.add((OmegaTrajectoriesRelinkingRun) analysisRun);
 				this.trajectoriesRelinking_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -757,9 +763,9 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaTrajectoriesSegmentationRun)) {
 				this.trajSegmentationRuns
-				.add((OmegaTrajectoriesSegmentationRun) analysisRun);
+						.add((OmegaTrajectoriesSegmentationRun) analysisRun);
 				this.trajectoriesSegmentation_cmb
-				.addItem(analysisRun.getName());
+						.addItem(analysisRun.getName());
 			}
 		}
 		if (this.trajSegmentationRuns.isEmpty()) {
@@ -796,7 +802,7 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaTrackingMeasuresIntensityRun)) {
 				this.trackingMeasuresRuns
-				.add((OmegaTrackingMeasuresIntensityRun) analysisRun);
+						.add((OmegaTrackingMeasuresIntensityRun) analysisRun);
 				this.trackingMeasures_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -923,7 +929,7 @@ GenericSegmentsBrowserContainerInterface {
 		this.isHandlingEvent = true;
 		this.selectedTrajSegmentationRun = (OmegaTrajectoriesSegmentationRun) analysisRun;
 		this.trajectoriesSegmentation_cmb
-		.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		this.isHandlingEvent = false;
 	}
 	

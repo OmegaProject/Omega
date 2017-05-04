@@ -34,44 +34,44 @@ import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
 
 public class TMIRunPanel extends GenericPanel implements
 		OmegaMessageDisplayerPanelInterface {
-	
+
 	private static final long serialVersionUID = -1925743064869248360L;
-	
+
 	private JButton run_btt;
 	private final TMIPluginPanel pluginPanel;
-	
-	private OmegaIntensityAnalyzer analyzer;
 
+	private OmegaIntensityAnalyzer analyzer;
+	
 	private JCheckBox snrEnable_ckb;
 	private GenericComboBox<String> snrAnalysis_cmb;
-	
+
 	private boolean popSNR;
 	private boolean isHandlingEvent;
-
+	
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	final List<OmegaSNRRun> snrRuns;
 	private OmegaSNRRun selectedSNRRun;
-	
+
 	public TMIRunPanel(final RootPaneContainer parent,
 			final TMIPluginPanel pluginPanel,
 			final List<OmegaAnalysisRun> analysisRuns) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		this.setLayout(new BorderLayout());
-
-		this.loadedAnalysisRuns = analysisRuns;
 		
+		this.loadedAnalysisRuns = analysisRuns;
+
 		this.snrRuns = new ArrayList<>();
 		this.selectedSNRRun = null;
-		
+
 		this.popSNR = false;
 		this.isHandlingEvent = false;
-		
+
 		this.createAndAddWidgets();
-		
+
 		this.addListeners();
 	}
-	
+
 	private void createAndAddWidgets() {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(2, 1));
@@ -81,7 +81,7 @@ public class TMIRunPanel extends GenericPanel implements
 		this.snrEnable_ckb.setPreferredSize(OmegaConstants.TEXT_SIZE);
 		snrEnablePanel.add(this.snrEnable_ckb);
 		mainPanel.add(snrEnablePanel);
-		
+
 		final JPanel snrRunPanel = new JPanel();
 		snrRunPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel snrRun_lbl = new JLabel(OmegaConstants.PARAMETER_ERROR_SNR
@@ -93,18 +93,18 @@ public class TMIRunPanel extends GenericPanel implements
 		this.snrAnalysis_cmb.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrRunPanel.add(this.snrAnalysis_cmb);
 		mainPanel.add(snrRunPanel);
-		
+
 		mainPanel.add(new JLabel(""));
 		mainPanel.add(new JLabel(""));
 		this.add(mainPanel, BorderLayout.CENTER);
-		
+
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout());
 		this.run_btt = new JButton("Run");
 		bottomPanel.add(this.run_btt);
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-	
+
 	private void addListeners() {
 		this.run_btt.addActionListener(new ActionListener() {
 			@Override
@@ -119,14 +119,14 @@ public class TMIRunPanel extends GenericPanel implements
 			}
 		});
 		this.snrEnable_ckb.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				TMIRunPanel.this.enableSNR();
 			}
 		});
 	}
-
+	
 	private void enableSNR() {
 		if (this.snrEnable_ckb.isSelected()) {
 			this.snrAnalysis_cmb.setSelectedIndex(0);
@@ -142,7 +142,7 @@ public class TMIRunPanel extends GenericPanel implements
 			this.run_btt.setEnabled(true);
 		}
 	}
-	
+
 	private void startIntensityAnalyzer() {
 		if (this.pluginPanel == null)
 			return;
@@ -161,7 +161,7 @@ public class TMIRunPanel extends GenericPanel implements
 		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
-	
+
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
@@ -198,22 +198,22 @@ public class TMIRunPanel extends GenericPanel implements
 			this.run_btt.setEnabled(true);
 		}
 	}
-	
+
 	protected void populateSNRCombo() {
 		this.popSNR = true;
 		this.snrAnalysis_cmb.removeAllItems();
 		this.snrRuns.clear();
 		this.snrAnalysis_cmb.setSelectedIndex(-1);
 		this.selectedSNRRun = null;
-
+		
 		final OmegaParticleDetectionRun particleDetRun = this.pluginPanel
 				.getSelectedParticleDetectionRun();
-
+		
 		if (particleDetRun == null) {
 			this.snrAnalysis_cmb.setEnabled(false);
 			return;
 		}
-
+		
 		for (final OmegaAnalysisRun analysisRun : this.loadedAnalysisRuns) {
 			if ((analysisRun instanceof OmegaSNRRun)
 					&& particleDetRun.getAnalysisRuns().contains(analysisRun)) {
@@ -226,7 +226,7 @@ public class TMIRunPanel extends GenericPanel implements
 			this.popSNR = false;
 			return;
 		}
-
+		
 		this.popSNR = false;
 		if (this.snrAnalysis_cmb.getItemCount() > 0) {
 			this.snrAnalysis_cmb.setEnabled(true);
@@ -235,7 +235,7 @@ public class TMIRunPanel extends GenericPanel implements
 			this.snrAnalysis_cmb.setSelectedIndex(-1);
 		}
 	}
-
+	
 	private void selectSNRRun() {
 		if (this.popSNR)
 			return;
@@ -248,7 +248,7 @@ public class TMIRunPanel extends GenericPanel implements
 			this.fireEventSelectionSNRRun();
 		}
 	}
-
+	
 	public void selectSNRRun(final OmegaAnalysisRun analysisRun) {
 		this.isHandlingEvent = true;
 		int index = -1;
@@ -263,14 +263,15 @@ public class TMIRunPanel extends GenericPanel implements
 		}
 		this.isHandlingEvent = false;
 	}
-	
+
 	private void fireEventSelectionSNRRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.pluginPanel.getPlugin(), this.selectedSNRRun);
 		this.pluginPanel.getPlugin().fireEvent(event);
 	}
-
+	
 	public void updateCombos(final List<OmegaAnalysisRun> analysisRuns) {
 		this.loadedAnalysisRuns = analysisRuns;
+		this.populateSNRCombo();
 	}
 }

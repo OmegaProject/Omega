@@ -74,8 +74,6 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSegments;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionImage;
-import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesRelinkingRun;
-import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventSelectionTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEventTrajectories;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionLoadedElementNotFound;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
@@ -86,137 +84,138 @@ import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContai
 import edu.umassmed.omega.commons.gui.interfaces.GenericImageCanvasContainer;
 
 public class OmegaSidePanel extends GenericPanel implements
-GenericImageCanvasContainer,
-GenericElementInformationContainerInterface {
-
+		GenericImageCanvasContainer,
+		GenericElementInformationContainerInterface {
+	
 	private static final long serialVersionUID = -4565126277733287950L;
-
+	
 	private GenericImageCanvas canvas;
 	private OmegaElement currentElement;
-
+	
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
-
+	
 	private GenericElementInformationPanel infoPanel;
 	private OmegaElementRenderingPanel renderingPanel;
 	private OmegaElementOverlaysPanel overlaysPanel;
-
+	
 	private JLabel selected_lbl;
 	private JButton arrowLeft_btt, arrowRight_btt;
 	private JSlider elements_slider;
 	private JButton scale1on1_btt, scaleToFit_btt;
-
-	private boolean isAttached, isHandlingEvent;
-
+	
+	private boolean isAttached, isHandlingEvent, isScaleToFit;
+	
 	private OrphanedAnalysisContainer orphanedAnalysis;
 	private OmegaLoadedData loadedData;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
-
+	
 	private int itemIndex;
-
+	
 	private TitledBorder border;
-
+	
 	// private JDesktopPane desktopPane;
-
+	
 	public OmegaSidePanel(final RootPaneContainer parent) {
 		super(parent);
 		this.isAttached = true;
 		this.isHandlingEvent = false;
+		this.isScaleToFit = false;
 		this.loadedData = null;
 		this.currentElement = null;
-
+		
 		this.setLayout(new BorderLayout());
-
+		
 		this.itemIndex = -1;
 	}
-
+	
 	protected void initializePanel() {
 		this.createAndAddWidgets();
-
+		
 		this.addListeners();
 	}
-
+	
 	private void createAndAddWidgets() {
 		final Dimension btt_dim = OmegaConstants.BUTTON_SIZE;
 		this.border = new TitledBorder(OmegaGUIConstants.SIDEPANEL_NO_DETAILS);
-
+		
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
+		
 		this.scale1on1_btt = new JButton(OmegaGUIConstants.SIDEPANEL_SCALE_ONE);
 		this.scale1on1_btt.setPreferredSize(btt_dim);
 		this.scale1on1_btt.setSize(btt_dim);
-
+		
 		this.scaleToFit_btt = new JButton(OmegaGUIConstants.SIDEPANEL_SCALE_FIT);
 		this.scaleToFit_btt.setPreferredSize(btt_dim);
 		this.scaleToFit_btt.setSize(btt_dim);
-
+		
 		topPanel.add(this.scale1on1_btt, BorderLayout.WEST);
 		topPanel.add(this.scaleToFit_btt, BorderLayout.EAST);
-
+		
 		this.add(topPanel, BorderLayout.NORTH);
-
+		
 		this.canvas = new GenericImageCanvas(this.getParentContainer(), this);
 		this.canvas.render();
 		// this.canvasSP = new JScrollPane(this.canvas);
 		// this.resizeCanvasScrollPane();
-
+		
 		this.tabPane = new JTabbedPane(SwingConstants.TOP,
 				JTabbedPane.WRAP_TAB_LAYOUT);
-
+		
 		this.infoPanel = new GenericElementInformationPanel(
 				this.getParentContainer(), this);
 		this.resizeInfoPanel();
 		// final JScrollPane infoScrollPane = new JScrollPane(this.infoPanel);
 		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_GENERAL,
-		        this.infoPanel);
-
+				this.infoPanel);
+		
 		this.renderingPanel = new OmegaElementRenderingPanel(
 				this.getParentContainer(), this);
 		// final JScrollPane renderingScrollPane = new JScrollPane(
 		// this.renderingPanel);
 		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_VIEWOPTIONS,
-		        this.renderingPanel);
-
+				this.renderingPanel);
+		
 		this.overlaysPanel = new OmegaElementOverlaysPanel(
 				this.getParentContainer(), this);
 		// final JScrollPane imageOverlayScrollPane = new JScrollPane(
 		// this.overlaysPanel);
 		this.resizeOverlaysPanel();
 		this.tabPane.add(OmegaGUIConstants.SIDEPANEL_TABS_TRACKS,
-		        this.overlaysPanel);
-
+				this.overlaysPanel);
+		
 		this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		this.splitPane.setBorder(this.border);
 		this.splitPane.setLeftComponent(this.canvas);
 		this.splitPane.setRightComponent(this.tabPane);
 		this.splitPane.setDividerLocation(0.5);
-
+		
 		this.add(this.splitPane, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-
+		
 		final Dimension dim = new Dimension(50, 20);
-
+		
 		this.arrowLeft_btt = new JButton("<");
 		this.arrowLeft_btt.setPreferredSize(dim);
 		this.arrowLeft_btt.setSize(dim);
 		this.arrowLeft_btt.setEnabled(false);
-
+		
 		this.arrowRight_btt = new JButton(">");
 		this.arrowRight_btt.setPreferredSize(dim);
 		this.arrowRight_btt.setSize(dim);
 		this.arrowLeft_btt.setEnabled(false);
-
+		
 		this.selected_lbl = new JLabel(
 				OmegaGUIConstants.SIDEPANEL_NO_ITEM_SELECTED);
 		this.selected_lbl.setHorizontalAlignment(SwingConstants.CENTER);
-
+		
 		bottomPanel.add(this.arrowLeft_btt, BorderLayout.WEST);
 		bottomPanel.add(this.selected_lbl, BorderLayout.CENTER);
 		bottomPanel.add(this.arrowRight_btt, BorderLayout.EAST);
-
+		
 		// this.elements_slider = new JSlider(0, 0, 0);
 		// this.elements_slider.setSnapToTicks(true);
 		// this.elements_slider.setMajorTickSpacing(1);
@@ -224,10 +223,10 @@ GenericElementInformationContainerInterface {
 		// this.elements_slider.setEnabled(false);
 		//
 		// bottomPanel.add(this.elements_slider);
-
+		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void addListeners() {
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -244,7 +243,7 @@ GenericElementInformationContainerInterface {
 		this.splitPane.addPropertyChangeListener(
 				JSplitPane.DIVIDER_LOCATION_PROPERTY,
 				new PropertyChangeListener() {
-
+					
 					@Override
 					public void propertyChange(final PropertyChangeEvent evt) {
 						final JSplitPane source = (JSplitPane) evt.getSource();
@@ -287,46 +286,48 @@ GenericElementInformationContainerInterface {
 		// }
 		// });
 	}
-
+	
 	private void handleScale1on1() {
 		this.canvas.setScale(1);
+		this.isScaleToFit = false;
 		this.canvas.rescale();
 	}
-
+	
 	private void handleScaleToFit() {
 		this.canvas.computeAndSetScaleToFit();
+		this.isScaleToFit = true;
 		this.canvas.rescale();
 	}
-
+	
 	private void handleSplitChange(final Dimension size) {
 		// this.handleTabPaneResize();
 	}
-
+	
 	private void handleTabPaneResize() {
 		this.resizeInfoPanel();
 		this.resizeRenderingPanel();
 		this.resizeOverlaysPanel();
 	}
-
+	
 	private void handleResize() {
 		this.resizeCanvasScrollPane();
 		this.resizeTabPane();
 	}
-
+	
 	private void handleChangeItem(final int mover) {
 		if (this.itemIndex != -1) {
 			this.computeNewItemIndex(mover);
 		}
 		this.manageItemChanged();
 	}
-
+	
 	private void setBorderTitle(final String title) {
 		this.border.setTitle(title);
 		// FIXME see if there is another way instead of repaint everything here
 		this.validate();
 		this.repaint();
 	}
-
+	
 	private void resizeTabPane() {
 		final int height = this.getHeight() - this.canvas.getHeight() - 83;
 		final int width = this.getWidth() - 20;
@@ -334,21 +335,21 @@ GenericElementInformationContainerInterface {
 		this.tabPane.setPreferredSize(dim);
 		this.tabPane.setSize(dim);
 	}
-
+	
 	private void resizeCanvasScrollPane() {
 		final Dimension dim = new Dimension(this.getWidth() - 20,
 				this.splitPane.getDividerLocation());
 		this.canvas.setPreferredSize(dim);
 		this.canvas.setSize(dim);
 	}
-
+	
 	private void resizeInfoPanel() {
 		final int tabRun = this.tabPane.getTabRunCount();
 		final int height = this.tabPane.getHeight() - (tabRun * 20);
 		final int width = this.tabPane.getWidth();
 		this.infoPanel.resizePanel(width - 20, height - 20);
 	}
-
+	
 	private void resizeRenderingPanel() {
 		final int tabRun = this.tabPane.getTabRunCount();
 		final int height = this.tabPane.getHeight() - (tabRun * 20);
@@ -356,7 +357,7 @@ GenericElementInformationContainerInterface {
 		this.renderingPanel.resizePanel(width - 20, height - 20);
 		// this.overlaysPanel.rescale(this.tabPane.getWidth() - 20);
 	}
-
+	
 	private void resizeOverlaysPanel() {
 		final int tabRun = this.tabPane.getTabRunCount();
 		final int height = this.tabPane.getHeight() - (tabRun * 20);
@@ -364,7 +365,7 @@ GenericElementInformationContainerInterface {
 		this.overlaysPanel.resizePanel(width - 20, height - 20);
 		// this.overlaysPanel.rescale(this.tabPane.getWidth() - 20);
 	}
-
+	
 	private void computeNewItemIndex(final int mover) {
 		this.itemIndex += mover;
 		final int size = this.loadedData.getLoadedDataSize();
@@ -374,12 +375,12 @@ GenericElementInformationContainerInterface {
 			this.itemIndex = 1;
 		}
 	}
-
+	
 	private void manageItemChanged() {
 		this.setCurrentElementLabel();
 		this.updateCurrentElement(this.itemIndex);
 	}
-
+	
 	private void setCurrentElementLabel() {
 		final StringBuffer buf = new StringBuffer();
 		if ((this.itemIndex != -1) && (this.loadedData != null)) {
@@ -395,22 +396,22 @@ GenericElementInformationContainerInterface {
 		this.selected_lbl.revalidate();
 		this.selected_lbl.repaint();
 	}
-
+	
 	public boolean isAttached() {
 		return this.isAttached;
 	}
-
+	
 	public void setAttached(final boolean tof) {
 		this.isAttached = tof;
 	}
-
+	
 	private void sendCoreEventSelectionImage(final OmegaImage img) {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaCoreEvent event = new OmegaCoreEventSelectionImage(
 				OmegaCoreEvent.SOURCE_SIDE_BAR, img);
 		frame.sendCoreEvent(event);
 	}
-
+	
 	private void updateCurrentElement(final int index) {
 		if (index > 0) {
 			OmegaElement element = null;
@@ -437,7 +438,7 @@ GenericElementInformationContainerInterface {
 			this.updateCurrentElement(null);
 		}
 	}
-
+	
 	private void updateCurrentElement(final OmegaElement element) {
 		// TODO see where overlays are set
 		this.currentElement = element;
@@ -480,13 +481,18 @@ GenericElementInformationContainerInterface {
 		}
 		this.canvas.setPixels(pixels);
 		if (pixels != oldPixels) {
-			this.canvas.setScale(1);
+			if (this.isScaleToFit) {
+				this.handleScaleToFit();
+			} else {
+				this.canvas.setScale(1);
+			}
 		}
 		this.renderingPanel.setRenderingControl(pixels != null);
 		this.overlaysPanel.setOverlayControl(pixels != null);
+		this.overlaysPanel.populateParticleDetection(this.isHandlingEvent);
 		this.canvas.render();
 	}
-
+	
 	private void updateDisplayableElements(final OmegaImage image,
 			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		for (final OmegaAnalysisRun analysisRun : image.getAnalysisRuns()) {
@@ -495,9 +501,9 @@ GenericElementInformationContainerInterface {
 			}
 		}
 	}
-
+	
 	public void updateGUI(final OmegaLoadedData loadedData,
-	        final OrphanedAnalysisContainer orphanedAnalysis,
+			final OrphanedAnalysisContainer orphanedAnalysis,
 			final List<OmegaAnalysisRun> loadedAnalysisRuns,
 			final OmegaGateway gateway) {
 		this.isHandlingEvent = true;
@@ -519,7 +525,7 @@ GenericElementInformationContainerInterface {
 		}
 		this.isHandlingEvent = false;
 	}
-
+	
 	protected void sendCoreEventSelectionParticleDetectionRun() {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaCoreEvent event = new OmegaCoreEventSelectionAnalysisRun(
@@ -527,7 +533,7 @@ GenericElementInformationContainerInterface {
 				this.overlaysPanel.getSelectedPDRun());
 		frame.sendCoreEvent(event);
 	}
-
+	
 	protected void sendCoreEventSelectionParticleLinkingRun() {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaCoreEvent event = new OmegaCoreEventSelectionAnalysisRun(
@@ -535,7 +541,7 @@ GenericElementInformationContainerInterface {
 				this.overlaysPanel.getSelectedPLRun());
 		frame.sendCoreEvent(event);
 	}
-
+	
 	protected void sendCoreEventSelectionTrajectoriesRelinkingRun() {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaCoreEvent event = new OmegaCoreEventSelectionAnalysisRun(
@@ -543,15 +549,16 @@ GenericElementInformationContainerInterface {
 				this.overlaysPanel.getSelectedTRRun());
 		frame.sendCoreEvent(event);
 	}
-
-	protected void sendCoreEventSelectionCurrentTrajectoriesRelinkingRun() {
-		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
-		final OmegaCoreEvent event = new OmegaCoreEventSelectionTrajectoriesRelinkingRun(
-				OmegaCoreEvent.SOURCE_SIDE_BAR,
-				this.overlaysPanel.getPreviouslySelectedTRRun());
-		frame.sendCoreEvent(event);
-	}
-
+	
+	// protected void sendCoreEventSelectionCurrentTrajectoriesRelinkingRun() {
+	// final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+	// final OmegaCoreEvent event = new
+	// OmegaCoreEventSelectionTrajectoriesRelinkingRun(
+	// OmegaCoreEvent.SOURCE_SIDE_BAR,
+	// this.overlaysPanel.getPreviouslySelectedTRRun());
+	// frame.sendCoreEvent(event);
+	// }
+	
 	protected void sendCoreEventSelectionTrajectoriesSegmentationRun() {
 		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
 		final OmegaCoreEvent event = new OmegaCoreEventSelectionAnalysisRun(
@@ -559,15 +566,17 @@ GenericElementInformationContainerInterface {
 				this.overlaysPanel.getSelectedTSRun());
 		frame.sendCoreEvent(event);
 	}
-
-	protected void sendCoreEventSelectionCurrentTrajectoriesSegmentationRun() {
-		final OmegaGUIFrame frame = this.getOmegaGUIFrame();
-		final OmegaCoreEvent event = new OmegaCoreEventSelectionTrajectoriesSegmentationRun(
-				OmegaCoreEvent.SOURCE_SIDE_BAR,
-				this.overlaysPanel.getPreviouslySelectedTSRun());
-		frame.sendCoreEvent(event);
-	}
-
+	
+	// protected void sendCoreEventSelectionCurrentTrajectoriesSegmentationRun()
+	// {
+	// final OmegaGUIFrame frame = this.getOmegaGUIFrame();
+	// final OmegaCoreEvent event = new
+	// OmegaCoreEventSelectionTrajectoriesSegmentationRun(
+	// OmegaCoreEvent.SOURCE_SIDE_BAR,
+	// this.overlaysPanel.getPreviouslySelectedTSRun());
+	// frame.sendCoreEvent(event);
+	// }
+	
 	@Override
 	public void sendCoreEventTrajectories(
 			final List<OmegaTrajectory> trajectories, final boolean selection) {
@@ -576,7 +585,7 @@ GenericElementInformationContainerInterface {
 				OmegaCoreEvent.SOURCE_SIDE_BAR, trajectories, selection);
 		frame.sendCoreEvent(event);
 	}
-
+	
 	@Override
 	public void sendCoreEventSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
@@ -586,7 +595,7 @@ GenericElementInformationContainerInterface {
 				OmegaCoreEvent.SOURCE_SIDE_BAR, segments, segmTypes, selection);
 		frame.sendCoreEvent(event);
 	}
-
+	
 	public void selectImage(final OmegaAnalysisRunContainer image) {
 		if (image == null)
 			return;
@@ -610,61 +619,63 @@ GenericElementInformationContainerInterface {
 		}
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlaysPanel.selectParticleDetectionRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlaysPanel.selectParticleLinkingRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectTrajectoriesRelinkingRun(
 			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlaysPanel.selectTrajectoriesRelinkingRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectCurrentTrajectoriesRelinking(
 			final List<OmegaTrajectory> trajectories) {
 		this.isHandlingEvent = true;
-		this.overlaysPanel.selectCurrentTrajectoriesRelinkingRun(trajectories);
+		this.overlaysPanel.selectCurrentTrajectoriesRelinkingRun();
+		this.setTrajectories(trajectories);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectTrajectoriesSegmentationRun(
 			final OmegaTrajectoriesSegmentationRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.overlaysPanel.selectTrajectoriesSegmentationRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectCurrentTrajectoriesSegmentationRun(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.isHandlingEvent = true;
-		this.overlaysPanel.selectCurrentSegmentationRun(segmentsMap);
+		this.overlaysPanel.selectCurrentSegmentationRun();
+		this.setSegments(segmentsMap);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void render() {
 		this.canvas.render();
 	}
-
+	
 	public void setCompressed(final boolean compressed) {
 		this.canvas.setCompressed(compressed);
 	}
-
+	
 	public void setZValues(final int z, final boolean isDefault) {
 		this.canvas.setZValues(z, isDefault);
 	}
-
+	
 	public void setTValues(final int t, final boolean isDefault) {
 		this.canvas.setTValues(t, isDefault);
 		if (this.overlaysPanel.isParticlesOverlay()) {
@@ -673,36 +684,36 @@ GenericElementInformationContainerInterface {
 			this.canvas.setParticles(particles);
 		}
 	}
-
+	
 	public int getCurrentT() {
 		return this.canvas.getCurrentT();
 	}
-
+	
 	public void setActiveChannel(final int channel, final boolean isActive) {
 		this.canvas.setActiveChannel(channel, isActive);
 	}
-
+	
 	public void setParticles(final List<OmegaROI> particles) {
 		this.canvas.setParticles(particles);
 	}
-
+	
 	public void setTrajectories(final List<OmegaTrajectory> trajectories) {
 		this.canvas.setTrajectories(trajectories);
 	}
-
+	
 	public void setSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.canvas.setSegments(segmentsMap);
 	}
-
+	
 	public OmegaGateway getGateway() {
 		return this.canvas.getGateway();
 	}
-
+	
 	public OmegaImagePixels getImagePixels() {
 		return this.canvas.getImagePixels();
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
@@ -711,22 +722,22 @@ GenericElementInformationContainerInterface {
 		this.renderingPanel.updateParentContainer(parent);
 		this.infoPanel.updateParentContainer(parent);
 	}
-
+	
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
 		this.canvas.updateTrajectories(trajectories, selection);
 	}
-
+	
 	public void updateSegments(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final OmegaSegmentationTypes segmTypes, final boolean selection) {
 		this.canvas.updateSegments(segments, segmTypes, selection);
 	}
-
+	
 	public void updateParticles(final List<OmegaROI> particles) {
 		this.canvas.setParticles(particles);
 	}
-
+	
 	private OmegaGUIFrame getOmegaGUIFrame() {
 		final RootPaneContainer parent = this.getParentContainer();
 		OmegaGUIFrame frame = null;
@@ -736,22 +747,22 @@ GenericElementInformationContainerInterface {
 		} else {
 			frame = (OmegaGUIFrame) parent;
 		}
-
+		
 		return frame;
 	}
-
+	
 	public void setShowTrajectoriesOnlyActive(final boolean enabled) {
 		this.canvas.setShowTrajectoriesOnlyActive(enabled);
 	}
-
+	
 	public void setShowTrajectoriesOnlyUpToT(final boolean enabled) {
 		this.canvas.setShowTrajectoriesOnlyUpToT(enabled);
 	}
-
+	
 	public void setShowTrajectoriesOnlyStartingAtT(final boolean enabled) {
 		this.canvas.setShowTrajectoriesOnlyStartingAtT(enabled);
 	}
-
+	
 	@Override
 	public void fireElementChanged() {
 		if (this.currentElement instanceof OmegaImage) {

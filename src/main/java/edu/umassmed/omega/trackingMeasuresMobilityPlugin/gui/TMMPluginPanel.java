@@ -549,15 +549,22 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 		}
 		if (this.selectedTrajSegmentationRun != null) {
 			segmTypes = this.selectedTrajSegmentationRun.getSegmentationTypes();
+			if (segments == null) {
+				segments = this.selectedTrajSegmentationRun
+						.getResultingSegments();
+			}
 		}
 		this.sbPanel.updateSegments(segments, segmTypes, false);
 		this.graphPanel
 				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		this.graphPanel.updateSelectedSegmentationTypes(segmTypes);
+		this.graphPanel.setSegmentsMap(segments);
 		this.localResultsPanel.setAnalysisRun(this.selectedTrackingMeasuresRun,
 				this.selectedTrajSegmentationRun, true);
 		this.globalResultsPanel.setAnalysisRun(
 				this.selectedTrackingMeasuresRun,
 				this.selectedTrajSegmentationRun, false);
+		
 	}
 	
 	@Override

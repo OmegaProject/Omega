@@ -42,13 +42,13 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
 public class OmegaMySqlReader extends OmegaMySqlGateway {
-
+	
 	public OmegaMySqlReader() {
-
+		
 	}
-
+	
 	// ****** Generic elements ****** //
-
+	
 	private Long getIDByOmeroID(final long omeroID, final String table,
 			final String field) throws SQLException {
 		final StringBuffer query1 = new StringBuffer();
@@ -74,7 +74,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		stat1.close();
 		return id;
 	}
-
+	
 	private List<Long> getAllIDs(final String table, final String field)
 			throws SQLException {
 		final List<Long> ids = new ArrayList<Long>();
@@ -95,7 +95,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		stat1.close();
 		return ids;
 	}
-
+	
 	private List<Long> getAllIDFieldByID(final long specificID,
 			final String desiredField, final String table,
 			final String specificField) throws SQLException {
@@ -121,7 +121,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		stat1.close();
 		return ids;
 	}
-
+	
 	private List<Long> getAllIDFieldByDoubleID(final long specificID1,
 			final String specificField1, final long specificID2,
 			final String specificField2, final String table,
@@ -152,7 +152,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		stat1.close();
 		return ids;
 	}
-
+	
 	// private Long getSpecificIDFieldByID(final long selectedID,
 	// final String desiredField, final String table,
 	// final String selectedField) throws SQLException {
@@ -179,7 +179,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 	// stat1.close();
 	// return specificID;
 	// }
-
+	
 	private ResultSet load(final long id, final String table, final String field)
 			throws SQLException {
 		final StringBuffer query1 = new StringBuffer();
@@ -200,10 +200,10 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		}
 		return results1;
 	}
-
+	
 	private ResultSet load(final long id, final String table,
 			final String field, final Map<String, String> additionalKeys)
-					throws SQLException {
+			throws SQLException {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("SELECT * ");
 		query1.append(" FROM ");
@@ -228,7 +228,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		}
 		return results1;
 	}
-
+	
 	// ****** ANALYSIS elements ****** //
 	public List<Long> getAnalysisAlgorithmSpecificationID(final Long analysisID)
 			throws SQLException {
@@ -237,7 +237,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public List<Long> getAnalysisExperimenter(final Long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
@@ -245,12 +245,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public List<Long> getAnalysisIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public List<Long> getProjectContainerAnalysisIDs(final Long projectID)
 			throws SQLException {
 		return this.getAllIDFieldByID(projectID,
@@ -258,7 +258,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.PROJECT_ID_FIELD);
 	}
-
+	
 	public List<Long> getDatasetContainerAnalysisIDs(final Long datasetID)
 			throws SQLException {
 		return this.getAllIDFieldByID(datasetID,
@@ -266,7 +266,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.DATASET_ID_FIELD);
 	}
-
+	
 	public List<Long> getImageContainerAnalysisIDs(final Long imageID)
 			throws SQLException {
 		return this.getAllIDFieldByID(imageID,
@@ -274,7 +274,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.IMAGE_ID_FIELD);
 	}
-
+	
 	public List<Long> getImagePixelsContainerAnalysisIDs(
 			final Long imagePixelsID) throws SQLException {
 		return this.getAllIDFieldByID(imagePixelsID,
@@ -282,7 +282,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 	}
-
+	
 	public List<Long> getFrameContainerAnalysisIDs(final Long frameID)
 			throws SQLException {
 		return this.getAllIDFieldByID(frameID,
@@ -290,7 +290,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.FRAME_ID_FIELD);
 	}
-
+	
 	public List<Long> getAnalysisContainerAnalysisIDs(final Long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
@@ -298,7 +298,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_PARENT_TABLE,
 				OmegaMySqlCostants.ANALYSIS_PARENT_ID_FIELD);
 	}
-
+	
 	public AnalysisRunType getAnalysisType(final long id) throws SQLException {
 		final StringBuffer query1 = new StringBuffer();
 		query1.append("SELECT ");
@@ -322,7 +322,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return AnalysisRunType.values()[type];
 	}
-
+	
 	public OmegaSNRRun loadSNRAnalysis(final long id,
 			final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
@@ -342,7 +342,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaROI, Double> resultingLocalNoise,
 			final Map<OmegaROI, Double> resultingLocalSNR,
 			final Map<OmegaROI, Double> resultingLocalErrorIndexSNR)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -393,7 +393,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		snrRun.setElementID(id);
 		return snrRun;
 	}
-
+	
 	public OmegaTrackingMeasuresDiffusivityRun loadDiffusivityMeasuresAnalysis(
 			final long id,
 			final OmegaExperimenter experimenter,
@@ -414,7 +414,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaSegment, Double[]> errorsLog,
 			final Double minDetectableODC, final OmegaSNRRun snrRun,
 			final OmegaTrackingMeasuresDiffusivityRun diffusivityRun)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -436,7 +436,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		diffRun.setElementID(id);
 		return diffRun;
 	}
-
+	
 	public OmegaTrackingMeasuresMobilityRun loadMobilityMeasuresAnalysis(
 			final long id,
 			final OmegaExperimenter experimenter,
@@ -449,7 +449,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaSegment, List<Double>> timeTraveledMap,
 			final Map<OmegaSegment, List<Double>> confinementRatioMap,
 			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -472,7 +472,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		mobRun.setElementID(id);
 		return mobRun;
 	}
-
+	
 	public OmegaTrackingMeasuresVelocityRun loadVelocityMeasuresAnalysis(
 			final long id, final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
@@ -483,7 +483,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaSegment, Double> averageCurvilinearSpeedMap,
 			final Map<OmegaSegment, Double> averageStraightLineVelocityMap,
 			final Map<OmegaSegment, Double> forwardProgressionLinearityMap)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -505,7 +505,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		velRun.setElementID(id);
 		return velRun;
 	}
-
+	
 	public OmegaTrackingMeasuresIntensityRun loadIntensityMeasuresAnalysis(
 			final long id, final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
@@ -524,7 +524,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			final Map<OmegaROI, Double> noisesLocMap,
 			final Map<OmegaROI, Double> areasLocMap,
 			final Map<OmegaROI, Double> snrsLocMap, final OmegaSNRRun snrRun)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -548,13 +548,13 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		intRun.setElementID(id);
 		return intRun;
 	}
-
+	
 	public OmegaTrajectoriesSegmentationRun loadSegmentationAnalysis(
 			final long id, final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
 			final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments,
 			final OmegaSegmentationTypes segmentationTypes)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -574,12 +574,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		segmRun.setElementID(id);
 		return segmRun;
 	}
-
+	
 	public OmegaTrajectoriesRelinkingRun loadRelinkingAnalysis(final long id,
 			final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
 			final List<OmegaTrajectory> resultingTrajectories)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -599,12 +599,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		relinRun.setElementID(id);
 		return relinRun;
 	}
-
+	
 	public OmegaParticleLinkingRun loadLinkingAnalysis(final long id,
 			final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
 			final List<OmegaTrajectory> resultingTrajectories)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -624,13 +624,13 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		linkRun.setElementID(id);
 		return linkRun;
 	}
-
+	
 	public OmegaParticleDetectionRun loadDetectionAnalysis(final long id,
 			final OmegaExperimenter experimenter,
 			final OmegaRunDefinition algorithmSpecification,
 			final Map<OmegaPlane, List<OmegaROI>> resultingParticles,
 			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues)
-					throws SQLException, ParseException {
+			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.ANALYSIS_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
@@ -650,105 +650,105 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		detRun.setElementID(id);
 		return detRun;
 	}
-
+	
 	// ****** SNR elements ****** //
-
+	
 	public Map<Long, Double> loadSNRPlaneNoises(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_NOISE_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneBGR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_BG_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneAverageSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_AVG_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneMinSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_MIN_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneMaxSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_MAX_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneAverageErrorIndexSNR(
 			final long analysisID) throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_AVG_ERROR_INDEX_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneMinErrorIndexSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_MIN_ERROR_INDEX_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRPlaneMaxErrorIndexSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRPlaneDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_IMAGE_MAX_ERROR_INDEX_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Integer> loadSNRROICenterSignal(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIIntegerValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_CENTER_SIGNAL_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRROIMeanSignal(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_MEAN_SIGNAL_TABLE);
 	}
-
+	
 	public Map<Long, Integer> loadSNRROIArea(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIIntegerValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_SIGNAL_SIZE_TABLE);
 	}
-
+	
 	public Map<Long, Integer> loadSNRROIPeakSignal(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIIntegerValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_PEAK_SIGNAL_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRROIBackground(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_BACKGROUND_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRROINoise(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_NOISE_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRROISNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadSNRROIErrorIndexSNR(final long analysisID)
 			throws SQLException {
 		return this.loadSNRROIDoubleValuesMap(analysisID,
 				OmegaMySqlCostants.SNR_LOCAL_SNR_TABLE_ERROR_INDEX);
 	}
-
+	
 	private Map<Long, Integer> loadSNRROIIntegerValuesMap(
 			final long analysisID, final String table) throws SQLException {
 		final ResultSet results1 = this.load(analysisID, table,
@@ -767,7 +767,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Double> loadSNRROIDoubleValuesMap(final long analysisID,
 			final String table) throws SQLException {
 		final ResultSet results1 = this.load(analysisID, table,
@@ -789,7 +789,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Double> loadSNRPlaneDoubleValuesMap(
 			final long analysisID, final String table) throws SQLException {
 		final ResultSet results1 = this.load(analysisID, table,
@@ -811,7 +811,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	// ****** Tracking Measures elements ****** //
 	public List<Long> getTrackingMeasuresSegmentIDs(
 			final long trackingMeasuresID) throws SQLException {
@@ -820,7 +820,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.TRACKING_MEASURES_SEGMENT_TABLE,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 	}
-
+	
 	public List<Long> getTrackingMeasuresIDs(final long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
@@ -828,7 +828,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.TRACKING_MEASURES_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public List<Long> getTrackingMeasuresDiffusivityParentIDs(
 			final long trackingMeasuresID) throws SQLException {
 		return this.getAllIDFieldByID(trackingMeasuresID,
@@ -836,7 +836,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_PARENT_TABLE,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 	}
-
+	
 	public List<Long> getTrackingMeasuresSNRIDs(final long trackingMeasuresID)
 			throws SQLException {
 		return this.getAllIDFieldByID(trackingMeasuresID,
@@ -844,7 +844,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.TRACKING_MEASURES_SNR_TABLE,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadDiffusivityErrorLogMap(
 			final long trackingMeasuresID) throws SQLException {
 		final ResultSet results1 = this
@@ -876,7 +876,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadDiffusivitySmssLogMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -884,7 +884,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_SMSS_LOG_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadDiffusivityGammaLogMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -892,7 +892,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_GAMMA_LOG_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityLogGammaDMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -900,14 +900,14 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_GAMMA_D_LOG_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityGammaDMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadDoubleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_GAMMA_D_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityLogDeltaTMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -915,35 +915,35 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_LOG_DELTA_T_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityDeltaTMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadDoubleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_DELTA_T_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityLogMuMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadDoubleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_LOG_MU_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Map<Integer, Double>>> loadDiffusivityMuMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadDoubleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_MU_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadDiffusivityNyMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_DIFFUSIVITY_NY_TABLE);
 	}
-
+	
 	public Double loadDiffusivityMinimumDetectableODC(
 			final long trackingMeasuresID) throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID,
@@ -965,7 +965,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return minDetODC;
 	}
-
+	
 	public Map<Long, Map<Integer, Double[]>> loadMobilityAnglesAndDirectionChangesMap(
 			final long trackingMeasuresID) throws SQLException {
 		final ResultSet results1 = this
@@ -1008,7 +1008,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadMobilityConfinementRatioMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1016,7 +1016,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_CONFINMENT_RATIO_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadMobilityTimeTraveledMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1024,7 +1024,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_TOTAL_TIME_TRAVELED_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadMobilityMaxDisplacementsFromOriginMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1032,7 +1032,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_MAX_DISPLACEMENT_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadMobilityDisplacementsFromOriginMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1040,14 +1040,14 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_DISPLACEMENT_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadMobilityDistancesFromOriginMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadSingleIndexTrackingMeasuresDoubleValuesMap(
 				trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_DISTANCE_TABLE);
 	}
-	
+
 	public Map<Long, Map<Integer, Double>> loadMobilityDistancesMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1055,7 +1055,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_MOBILITY_DISTANCE_P2P_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadVelocityForwardProgressionMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1063,7 +1063,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_FORWARD_PROGRESSION_LINEARITY_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadVelocityAverageVelocityMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1071,7 +1071,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_AVERAGE_STRAIGHT_LINE_VELOCITY_TABLE);
 	}
-
+	
 	public Map<Long, Double> loadVelocityAverageSpeedMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1079,7 +1079,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_AVERAGE_CURVILINEAR_SPEED_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadVelocityLocalVelocityFromOriginMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1087,7 +1087,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_LOCAL_VELOCITY_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadVelocityLocalSpeedFromOriginMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1095,7 +1095,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_LOCAL_SPEED_TABLE);
 	}
-
+	
 	public Map<Long, Map<Integer, Double>> loadVelocityLocalSpeedMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1103,19 +1103,19 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_VELOCITY_LOCAL_SPEED_P2P_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensitySNRsMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_SNR_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityAreasMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_AREA_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityBackgroundMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this
@@ -1123,34 +1123,34 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 						trackingMeasuresID,
 						OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_BACKGROUND_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityNoisesMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_NOISE_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityMeanSignalsMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_MEAN_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityCentroidSignalsMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_CENTROID_TABLE);
 	}
-
+	
 	public Map<Long, Double[]> loadIntensityPeakSignalsMap(
 			final long trackingMeasuresID) throws SQLException {
 		return this.loadTrackingMeasuresValuesMap(trackingMeasuresID,
 				OmegaMySqlCostants.TRACKING_MEASURES_INTENSITY_PEAK_TABLE);
 	}
-	
+
 	private Map<Long, Double[]> loadTrackingMeasuresValuesMap(
 			final long trackingMeasuresID, final String table)
-					throws SQLException {
+			throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID, table,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		final Map<Long, Double[]> valuesMap = new LinkedHashMap<Long, Double[]>();
@@ -1190,10 +1190,10 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Integer> loadTrackingMeasuresIntegerValuesMap(
 			final long trackingMeasuresID, final String table)
-					throws SQLException {
+			throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID, table,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		final Map<Long, Integer> valuesMap = new LinkedHashMap<Long, Integer>();
@@ -1215,10 +1215,10 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Double> loadTrackingMeasuresDoubleValuesMap(
 			final long trackingMeasuresID, final String table)
-					throws SQLException {
+			throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID, table,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		final Map<Long, Double> valuesMap = new LinkedHashMap<Long, Double>();
@@ -1238,10 +1238,10 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Map<Integer, Map<Integer, Double>>> loadDoubleIndexTrackingMeasuresDoubleValuesMap(
 			final long trackingMeasuresID, final String table)
-					throws SQLException {
+			throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID, table,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		final Map<Long, Map<Integer, Map<Integer, Double>>> valuesMap = new LinkedHashMap<Long, Map<Integer, Map<Integer, Double>>>();
@@ -1279,10 +1279,10 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	private Map<Long, Map<Integer, Double>> loadSingleIndexTrackingMeasuresDoubleValuesMap(
 			final long trackingMeasuresID, final String table)
-					throws SQLException {
+			throws SQLException {
 		final ResultSet results1 = this.load(trackingMeasuresID, table,
 				OmegaMySqlCostants.TRACKING_MEASURES_ID_FIELD);
 		final Map<Long, Map<Integer, Double>> valuesMap = new LinkedHashMap<Long, Map<Integer, Double>>();
@@ -1313,14 +1313,14 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return valuesMap;
 	}
-
+	
 	// ****** Tracks elements ****** //
-
+	
 	public List<Long> getROIValuesIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.ROI_VALUES_TABLE,
 				OmegaMySqlCostants.ROI_VALUES_ID_FIELD);
 	}
-
+	
 	public List<Long> getROIValuesIDs(final long roiID, final long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByDoubleID(roiID,
@@ -1329,7 +1329,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ROI_VALUES_TABLE,
 				OmegaMySqlCostants.ROI_VALUES_ID_FIELD);
 	}
-
+	
 	public Map<String, Object> loadROIValues(final List<Long> ids)
 			throws SQLException {
 		final Map<String, Object> values = new LinkedHashMap<String, Object>();
@@ -1359,25 +1359,25 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		}
 		return values;
 	}
-
+	
 	public List<Long> getParticleIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.PARTICLE_TABLE,
 				OmegaMySqlCostants.PARTICLE_ID_FIELD);
 	}
-
+	
 	public List<Long> getParticleROIID(final long id) throws SQLException {
 		return this.getAllIDFieldByID(id, OmegaMySqlCostants.ROI_ID_FIELD,
 				OmegaMySqlCostants.PARTICLE_TABLE,
 				OmegaMySqlCostants.PARTICLE_ID_FIELD);
 	}
-
+	
 	public List<Long> getParticleIDs(final long analysisID) throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
 				OmegaMySqlCostants.PARTICLE_ID_FIELD,
 				OmegaMySqlCostants.PARTICLE_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public OmegaParticle loadParticle(final long id, final int frameIndex,
 			final Double physicalX, final Double physicalY) throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -1423,30 +1423,30 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		p.setElementID(roiID);
 		return p;
 	}
-
+	
 	public List<Long> getROIIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.ROI_TABLE,
 				OmegaMySqlCostants.ROI_ID_FIELD);
 	}
-
+	
 	// public List<Long> getROIIDs(final long frameID) throws SQLException {
 	// return this.getAllIDsByParentID(frameID,
 	// OmegaMySqlCostants.FRAME_ID_FIELD,
 	// OmegaMySqlCostants.ROI_TABLE, OmegaMySqlCostants.ROI_ID_FIELD);
 	// }
-
+	
 	public List<Long> getROIIDs(final long trajectoryID) throws SQLException {
 		return this.getAllIDFieldByID(trajectoryID,
 				OmegaMySqlCostants.TRAJECTORY_ID_FIELD,
 				OmegaMySqlCostants.TRAJECTORY_ROI_TABLE,
 				OmegaMySqlCostants.ROI_ID_FIELD);
 	}
-
+	
 	public List<Long> getROIFrameID(final long id) throws SQLException {
 		return this.getAllIDFieldByID(id, OmegaMySqlCostants.FRAME_ID_FIELD,
 				OmegaMySqlCostants.ROI_TABLE, OmegaMySqlCostants.ROI_ID_FIELD);
 	}
-
+	
 	public OmegaROI loadROI(final long id, final int frameIndex,
 			final Double physicalX, final Double physicalY) throws SQLException {
 		final ResultSet results1 = this.load(id, OmegaMySqlCostants.ROI_TABLE,
@@ -1469,12 +1469,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final OmegaROI roi = new OmegaROI(frameIndex, posX, posY, realX, realY);
 		return roi;
 	}
-
+	
 	public List<Long> getTrajectoriesIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.TRAJECTORY_TABLE,
 				OmegaMySqlCostants.TRAJECTORY_ID_FIELD);
 	}
-
+	
 	public List<Long> getTrajectoriesIDs(final long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
@@ -1482,7 +1482,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_TRAJECTORY_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	// FIXME load without particles, particles needs to be added separatly!
 	public OmegaTrajectory loadTrajectory(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -1491,6 +1491,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		if (results1 == null)
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
+		final Double index = results1.getDouble(OmegaMySqlCostants.INDEX_FIELD);
 		final int length = results1
 				.getInt(OmegaMySqlCostants.NUMBER_POINTS_FIELD);
 		final int color_r = results1.getInt(OmegaMySqlCostants.COLOR_RED_FIELD);
@@ -1500,13 +1501,13 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				.getInt(OmegaMySqlCostants.COLOR_BLUE_FIELD);
 		results1.getStatement().close();
 		results1.close();
-		final OmegaTrajectory track = new OmegaTrajectory(length, name);
+		final OmegaTrajectory track = new OmegaTrajectory(length, name, index);
 		// track.setName(name);
 		track.setColor(new Color(color_r, color_g, color_b));
 		track.setElementID(id);
 		return track;
 	}
-
+	
 	public List<Long> getSegmentationTypeIDs(final long segmentationTypesID)
 			throws SQLException {
 		return this.getAllIDFieldByID(segmentationTypesID,
@@ -1514,7 +1515,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.SEGMENTATION_TYPES_MAP,
 				OmegaMySqlCostants.SEGMENTATION_TYPES_ID_FIELD);
 	}
-
+	
 	public OmegaSegmentationType loadSegmentationType(final long id)
 			throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -1537,7 +1538,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		segmentationType.setElementID(id);
 		return segmentationType;
 	}
-
+	
 	public List<Long> getSegmentationTypesID(final long analysisID)
 			throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
@@ -1545,7 +1546,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ANALYSIS_SEGMENTATION_TYPES_MAP,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public OmegaSegmentationTypes loadSegmentationTypes(final long id,
 			final List<OmegaSegmentationType> segmTypes) throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -1561,19 +1562,19 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		segmentationTypes.setElementID(id);
 		return segmentationTypes;
 	}
-
+	
 	public List<Long> getSegmentIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.SEGMENT_TABLE,
 				OmegaMySqlCostants.SEGMENT_ID_FIELD);
 	}
-
+	
 	public List<Long> getSegmentIDs(final long analysisID) throws SQLException {
 		return this.getAllIDFieldByID(analysisID,
 				OmegaMySqlCostants.SEGMENT_ID_FIELD,
 				OmegaMySqlCostants.SEGMENT_TABLE,
 				OmegaMySqlCostants.ANALYSIS_ID_FIELD);
 	}
-
+	
 	public List<Long> getTrajectoriesSegmentID(final long segmentID)
 			throws SQLException {
 		return this.getAllIDFieldByID(segmentID,
@@ -1581,7 +1582,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.SEGMENT_TABLE,
 				OmegaMySqlCostants.SEGMENT_ID_FIELD);
 	}
-
+	
 	public OmegaSegment loadSegment(final long id,
 			final Map<Long, OmegaROI> rois) throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -1603,17 +1604,17 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final OmegaSegment segment = new OmegaSegment(start, end, name);
 		segment.setElementID(id);
 		segment.setSegmentationType(segmType);
-
+		
 		return segment;
 	}
-
+	
 	// ****** Algorithm info, specs and params ****** //
-
+	
 	public List<Long> getAlgorithmSpecificationIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.ALGO_SPEC_TABLE,
 				OmegaMySqlCostants.ALGO_SPEC_ID_FIELD);
 	}
-
+	
 	public List<Long> getAlgorithmSpecificationInformationID(final long id)
 			throws SQLException {
 		return this.getAllIDFieldByID(id,
@@ -1621,12 +1622,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.ALGO_SPEC_TABLE,
 				OmegaMySqlCostants.ALGO_SPEC_ID_FIELD);
 	}
-
+	
 	public List<Long> getParameterIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.PARAM_TABLE,
 				OmegaMySqlCostants.PARAM_ID_FIELD);
 	}
-
+	
 	public List<Long> getParameterIDs(final long algoSpecID)
 			throws SQLException {
 		return this.getAllIDFieldByID(algoSpecID,
@@ -1634,7 +1635,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 				OmegaMySqlCostants.PARAM_TABLE,
 				OmegaMySqlCostants.ALGO_SPEC_ID_FIELD);
 	}
-
+	
 	public OmegaParameter loadParameter(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.PARAM_TABLE,
@@ -1659,19 +1660,19 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		param.setElementID(id);
 		return param;
 	}
-
+	
 	public List<Long> getAlgorithmInformationAuthorID(final long id)
 			throws SQLException {
 		return this.getAllIDFieldByID(id, OmegaMySqlCostants.PERSON_ID_FIELD,
 				OmegaMySqlCostants.ALGO_INFO_TABLE,
 				OmegaMySqlCostants.ALGO_INFO_ID_FIELD);
 	}
-
+	
 	public List<Long> getAlgorithmInformationIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.ALGO_INFO_TABLE,
 				OmegaMySqlCostants.ALGO_INFO_ID_FIELD);
 	}
-
+	
 	public OmegaAlgorithmInformation loadAlgorithmInformation(final long id,
 			final OmegaPerson author) throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
@@ -1698,19 +1699,19 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		algoInfo.setElementID(id);
 		return algoInfo;
 	}
-
+	
 	// ****** OMERO elements ****** //
-
+	
 	public Long getProjectID(final long omeroID) throws SQLException {
 		return this.getIDByOmeroID(omeroID, OmegaMySqlCostants.PROJECT_TABLE,
 				OmegaMySqlCostants.PROJECT_ID_FIELD);
 	}
-
+	
 	public List<Long> getProjectIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.PROJECT_TABLE,
 				OmegaMySqlCostants.PROJECT_ID_FIELD);
 	}
-
+	
 	public OmegaProject loadProject(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.PROJECT_TABLE,
@@ -1727,24 +1728,24 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		project.setOmeroId(omeID);
 		return project;
 	}
-
+	
 	public Long getDatasetID(final long omeroID) throws SQLException {
 		return this.getIDByOmeroID(omeroID, OmegaMySqlCostants.DATASET_TABLE,
 				OmegaMySqlCostants.DATASET_ID_FIELD);
 	}
-
+	
 	public List<Long> getDatasetIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.DATASET_TABLE,
 				OmegaMySqlCostants.DATASET_ID_FIELD);
 	}
-
+	
 	public List<Long> getDatasetIDs(final long projectID) throws SQLException {
 		return this.getAllIDFieldByID(projectID,
 				OmegaMySqlCostants.PROJECT_ID_FIELD,
 				OmegaMySqlCostants.DATASET_TABLE,
 				OmegaMySqlCostants.DATASET_ID_FIELD);
 	}
-
+	
 	public OmegaDataset loadDataset(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.DATASET_TABLE,
@@ -1761,31 +1762,31 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		dataset.setOmeroId(omeID);
 		return dataset;
 	}
-
+	
 	public Long getImageID(final long omeroID) throws SQLException {
 		return this.getIDByOmeroID(omeroID, OmegaMySqlCostants.IMAGE_TABLE,
 				OmegaMySqlCostants.IMAGE_ID_FIELD);
 	}
-
+	
 	public List<Long> getImageIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.IMAGE_TABLE,
 				OmegaMySqlCostants.IMAGE_ID_FIELD);
 	}
-
+	
 	public List<Long> getImageIDs(final long datasetID) throws SQLException {
 		return this.getAllIDFieldByID(datasetID,
 				OmegaMySqlCostants.DATASET_ID_FIELD,
 				OmegaMySqlCostants.IMAGE_DATASET_TABLE,
 				OmegaMySqlCostants.IMAGE_ID_FIELD);
 	}
-
+	
 	public List<Long> getImageExpID(final long id) throws SQLException {
 		return this.getAllIDFieldByID(id,
 				OmegaMySqlCostants.EXPERIMENTER_ID_FIELD,
 				OmegaMySqlCostants.IMAGE_TABLE,
 				OmegaMySqlCostants.IMAGE_ID_FIELD);
 	}
-
+	
 	public OmegaImage loadImage(final long id, final OmegaExperimenter exp)
 			throws SQLException, ParseException {
 		final ResultSet results1 = this.load(id,
@@ -1812,27 +1813,27 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		image.setElementID(id);
 		image.setOmeroId(omeID);
 		return image;
-
+		
 	}
-
+	
 	public Long getImagePixelsID(final long omeroID) throws SQLException {
 		return this.getIDByOmeroID(omeroID,
 				OmegaMySqlCostants.IMAGEPIXELS_TABLE,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 	}
-
+	
 	public List<Long> getImagePixelsIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.IMAGEPIXELS_TABLE,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 	}
-
+	
 	public List<Long> getImagePixelsIDs(final long imageID) throws SQLException {
 		return this.getAllIDFieldByID(imageID,
 				OmegaMySqlCostants.IMAGE_ID_FIELD,
 				OmegaMySqlCostants.IMAGEPIXELS_TABLE,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 	}
-
+	
 	public OmegaImagePixels loadImagePixels(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.IMAGEPIXELS_TABLE,
@@ -1887,19 +1888,19 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		pixels.setOmeroId(omeID);
 		return pixels;
 	}
-
+	
 	public List<Long> getFrameIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.FRAME_TABLE,
 				OmegaMySqlCostants.FRAME_ID_FIELD);
 	}
-
+	
 	public List<Long> getFrameIDs(final long imagePixelsID) throws SQLException {
 		return this.getAllIDFieldByID(imagePixelsID,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD,
 				OmegaMySqlCostants.FRAME_TABLE,
 				OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD);
 	}
-
+	
 	// TODO NEED TO MOVE THIS OUT FROM HERE
 	// public OmegaPlane loadFrame(final long id) throws SQLException {
 	// final ResultSet results1 = this.load(id,
@@ -1918,7 +1919,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 	// frame.setElementID(id);
 	// return frame;
 	// }
-
+	
 	public OmegaPlane loadFrame(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.FRAME_TABLE,
@@ -1932,7 +1933,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		p.setElementID(id);
 		return p;
 	}
-
+	
 	public long getFrameID(final long pixelImageID, final int sizeC,
 			final int sizeZ) throws SQLException {
 		final Map<String, String> additionalKeys = new LinkedHashMap<String, String>();
@@ -1952,7 +1953,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		return id;
 	}
-
+	
 	// public Map<Integer, Map<Integer, List<OmegaPlane>>> loadFrames(
 	// final OmegaImage image) throws SQLException {
 	// final List<Long> frameIDs = this.getFrameIDs(image.getElementID());
@@ -2004,20 +2005,20 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 	// }
 	// return frameList;
 	// }
-
+	
 	// ****** People ****** //
-
+	
 	public Long getExperimenterID(final long omeroID) throws SQLException {
 		return this.getIDByOmeroID(omeroID,
 				OmegaMySqlCostants.EXPERIMENTER_TABLE,
 				OmegaMySqlCostants.EXPERIMENTER_ID_FIELD);
 	}
-
+	
 	public List<Long> getExperimenterIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.EXPERIMENTER_TABLE,
 				OmegaMySqlCostants.EXPERIMENTER_ID_FIELD);
 	}
-
+	
 	public OmegaExperimenter loadExperimenter(final long id)
 			throws SQLException {
 		final ResultSet results1 = this.load(id,
@@ -2048,12 +2049,12 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		exp.setOmeroId(omeID);
 		return exp;
 	}
-
+	
 	public List<Long> getPersonIDs() throws SQLException {
 		return this.getAllIDs(OmegaMySqlCostants.PERSON_TABLE,
 				OmegaMySqlCostants.PERSON_ID_FIELD);
 	}
-
+	
 	public OmegaPerson loadPerson(final long id) throws SQLException {
 		final ResultSet results1 = this.load(id,
 				OmegaMySqlCostants.PERSON_TABLE,

@@ -34,20 +34,21 @@ public class SNRConstants {
 	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_POISSON = "Bhattacharyya Poisson";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN = "Bhattacharyya Gaussian";
-	
+
 	public static final String EXECUTE_BUTTON = "Execute queue";
-	
-	public static final String PLUGIN_AUTHOR_FIRSTNAME = "Ivo";
+
+	public static final String PLUGIN_AUTHOR_FIRSTNAME = "I. F.";
 	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
 	public static final String PLUGIN_SHORTNAME = "MOSAIC SE";
-	public static final String PLUGIN_NAME = "MOSAIC Local SNR Estimation";
-	public static final String PLUGIN_DESC = "To be defined";
-	public static final String PLUGIN_ALGO_DESC = "To be defined";
+	public static final String PLUGIN_NAME = "MOSAIC SNR Estimation";
+	public static final String PLUGIN_DESC = "This plugin control the execution of a simple local Signal to Noise ratio (SNR) estimation routine developed by Ivo Sbalzarini.The plugin allows to launch multiple sequential runs on either the same and different images. This facilitates parameter optimization and trouble shooting by allowing the user to easily associate the parameters used for each run with the analysis results.";
+	public static final String PLUGIN_ALGO_DESC = "This algorithm estimates the local signal to noise ratio associated with previously detected individual bright spots. It works by [MISSING INFO] ";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 			.getTime();
-	
+	public static final String PLUGIN_REFERENCE = "";
+
 	public static final String TAB_ROI = "ROI results";
 	public static final String TAB_PLANE = "Plane results";
 	public static final String TAB_IMAGE = "Image results";
-	
+
 }

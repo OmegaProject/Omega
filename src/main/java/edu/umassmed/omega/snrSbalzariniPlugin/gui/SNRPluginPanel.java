@@ -77,6 +77,7 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventResultsSNR;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionAnalysisRun;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionImage;
 import edu.umassmed.omega.commons.exceptions.OmegaPluginExceptionStatusPanel;
+import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.GenericStatusPanel;
 import edu.umassmed.omega.commons.gui.GenericTrackingResultsPanel;
@@ -129,8 +130,8 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	
-	private final Map<OmegaParticleDetectionRun, List<OmegaElement>> selections;
-	private final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess;
+	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaElement>>> selections;
+	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess;
 	
 	private Thread snrThread;
 	private SNRRunner snrRunner;
@@ -149,8 +150,8 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		
 		this.gateway = gateway;
 		
-		this.particlesToProcess = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParameter>>();
-		this.selections = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaElement>>();
+		this.particlesToProcess = new LinkedHashMap<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>>();
+		this.selections = new LinkedHashMap<Integer, Map<OmegaParticleDetectionRun, List<OmegaElement>>>();
 		
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
@@ -400,9 +401,13 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	private void updateImagesToProcess(final int action) {
 		switch (action) {
 			case 1:
-				this.particlesToProcess
-						.remove(this.selectedParticleDetectionRun);
-				this.selections.remove(this.selectedParticleDetectionRun);
+				final Integer selectedIndex = this.queueRunBrowserPanel
+						.getSelectedIndex();
+				this.particlesToProcess.remove(selectedIndex);
+				this.selections.remove(selectedIndex);
+				// this.particlesToProcess
+				// .remove(this.selectedParticleDetectionRun);
+				// this.selections.remove(this.selectedParticleDetectionRun);
 				break;
 			default:
 				final List<OmegaParameter> params = this.runPanel
@@ -438,13 +443,17 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					// throw new OmegaAlgorithmParametersTypeException(
 					// this.getPlugin(), exceptionError.toString());
 				}
-				this.particlesToProcess.put(this.selectedParticleDetectionRun,
-						params);
+				final Integer index = this.particlesToProcess.size();
+				final Map<OmegaParticleDetectionRun, List<OmegaParameter>> detAndParams = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaParameter>>();
+				detAndParams.put(this.selectedParticleDetectionRun, params);
+				this.particlesToProcess.put(index, detAndParams);
 				final List<OmegaElement> selection = new ArrayList<OmegaElement>();
 				selection.add((OmegaElement) this.selectedImage);
 				selection.add(this.selectedParticleDetectionRun);
-				this.selections.put(this.selectedParticleDetectionRun,
+				final Map<OmegaParticleDetectionRun, List<OmegaElement>> detAndSelections = new LinkedHashMap<OmegaParticleDetectionRun, List<OmegaElement>>();
+				detAndSelections.put(this.selectedParticleDetectionRun,
 						selection);
+				this.selections.put(index, detAndSelections);
 				break;
 		}
 		this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
@@ -456,64 +465,69 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	}
 	
 	private void updateRunnerEnded() {
-		if (this.snrRunner.isJobCompleted()) {
+		final List<OmegaPluginEvent> events = new ArrayList<OmegaPluginEvent>();
+		if (!this.snrRunner.isJobCompleted())
+			return;
+		
+		for (final Integer index : this.snrRunner.getParticleToProcess()
+				.keySet()) {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
-					.getParticleToProcess();
+					.getParticleToProcess().get(index);
 			
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageNoises = this.snrRunner
-					.getResultingImageNoise();
+					.getResultingImageNoise().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageBackgrounds = this.snrRunner
-					.getResultingImageBackground();
+					.getResultingImageBackground().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgSNR = this.snrRunner
-					.getResultingImageAverageSNR();
+					.getResultingImageAverageSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinSNR = this.snrRunner
-					.getResultingImageMinimumSNR();
+					.getResultingImageMinimumSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxSNR = this.snrRunner
-					.getResultingImageMaximumSNR();
+					.getResultingImageMaximumSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgErrorIndexSNR = this.snrRunner
-					.getResultingImageAverageErrorIndexSNR();
+					.getResultingImageAverageErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMinErrorIndexSNR = this.snrRunner
-					.getResultingImageMinimumErrorIndexSNR();
+					.getResultingImageMinimumErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageMaxErrorIndexSNR = this.snrRunner
-					.getResultingImageMaximumErrorIndexSNR();
+					.getResultingImageMaximumErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localCentralSignals = this.snrRunner
-					.getResultingLocalCentralSignals();
+					.getResultingLocalCentralSignals().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localMeanSignals = this.snrRunner
-					.getResultingLocalMeanSignals();
+					.getResultingLocalMeanSignals().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localSignalSizes = this.snrRunner
-					.getResultingLocalSignalSizes();
+					.getResultingLocalSignalSizes().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Integer>> localPeakSignals = this.snrRunner
-					.getResultingLocalPeakSignals();
+					.getResultingLocalPeakSignals().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localBackgrounds = this.snrRunner
-					.getResultingLocalBackgrounds();
+					.getResultingLocalBackgrounds().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localNoises = this.snrRunner
-					.getResultingLocalNoises();
+					.getResultingLocalNoises().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localSNRs = this.snrRunner
-					.getResultingLocalSNRs();
+					.getResultingLocalSNRs().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localErrorIndexSNRs = this.snrRunner
-					.getResultingLocalErrorIndexSNRs();
+					.getResultingLocalErrorIndexSNRs().get(index);
 			final Map<OmegaParticleDetectionRun, Double> background = this.snrRunner
-					.getResultingBackground();
+					.getResultingBackground().get(index);
 			final Map<OmegaParticleDetectionRun, Double> noise = this.snrRunner
-					.getResultingNoise();
+					.getResultingNoise().get(index);
 			final Map<OmegaParticleDetectionRun, Double> avgSNR = this.snrRunner
-					.getResultingAvgSNR();
+					.getResultingAvgSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> maxSNR = this.snrRunner
-					.getResultingMaxSNR();
+					.getResultingMaxSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> minSNR = this.snrRunner
-					.getResultingMinSNR();
+					.getResultingMinSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> avgErrorIndexSNR = this.snrRunner
-					.getResultingAvgErrorIndexSNR();
+					.getResultingAvgErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> minErrorIndexSNR = this.snrRunner
-					.getResultingMinErrorIndexSNR();
+					.getResultingMinErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> maxErrorIndexSNR = this.snrRunner
-					.getResultingMaxErrorIndexSNR();
+					.getResultingMaxErrorIndexSNR().get(index);
 			
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
 					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
 						.get(spotDetectionRun);
-				final List<OmegaElement> selection = this.selections
+				final List<OmegaElement> selection = this.selections.get(index)
 						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> noises = imageNoises
 						.get(spotDetectionRun);
@@ -568,19 +582,20 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 						lSNRs, lErrorIndexSNRs, lbackground, lnoise, lavgSNR,
 						lminSNR, lmaxSNR, lavgErrorIndeXSNR, lminErrorIndeXSNR,
 						lmaxErrorIndeXSNR);
-				
-				this.particlesToProcess.remove(spotDetectionRun);
+				events.add(snrResultsEvt);
+				this.particlesToProcess.remove(index);
+				this.selections.remove(index);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
 				
-				this.getPlugin().fireEvent(snrResultsEvt);
+				// this.getPlugin().fireEvent(snrResultsEvt);
 			}
-			if (this.snrThread.isAlive()) {
-				try {
-					this.snrThread.join();
-				} catch (final InterruptedException e) {
-					// TODO gestire
-					e.printStackTrace();
-				}
+		}
+		if (this.snrThread.isAlive()) {
+			try {
+				this.snrThread.join();
+			} catch (final InterruptedException ex) {
+				OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
+						true);
 			}
 		}
 		this.setEnabled(true);
@@ -589,6 +604,17 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.runPanel.setFieldsEnalbed(true);
 		this.resetStatusMessages();
 		this.isRunningBatch = false;
+
+		for (final OmegaPluginEvent event : events) {
+			this.getPlugin().fireEvent(event);
+			try {
+				Thread.sleep(1000);
+			} catch (final InterruptedException ex) {
+				OmegaLogFileManager.handlePluginException(this.getPlugin(), ex,
+						true);
+				// ex.printStackTrace();
+			}
+		}
 	}
 	
 	private void resetStatusMessages() {
@@ -633,6 +659,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		
 		this.loadedDataBrowserPanel.updateTree(analysisRuns);
 		this.queueRunBrowserPanel.updateTree(null);
+		this.setAddAndRemoveButtonsEnabled(false);
 		// this.populateTrajectoriesCombo();
 		// this.trPanel.setPixelSizes(this.selectedImage.getDefaultPixels()
 		// .getPixelSizeX(), this.selectedImage.getDefaultPixels()
@@ -727,23 +754,22 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.images_cmb.setSelectedIndex(index);
 		}
 		this.images_cmb.setSelectedIndex(index);
+		this.setAddAndRemoveButtonsEnabled(false);
 		this.isHandlingEvent = false;
 	}
 	
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
-		// TODO select particle detection run in list
-		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
-		// .setSelectedIndex(index);
+		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
+		this.updateSelectedParticleDetectionRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
 	
 	public void selectSNRRun(final OmegaSNRRun analysisRun) {
 		this.isHandlingEvent = true;
-		// TODO select snr run in list
-		// final int index = this.particleDetectionRuns.indexOf(analysisRun);
-		// .setSelectedIndex(index);
+		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
+		this.updateSelectedSNRRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
 	
@@ -791,19 +817,28 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			}
 			this.runPanel
 					.updateAnalysisFields(this.selectedParticleDetectionRun);
-			if (this.particlesToProcess.containsKey(this.selectedImage)) {
-				this.removeFromProcess_butt.setEnabled(true);
-				this.runPanel.updateRunFields(this.particlesToProcess
-						.get(this.selectedImage));
-			} else {
-				this.addToProcess_butt.setEnabled(true);
-				this.runPanel.updateRunFieldsDefault();
-			}
+			// if (this.particlesToProcess.containsKey(this.selectedImage)) {
+			// this.removeFromProcess_butt.setEnabled(true);
+			// this.runPanel.updateRunFields(this.particlesToProcess
+			// .get(this.selectedImage));
+			// } else {
+			// this.addToProcess_butt.setEnabled(true);
+			// this.runPanel.updateRunFieldsDefault();
+			// }
+			this.runPanel.updateRunFieldsDefault();
 		}
 	}
 	
-	private void setAddAndRemoveButtonsEnabled(final boolean enabled) {
+	protected void setAddAndRemoveButtonsEnabled(final boolean enabled) {
 		this.addToProcess_butt.setEnabled(enabled);
+		this.removeFromProcess_butt.setEnabled(enabled);
+	}
+
+	protected void setAddButtonEnabled(final boolean enabled) {
+		this.addToProcess_butt.setEnabled(enabled);
+	}
+
+	protected void setRemoveButtonEnabled(final boolean enabled) {
 		this.removeFromProcess_butt.setEnabled(enabled);
 	}
 	
@@ -841,5 +876,13 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	@Override
 	public void fireElementChanged() {
 		this.fireEventSelectionImage();
+	}
+
+	public void deselectNotListener(final GenericPanel panel) {
+		if (panel instanceof SNRLoadedDataBrowserPanel) {
+			this.queueRunBrowserPanel.deselect();
+		} else {
+			this.loadedDataBrowserPanel.deselect();
+		}
 	}
 }

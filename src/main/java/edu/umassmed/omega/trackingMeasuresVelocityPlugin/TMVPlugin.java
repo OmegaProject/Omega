@@ -27,7 +27,6 @@
 package edu.umassmed.omega.trackingMeasuresVelocityPlugin;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -52,41 +51,41 @@ import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
 import edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVPluginPanel;
 
 public class TMVPlugin extends OmegaStatsPlugin implements
-        OmegaDataDisplayerPluginInterface {
-	
+		OmegaDataDisplayerPluginInterface {
+
 	public TMVPlugin() {
 		super(1);
 	}
-	
+
 	public TMVPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-	
+
 	@Override
 	public String getName() {
-		return "Omega Tracking Measures Velocity";
+		return TMVConstants.PLUGIN_NAME;
 	}
-	
+
 	@Override
 	public String getShortName() {
-		return "Omega TMV";
+		return TMVConstants.PLUGIN_SNAME;
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
-	        final int index) throws OmegaCoreExceptionPluginMissingData {
+			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TMVPluginPanel panel = new TMVPluginPanel(parent, this,
-		        this.getGateway(), this.getLoadedImages(),
+				this.getGateway(), this.getLoadedImages(),
 				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
-	
+
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -95,7 +94,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-	
+
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -104,7 +103,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-	
+
 	@Override
 	public void selectImage(final OmegaAnalysisRunContainer image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -112,98 +111,98 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectImage(image);
 		}
 	}
-	
+
 	@Override
 	public void selectParticleDetectionRun(
-	        final OmegaParticleDetectionRun analysisRun) {
+			final OmegaParticleDetectionRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectParticleLinkingRun(
-	        final OmegaParticleLinkingRun analysisRun) {
+			final OmegaParticleLinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectParticleLinkingRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectTrajectoriesRelinkingRun(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectTrajectoriesSegmentationRun(
-	        final OmegaTrajectoriesSegmentationRun analysisRun) {
+			final OmegaTrajectoriesSegmentationRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectTrajectoriesSegmentationRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrackingMeasuresRun(
-	        final OmegaTrackingMeasuresRun analysisRun) {
+			final OmegaTrackingMeasuresRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectTrackingMeasuresRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
-	        final boolean selection) {
+			final boolean selection) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.updateTrajectories(trajectories, selection);
 		}
 	}
-	
+
 	@Override
 	public void updateSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+			final OmegaSegmentationTypes segmTypes, final boolean selection) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.updateSegments(segments, segmTypes, selection);
 		}
 	}
-	
+
 	@Override
 	public String getAlgorithmDescription() {
-		return "To be defined";
+		return TMVConstants.PLUGIN_ALGO_DESC;
 	}
-	
+
 	@Override
 	public OmegaPerson getAlgorithmAuthor() {
 		return OmegaAlgorithmsUtilities.getDefaultDeveloper();
 	}
-	
+
 	@Override
 	public Double getAlgorithmVersion() {
 		return 1.0;
 	}
-	
+
 	@Override
 	public Date getAlgorithmPublicationDate() {
-		return new GregorianCalendar(2014, 12, 15).getTime();
+		return TMVConstants.PLUGIN_PUBL;
 	}
-	
+
 	@Override
 	public String getDescription() {
-		return "To be defined";
+		return TMVConstants.PLUGIN_DESC;
 	}
-	
+
 	@Override
 	public String getReference() {
-		return "TBD";
+		return TMVConstants.PLUGIN_REFERENCE;
 	}
 }

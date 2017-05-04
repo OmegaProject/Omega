@@ -31,6 +31,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,37 +55,42 @@ import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxStatus;
 
 public class PLQueueRunBrowserPanel extends GenericPanel {
-
+	
 	private static final long serialVersionUID = -7554854467725521545L;
-
+	
 	private final PLPluginPanel plPanel;
-
+	
 	private final Map<String, OmegaElement> nodeMap;
+	private final Map<String, Integer> nodeIndexes;
 	private final DefaultMutableTreeNode root;
 
+	private Integer selectedIndex;
+	
 	private JTree dataTree;
-
+	
 	private boolean adjusting = false;
-
+	
 	public PLQueueRunBrowserPanel(final RootPaneContainer parentContainer,
 			final PLPluginPanel sptPanel) {
 		super(parentContainer);
-
+		
 		this.plPanel = sptPanel;
-
+		
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject(OmegaGUIConstants.PLUGIN_RUN_QUEUE);
 		this.nodeMap = new HashMap<String, OmegaElement>();
+		this.nodeIndexes = new LinkedHashMap<String, Integer>();
 		// this.updateTree(images);
-
+		this.selectedIndex = null;
+		
 		this.setLayout(new BorderLayout());
-
+		
 		this.createAndAddWidgets();
 		this.addListeners();
 	}
-
+	
 	private void createAndAddWidgets() {
-
+		
 		this.dataTree = new JTree(this.root);
 		this.dataTree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -92,20 +98,20 @@ public class PLQueueRunBrowserPanel extends GenericPanel {
 		// final CheckBoxNodeRenderer renderer = new CheckBoxNodeRenderer();
 		// this.dataTree.setCellRenderer(renderer);
 		// this.dataTree.setCellEditor(new CheckBoxNodeEditor());
-
+		
 		this.dataTree.setEditable(false);
-
+		
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
 		// this.dataTree.setEditable(true);
-
+		
 		final JScrollPane scrollPane = new JScrollPane(this.dataTree);
 		scrollPane.setBorder(new TitledBorder(
 				OmegaGUIConstants.PLUGIN_RUN_QUEUE));
-
+		
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
-
+	
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
@@ -118,24 +124,24 @@ public class PLQueueRunBrowserPanel extends GenericPanel {
 			public void treeNodesChanged(final TreeModelEvent event) {
 				PLQueueRunBrowserPanel.this.handleTreeChanged(event);
 			}
-
+			
 			@Override
 			public void treeNodesInserted(final TreeModelEvent e) {
 				// TODO Auto-generated method stub
 			}
-
+			
 			@Override
 			public void treeNodesRemoved(final TreeModelEvent e) {
 				// TODO Auto-generated method stub
 			}
-
+			
 			@Override
 			public void treeStructureChanged(final TreeModelEvent e) {
 				// TODO Auto-generated method stub
 			}
 		});
 	}
-
+	
 	private void handleTreeChanged(final TreeModelEvent event) {
 		if (this.adjusting)
 			return;
@@ -143,7 +149,7 @@ public class PLQueueRunBrowserPanel extends GenericPanel {
 		final TreePath parent = event.getTreePath();
 		final Object[] children = event.getChildren();
 		final DefaultTreeModel model = (DefaultTreeModel) event.getSource();
-
+		
 		DefaultMutableTreeNode node;
 		CheckBoxNode c; // = (CheckBoxNode)node.getUserObject();
 		if ((children != null) && (children.length == 1)) {
@@ -151,24 +157,25 @@ public class PLQueueRunBrowserPanel extends GenericPanel {
 			c = (CheckBoxNode) node.getUserObject();
 			final DefaultMutableTreeNode n = (DefaultMutableTreeNode) parent
 					.getLastPathComponent();
-
+			
 			model.nodeChanged(n);
 		} else {
 			node = (DefaultMutableTreeNode) model.getRoot();
 			c = (CheckBoxNode) node.getUserObject();
 		}
-
+		
 		model.nodeChanged(node);
-
+		
 		this.adjusting = false;
-
+		
 		c.getStatus();
 		// TODO update something here
 	}
-	
+
 	private void handleMouseClick(final Point clickP) {
 		final TreePath path = this.dataTree.getPathForLocation(clickP.x,
 				clickP.y);
+		this.plPanel.deselectNotListener(this);
 		if (path == null) {
 			this.plPanel.updateSelectedParticleDetectionRun(null);
 			this.plPanel.updateSelectedParticleLinkingRun(null);
@@ -179,45 +186,58 @@ public class PLQueueRunBrowserPanel extends GenericPanel {
 				.getLastPathComponent();
 		final String s = node.toString();
 		final OmegaElement element = this.nodeMap.get(s);
+		final Integer index = this.nodeIndexes.get(s);
+		this.selectedIndex = index;
 		if (element instanceof OmegaParticleDetectionRun) {
 			this.plPanel
 					.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
+			this.plPanel.setRemoveButtonEnabled(true);
 		}
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 	}
-
+	
 	public void updateTree(
-			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> particlesToProcess) {
+			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.dataTree.setRootVisible(true);
 		String s = null;
+		this.selectedIndex = null;
 		final CheckBoxStatus status = CheckBoxStatus.DESELECTED;
 		this.root.removeAllChildren();
 		((DefaultTreeModel) this.dataTree.getModel()).reload();
 		this.nodeMap.clear();
+		this.nodeIndexes.clear();
 		if (particlesToProcess != null) {
-			for (final OmegaParticleDetectionRun particleDetectionRun : particlesToProcess
-					.keySet()) {
-				final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
-				s = "[" + particleDetectionRun.getElementID() + "] "
-						+ particleDetectionRun.getName();
-				this.nodeMap.put(s, particleDetectionRun);
-				// status = this.loadedData.containsImage(image) ?
-				// CheckBoxStatus.SELECTED
-				// : CheckBoxStatus.DESELECTED;
-				imageNode.setUserObject(new CheckBoxNode(s, status));
-				this.root.add(imageNode);
+			for (final Integer index : particlesToProcess.keySet()) {
+				for (final OmegaParticleDetectionRun particleDetectionRun : particlesToProcess
+						.get(index).keySet()) {
+					final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
+					s = index + ": [" + particleDetectionRun.getElementID()
+							+ "] " + particleDetectionRun.getName();
+					this.nodeMap.put(s, particleDetectionRun);
+					this.nodeIndexes.put(s, index);
+					// status = this.loadedData.containsImage(image) ?
+					// CheckBoxStatus.SELECTED
+					// : CheckBoxStatus.DESELECTED;
+					imageNode.setUserObject(new CheckBoxNode(s, status));
+					this.root.add(imageNode);
+				}
 			}
 		}
 		this.dataTree.expandRow(0);
 		this.dataTree.setRootVisible(false);
 		this.dataTree.repaint();
 	}
-
+	
 	public void deselect() {
+		this.selectedIndex = null;
 		this.dataTree.setSelectionRow(-1);
+	}
+
+	public Integer getSelectedIndex() {
+		return this.selectedIndex;
 	}
 }

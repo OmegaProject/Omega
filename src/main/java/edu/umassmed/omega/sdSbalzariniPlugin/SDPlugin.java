@@ -27,9 +27,11 @@
 package edu.umassmed.omega.sdSbalzariniPlugin;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
@@ -38,12 +40,16 @@ import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.sdSbalzariniPlugin.gui.SDPluginPanel;
 
 public class SDPlugin extends OmegaParticleTrackingPlugin implements
 		OmegaDataDisplayerPluginInterface,
+		OmegaLoadedAnalysisConsumerPluginInterface,
 		OmegaSelectParticleDetectionRunPluginInterface {
+	
+	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	
 	public SDPlugin() {
 		super(1);
@@ -51,6 +57,8 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 	
 	public SDPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
+		
+		this.loadedAnalysisRuns = null;
 	}
 	
 	@Override
@@ -94,7 +102,8 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final SDPluginPanel panel = new SDPluginPanel(parent, this,
-				this.getGateway(), this.getLoadedImages(), index);
+				this.getGateway(), this.getLoadedImages(),
+				this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
 	
@@ -111,7 +120,8 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SDPluginPanel specificPanel = (SDPluginPanel) panel;
-			specificPanel.updateTrees(this.getLoadedImages());
+			specificPanel.updateTrees(this.getLoadedImages(),
+					this.getLoadedAnalysisRuns());
 		}
 	}
 
@@ -133,12 +143,23 @@ public class SDPlugin extends OmegaParticleTrackingPlugin implements
 	}
 	
 	@Override
+	public void setLoadedAnalysisRun(
+			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
+		this.loadedAnalysisRuns = loadedAnalysisRuns;
+	}
+	
+	@Override
+	public List<OmegaAnalysisRun> getLoadedAnalysisRuns() {
+		return this.loadedAnalysisRuns;
+	}
+	
+	@Override
 	public String getDescription() {
 		return SDConstants.PLUGIN_DESC;
 	}
 	
 	@Override
 	public String getReference() {
-		return "TBD";
+		return SDConstants.PLUGIN_REFERENCE;
 	}
 }

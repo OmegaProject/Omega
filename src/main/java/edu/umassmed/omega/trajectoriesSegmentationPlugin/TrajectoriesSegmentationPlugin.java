@@ -31,7 +31,6 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
@@ -49,8 +48,8 @@ import edu.umassmed.omega.commons.utilities.OmegaAlgorithmsUtilities;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.gui.TSPluginPanel;
 
 public class TrajectoriesSegmentationPlugin extends
-OmegaTrajectoriesSegmentationPlugin implements
-OmegaDataDisplayerPluginInterface {
+		OmegaTrajectoriesSegmentationPlugin implements
+		OmegaDataDisplayerPluginInterface {
 
 	public TrajectoriesSegmentationPlugin() {
 		super(1);
@@ -168,15 +167,6 @@ OmegaDataDisplayerPluginInterface {
 	}
 
 	@Override
-	public void selectCurrentTrajectoriesSegmentationRun(
-			final OmegaAnalysisRun analysisRun) {
-		for (final GenericPluginPanel panel : this.getPanels()) {
-			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
-			specificPanel.selectCurrentTrajectoriesSegmentationRun(analysisRun);
-		}
-	}
-
-	@Override
 	public String getAlgorithmDescription() {
 		return TSConstants.PLUGIN_ALGO_DESC;
 	}
@@ -203,6 +193,6 @@ OmegaDataDisplayerPluginInterface {
 
 	@Override
 	public String getReference() {
-		return "TBD";
+		return TSConstants.PLUGIN_REFERENCE;
 	}
 }

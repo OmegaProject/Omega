@@ -149,6 +149,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 	private void handleMouseClick(final Point clickP) {
 		final TreePath path = this.dataTree.getPathForLocation(clickP.x,
 				clickP.y);
+		this.sdPanel.deselectNotListener(this);
 		if (path == null) {
 			this.sdPanel.updateSelectedImage(null);
 			this.sdPanel.updateSelectedParticleDetectionRun(null);
@@ -162,6 +163,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 				.get(s);
 		if (element instanceof OmegaImage) {
 			this.sdPanel.updateSelectedImage((OmegaImage) element);
+			this.sdPanel.setAddButtonEnabled(true);
 		} else if (element instanceof OmegaAnalysisRun) {
 			final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node
 					.getParent();
@@ -171,6 +173,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 			this.sdPanel
 					.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);
 		}
+
 	}
 	
 	public void selectTreeElement(final OmegaNamedElement element) {
@@ -215,7 +218,8 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 		super.updateParentContainer(parent);
 	}
 	
-	public void updateTree(final List<OmegaImage> images) {
+	public void updateTree(final List<OmegaImage> images,
+			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		this.dataTree.setRootVisible(true);
 		
 		String s = null;
@@ -236,6 +240,9 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 				for (final OmegaAnalysisRun analysisRun : image
 						.getAnalysisRuns()) {
 					if (analysisRun instanceof OmegaParticleDetectionRun) {
+						if (!loadedAnalysisRuns.contains(analysisRun)) {
+							continue;
+						}
 						final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
 						// TODO pensare se questo e' il sistema migliore per
 						// verificare il corretto funzionamento!

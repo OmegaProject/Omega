@@ -16,15 +16,15 @@ import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
 import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.gui.TMDMotionTypeClassificationGraphPanel;
 
 public class TMDMotionTypeClassificationGraphProducer extends
-StatsGraphProducer implements Runnable {
-
+		StatsGraphProducer implements Runnable {
+	
 	private final static int TRACK = 0;
 	private final static int MSD = 1;
 	private final static int MSS = 2;
 	private final static int PHASE = 3;
-
+	
 	private final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel;
-
+	
 	private final int motionTypeOption, showOption;
 	private int currentGraph;
 	private int countCurrentGraph;
@@ -42,13 +42,13 @@ StatsGraphProducer implements Runnable {
 	// private final Map<OmegaSegment, Double[]> smssMap;
 	// private final Map<OmegaSegment, Double[]> errorMap;
 	private final Map<OmegaSegment, Double[]> errorFromLogMap;
-	
+
 	private final Double minDetectableODC;
-
+	
 	private final JPanel[] chartPanels, legendPanels;
-
-	boolean itsLocal;
-
+	
+	private boolean itsLocal;
+	
 	public TMDMotionTypeClassificationGraphProducer(
 			final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
 			final int motionTypeOption, final int showOption,
@@ -88,14 +88,15 @@ StatsGraphProducer implements Runnable {
 		// this.smssMap = smssMap;
 		// this.errorMap = errorMap;
 		this.errorFromLogMap = errorLogMap;
-		
+
 		this.minDetectableODC = minDetectableODC;
 		this.chartPanels = new JPanel[4];
 		this.legendPanels = new JPanel[4];
-
+		
 		this.itsLocal = true;
-	}
 
+	}
+	
 	// public TMMGraphProducer(final int distDispOption,final int tMax,
 	// final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 	// final Map<OmegaTrajectory, List<Double[]>> motilityMap) {
@@ -108,13 +109,13 @@ StatsGraphProducer implements Runnable {
 	//
 	// this.graphPanel = null;
 	// }
-
+	
 	@Override
 	public void run() {
 		this.itsLocal = false;
 		this.doRun();
 	}
-
+	
 	@Override
 	public void doRun() {
 		super.doRun();
@@ -183,7 +184,7 @@ StatsGraphProducer implements Runnable {
 						this.prepareSMSSvsDGraph();
 						this.chartPanels[3] = this.getGraphPanel();
 						this.legendPanels[3] = this.getGraphLegendPanel();
-
+						
 						break;
 					default:
 						this.currentGraph = TMDMotionTypeClassificationGraphProducer.TRACK;
@@ -201,10 +202,10 @@ StatsGraphProducer implements Runnable {
 						// this.prepareSMSSvsDFromLogGraph();
 				}
 		}
-
+		
 		this.updateStatus(true);
 	}
-
+	
 	@Override
 	public void updateStatus(final boolean ended) {
 		if (this.itsLocal) {
@@ -216,9 +217,9 @@ StatsGraphProducer implements Runnable {
 					@Override
 					public void run() {
 						TMDMotionTypeClassificationGraphProducer.this.motionTypeClassificationPanel
-						.updateStatus(
-								TMDMotionTypeClassificationGraphProducer.this
-								.getCompleted(), ended);
+								.updateStatus(
+										TMDMotionTypeClassificationGraphProducer.this
+												.getCompleted(), ended);
 					}
 				});
 			} catch (final InvocationTargetException | InterruptedException ex) {
@@ -226,15 +227,15 @@ StatsGraphProducer implements Runnable {
 			}
 		}
 	}
-
+	
 	public JPanel[] getGraphs() {
 		return this.chartPanels;
 	}
-
+	
 	public JPanel[] getLegends() {
 		return this.legendPanels;
 	}
-
+	
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		Double[] value = null;
@@ -339,12 +340,12 @@ StatsGraphProducer implements Runnable {
 		}
 		return value;
 	}
-
+	
 	@Override
 	public String getTitle() {
 		return null;
 	}
-
+	
 	@Override
 	public String getYAxisTitle() {
 		return null;

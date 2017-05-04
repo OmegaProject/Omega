@@ -544,9 +544,9 @@ public class TMDPluginPanel extends GenericPluginPanel implements
 		this.mtcGraphPanel.setSegmentsMap(
 				this.selectedTrajSegmentationRun.getResultingSegments(),
 				this.selectedTrajSegmentationRun.getSegmentationTypes());
-		this.mtcGraphPanel
-				.updateSelectedSegmentationTypes(this.selectedTrajSegmentationRun
-						.getSegmentationTypes());
+		// this.mtcGraphPanel
+		// .updateSelectedSegmentationTypes(this.selectedTrajSegmentationRun
+		// .getSegmentationTypes());
 	}
 
 	private void selectTrackingMeasuresRun() {
@@ -580,8 +580,11 @@ public class TMDPluginPanel extends GenericPluginPanel implements
 		this.sbPanel.updateSegments(segments, segmTypes, false);
 		this.graphPanel
 				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		this.graphPanel.updateSelectedSegmentationTypes(segmTypes);
+		this.graphPanel.setSegmentsMap(segments);
 		this.mtcGraphPanel
 				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
+		this.mtcGraphPanel.setSegmentsMap(segments, segmTypes);
 		this.localResultsPanel.setAnalysisRun(this.selectedTrackingMeasuresRun,
 				this.selectedTrajSegmentationRun, true);
 		this.globalGenericResultsPanel.setAnalysisRun(

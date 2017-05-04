@@ -90,23 +90,23 @@ import edu.umassmed.omega.trajectoriesSegmentationPlugin.TSConstants;
 import edu.umassmed.omega.trajectoriesSegmentationPlugin.actions.SegmentationAction;
 
 public class TSPluginPanelNew extends GenericPluginPanel implements
-GenericSegmentsBrowserContainerInterface {
+		GenericSegmentsBrowserContainerInterface {
 
 	private static final long serialVersionUID = -5740459087763362607L;
 
 	private final OmegaGateway gateway;
 
 	private JComboBox<String> images_cmb, particles_cmb, trajectories_cmb,
-	trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb;
+			trajectoriesRelinking_cmb, trajectoriesSegmentation_cmb;
 	private JButton save_btt, undo_btt, redo_btt, cancel_btt;
 	private boolean popImages, popParticles, popTrajectories, popTrajRelinking,
-	popTrajSegmentation;
+			popTrajSegmentation;
 
 	private boolean isHandlingEvent;
 
 	private JMenu ts_mn;
 	private JMenuItem save_itm, undo_itm, redo_itm, cancel_itm,
-	preferences_itm;
+			preferences_itm;
 
 	private ActionListener save_al, undo_al, redo_al, cancel_al;
 
@@ -125,7 +125,7 @@ GenericSegmentsBrowserContainerInterface {
 	private OmegaAnalysisRunContainer selectedImage;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private final Map<OmegaAnalysisRun, List<SegmentationAction>> actions,
-	cancelledActions;
+			cancelledActions;
 
 	final List<OmegaParticleDetectionRun> particleDetectionRuns;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
@@ -135,7 +135,7 @@ GenericSegmentsBrowserContainerInterface {
 	private OmegaTrajectoriesRelinkingRun selectedTrajRelinkingRun;
 	final List<OmegaTrajectoriesSegmentationRun> trajSegmentationRuns;
 	private OmegaTrajectoriesSegmentationRun selectedTrajSegmentationRun,
-	startingPointTrajSegmentationRun;
+			startingPointTrajSegmentationRun;
 
 	private List<OmegaSegmentationTypes> segmTypesList;
 	private OmegaSegmentationTypes currentSegmentationTypes;
@@ -153,7 +153,7 @@ GenericSegmentsBrowserContainerInterface {
 		this.gateway = gateway;
 
 		// TODO probably to refactor and move somewhere else
-			// TODO when loading trajectoryAnalyisisRun I should be able to set the
+		// TODO when loading trajectoryAnalyisisRun I should be able to set the
 		// correct segmentationTypes related
 		this.segmTypesList = segmTypesList;
 		this.currentSegmentationTypes = segmTypesList.get(0);
@@ -254,7 +254,7 @@ GenericSegmentsBrowserContainerInterface {
 		p2.add(lbl2, BorderLayout.WEST);
 		this.particles_cmb = new JComboBox<String>();
 		this.particles_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.particles_cmb.setEnabled(false);
 		p2.add(this.particles_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p2);
@@ -266,7 +266,7 @@ GenericSegmentsBrowserContainerInterface {
 		p3.add(lbl3, BorderLayout.WEST);
 		this.trajectories_cmb = new JComboBox<String>();
 		this.trajectories_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectories_cmb.setEnabled(false);
 		p3.add(this.trajectories_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p3);
@@ -278,7 +278,7 @@ GenericSegmentsBrowserContainerInterface {
 		p4.add(lbl4, BorderLayout.WEST);
 		this.trajectoriesRelinking_cmb = new JComboBox<String>();
 		this.trajectoriesRelinking_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesRelinking_cmb.setEnabled(false);
 		p4.add(this.trajectoriesRelinking_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p4);
@@ -290,7 +290,7 @@ GenericSegmentsBrowserContainerInterface {
 		p5.add(lbl5, BorderLayout.WEST);
 		this.trajectoriesSegmentation_cmb = new JComboBox<String>();
 		this.trajectoriesSegmentation_cmb
-		.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+				.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
 		this.trajectoriesSegmentation_cmb.setEnabled(false);
 		p5.add(this.trajectoriesSegmentation_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p5);
@@ -392,13 +392,13 @@ GenericSegmentsBrowserContainerInterface {
 			}
 		});
 		this.trajectoriesSegmentation_cmb
-		.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				TSPluginPanelNew.this
-				.selectTrajectoriesSegmentationRun();
-			}
-		});
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						TSPluginPanelNew.this
+								.selectTrajectoriesSegmentationRun();
+					}
+				});
 		this.save_btt.addActionListener(this
 				.getSaveNewAllActionsActionListener());
 		this.undo_btt.addActionListener(this.getUndoLastActionActionListener());
@@ -412,8 +412,8 @@ GenericSegmentsBrowserContainerInterface {
 		this.cancel_itm.addActionListener(this
 				.getCancelAllActionsActionListener());
 		// this.preferences_itm.addActionListener(new ActionListener() {
-			// @Override
-			// public void actionPerformed(final ActionEvent e) {
+		// @Override
+		// public void actionPerformed(final ActionEvent e) {
 		// TSPluginPanel.this.openPreferencesDialog();
 		// }
 		// });
@@ -430,11 +430,11 @@ GenericSegmentsBrowserContainerInterface {
 				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
 			this.remove(this.topPanel);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_SHOW_DATA_SELECTION);
 		} else {
 			this.add(this.topPanel, BorderLayout.NORTH);
 			this.hideDataSelection_mItm
-			.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
+					.setText(OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION);
 		}
 		this.revalidate();
 		this.repaint();
@@ -836,7 +836,7 @@ GenericSegmentsBrowserContainerInterface {
 							+ newEdge.getStartingROI().getFrameIndex();
 					final OmegaSegment trunk = new OmegaSegment(
 							edge.getStartingROI(), newEdge.getStartingROI(),
-					        name);
+							name);
 					trunk.setSegmentationType(edge.getSegmentationType());
 					edgesToAdd.add(trunk);
 					needCheckIteration = true;
@@ -873,16 +873,16 @@ GenericSegmentsBrowserContainerInterface {
 			final OmegaROI endingROI, final int actualSegmentationType,
 			final List<OmegaSegment> edgesToAdd) {
 		final String name1 = trackName + "_" + OmegaSegment.DEFAULT_SEGM_NAME
-		        + "_" + startingROI.getFrameIndex() + "-"
-		        + endingROI.getFrameIndex();
+				+ "_" + startingROI.getFrameIndex() + "-"
+				+ endingROI.getFrameIndex();
 		final OmegaSegment newEdge = new OmegaSegment(startingROI, endingROI,
 				name1);
 		newEdge.setSegmentationType(actualSegmentationType);
 		edgesToAdd.add(newEdge);
 		
 		final String name2 = trackName + "_" + OmegaSegment.DEFAULT_SEGM_NAME
-		        + "_" + endingROI.getFrameIndex() + "-"
-		        + edge.getEndingROI().getFrameIndex();
+				+ "_" + endingROI.getFrameIndex() + "-"
+				+ edge.getEndingROI().getFrameIndex();
 		final OmegaSegment oldEdge = new OmegaSegment(endingROI,
 				edge.getEndingROI(), name2);
 		oldEdge.setSegmentationType(edge.getSegmentationType());
@@ -913,7 +913,7 @@ GenericSegmentsBrowserContainerInterface {
 	private void createEdgeInBetween(final String trackName,
 			final OmegaSegment edge, final OmegaROI startingROI,
 			final OmegaROI endingROI, final int actualSegmentationType,
-	        final List<OmegaSegment> edgesToAdd) {
+			final List<OmegaSegment> edgesToAdd) {
 		final String name1 = trackName + "-" + OmegaSegment.DEFAULT_SEGM_NAME
 				+ "_" + edgesToAdd.size();
 		final OmegaSegment trunk1 = new OmegaSegment(edge.getStartingROI(),
@@ -1083,7 +1083,7 @@ GenericSegmentsBrowserContainerInterface {
 		final Map<OmegaTrajectory, List<OmegaSegment>> segments = this
 				.getSegmentsMap();
 		this.tbPanel.updateSegments(segments, this.currentSegmentationTypes,
-		        false);
+				false);
 		if (this.selectedTrajSegmentationRun != null) {
 			this.updateSegmentTrajectories(this.tbPanel
 					.getSelectedTrajectories());
@@ -1242,8 +1242,8 @@ GenericSegmentsBrowserContainerInterface {
 	}
 
 	public void updateSegments(
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final OmegaSegmentationTypes segmTypes, final boolean selection) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final OmegaSegmentationTypes segmTypes, final boolean selection) {
 		this.tbPanel.updateSegments(segments, segmTypes, selection);
 	}
 
@@ -1334,7 +1334,7 @@ GenericSegmentsBrowserContainerInterface {
 			if (this.selectedImage.getAnalysisRuns().contains(analysisRun)
 					&& (analysisRun instanceof OmegaParticleDetectionRun)) {
 				this.particleDetectionRuns
-				.add((OmegaParticleDetectionRun) analysisRun);
+						.add((OmegaParticleDetectionRun) analysisRun);
 				this.particles_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -1376,7 +1376,7 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaParticleLinkingRun)) {
 				this.particleLinkingRuns
-				.add((OmegaParticleLinkingRun) analysisRun);
+						.add((OmegaParticleLinkingRun) analysisRun);
 				this.trajectories_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -1418,7 +1418,7 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaTrajectoriesRelinkingRun)) {
 				this.trajRelinkingRuns
-				.add((OmegaTrajectoriesRelinkingRun) analysisRun);
+						.add((OmegaTrajectoriesRelinkingRun) analysisRun);
 				this.trajectoriesRelinking_cmb.addItem(analysisRun.getName());
 			}
 		}
@@ -1456,13 +1456,13 @@ GenericSegmentsBrowserContainerInterface {
 					analysisRun)
 					&& (analysisRun instanceof OmegaTrajectoriesSegmentationRun)) {
 				this.trajSegmentationRuns
-				.add((OmegaTrajectoriesSegmentationRun) analysisRun);
+						.add((OmegaTrajectoriesSegmentationRun) analysisRun);
 				this.trajectoriesSegmentation_cmb
-				.addItem(analysisRun.getName());
+						.addItem(analysisRun.getName());
 			}
 		}
 		this.trajectoriesSegmentation_cmb
-		.addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		if (this.trajSegmentationRuns.isEmpty()) {
 			this.trajectoriesSegmentation_cmb.setEnabled(false);
 			this.resetTrajectories();
@@ -1585,7 +1585,7 @@ GenericSegmentsBrowserContainerInterface {
 		this.isHandlingEvent = true;
 		this.selectedTrajSegmentationRun = (OmegaTrajectoriesSegmentationRun) analysisRun;
 		this.trajectoriesSegmentation_cmb
-		.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 		// this.updateCurrentModifiedTrajectories((OmegaTrajectoriesRelinkingRun)
 		// analysisRun);
 		this.updateCurrentSegmentedTrajectories();
@@ -1675,7 +1675,7 @@ GenericSegmentsBrowserContainerInterface {
 			final OmegaTrajectoriesSegmentationRun segmentationRun) {
 		this.startingPointTrajSegmentationRun = segmentationRun;
 		this.trajectoriesSegmentation_cmb
-		.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
 	}
 
 	private void resetStartingPointAndCurrentModification() {
