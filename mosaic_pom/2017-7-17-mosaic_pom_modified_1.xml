@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>MosacSuite ImageJ/Fiji plugin</name>
+    <groupId>Mosaic_ToolSuite</groupId>
+    <artifactId>Mosaic_ToolSuite</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.3</version>
+    <description>Package contains image processing algorithms developed in MOSAIC Group</description>
+    <url>http://mosaic.mpi-cbg.de/?q=downloads/imageJ</url>
+    <developers>
+        <developer>
+            <id>gonciarz</id>
+            <name>Krzysztof Gonciarz</name>
+            <url>http://imagej.net/User:Krzysztof.gonciarz</url>
+            <email>gonciarz@mpi-cbg.de</email>
+        </developer>
+        <developer>
+            <id>incardon</id>
+            <name>Pietro Incardona</name>
+            <email>incardon@mpi-cbg.de</email>
+        </developer>
+        <developer>
+            <name>Aurélien Rizk</name>
+        </developer>
+        <developer>
+            <name>Arun Shivanandan</name>
+        </developer>
+        <developer>
+            <name>Janick Cardinale</name>
+        </developer>
+    </developers>
+
+    <!-- <parent> -->
+    <!-- <groupId>sc.fiji</groupId> -->
+    <!-- <artifactId>pom-fiji</artifactId> -->
+    <!-- <version>24.1.0</version> -->
+    <!-- <relativePath /> -->
+    <!-- </parent> -->
+    <parent>
+        <groupId>net.imagej</groupId>
+        <artifactId>pom-imagej</artifactId>
+        <version>15.7.1</version>
+        <!-- <version>LATEST</version> -->
+        <relativePath />
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scijava.jvm.version>1.8</scijava.jvm.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>mosaic.public</id>
+            <url>http://mosaic.mpi-cbg.de/maven/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Version numbers provided by ImageJ (pom-imagej) -->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-ij</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-algorithm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-algorithm-gpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>edu.mines</groupId>
+            <artifactId>mines-jtk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>vecmath</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>scijava-common</artifactId>
+        </dependency>
+
+
+        <!-- Version numbers provided by Fiji (pom-fiji) -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-dev</artifactId>
+            <version>3.7.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.49</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Skeletonize3D_</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!-- This guys are not part of Fiji/ImageJ pom -->
+        <dependency>
+            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
+            <artifactId>ejml</artifactId>
+            <version>0.24</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv-dozer</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rwl</groupId>
+            <artifactId>jtransforms</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <!-- These dependencies are temporarily kept in mosaic maven -->
+        <dependency>
+            <groupId>net.jgeom.nurbs</groupId>
+            <artifactId>net.jgeom.nurbs</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cmaes</groupId>
+            <artifactId>cmaes</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javaml</groupId>
+            <artifactId>javaml</artifactId>
+            <version>0.1.7</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+        <!-- 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-allIn1-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>target/${project.artifactId}-${project.version}_Full.jar</outputFile>
+                            --><!-- Intentionally not 'true' - removes too much 
+                                from destination jar (like org.apache.commons.beanutils.ConvertUtils) -->
+                                <!--  
+                            <minimizeJar>false</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
+             <plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
+						</manifest>
+						<manifestEntries>              
+             				<!--<Class-Path>omega-0.0.1-SNAPSHOT.jar</Class-Path>-->
+                    	</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<excludeTypes>dll,lib</excludeTypes>
+							<outputDirectory>${project.build.directory}/dependency-jars</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-dll_lib</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<excludeTypes>jar</excludeTypes>
+							<outputDirectory>${project.build.directory}/sptWinPlugin</outputDirectory>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+            <!-- 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${env.FIJI_MOSAIC_PLUGIN_PATH}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>${project.artifactId}-${project.version}_Full.jar</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
+            <!-- Currently generating javadocs is turned off - they must 
+                be updated first -->
+            <!-- <plugin> -->
+            <!-- <groupId>org.apache.maven.plugins</groupId> -->
+            <!-- <artifactId>maven-javadoc-plugin</artifactId> -->
+            <!-- <executions> -->
+            <!-- <execution> -->
+            <!-- <id>attach-javadocs</id> -->
+            <!-- <goals> -->
+            <!-- <goal>jar</goal> -->
+            <!-- </goals> -->
+            <!-- <configuration> -->
+            <!-- <additionalparam>-Xdoclint:none</additionalparam> -->
+            <!-- </configuration> -->
+            <!-- </execution> -->
+            <!-- </executions> -->
+            <!-- </plugin> -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Disable assertions because of CMA-ES jar - seems 
+                        some not finished implementation there throws assertion -->
+                    <argLine>-disableassertions</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

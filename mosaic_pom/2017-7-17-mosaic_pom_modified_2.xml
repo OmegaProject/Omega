@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+ 
+    <name>MosacSuite ImageJ/Fiji plugin</name>
+    <groupId>mosaic</groupId>
+    <artifactId>MosaicSuite</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.5</version>
+    <description>Package contains image processing algorithms developed in MOSAIC Group</description>
+    <url>http://mosaic.mpi-cbg.de/?q=downloads/imageJ</url>
+    <inceptionYear>2010</inceptionYear>
+        <organization>
+        <name>MOSAIC group</name>
+        <url>http://mosaic.mpi-cbg.de</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3+</name>
+            <url>https://www.gnu.org/licenses/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <mailingLists>
+        <mailingList>
+            <name>ImageJ Forum</name>
+            <archive>http://forum.imagej.net/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:git:git://git.mpi-cbg.de/mosaic/MosaicSuite</connection>
+        <developerConnection>scm:git:git@git.mpi-cbg.de:mosaic/MosaicSuite</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://git.mpi-cbg.de/mosaic/MosaicSuite</url>
+    </scm>
+    <issueManagement>
+        <system>Mosaic Issues</system>
+        <url>https://git.mpi-cbg.de/mosaic/MosaicSuite/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>None</system>
+    </ciManagement>
+
+    <properties>
+        <package-name>mosaic</package-name>
+        <license.licenseName>gpl_v3</license.licenseName>
+        <license.copyrightOwners>MOSAIC group</license.copyrightOwners>
+    </properties>
+    
+    <developers>
+        <developer>
+            <id>Krzysztof.Gonciarz</id>
+            <name>Krzysztof Gonciarz</name>
+            <url>http://imagej.net/User:Krzysztof.Gonciarz</url>
+            <email>gonciarz@mpi-cbg.de</email>
+            <roles>
+                <role>developer</role>
+                <role>support</role>
+                <role>maintainer</role>
+            </roles>            
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <properties><id>Krzysztof.Gonciarz</id></properties>
+            <name>Krzysztof Gonciarz</name>
+            <email>gonciarz@mpi-cbg.de</email>
+        </contributor>    
+        <contributor>
+            <name>Pietro Incardona</name>
+            <email>incardon@mpi-cbg.de</email>
+        </contributor>
+        <contributor>
+            <name>Aurélien Rizk</name>
+        </contributor>
+        <contributor>
+            <name>Arun Shivanandan</name>
+        </contributor>
+        <contributor>
+            <name>Janick Cardinale</name>
+        </contributor>
+    </contributors>
+
+    <parent>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version> 16.1.0</version>
+        <relativePath />
+    </parent>
+
+    <repositories>
+        <repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>mosaic.public</id>
+            <url>http://mosaic.mpi-cbg.de/maven/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-ij</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-algorithm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-algorithm-gpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>edu.mines</groupId>
+            <artifactId>mines-jtk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>vecmath</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>scijava-common</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-dev</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Skeletonize3D_</artifactId>
+        </dependency>
+
+        <!-- 3rd party stuff -->
+        <dependency>
+            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
+            <artifactId>ejml</artifactId>
+            <version>0.24</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv-dozer</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rwl</groupId>
+            <artifactId>jtransforms</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <!-- These dependencies are temporarily kept in mosaic maven -->
+        <dependency>
+            <groupId>net.jgeom.nurbs</groupId>
+            <artifactId>net.jgeom.nurbs</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cmaes</groupId>
+            <artifactId>cmaes</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javaml</groupId>
+            <artifactId>javaml</artifactId>
+            <version>0.1.7</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+        <!-- 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-allIn1-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>target/${project.artifactId}-${project.version}_Full.jar</outputFile>
+                            --><!-- Intentionally not 'true' - removes too much 
+                                from destination jar (like org.apache.commons.beanutils.ConvertUtils) -->
+                                <!--  
+                            <minimizeJar>false</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
+             <plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
+						</manifest>
+						<manifestEntries>              
+             				<!--<Class-Path>omega-0.0.1-SNAPSHOT.jar</Class-Path>-->
+                    	</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<excludeTypes>dll,lib</excludeTypes>
+							<outputDirectory>${project.build.directory}/dependency-jars</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-dll_lib</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<excludeTypes>jar</excludeTypes>
+							<outputDirectory>${project.build.directory}/sptWinPlugin</outputDirectory>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+            <!-- 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${env.FIJI_MOSAIC_PLUGIN_PATH}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>${project.artifactId}-${project.version}_Full.jar</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Disable assertions because of CMA-ES jar - seems 
+                        some not finished implementation there throws assertion -->
+                    <argLine>-disableassertions</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
