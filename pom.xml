@@ -5,23 +5,73 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.imagej</groupId>
-		<artifactId>pom-imagej</artifactId>
-		<version>11.0.0</version>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>16.0.0</version>
 		<relativePath />
 	</parent>
 
 	<groupId>edu.umassmed.omega</groupId>
 	<artifactId>omega</artifactId>
-	<version>0.34-beta</version>
+	<version>0.37-beta</version>
 	<packaging>jar</packaging>
 
 	<name>omega</name>
 	<description>TBD</description>
 	<url>TBD</url>
+	<inceptionYear>TBD</inceptionYear>
+	<organization>
+		<name>TBD</name>
+	</organization>
+	<licenses>
+		<license>
+			<name>TBD</name>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>riganoa</id>
+			<name>Alex Rigano</name>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>N/A</name>
+		</contributor>
+	</contributors>
+	<mailingLists>
+		<mailingList>
+			<name>N/A</name>
+		</mailingList>
+	</mailingLists>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/OmegaProject/Omega/issues</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:git://github.com/OmegaProject/Omega</connection>
+		<developerConnection>scm:git:git@github.com:OmegaProject/Omega</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/OmegaProject/Omega</url>
+	</scm>
+	<ciManagement>
+		<system>N/A</system>
+	</ciManagement>
+
 
 	<properties>
 		<scijava.jvm.version>1.8</scijava.jvm.version>
+		<license.licenseName>N/A</license.licenseName>
+		<license.copyrightOwners>N/A</license.copyrightOwners>
 	</properties>
 
 	<repositories>
@@ -38,12 +88,36 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>testng</artifactId>
-					<groupId>org.testng</groupId>
+					<artifactId>aopalliance</artifactId>
+					<groupId>aopalliance</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
+					<artifactId>org.springframework.aop</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>org.springframework.core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>org.springframework.beans</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>org.springframework.transaction</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>org.springframework.asm</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jcl-over-slf4j</artifactId>
+					<groupId> org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>testng</artifactId>
+					<groupId>org.testng</groupId>
 				</exclusion>
 				<exclusion>
 					<artifactId>commons-collections</artifactId>
@@ -146,9 +220,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>Mosaic_ToolSuite</groupId>
-			<artifactId>Mosaic_ToolSuite</artifactId>
-			<version>1.0.3</version>
+			<groupId>mosaic</groupId>
+			<artifactId>MosaicSuite</artifactId>
+			<version>1.0.7</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>mines-jtk</artifactId>
@@ -215,6 +289,10 @@
 					<groupId>org.slf4j</groupId>
 				</exclusion>
 				<exclusion>
+					<artifactId>jcl-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
 					<artifactId>log4j</artifactId>
 					<groupId>log4j</groupId>
 				</exclusion>
@@ -241,6 +319,12 @@
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>imagej</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>jtransforms</artifactId>
+					<groupId>edu.emory.mathcs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>msvcr100</groupId>
@@ -287,7 +371,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}-${project.version}</finalName>
+		<finalName>${project.name}-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
