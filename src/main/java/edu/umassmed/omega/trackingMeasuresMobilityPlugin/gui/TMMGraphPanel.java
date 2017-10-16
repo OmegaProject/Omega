@@ -51,7 +51,7 @@ public class TMMGraphPanel extends GenericPanel {
 	
 	private JPanel centerPanel;
 	private GenericComboBox<String> xAxis_cmb, yAxis_cmb, graphType_cmb,
-	globalOrLocal_cmb;
+			globalOrLocal_cmb;
 	private JTextField selection_txt;
 	private JButton drawGraph_btt;
 	
@@ -106,22 +106,22 @@ public class TMMGraphPanel extends GenericPanel {
 		final JLabel globalOrLocal_lbl = new JLabel(
 				StatsConstants.GRAPH_RESULTSTYPE_LBL);
 		globalOrLocal_lbl
-		.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		globalOrLocal_lbl
-		.setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+				.setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		leftPanel.add(globalOrLocal_lbl);
 		this.globalOrLocal_cmb = new GenericComboBox<>(
 				this.getParentContainer());
 		this.globalOrLocal_cmb.addItem(StatsConstants.TAB_RESULTS_LOCAL);
 		this.globalOrLocal_cmb.addItem(StatsConstants.TAB_RESULTS_GLOBAL);
 		this.globalOrLocal_cmb
-		.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
+				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		this.globalOrLocal_cmb.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
 		leftPanel.add(this.globalOrLocal_cmb);
 		
 		final JLabel yAxis_lbl = new JLabel(StatsConstants.GRAPH_Y_LBL);
 		yAxis_lbl
-		.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		yAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
@@ -138,7 +138,7 @@ public class TMMGraphPanel extends GenericPanel {
 		
 		final JLabel xAxis_lbl = new JLabel(StatsConstants.GRAPH_X_LBL);
 		xAxis_lbl
-		.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
+				.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		xAxis_lbl.setSize(OmegaConstants.BUTTON_SIZE_LARGE_DOUBLE_HEIGHT);
 		leftPanel.add(xAxis_lbl);
 		this.xAxis_cmb = new GenericComboBox<>(this.getParentContainer());
@@ -234,8 +234,8 @@ public class TMMGraphPanel extends GenericPanel {
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_DIST_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_MAX_DISP_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_DISP_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_TIME_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_CONFRATIO_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_TIME_GLO);
 			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TRACK);
 		} else {
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_DIST_P2P_LOC);
@@ -353,32 +353,32 @@ public class TMMGraphPanel extends GenericPanel {
 				.equals(yAxisSelection))
 				&& ((this.oldXAxisSelection != null) && this.oldXAxisSelection
 						.equals(xAxisSelection))
-						&& ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
-								.equals(graphTypeSelection)))
+				&& ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
+						.equals(graphTypeSelection)))
 			return;
 		if (xAxisSelection.equals(StatsConstants.GRAPH_LAB_X_TPT)) {
 			if (yAxisSelection.equals(StatsConstants.GRAPH_NAME_MAX_DISP_GLO)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_TIME_GLO)
+							.equals(StatsConstants.GRAPH_NAME_TIME_GLO)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_DIST_GLO)
+							.equals(StatsConstants.GRAPH_NAME_DIST_GLO)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_DISP_GLO)
+							.equals(StatsConstants.GRAPH_NAME_DISP_GLO)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_CONFRATIO_GLO))
+							.equals(StatsConstants.GRAPH_NAME_CONFRATIO_GLO))
 				return;
 		} else {
 			if (yAxisSelection.equals(StatsConstants.GRAPH_NAME_DIST_P2P_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_DIST_LOC)
+							.equals(StatsConstants.GRAPH_NAME_DIST_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_DISP_LOC)
+							.equals(StatsConstants.GRAPH_NAME_DISP_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_CONFRATIO_LOC)
+							.equals(StatsConstants.GRAPH_NAME_CONFRATIO_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_ANGLES_LOC)
+							.equals(StatsConstants.GRAPH_NAME_ANGLES_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_DIRCHANGE_LOC))
+							.equals(StatsConstants.GRAPH_NAME_DIRCHANGE_LOC))
 				return;
 		}
 		this.handleDrawChartLater();
@@ -388,7 +388,13 @@ public class TMMGraphPanel extends GenericPanel {
 	private void handleTracksChart(final int distDispOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -406,22 +412,28 @@ public class TMMGraphPanel extends GenericPanel {
 				selectedSegmentsMap, this.segmTypes,
 				this.selectedTrackingMeasuresRun.getDistancesResults(),
 				this.selectedTrackingMeasuresRun
-				.getDistancesFromOriginResults(),
+						.getDistancesFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getDisplacementsFromOriginResults(),
+						.getDisplacementsFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getMaxDisplacementsFromOriginResults(),
+						.getMaxDisplacementsFromOriginResults(),
 				this.selectedTrackingMeasuresRun.getTimeTraveledResults(),
 				this.selectedTrackingMeasuresRun.getConfinementRatioResults(),
 				this.selectedTrackingMeasuresRun
-				.getAnglesAndDirectionalChangesResults());
+						.getAnglesAndDirectionalChangesResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 	
 	private void handleTimepointsChart(final int distDispOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -439,15 +451,15 @@ public class TMMGraphPanel extends GenericPanel {
 				selectedSegmentsMap, this.segmTypes,
 				this.selectedTrackingMeasuresRun.getDistancesResults(),
 				this.selectedTrackingMeasuresRun
-				.getDistancesFromOriginResults(),
+						.getDistancesFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getDisplacementsFromOriginResults(),
+						.getDisplacementsFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getMaxDisplacementsFromOriginResults(),
+						.getMaxDisplacementsFromOriginResults(),
 				this.selectedTrackingMeasuresRun.getTimeTraveledResults(),
 				this.selectedTrackingMeasuresRun.getConfinementRatioResults(),
 				this.selectedTrackingMeasuresRun
-				.getAnglesAndDirectionalChangesResults());
+						.getAnglesAndDirectionalChangesResults());
 		this.launchGraphProducerThread(graphProducer);
 	}
 	
@@ -518,7 +530,7 @@ public class TMMGraphPanel extends GenericPanel {
 			final String completedS = new BigDecimal(completed).setScale(2,
 					RoundingMode.HALF_UP).toString();
 			this.pluginPanel
-			.updateStatus("Graph " + completedS + " completed.");
+					.updateStatus("Graph " + completedS + " completed.");
 		}
 	}
 }

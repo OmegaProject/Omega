@@ -110,7 +110,7 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent event) {
+			public void mouseReleased(final MouseEvent event) {
 				SPTLoadedDataBrowserPanel.this.handleMouseClick(event
 						.getPoint());
 			}
@@ -205,7 +205,8 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 		super.updateParentContainer(parent);
 	}
 	
-	public void updateTree(final List<OmegaImage> images) {
+	public void updateTree(final List<OmegaImage> images,
+			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		this.dataTree.setRootVisible(true);
 		
 		String s = null;
@@ -225,21 +226,23 @@ public class SPTLoadedDataBrowserPanel extends GenericPanel {
 				
 				for (final OmegaAnalysisRun analysisRun : image
 						.getAnalysisRuns()) {
-					if (analysisRun instanceof OmegaParticleDetectionRun) {
-						final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
-						// TODO pensare se questo e' il sistema migliore per
-						// verificare il corretto funzionamento!
-						if (!this.sptPanel
-								.checkIfThisAlgorithm(particleDetectionRun)) {
-							continue;
-						}
-						final DefaultMutableTreeNode analysisNode = new DefaultMutableTreeNode();
-						s = "[" + particleDetectionRun.getElementID() + "] "
-								+ particleDetectionRun.getName();
-						this.nodeMap.put(s, particleDetectionRun);
-						analysisNode.setUserObject(new CheckBoxNode(s, status));
-						imageNode.add(analysisNode);
+					if (!(analysisRun instanceof OmegaParticleDetectionRun)
+							|| !loadedAnalysisRuns.contains(analysisRun)) {
+						continue;
 					}
+					final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
+					// TODO pensare se questo e' il sistema migliore per
+					// verificare il corretto funzionamento!
+					if (!this.sptPanel
+							.checkIfThisAlgorithm(particleDetectionRun)) {
+						continue;
+					}
+					final DefaultMutableTreeNode analysisNode = new DefaultMutableTreeNode();
+					s = "[" + particleDetectionRun.getElementID() + "] "
+							+ particleDetectionRun.getName();
+					this.nodeMap.put(s, particleDetectionRun);
+					analysisNode.setUserObject(new CheckBoxNode(s, status));
+					imageNode.add(analysisNode);
 				}
 				
 				this.root.add(imageNode);

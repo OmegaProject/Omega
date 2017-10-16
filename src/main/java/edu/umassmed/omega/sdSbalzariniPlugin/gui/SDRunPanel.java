@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -186,7 +187,8 @@ public class SDRunPanel extends GenericPanel implements
 		final JPanel zSectionPanel = new JPanel();
 		zSectionPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel zSectionLbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_ZSECTION + ":");
+				OmegaConstantsAlgorithmParameters.PARAM_ZSECTION
+						+ " to analyze:");
 		zSectionLbl.setPreferredSize(SDRunPanel.LBL_FIELDS_DIM);
 		zSectionPanel.add(zSectionLbl);
 		this.zSection_txtField = new GenericTextFieldValidable(
@@ -200,6 +202,10 @@ public class SDRunPanel extends GenericPanel implements
 		// channels panel
 		this.channelsPanel = new JPanel();
 		this.channelsPanel.setLayout(new GridLayout(1, 1));
+		this.channelsPanel
+				.setBorder(BorderFactory
+						.createTitledBorder(OmegaConstantsAlgorithmParameters.PARAM_CHANNEL
+								+ " to analyze:"));
 
 		this.selectionParamPanel.add(this.channelsPanel);
 		this.group = new ButtonGroup();
@@ -225,7 +231,10 @@ public class SDRunPanel extends GenericPanel implements
 		}
 		// this.channelsPanel.revalidate();
 		// this.channelsPanel.repaint();
-		this.channelsPanel.setBorder(null);
+		this.channelsPanel
+				.setBorder(BorderFactory
+						.createTitledBorder(OmegaConstantsAlgorithmParameters.PARAM_CHANNEL
+								+ " to analyze:"));
 		this.channelsPanel.setLayout(new GridLayout(n, 1));
 		this.channels = new JCheckBox[n];
 
@@ -295,6 +304,9 @@ public class SDRunPanel extends GenericPanel implements
 	public void updateImageFields(final OmegaImage image) {
 		this.infoPanel.update(image);
 
+		if (image == null)
+			return;
+
 		final int selZ = image.getDefaultPixels().getSelectedZ();
 		this.zSection_txtField.setText(String.valueOf(selZ));
 		final int z = image.getDefaultPixels().getSizeZ() - 1;
@@ -337,8 +349,8 @@ public class SDRunPanel extends GenericPanel implements
 
 	public void updateRunFieldsDefault() {
 		this.radius_txtField.setText("3");
-		this.cutoff_txtField.setText("3.0");
-		this.percentile_txtField.setText("0.1");
+		this.cutoff_txtField.setText("0.001");
+		this.percentile_txtField.setText("0.500");
 		this.percAbs_checkBox.setSelected(false);
 	}
 

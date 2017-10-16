@@ -77,7 +77,7 @@ public class TMDGraphPanel extends GenericPanel {
 		this.selectedTrackingMeasuresRun = null;
 		this.segmTypes = null;
 
-		this.selectedSegmentsMap = new LinkedHashMap<>();
+		this.selectedSegmentsMap = new LinkedHashMap<OmegaTrajectory, List<OmegaSegment>>();
 		this.t = null;
 
 		this.setLayout(new BorderLayout());
@@ -115,8 +115,8 @@ public class TMDGraphPanel extends GenericPanel {
 		leftPanel.add(yAxis_lbl);
 		this.yAxis_cmb = new GenericComboBox<>(this.getParentContainer());
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_MSD);
-		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_MSS);
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_DIFF);
+		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_MSS);
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_UNCERT_SMSS);
 		this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_UNCERT_D);
 		this.yAxis_cmb.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
@@ -306,7 +306,13 @@ public class TMDGraphPanel extends GenericPanel {
 	private void handleTracksChart(final int diffusivityOption) {
 		this.pluginPanel.updateStatus("Preparing tracks graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -340,14 +346,16 @@ public class TMDGraphPanel extends GenericPanel {
 	private void handleTimepointsChart(final int diffusivityOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
-			selectedSegmentsMap = new LinkedHashMap<>();
-			for (final OmegaTrajectory track : this.selectedSegmentsMap
-					.keySet()) {
-				selectedSegmentsMap.put(track, this.segmentsMap.get(track));
-			}
+			selectedSegmentsMap = this.selectedSegmentsMap;
 		}
 		int graphType = StatsGraphProducer.LINE_GRAPH;
 		if (this.graphType_cmb.getSelectedItem().equals(

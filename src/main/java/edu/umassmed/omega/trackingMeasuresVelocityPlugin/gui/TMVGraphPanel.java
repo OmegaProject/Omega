@@ -226,6 +226,7 @@ public class TMVGraphPanel extends GenericPanel {
 				StatsConstants.TAB_RESULTS_GLOBAL)) {
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_VEL_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_FORPROLIN_GLO);
 			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TRACK);
 		} else {
 			this.yAxis_cmb.addItem(StatsConstants.GRAPH_NAME_SPEED_P2P_LOC);
@@ -324,20 +325,20 @@ public class TMVGraphPanel extends GenericPanel {
 				.equals(yAxisSelection))
 				&& ((this.oldXAxisSelection != null) && this.oldXAxisSelection
 						.equals(xAxisSelection))
-						&& ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
-								.equals(graphTypeSelection)))
+				&& ((this.oldGraphTypeSelection != null) && this.oldGraphTypeSelection
+						.equals(graphTypeSelection)))
 			return;
 		if (xAxisSelection.equals(StatsConstants.GRAPH_LAB_X_TPT)) {
 			if (yAxisSelection.equals(StatsConstants.GRAPH_NAME_SPEED_GLO)
 					|| yAxisSelection.equals(StatsConstants.GRAPH_NAME_VEL_GLO)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_FORPROLIN_GLO))
+							.equals(StatsConstants.GRAPH_NAME_FORPROLIN_GLO))
 				return;
 		} else {
 			if (yAxisSelection.equals(StatsConstants.GRAPH_NAME_SPEED_LOC)
 					|| yAxisSelection.equals(StatsConstants.GRAPH_NAME_VEL_LOC)
 					|| yAxisSelection
-					.equals(StatsConstants.GRAPH_NAME_SPEED_P2P_LOC))
+							.equals(StatsConstants.GRAPH_NAME_SPEED_P2P_LOC))
 				return;
 		}
 		this.handleDrawChartLater();
@@ -347,7 +348,13 @@ public class TMVGraphPanel extends GenericPanel {
 	private void handleTracksChart(final int velocityOption) {
 		this.pluginPanel.updateStatus("Preparing tracks graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -365,9 +372,9 @@ public class TMVGraphPanel extends GenericPanel {
 				selectedSegmentsMap, this.segmTypes,
 				this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
 				this.selectedTrackingMeasuresRun
-				.getLocalSpeedFromOriginResults(),
+						.getLocalSpeedFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getLocalVelocityFromOriginResults(),
+						.getLocalVelocityFromOriginResults(),
 				this.selectedTrackingMeasuresRun
 						.getAverageCurvilinearSpeedMapResults(),
 				this.selectedTrackingMeasuresRun
@@ -380,7 +387,13 @@ public class TMVGraphPanel extends GenericPanel {
 	private void handleTimepointsChart(final int velocityOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -398,9 +411,9 @@ public class TMVGraphPanel extends GenericPanel {
 				selectedSegmentsMap, this.segmTypes,
 				this.selectedTrackingMeasuresRun.getLocalSpeedResults(),
 				this.selectedTrackingMeasuresRun
-				.getLocalSpeedFromOriginResults(),
+						.getLocalSpeedFromOriginResults(),
 				this.selectedTrackingMeasuresRun
-				.getLocalVelocityFromOriginResults(),
+						.getLocalVelocityFromOriginResults(),
 				this.selectedTrackingMeasuresRun
 						.getAverageCurvilinearSpeedMapResults(),
 				this.selectedTrackingMeasuresRun

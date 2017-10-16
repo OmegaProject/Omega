@@ -59,9 +59,10 @@ import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
@@ -124,7 +125,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	private List<OmegaImage> images;
 	private OrphanedAnalysisContainer orphanedAnalysis;
 	
-	private OmegaAnalysisRunContainer selectedImage;
+	private OmegaAnalysisRunContainerInterface selectedImage;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	private OmegaSNRRun selectedSNRRun;
 	
@@ -474,6 +475,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
 					.getParticleToProcess().get(index);
 			
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgCenterSignal = this.snrRunner
+					.getResultingImageAverageCenterSignal().get(index);
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgPeakSignal = this.snrRunner
+					.getResultingImageAveragePeakSignal().get(index);
+			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgMeanSignal = this.snrRunner
+					.getResultingImageAverageMeanSignal().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageNoises = this.snrRunner
 					.getResultingImageNoise().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageBackgrounds = this.snrRunner
@@ -506,6 +513,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					.getResultingLocalSNRs().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaROI, Double>> localErrorIndexSNRs = this.snrRunner
 					.getResultingLocalErrorIndexSNRs().get(index);
+			final Map<OmegaParticleDetectionRun, Double> avgCenterSignal = this.snrRunner
+					.getResultingAverageCenterSignal().get(index);
+			final Map<OmegaParticleDetectionRun, Double> avgPeakSignal = this.snrRunner
+					.getResultingAveragePeakSignal().get(index);
+			final Map<OmegaParticleDetectionRun, Double> avgMeanSignal = this.snrRunner
+					.getResultingAverageMeanSignal().get(index);
 			final Map<OmegaParticleDetectionRun, Double> background = this.snrRunner
 					.getResultingBackground().get(index);
 			final Map<OmegaParticleDetectionRun, Double> noise = this.snrRunner
@@ -528,6 +541,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				final List<OmegaParameter> params = processedParticles
 						.get(spotDetectionRun);
 				final List<OmegaElement> selection = this.selections.get(index)
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> avgCenterSignals = imageAvgCenterSignal
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> avgPeakSignals = imageAvgPeakSignal
+						.get(spotDetectionRun);
+				final Map<OmegaPlane, Double> avgMeanSignals = imageAvgMeanSignal
 						.get(spotDetectionRun);
 				final Map<OmegaPlane, Double> noises = imageNoises
 						.get(spotDetectionRun);
@@ -561,6 +580,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 						.get(spotDetectionRun);
 				final Map<OmegaROI, Double> lErrorIndexSNRs = localErrorIndexSNRs
 						.get(spotDetectionRun);
+				final Double lavgCenterSignal = avgCenterSignal
+						.get(spotDetectionRun);
+				final Double lavgPeakSignal = avgPeakSignal
+						.get(spotDetectionRun);
+				final Double lavgMeanSignal = avgMeanSignal
+						.get(spotDetectionRun);
 				final Double lbackground = background.get(spotDetectionRun);
 				final Double lnoise = noise.get(spotDetectionRun);
 				final Double lavgSNR = avgSNR.get(spotDetectionRun);
@@ -575,13 +600,15 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
 						this.getPlugin(), selection, spotDetectionRun, params,
-						noises, backgrounds, averageSNR, minimumSNR,
+						avgCenterSignals, avgPeakSignals, avgMeanSignals,
+						backgrounds, noises, averageSNR, minimumSNR,
 						maximumSNR, averageErrorIndexSNR, minimumErrorIndexSNR,
 						maximumErrorIndexSNR, lCentralSignals, lMeanSignals,
 						lSignalSizes, lPeakSignals, lBackgrounds, lNoises,
-						lSNRs, lErrorIndexSNRs, lbackground, lnoise, lavgSNR,
-						lminSNR, lmaxSNR, lavgErrorIndeXSNR, lminErrorIndeXSNR,
-						lmaxErrorIndeXSNR);
+						lSNRs, lErrorIndexSNRs, lavgCenterSignal,
+						lavgPeakSignal, lavgMeanSignal, lbackground, lnoise,
+						lavgSNR, lminSNR, lmaxSNR, lavgErrorIndeXSNR,
+						lminErrorIndeXSNR, lmaxErrorIndeXSNR);
 				events.add(snrResultsEvt);
 				this.particlesToProcess.remove(index);
 				this.selections.remove(index);
@@ -627,12 +654,14 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	}
 	
 	private void selectImage() {
+		this.runPanel.updateImageFields(null);
+		this.runPanel.updateAnalysisFields(null);
 		if (this.popImages)
 			return;
 		final int index = this.images_cmb.getSelectedIndex();
 		this.selectedImage = null;
 		if (index == -1) {
-			this.loadedDataBrowserPanel.updateTree(null);
+			this.loadedDataBrowserPanel.updateTree(null, null);
 			this.queueRunBrowserPanel.updateTree(null);
 			return;
 		}
@@ -644,20 +673,22 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		if (!this.isHandlingEvent) {
 			this.fireEventSelectionImage();
 		}
-		this.runPanel.updateImageFields((OmegaElement) this.selectedImage);
+		this.runPanel.updateImageFields((OmegaImage) this.selectedImage);
 		
-		final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
-		for (final OmegaAnalysisRun analysisRun : this.selectedImage
-				.getAnalysisRuns()) {
-			if (!(analysisRun instanceof OmegaParticleDetectionRun)) {
-				continue;
-			}
-			if (this.loadedAnalysisRuns.contains(analysisRun)) {
-				analysisRuns.add(analysisRun);
-			}
-		}
+		// final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
+		// for (final OmegaAnalysisRun analysisRun : this.selectedImage
+		// .getAnalysisRuns()) {
+		// if (!(analysisRun instanceof OmegaParticleDetectionRun)) {
+		// continue;
+		// }
+		// if (this.loadedAnalysisRuns.contains(analysisRun)) {
+		// analysisRuns.add(analysisRun);
+		// }
+		// }
 		
-		this.loadedDataBrowserPanel.updateTree(analysisRuns);
+		this.loadedDataBrowserPanel.updateTree(
+				this.selectedImage.getAnalysisRuns(), this.loadedAnalysisRuns);
+		this.particlesToProcess.clear();
 		this.queueRunBrowserPanel.updateTree(null);
 		this.setAddAndRemoveButtonsEnabled(false);
 		// this.populateTrajectoriesCombo();
@@ -672,6 +703,9 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.loadedDataBrowserPanel.updateParentContainer(parent);
 		this.queueRunBrowserPanel.updateParentContainer(parent);
 		this.runPanel.updateParentContainer(parent);
+		this.localResultsPanel.updateParentContainer(parent);
+		this.globalFrameResultsPanel.updateParentContainer(parent);
+		this.globalImageResultsPanel.updateParentContainer(parent);
 	}
 	
 	@Override
@@ -699,7 +733,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		if (((this.images == null) || this.images.isEmpty())
 		/* && this.orphanedAnalysis.isEmpty() */) {
 			this.images_cmb.setEnabled(false);
-			this.loadedDataBrowserPanel.updateTree(null);
+			this.loadedDataBrowserPanel.updateTree(null, null);
 			this.queueRunBrowserPanel.updateTree(null);
 			this.repaint();
 			this.popImages = false;
@@ -741,7 +775,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.getPlugin().fireEvent(event);
 	}
 	
-	public void selectImage(final OmegaAnalysisRunContainer image) {
+	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		this.isHandlingEvent = true;
 		int index = -1;
 		if (this.images != null) {
@@ -787,13 +821,26 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 	}
 	
 	public void updateSelectedSNRRun(final OmegaSNRRun snrRun) {
+		String c = null, z = null;
+		if (this.selectedParticleDetectionRun != null) {
+			for (final OmegaParameter param : ((OmegaAnalysisRun) this.selectedParticleDetectionRun)
+					.getAlgorithmSpec().getParameters()) {
+				if (param.getName().equals(
+						OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+					c = param.getStringValue();
+				} else if (param.getName().equals(
+						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+					z = param.getStringValue();
+				}
+			}
+		}
 		// TODO capire se serve
 		this.selectedSNRRun = snrRun;
-		this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true);
+		this.localResultsPanel.setAnalysisRun(this.selectedSNRRun, true, c, z);
 		this.globalFrameResultsPanel.setAnalysisRun(this.selectedSNRRun, false,
-				true);
+				true, c, z);
 		this.globalImageResultsPanel.setAnalysisRun(this.selectedSNRRun,
-				this.selectedParticleDetectionRun, false, false);
+				this.selectedParticleDetectionRun, false, false, c, z);
 		if (snrRun != null) {
 			// TODO update SNR fields?
 			if (!this.isHandlingEvent) {

@@ -30,7 +30,6 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 
 		this.root = new DefaultMutableTreeNode();
 		this.root.setUserObject(OmegaGUIConstants.PLUGIN_RUN_QUEUE);
-		this.nodeMap = new HashMap<String, OmegaElement>();
+		this.nodeMap = new LinkedHashMap<String, OmegaElement>();
 		this.nodeIndexes = new LinkedHashMap<String, Integer>();
 		// this.updateTree(images);
 		this.selectedIndex = null;
@@ -115,7 +114,7 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent event) {
+			public void mouseReleased(final MouseEvent event) {
 				SNRQueueRunBrowserPanel.this.handleMouseClick(event.getPoint());
 			}
 		});
@@ -185,8 +184,9 @@ public class SNRQueueRunBrowserPanel extends GenericPanel {
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
 				.getLastPathComponent();
 		final String s = node.toString();
-		final OmegaElement element = SNRQueueRunBrowserPanel.this.nodeMap
-				.get(s);
+		final OmegaElement element = this.nodeMap.get(s);
+		final Integer index = this.nodeIndexes.get(s);
+		this.selectedIndex = index;
 		if (element instanceof OmegaParticleDetectionRun) {
 			this.snrPanel
 					.updateSelectedParticleDetectionRun((OmegaParticleDetectionRun) element);

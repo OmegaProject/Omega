@@ -16,7 +16,7 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 
 public class SDWorker2 implements SDRunnable {
-
+	
 	private final OmegaImagePixels pixels;
 	private OmegaPlane frame;
 	private final List<OmegaROI> particles;
@@ -24,45 +24,30 @@ public class SDWorker2 implements SDRunnable {
 	private final Integer radius;
 	private final Double cutoff;
 	private final Float percentile;
+	private final Float threshold;
 	private final Boolean percAbs;
 	private final Integer channel, zSection;
 	private Float globalMin, globalMax;
 	private final boolean isDebugMode;
-	private boolean isJobCompleted, isTerminated;
-
-	private final ImageStack is;
-
-	private final Map<OmegaROI, Map<String, Object>> values;
+	private boolean isJobCompleted, isTerminated, frameAdded;
 	
+	private final ImageStack is;
+	
+	private final Map<OmegaROI, Map<String, Object>> values;
+
 	public SDWorker2(final ImageStack is, final int frameIndex,
 			final Integer radius, final Double cutoff, final Float percentile,
-			final Boolean percAbs, final Integer channel, final Integer zSection) {
-		this.isDebugMode = false;
-		this.is = is;
-		this.pixels = null;
-		this.frameIndex = frameIndex;
-		this.radius = radius;
-		this.cutoff = cutoff;
-		this.percentile = percentile;
-		this.percAbs = percAbs;
-		this.channel = channel;
-		this.zSection = zSection;
-		this.globalMin = Float.MAX_VALUE;
-		this.globalMax = 0F;
-		this.particles = new ArrayList<OmegaROI>();
-		this.values = new LinkedHashMap<OmegaROI, Map<String, Object>>();
-	}
-
-	public SDWorker2(final ImageStack is, final OmegaImagePixels pixels,
-			final int frameIndex, final Integer radius, final Double cutoff,
-			final Float percentile, final Boolean percAbs,
+			final Float threshold, final Boolean percAbs,
 			final Integer channel, final Integer zSection) {
 		this.isDebugMode = false;
 		this.is = is;
-		this.pixels = pixels;
+		this.pixels = null;
+		this.frame = null;
 		this.frameIndex = frameIndex;
+
 		this.radius = radius;
 		this.cutoff = cutoff;
+		this.threshold = threshold;
 		this.percentile = percentile;
 		this.percAbs = percAbs;
 		this.channel = channel;
@@ -71,8 +56,39 @@ public class SDWorker2 implements SDRunnable {
 		this.globalMax = 0F;
 		this.particles = new ArrayList<OmegaROI>();
 		this.values = new LinkedHashMap<OmegaROI, Map<String, Object>>();
+
+		this.frameAdded = false;
+	}
+	
+	public SDWorker2(final ImageStack is, final OmegaImagePixels pixels,
+			final int frameIndex, final Integer radius, final Double cutoff,
+			final Float percentile, final Float threshold,
+			final Boolean percAbs, final Integer channel, final Integer zSection) {
+		this.isDebugMode = false;
+		this.is = is;
+		this.pixels = pixels;
+		this.frame = null;
+		this.frameIndex = frameIndex;
+
+		this.radius = radius;
+		this.cutoff = cutoff;
+		this.threshold = threshold;
+		this.percentile = percentile;
+		this.percAbs = percAbs;
+		this.channel = channel;
+		this.zSection = zSection;
+		this.globalMin = Float.MAX_VALUE;
+		this.globalMax = 0F;
+		this.particles = new ArrayList<OmegaROI>();
+		this.values = new LinkedHashMap<OmegaROI, Map<String, Object>>();
+
+		this.frameAdded = false;
 	}
 
+	public boolean isFrameAdded() {
+		return this.frameAdded;
+	}
+	
 	@Override
 	public void run() {
 		Thread.currentThread().setName(
@@ -82,15 +98,15 @@ public class SDWorker2 implements SDRunnable {
 		} else {
 			this.normalModeRun();
 		}
-
+		
 		this.isJobCompleted = true;
 	}
-
+	
 	private void normalModeRun() {
-
+		
 		this.normalProcessingModeRun();
 	}
-
+	
 	private void normalProcessingModeRun() {
 		if (this.pixels != null) {
 			final List<OmegaPlane> frames = this.pixels.getFrames(this.channel,
@@ -101,22 +117,27 @@ public class SDWorker2 implements SDRunnable {
 				this.frame = new OmegaPlane(this.frameIndex, this.channel,
 						this.zSection);
 				this.frame.setParentPixels(this.pixels);
-				// this.pixels.addFrame(this.channel, this.zSection,
-				// this.frame);
+				this.frameAdded = true;
 			}
+		} else {
+			this.frame = new OmegaPlane(this.frameIndex, this.channel,
+					this.zSection);
 		}
-
+		
 		FeaturePointDetector fpd = new FeaturePointDetector(this.globalMax,
 				this.globalMin);
 		fpd.setDetectionParameters(this.cutoff, this.percentile, this.radius,
-				this.percentile * 100, this.percAbs);
+				this.threshold, this.percAbs);
 		final Vector<Particle> mosaicParticles = fpd
 				.featurePointDetection(this.is);
-
+		
 		if (this.isTerminated)
 			return;
-
+		
 		for (final Particle p : mosaicParticles) {
+			if (!p.special) {
+				continue;
+			}
 			final int fi = this.frameIndex;
 			final double x = p.getX();
 			final double y = p.getY();
@@ -128,14 +149,20 @@ public class SDWorker2 implements SDRunnable {
 			final float m2 = p.m2;
 			final float m3 = p.m3;
 			final float m4 = p.m4;
+			final float npscore = p.nonParticleDiscriminationScore;
 			final Map<String, Object> particleValues = new LinkedHashMap<String, Object>();
 			particleValues.put("m0", m0);
 			particleValues.put("m1", m1);
 			particleValues.put("m2", m2);
 			particleValues.put("m3", m3);
 			particleValues.put("m4", m4);
-			final Double physicalX = this.pixels.getPhysicalSizeX();
-			final Double physicalY = this.pixels.getPhysicalSizeY();
+			particleValues.put("NPScore", npscore);
+			Double physicalX = null;
+			Double physicalY = null;
+			if (this.pixels != null) {
+				physicalX = this.pixels.getPhysicalSizeX();
+				physicalY = this.pixels.getPhysicalSizeY();
+			}
 			Double realX = x, realY = y;
 			if ((physicalX != null) && (physicalX != -1)) {
 				realX *= physicalX;
@@ -150,41 +177,49 @@ public class SDWorker2 implements SDRunnable {
 		}
 		fpd = null;
 	}
-
+	
 	private void debugModeRun() {
-
+		
 	}
 
+	public int getC() {
+		return this.channel;
+	}
+
+	public int getZ() {
+		return this.zSection;
+	}
+	
 	@Override
 	public boolean isJobCompleted() {
 		return this.isJobCompleted;
 	}
-
+	
 	@Override
 	public void terminate() {
 		this.isTerminated = true;
 	}
-
+	
 	public OmegaPlane getFrame() {
 		return this.frame;
 	}
-
+	
 	public int getIndex() {
 		return this.frameIndex;
 	}
-
+	
 	public void setGlobalMin(final Float globalMin) {
 		this.globalMin = globalMin;
 	}
-
+	
 	public void setGlobalMax(final Float globalMax) {
 		this.globalMax = globalMax;
 	}
-
+	
 	public Map<OmegaROI, Map<String, Object>> getParticlesAdditionalValues() {
 		return this.values;
 	}
-
+	
 	public List<OmegaROI> getResultingParticles() {
 		return this.particles;
 	}

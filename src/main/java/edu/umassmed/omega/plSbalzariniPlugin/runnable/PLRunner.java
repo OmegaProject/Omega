@@ -60,23 +60,22 @@ public class PLRunner implements PLRunnable {
 	private final boolean isDebugMode;
 	private boolean isJobCompleted, isTerminated;
 	
-	public PLRunner(final OmegaMessageDisplayerPanelInterface displayerPanel) {
+	public PLRunner(
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
+			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.displayerPanel = displayerPanel;
 		
-		this.particlesToProcess = null;
-		
-		this.isDebugMode = true;
+		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
+		this.isDebugMode = false;
 		
 		this.isJobCompleted = false;
-		this.isTerminated = false;
 		
 		this.resultingTrajectories = new LinkedHashMap<>();
 	}
 	
 	public PLRunner(
-			final OmegaMessageDisplayerPanelInterface displayerPanel,
 			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
-		this.displayerPanel = displayerPanel;
+		this.displayerPanel = null;
 		
 		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
 		this.isDebugMode = false;
@@ -129,26 +128,40 @@ public class PLRunner implements PLRunnable {
 					.get(index).keySet()) {
 				final List<OmegaParameter> parameters = this.particlesToProcess
 						.get(index).get(spotDetRun);
-				
+
 				final Map<OmegaPlane, List<OmegaROI>> resultingParticles = spotDetRun
 						.getResultingParticles();
 				final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = spotDetRun
 						.getResultingParticlesValues();
-				
+
 				OmegaImagePixels pixels = null;
 				for (final OmegaPlane frame : resultingParticles.keySet()) {
+					if (frame.getParentPixels() == null) {
+						continue;
+					}
 					pixels = frame.getParentPixels();
 					break;
 				}
-				
-				final int sizeT = pixels.getSizeT();
-				
+
+				Integer sizeT = null;
+				if (pixels == null) {
+					int max = -1;
+					for (final OmegaPlane frame : resultingParticles.keySet()) {
+						if (frame.getIndex() > max) {
+							max = frame.getIndex();
+						}
+					}
+					sizeT = max;
+				} else {
+					sizeT = pixels.getSizeT();
+				}
+
 				if (sizeT < 2) {
 					// TODO throw error and skip image or stop thread?
 				}
-				
+
 				// this.gateway.getTotalT(pixelsID, z, sizeT, c);
-				
+
 				Float displacement = null;
 				Integer linkrange = null;
 				String movType = null;
@@ -174,10 +187,10 @@ public class PLRunner implements PLRunnable {
 						minLength = Integer.valueOf(param.getStringValue());
 					}
 				}
-				
+
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " rebuilding MOSAIC structures.", false);
-				
+
 				final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
 				// final MyFrame[] mosaicFrames = new MyFrame[sizeT];
 				final List<Vector<Particle>> mosaicParticlesList = new ArrayList<Vector<Particle>>();
@@ -222,13 +235,13 @@ public class PLRunner implements PLRunnable {
 					// mosaicFrames[index] = mosaicFrame;
 					mosaicParticlesMap.put(i, mosaicParticles);
 				}
-				
+
 				for (int i = 0; i < sizeT; i++) {
 					final Vector<Particle> mosaicParticles = mosaicParticlesMap
 							.get(i);
 					mosaicParticlesList.add(mosaicParticles);
 				}
-				
+
 				ParticleLinker linker = null;
 				if (optimizer == PLConstants.PARAM_OPTIMIZER_GREEDY) {
 					linker = new ParticleLinkerGreedy();
@@ -253,15 +266,15 @@ public class PLRunner implements PLRunnable {
 				options.lSpace = 1f;
 				options.lFeature = objectFeature;
 				options.lDynamic = dynamics;
-				
+
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " launching MOSAIC linker.", false);
-				
+
 				linker.linkParticles(mosaicParticlesList, options);
-				
+
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " generating trajectories.", false);
-				
+
 				final List<List<Particle>> mosaicTracks = this
 						.generateTrajectories(mosaicParticlesList, sizeT,
 								linkrange);
@@ -394,6 +407,8 @@ public class PLRunner implements PLRunnable {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
+					if (PLRunner.this.displayerPanel == null)
+						return;
 					PLRunner.this.displayerPanel
 							.updateMessageStatus(new PLMessageEvent(msg,
 									PLRunner.this, ended));
@@ -410,6 +425,8 @@ public class PLRunner implements PLRunnable {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				if (PLRunner.this.displayerPanel == null)
+					return;
 				PLRunner.this.displayerPanel
 						.updateMessageStatus(new PLMessageEvent(msg,
 								PLRunner.this, ended));

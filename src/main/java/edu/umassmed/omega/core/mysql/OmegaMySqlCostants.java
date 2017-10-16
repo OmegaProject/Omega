@@ -50,6 +50,7 @@ public class OmegaMySqlCostants {
 	public static String FIRST_NAME_FIELD = "First_name";
 	public static String LAST_NAME_FIELD = "Last_name";
 
+	public static String AUTHORS_FIELD = "Authors";
 	public static String VERSION_FIELD = "Version";
 	public static String DESCRIPTION_FIELD = "Description";
 	public static String PUBLICATION_DATE_FIELD = "Publication_date";
@@ -95,6 +96,9 @@ public class OmegaMySqlCostants {
 
 	public static String CHANNEL_INDEX = "Channel_index";
 
+	public static String SNR_AVG_CENTER_SIG = "avg_center_signal";
+	public static String SNR_AVG_PEAK_SIG = "avg_peak_signal";
+	public static String SNR_AVG_MEAN_SIG = "avg_mean_signal";
 	public static String SNR_BACKGROUND = "background";
 	public static String SNR_NOISE = "noise";
 	public static String SNR_AVG_SNR = "avg_snr";
@@ -192,5 +196,8 @@ public class OmegaMySqlCostants {
 	public static String SNR_IMAGE_AVG_ERROR_INDEX_SNR_TABLE = "snr_image_avg_snr_error_index";
 	public static String SNR_IMAGE_NOISE_TABLE = "snr_image_noise";
 	public static String SNR_IMAGE_BG_TABLE = "snr_image_bg";
+	public static String SNR_IMAGE_AVG_CENTER_TABLE = "snr_image_avg_center";
+	public static String SNR_IMAGE_AVG_PEAK_TABLE = "snr_image_avg_peak";
+	public static String SNR_IMAGE_AVG_MEAN_TABLE = "snr_image_avg_mean";
 	public static String SNR_GLOBAL_GENERIC_VALUES_TABLE = "snr_global_generic_values";
 }

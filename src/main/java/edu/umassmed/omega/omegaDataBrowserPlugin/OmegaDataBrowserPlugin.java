@@ -33,14 +33,34 @@ import javax.swing.RootPaneContainer;
 import edu.umassmed.omega.commons.data.OmegaData;
 import edu.umassmed.omega.commons.data.OmegaLoadedData;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSNRRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrackingMeasuresRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
 import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
 public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
-OmegaDataDisplayerPluginInterface {
+		OmegaDataDisplayerPluginInterface, OmegaSelectImagePluginInterface,
+		OmegaSelectParticleDetectionRunPluginInterface,
+		OmegaSelectParticleLinkingRunPluginInterface,
+		OmegaSelectTrajectoriesRelinkingRunPluginInterface,
+		OmegaSelectTrajectoriesSegmentationRunPluginInterface,
+		OmegaSelectSNRRunPluginInterface,
+		OmegaSelectTrackingMeasuresRunPluginInterface {
 	
 	private OmegaDataBrowserPluginPanel panel;
 	
@@ -93,5 +113,66 @@ OmegaDataDisplayerPluginInterface {
 	@Override
 	public String getDescription() {
 		return OmegaDataBrowserConstants.PLUGIN_DESC;
+	}
+
+	@Override
+	public void selectSNRRun(final OmegaSNRRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+	
+	@Override
+	public void selectTrackingMeasuresRun(
+			final OmegaTrackingMeasuresRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+	
+	@Override
+	public void selectTrajectoriesSegmentationRun(
+			final OmegaTrajectoriesSegmentationRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+	
+	@Override
+	public void selectTrajectoriesRelinkingRun(
+			final OmegaTrajectoriesRelinkingRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+	
+	@Override
+	public void selectParticleLinkingRun(
+			final OmegaParticleLinkingRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+	
+	@Override
+	public void selectParticleDetectionRun(
+			final OmegaParticleDetectionRun analysisRun) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectSubAnalysisContainer(analysisRun);
+		}
+	}
+
+	@Override
+	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final OmegaDataBrowserPluginPanel specificPanel = (OmegaDataBrowserPluginPanel) panel;
+			specificPanel.selectAnalysisContainer(image);
+		}
 	}
 }

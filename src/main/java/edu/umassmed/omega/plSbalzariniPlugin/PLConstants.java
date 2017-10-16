@@ -30,20 +30,20 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class PLConstants {
-
+	
 	public static final String PARAM_MOVTYPE_BROWNIAN = "Brownian";
 	public static final String PARAM_MOVTYPE_STRAIGHT = "Straight lines";
 	public static final String PARAM_MOVTYPE_COSVEL = "Costant velocity";
-
+	
 	public static final String PARAM_OPTIMIZER_GREEDY = "Greedy";
 	public static final String PARAM_OPTIMIZER_HUNGARIAN = "Hungarian";
-
+	
 	public static final String EXECUTE_BUTTON = "Execute Queue";
-
-	public static final String PLUGIN_NAME = "MOSAIC 2D Particle Linking";
-	public static final String PLUGIN_SNAME = "MOSAIC 2D PL";
-	public static final String PLUGIN_AUTHOR_FIRSTNAME = "I. F.";
-	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
+	
+	public static final String PLUGIN_NAME = "MOSAIC feature point tracker";
+	public static final String PLUGIN_SNAME = "MOSAIC FPT";
+	public static final String PLUGIN_VERSION = "1.0.7";
+	public static final String PLUGIN_AUTHORS = "I. F. Sbalzarini and P. Koumoutsakos";
 	public static final String PLUGIN_DESC = "This plugin allows to run the linking portion of the Mosaic 2D particle tracker independently from the spot detector. The plugin allows to launch multiple sequential runs on either the same and different images. This facilitates parameter optimization and trouble shooting by allowing the user to easily associate the parameters used for each run with the analysis results. This version implements the ImageJ plugin version of the algorithm and takes previously detected spots as input.";
 	public static final String PLUGIN_ALGO_DESC = "This is a tool that links bright spots across time-series or video data. It simply is the particle linking part of the Mosaic 2D particle tracker, without the detection.  It takes previously detected spots as input and can be handy for the optimization of a particle tracking workflow by combining it with different spot detection algorithms or comparing it with other linkers.";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)

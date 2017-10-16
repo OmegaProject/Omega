@@ -34,13 +34,13 @@ public class SDConstants {
 	public static final String PREVIEW_BUTTON = "Show Preview";
 	public static final String EXECUTE_BUTTON = "Execute Queue";
 	
-	public static final String PLUGIN_NAME = "MOSAIC 2D Particle Detector";
-	public static final String PLUGIN_SNAME = "MOSAIC 2D PD";
-	public static final String PLUGIN_AUTHOR_FIRSTNAME = "I. F.";
-	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
+	public static final String PLUGIN_NAME = "MOSAIC feature point detection";
+	public static final String PLUGIN_SNAME = "MOSAIC FPD";
+	public static final String PLUGIN_AUTHORS = "I. F. Sbalzarini and P. Koumoutsakos";
 	public static final String PLUGIN_DESC = "This plugin allows to run the Mosaic (http://mosaic.mpi-cbg.de/?q=downloads/imageJ) particle detection algorithm. The plugin allows to launch multiple sequential runs on either the same and different images. This facilitates parameter optimization and trouble shooting by allowing the user to easily associate the parameters used for each run with the analysis results. This version implements the ImageJ plugin version of the algorithm.";
 	public static final String PLUGIN_ALGO_DESC = "This is a particle detection tool that detects bright spots in images and estimates the coordinates of their center. It simply is the particle detection part of the Mosaic particle tracker, without the linking.  It handles time-series and video data and can be handy in an image-processing pipeline or macro where only detection is needed. Alternatively, it can be compared with other spot detection algorithms or combined with different linkers to optimize a tracking workflow.";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 			.getTime();
+	public static final String PLUGIN_VERSION = "1.0.7";
 	public static final String PLUGIN_REFERENCE = "I. F. Sbalzarini and P. Koumoutsakos. Feature Point Tracking and Trajectory Analysis for Video Imaging in Cell Biology, Journal of Structural Biology 151(2):182-195, 2005.";
 }

@@ -235,31 +235,31 @@ public class TMIGraphPanel extends GenericPanel {
 		if (this.globalOrLocal_cmb.getSelectedItem().equals(
 				StatsConstants.TAB_RESULTS_GLOBAL)) {
 			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TRACK);
-			this.yAxis_cmb.addItem(StatsConstants.MAX_PEAK_INTENSITY_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.AVG_PEAK_INTENSITY_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.MIN_PEAK_INTENSITY_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.MAX_CENTROID_INTENSITY_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.AVG_CENTROID_INTENSITY_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.MIN_CENTROID_INTENSITY_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.MAX_MEAN_INTENSITY_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_CENTROID_INTENSITY_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.AVG_PEAK_INTENSITY_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MIN_PEAK_INTENSITY_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_PEAK_INTENSITY_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.AVG_MEAN_INTENSITY_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.MIN_MEAN_INTENSITY_GLO);
-			// this.yAxis_cmb.addItem(StatsConstants.MAX_BACKGROUND);
-			// this.yAxis_cmb.addItem(StatsConstants.AVG_BACKGROUND);
-			// this.yAxis_cmb.addItem(StatsConstants.MIN_BACKGROUND);
-			this.yAxis_cmb.addItem(StatsConstants.MAX_NOISE_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_MEAN_INTENSITY_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.AVG_BACKGROUND_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MIN_BACKGROUND_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_BACKGROUND_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.AVG_NOISE_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.MIN_NOISE_GLO);
-			this.yAxis_cmb.addItem(StatsConstants.MAX_SNR_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_NOISE_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.AVG_SNR_GLO);
 			this.yAxis_cmb.addItem(StatsConstants.MIN_SNR_GLO);
+			this.yAxis_cmb.addItem(StatsConstants.MAX_SNR_GLO);
 			// this.yAxis_cmb.addItem(StatsConstants.MAX_AREA_GLO);
 			// this.yAxis_cmb.addItem(StatsConstants.AVG_AREA_GLO);
 			// this.yAxis_cmb.addItem(StatsConstants.MIN_AREA_GLO);
 		} else {
 			this.xAxis_cmb.addItem(StatsConstants.GRAPH_LAB_X_TPT);
-			this.yAxis_cmb.addItem(StatsConstants.PEAK_INTENSITY_LOC);
 			this.yAxis_cmb.addItem(StatsConstants.CENTROID_INTENSITY_LOC);
+			this.yAxis_cmb.addItem(StatsConstants.PEAK_INTENSITY_LOC);
 			this.yAxis_cmb.addItem(StatsConstants.MEAN_INTENSITY_LOC);
 			this.yAxis_cmb.addItem(StatsConstants.BACKGROUND_LOC);
 			this.yAxis_cmb.addItem(StatsConstants.NOISE_LOC);
@@ -437,7 +437,13 @@ public class TMIGraphPanel extends GenericPanel {
 			final int minMeanMaxOption) {
 		this.pluginPanel.updateStatus("Preparing tracks graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;
@@ -474,7 +480,13 @@ public class TMIGraphPanel extends GenericPanel {
 	private void handleTimepointsChart(final int peakMeanBgSnrOption) {
 		this.pluginPanel.updateStatus("Preparing timepoints graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> selectedSegmentsMap = null;
-		if (this.selectedSegmentsMap.isEmpty()) {
+		boolean isSame = false;
+		for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+				.getSegments().keySet())
+			if (this.selectedSegmentsMap.containsKey(track)) {
+				isSame = true;
+			}
+		if (this.selectedSegmentsMap.isEmpty() || !isSame) {
 			selectedSegmentsMap = this.segmentsMap;
 		} else {
 			selectedSegmentsMap = this.selectedSegmentsMap;

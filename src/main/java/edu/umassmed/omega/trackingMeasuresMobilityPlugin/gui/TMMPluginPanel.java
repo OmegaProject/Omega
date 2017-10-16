@@ -53,7 +53,8 @@ import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.constants.StatsConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresMobilityRun;
@@ -109,7 +110,7 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 	
 	private List<OmegaImage> images;
 	private OrphanedAnalysisContainer orphanedAnalysis;
-	private OmegaAnalysisRunContainer selectedImage;
+	private OmegaAnalysisRunContainerInterface selectedImage;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	
 	private final List<OmegaParticleDetectionRun> particleDetectionRuns;
@@ -542,6 +543,19 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 	}
 
 	private void updatePanels() {
+		String c = null, z = null;
+		if (this.selectedParticleDetectionRun != null) {
+			for (final OmegaParameter param : this.selectedParticleDetectionRun
+					.getAlgorithmSpec().getParameters()) {
+				if (param.getName().equals(
+						OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+					c = param.getStringValue();
+				} else if (param.getName().equals(
+						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+					z = param.getStringValue();
+				}
+			}
+		}
 		Map<OmegaTrajectory, List<OmegaSegment>> segments = null;
 		OmegaSegmentationTypes segmTypes = null;
 		if (this.selectedTrackingMeasuresRun != null) {
@@ -555,15 +569,15 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 			}
 		}
 		this.sbPanel.updateSegments(segments, segmTypes, false);
-		this.graphPanel
-				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.graphPanel.updateSelectedSegmentationTypes(segmTypes);
 		this.graphPanel.setSegmentsMap(segments);
+		this.graphPanel
+				.updateSelectedTrackingMeasuresRun(this.selectedTrackingMeasuresRun);
 		this.localResultsPanel.setAnalysisRun(this.selectedTrackingMeasuresRun,
-				this.selectedTrajSegmentationRun, true);
+				this.selectedTrajSegmentationRun, true, c, z);
 		this.globalResultsPanel.setAnalysisRun(
 				this.selectedTrackingMeasuresRun,
-				this.selectedTrajSegmentationRun, false);
+				this.selectedTrajSegmentationRun, false, c, z);
 		
 	}
 	
@@ -870,7 +884,7 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 		this.getPlugin().fireEvent(event);
 	}
 	
-	public void selectImage(final OmegaAnalysisRunContainer image) {
+	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		this.isHandlingEvent = true;
 		int index = -1;
 		if (this.images != null) {
@@ -988,17 +1002,22 @@ public class TMMPluginPanel extends GenericPluginPanel implements
 	
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
-		// TODO modify to keep changes if needed
-		// this.tbPanel.updateTrajectories(trajectories, selection);
-		// TODO refactoring ?
-		// if (selection) {
-		// final Map<OmegaTrajectory, List<OmegaSegment>> segments = new
-		// LinkedHashMap<>();
-		// for (final OmegaTrajectory track : trajectories) {
-		// segments.put(track, new ArrayList<OmegaSegment>());
-		// }
-		// this.graphPanel.setSelectedSegments(segments);
-		// }
+		if (selection && (this.selectedTrajSegmentationRun != null)) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> resultingSegments = this.selectedTrajSegmentationRun
+					.getResultingSegments();
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments = new LinkedHashMap<>();
+			final List<OmegaSegment> segms = new ArrayList<OmegaSegment>();
+			for (final OmegaTrajectory track : trajectories) {
+				final List<OmegaSegment> segm = resultingSegments.get(track);
+				segments.put(track, segm);
+				segms.addAll(segments.get(track));
+			}
+			this.sbPanel.updateSegments(segments,
+					this.selectedTrajSegmentationRun.getSegmentationTypes(),
+					selection);
+			this.currentSegmInfoPanel.setSelectedSegments(segms);
+			this.graphPanel.setSelectedSegments(segments);
+		}
 	}
 	
 	public void updateSegments(

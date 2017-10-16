@@ -30,15 +30,6 @@ public class TSConstants {
 	public static final String BROWSER_TABNAME = "Browser";
 	public static final String SEGMENTATION_TABNAME = "Segmentation";
 
-	public static final String PREFERENCES = OmegaGUIConstants.PREFERENCES;
-
-	public static final String EDIT = OmegaGUIConstants.MENU_EDIT;
-
-	public static final String SAVE = OmegaGUIConstants.SAVE;
-	public static final String UNDO = OmegaGUIConstants.UNDO;
-	public static final String REDO = OmegaGUIConstants.REDO;
-	public static final String CANCEL_ALL = OmegaGUIConstants.CANCEL_ALL;
-
 	public static final String SELECT = "Select: ";
 	public static final String SELECT_RESET = "Reset";
 	public static final String SELECT_RESET_MS = "Reset Selection";
@@ -60,16 +51,14 @@ public class TSConstants {
 	public static final String SELECT_PUNCT = ".";
 	public static final String SELECT_TO_LOWER_SPACE = " to ";
 
-	public static final String SCALE_ONE = OmegaGUIConstants.SIDEPANEL_SCALE_ONE;
-	public static final String SCALE_FIT = OmegaGUIConstants.SIDEPANEL_SCALE_FIT;
-
 	public static final String ACTUAL_SEGM = "Current selection: ";
 
 	public static final String PLUGIN_NAME = "OMEGA Trajectory Segmentation";
 	public static final String PLUGIN_SNAME = "OMEGA TS";
+	public static final String PLUGIN_VERSION = "1.0";
 	public static final String PLUGIN_DESC = "This is the default Trajectory Segmentation plugin provided by OMEGA. It utilizes the Trajectory Browser graphical user interface to visualize and select individual trajectories in the context of the image of origin, to evaluate the uniformity of their dynamic properties and to subdivide them into uniform segments when necessary. While the results of segmentation are arbitrarily decided by the user, OMEGA allows segmentation results to be evaluated and if necessary corrected by combining subsequent cycles of segmentation and motion analysis.";
 	public static final String PLUGIN_ALGO_DESC = "This is a simple manual trajectory segmentation algorithm designed to subdivide individual trajectories into segments characterized by uniform motion properties. The subdivision of individual trajectories into segments is subjectively decided by the user and is therefore arbitrary. ";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2016, 12, 1)
 			.getTime();
-	public static final String PLUGIN_REFERENCE = "";
+	public static final String PLUGIN_REFERENCE = OmegaGUIConstants.NOT_ASSIGNED;;
 }

@@ -59,7 +59,7 @@ import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
 import edu.umassmed.omega.commons.utilities.OperatingSystemUtilities;
 
 public class OmegaWorkspacePanel extends GenericDesktopPane implements
-        GenericPanelInterface {
+		GenericPanelInterface {
 	private static final long serialVersionUID = -2466542815630183505L;
 	
 	private RootPaneContainer parent;
@@ -117,11 +117,11 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.viewMenu = new JMenu(OmegaGUIConstants.MENU_VIEW);
 		
 		this.dockAllPluginsMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_WORKSPACE_DOCK);
+				OmegaGUIConstants.MENU_WORKSPACE_DOCK);
 		this.workspaceMenu.add(this.dockAllPluginsMItem);
 		this.viewMenu.add(this.dockAllPluginsMItem);
 		this.undockAllPluginsMItem = new JMenuItem(
-		        OmegaGUIConstants.MENU_WORKSPACE_UNDOCK);
+				OmegaGUIConstants.MENU_WORKSPACE_UNDOCK);
 		this.workspaceMenu.add(this.undockAllPluginsMItem);
 		this.viewMenu.add(this.undockAllPluginsMItem);
 		
@@ -168,17 +168,17 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				OmegaWorkspacePanel.this.handlePropertyChange(
-				        evt.getPropertyName(), evt.getOldValue(),
-				        evt.getNewValue());
+						evt.getPropertyName(), evt.getOldValue(),
+						evt.getNewValue());
 			}
 		});
 	}
 	
 	private void handlePropertyChange(final String propertyName,
-	        final Object oldVal, final Object newVal) {
+			final Object oldVal, final Object newVal) {
 		if (propertyName.equals(OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW)) {
 			final GenericPluginPanel content = OmegaWorkspacePanel.this.contents
-			        .get(Integer.valueOf(newVal.toString()));
+					.get(Integer.valueOf(newVal.toString()));
 			if (content.isAttached()) {
 				this.detachFrame(content);
 			} else {
@@ -188,6 +188,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void handleDetachAllFrames() {
+		this.hasAttachedFrame = false;
 		for (final Integer index : this.contents.keySet()) {
 			final GenericPluginPanel content = this.contents.get(index);
 			if (content.isAttached()) {
@@ -197,6 +198,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void handleAttachAllFrames() {
+		this.hasAttachedFrame = true;
 		for (final Integer index : this.contents.keySet()) {
 			final GenericPluginPanel content = this.contents.get(index);
 			if (!content.isAttached()) {
@@ -243,7 +245,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void showUnsupportedPluginDialog(
-	        final OmegaAlgorithmPlugin algoPlugin) {
+			final OmegaAlgorithmPlugin algoPlugin) {
 		final String title = "Plugin incompatibility with operating system";
 		final StringBuffer msg = new StringBuffer();
 		msg.append("<html>The plugin ");
@@ -253,7 +255,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		msg.append("<br>Operating system required: ");
 		for (int index = 0; index < algoPlugin.getSupportedPlatforms().size(); index++) {
 			final OperatingSystemEnum os = algoPlugin.getSupportedPlatforms()
-			        .get(index);
+					.get(index);
 			msg.append(os.toString());
 			if (index < (algoPlugin.getSupportedPlatforms().size() - 1)) {
 				msg.append(", ");
@@ -261,7 +263,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		}
 		msg.append("<html>");
 		final GenericMessageDialog gd = new GenericMessageDialog(this.parent,
-		        title, msg.toString(), false);
+				title, msg.toString(), false);
 		gd.enableClose();
 		gd.setVisible(true);
 	}
@@ -299,10 +301,10 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void createNewInternalFrame(final OmegaPlugin plugin,
-	        final int startingIndex) {
+			final int startingIndex) {
 		final String name = "Workspace - " + plugin.getName();
 		final JInternalFrame intFrame = new JInternalFrame(name, true, true,
-		        true, true);
+				true, true);
 		
 		GenericPluginPanel content = null;
 		try {
@@ -346,7 +348,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	private void createInternalFrame(final GenericPluginPanel content) {
 		final int index = content.getIndex();
 		final JInternalFrame intFrame = new JInternalFrame(content.getName(),
-		        true, true, true, true);
+				true, true, true, true);
 		content.updateParentContainer(intFrame);
 		final JMenuBar menuBar = this.menus.get(index);
 		
@@ -372,7 +374,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void createNewFrame(final OmegaPlugin plugin,
-	        final int startingIndex) {
+			final int startingIndex) {
 		final String name = "Workspace - " + plugin.getName();
 		final JFrame frame = new JFrame(name);
 		
@@ -448,7 +450,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 			windowMenu = new JMenu();
 		}
 		final JMenuItem toggleWindowPositionMenuItem = new JMenuItem(
-		        "Toggle window position");
+				"Toggle window position");
 		toggleWindowPositionMenuItem.addActionListener(new ActionListener() {
 			
 			@Override
@@ -460,7 +462,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	
 	private void addInternalFrameListeners(final JInternalFrame intFrame) {
 		final GenericPluginPanel pluginPanel = (GenericPluginPanel) intFrame
-		        .getContentPane().getComponent(0);
+				.getContentPane().getComponent(0);
 		intFrame.addInternalFrameListener(new InternalFrameAdapter() {
 			@Override
 			public void internalFrameClosing(final InternalFrameEvent evt) {
@@ -472,10 +474,10 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-				        OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW)) {
+						OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW)) {
 					OmegaWorkspacePanel.this.firePropertyChange(
-					        OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
-					        evt.getOldValue(), evt.getNewValue());
+							OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
+							evt.getOldValue(), evt.getNewValue());
 				}
 			}
 		});
@@ -483,7 +485,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	
 	private void addFrameListeners(final JFrame frame) {
 		final GenericPluginPanel pluginPanel = (GenericPluginPanel) frame
-		        .getContentPane().getComponent(0);
+				.getContentPane().getComponent(0);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(final WindowEvent evt) {
@@ -494,9 +496,9 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-				        OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW)) {
+						OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW)) {
 					OmegaWorkspacePanel.this.firePropertyChange(
-					        OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
+							OmegaGUIConstants.EVENT_PROPERTY_TOGGLEWINDOW,
 							evt.getOldValue(), evt.getNewValue());
 				}
 			}
@@ -506,7 +508,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	protected void detachFrame(final GenericPluginPanel content) {
 		final int index = content.getIndex();
 		final JInternalFrame intFrame = OmegaWorkspacePanel.this.internalFrames
-		        .get(index);
+				.get(index);
 		this.remove(intFrame);
 		intFrame.remove(content);
 		
@@ -515,9 +517,9 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.internalFrames.remove(index);
 		intFrame.dispose();
 		
-		if (this.internalFrames.size() == 0) {
-			this.hasAttachedFrame = false;
-		}
+		// if (this.internalFrames.size() == 0) {
+		// this.hasAttachedFrame = false;
+		// }
 		
 		content.setIsAttached(false);
 		
@@ -542,7 +544,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		frame.dispose();
 		content.setIsAttached(true);
 		
-		this.hasAttachedFrame = true;
+		// this.hasAttachedFrame = true;
 		
 		if (!this.isAttached && !this.internalFrames.isEmpty()) {
 			final JFrame workspaceFrame = (JFrame) this.parent;

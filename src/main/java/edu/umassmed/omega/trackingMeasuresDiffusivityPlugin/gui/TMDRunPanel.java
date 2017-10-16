@@ -161,6 +161,7 @@ public class TMDRunPanel extends GenericPanel implements
 				this.getParentContainer());
 		this.snrAnalysis_cmb.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrRunPanel.add(this.snrAnalysis_cmb);
+		this.snrAnalysis_cmb.setEnabled(false);
 		parametersErrPanel.add(snrRunPanel);
 		
 		mainPanel.add(parametersErrPanel);
@@ -201,12 +202,13 @@ public class TMDRunPanel extends GenericPanel implements
 			this.snrAnalysis_cmb.setEnabled(false);
 		} else {
 			this.snrAnalysis_cmb.setEnabled(true);
-			if (this.snrAnalysis_cmb.getItemCount() <= 0) {
-				this.snrAnalysis_cmb.setSelectedIndex(-1);
-				this.run_btt.setEnabled(false);
-			} else {
-				this.snrAnalysis_cmb.setSelectedIndex(0);
-			}
+			this.populateSNRCombo();
+			// if (this.snrAnalysis_cmb.getItemCount() <= 0) {
+			// this.snrAnalysis_cmb.setSelectedIndex(-1);
+			// this.run_btt.setEnabled(false);
+			// } else {
+			// this.snrAnalysis_cmb.setSelectedIndex(0);
+			// }
 		}
 	}
 	
@@ -280,8 +282,7 @@ public class TMDRunPanel extends GenericPanel implements
 		if (!this.areParametersValidated())
 			return null;
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
-		final int window = Integer.valueOf((String) this.windowVal_cmb
-				.getSelectedItem());
+		final String window = (String) this.windowVal_cmb.getSelectedItem();
 		params.add(new OmegaParameter(
 				OmegaConstants.PARAMETER_DIFFUSIVITY_WINDOW, window));
 		final String logOption = (String) this.logOption_cmb.getSelectedItem();

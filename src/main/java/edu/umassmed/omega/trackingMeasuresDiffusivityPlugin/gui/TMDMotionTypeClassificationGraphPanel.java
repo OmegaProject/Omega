@@ -263,10 +263,19 @@ public class TMDMotionTypeClassificationGraphPanel extends GenericPanel {
 			final int showOption) {
 		this.pluginPanel.updateStatus("Preparing log graph");
 		Map<OmegaTrajectory, List<OmegaSegment>> segments = null;
-		if ((this.selectedSegments != null) && !this.selectedSegments.isEmpty()) {
-			segments = this.selectedSegments;
-		} else {
+		boolean isSame = false;
+		if (this.selectedSegments != null) {
+			for (final OmegaTrajectory track : this.selectedTrackingMeasuresRun
+					.getSegments().keySet())
+				if (this.selectedSegments.containsKey(track)) {
+					isSame = true;
+				}
+		}
+		if ((this.selectedSegments == null) || this.selectedSegments.isEmpty()
+				|| !isSame) {
 			segments = this.segmentsMap;
+		} else {
+			segments = this.selectedSegments;
 		}
 		final TMDMotionTypeClassificationGraphProducer graphProducer = new TMDMotionTypeClassificationGraphProducer(
 				this, motionTypeOption, showOption, segments, this.segmTypes,

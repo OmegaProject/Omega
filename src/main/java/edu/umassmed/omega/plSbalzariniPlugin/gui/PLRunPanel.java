@@ -276,7 +276,7 @@ public class PLRunPanel extends GenericPanel {
 	}
 	
 	public void updateAnalysisFields(final OmegaAnalysisRun analysisRun) {
-		this.infoPanel.update(analysisRun);
+		this.infoPanel.updateContent(analysisRun);
 		
 		// TODO UPDATE CHANNEL / TIMEPOINTS
 	}

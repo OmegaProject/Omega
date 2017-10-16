@@ -108,8 +108,8 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent event) {
-				SPTQueueRunBrowserPanel.this.handleMouseClicked(event.getX(),
+			public void mouseReleased(final MouseEvent event) {
+				SPTQueueRunBrowserPanel.this.handleMouseClick(event.getX(),
 						event.getY());
 			}
 		});
@@ -141,7 +141,7 @@ public class SPTQueueRunBrowserPanel extends GenericPanel {
 		});
 	}
 	
-	private void handleMouseClicked(final int x, final int y) {
+	private void handleMouseClick(final int x, final int y) {
 		final TreePath path = SPTQueueRunBrowserPanel.this.dataTree
 				.getPathForLocation(x, y);
 		if (path == null) {

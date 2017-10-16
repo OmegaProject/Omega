@@ -42,6 +42,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -50,10 +51,11 @@ import javax.swing.tree.TreeSelectionModel;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.OmegaData;
 import edu.umassmed.omega.commons.data.OmegaLoadedData;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaNamedElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
@@ -65,7 +67,7 @@ import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContai
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
-        implements GenericElementInformationContainerInterface {
+		implements GenericElementInformationContainerInterface {
 	
 	private static final long serialVersionUID = -7554854467725521545L;
 	
@@ -88,9 +90,9 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 	public OmegaDataBrowserLoadedDataBrowserPanel(
 	
 	final RootPaneContainer parentContainer,
-	        final OmegaDataBrowserPluginPanel browserPanel,
-	        final OmegaData data, final OmegaLoadedData loadedData,
-	        final GenericElementInformationContainerInterface infoContainer) {
+			final OmegaDataBrowserPluginPanel browserPanel,
+			final OmegaData data, final OmegaLoadedData loadedData,
+			final GenericElementInformationContainerInterface infoContainer) {
 		super(parentContainer);
 		
 		this.loadedData = loadedData;
@@ -143,18 +145,18 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent evt) {
-				OmegaDataBrowserLoadedDataBrowserPanel.this.handleMouseClicked(
-				        evt.getX(), evt.getY());
+			public void mouseReleased(final MouseEvent evt) {
+				OmegaDataBrowserLoadedDataBrowserPanel.this.handleMouseClick(
+						evt.getX(), evt.getY());
 			}
 		});
 		this.dataTree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override
 			public void treeNodesChanged(final TreeModelEvent evt) {
 				OmegaDataBrowserLoadedDataBrowserPanel.this
-				.handleTreeNodesChanged(
-				                (DefaultTreeModel) evt.getSource(),
-						evt.getTreePath(), evt.getChildren());
+						.handleTreeNodesChanged(
+								(DefaultTreeModel) evt.getSource(),
+								evt.getTreePath(), evt.getChildren());
 			}
 			
 			@Override
@@ -190,26 +192,37 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 		this.revalidate();
 		this.repaint();
 	}
+
+	public void selectTreeElement(final OmegaNamedElement element) {
+		if (this.dataTree.getRowCount() == 0)
+			return;
+		final String name = element.getName();
+		final String string = "[" + element.getElementID() + "] " + name;
+		final TreePath path = this.dataTree.getNextMatch(string, 0,
+				Position.Bias.Forward);
+		this.dataTree.expandPath(path);
+		this.dataTree.setSelectionPath(path);
+	}
 	
-	private void handleMouseClicked(final int x, final int y) {
+	private void handleMouseClick(final int x, final int y) {
 		final TreePath path = OmegaDataBrowserLoadedDataBrowserPanel.this.dataTree
-		        .getPathForLocation(x, y);
+				.getPathForLocation(x, y);
 		if (path == null)
 			return;
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-		        .getLastPathComponent();
+				.getLastPathComponent();
 		final String s = node.toString();
 		final OmegaElement element = OmegaDataBrowserLoadedDataBrowserPanel.this.nodeMap
-		        .get(s);
-		if (element instanceof OmegaAnalysisRunContainer) {
+				.get(s);
+		if (element instanceof OmegaAnalysisRunContainerInterface) {
 			OmegaDataBrowserLoadedDataBrowserPanel.this.browserPanel
-			        .setSelectedAnalysisContainer((OmegaAnalysisRunContainer) element);
+					.setSelectedAnalysisContainer((OmegaAnalysisRunContainerInterface) element);
 			this.infoPanel.update(element);
 		}
 	}
 	
 	private void handleTreeNodesChanged(final DefaultTreeModel model,
-	        final TreePath treePath, final Object[] children) {
+			final TreePath treePath, final Object[] children) {
 		if (OmegaDataBrowserLoadedDataBrowserPanel.this.adjusting)
 			return;
 		OmegaDataBrowserLoadedDataBrowserPanel.this.adjusting = true;
@@ -219,14 +232,14 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			node = (DefaultMutableTreeNode) children[0];
 			c = (CheckBoxNode) node.getUserObject();
 			DefaultMutableTreeNode n = (DefaultMutableTreeNode) treePath
-			        .getLastPathComponent();
+					.getLastPathComponent();
 			if (OmegaDataBrowserLoadedDataBrowserPanel.this.optionsPanel
-			        .isAutoSelectRelatives()) {
+					.isAutoSelectRelatives()) {
 				while (n != null) {
 					OmegaDataBrowserLoadedDataBrowserPanel.this
-					        .updateParentUserObject(n);
+							.updateParentUserObject(n);
 					final DefaultMutableTreeNode tmp = (DefaultMutableTreeNode) n
-					        .getParent();
+							.getParent();
 					if (tmp == null) {
 						break;
 					} else {
@@ -240,10 +253,10 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			// c = (CheckBoxNode) node.getUserObject();
 		}
 		if ((c != null)
-		        && OmegaDataBrowserLoadedDataBrowserPanel.this.optionsPanel
-		                .isAutoSelectRelatives()) {
+				&& OmegaDataBrowserLoadedDataBrowserPanel.this.optionsPanel
+						.isAutoSelectRelatives()) {
 			OmegaDataBrowserLoadedDataBrowserPanel.this
-			        .updateAllChildrenUserObject(node, c.getStatus());
+					.updateAllChildrenUserObject(node, c.getStatus());
 		}
 		// model.nodeChanged(node);
 		
@@ -253,7 +266,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			return;
 		
 		OmegaDataBrowserLoadedDataBrowserPanel.this.updateLoadedData(node,
-		        c.getStatus());
+				c.getStatus());
 	}
 	
 	private void updateParentUserObject(final DefaultMutableTreeNode parent) {
@@ -265,7 +278,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 		final Enumeration children = parent.children();
 		while (children.hasMoreElements()) {
 			final DefaultMutableTreeNode node = (DefaultMutableTreeNode) children
-			        .nextElement();
+					.nextElement();
 			final CheckBoxNode check = (CheckBoxNode) node.getUserObject();
 			if (check.getStatus() == CheckBoxStatus.INDETERMINATE) {
 				indeterminateCount++;
@@ -281,23 +294,23 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			final CheckBoxStatus status = CheckBoxStatus.DESELECTED;
 			parent.setUserObject(new CheckBoxNode(label, status));
 			OmegaDataBrowserLoadedDataBrowserPanel.this.updateLoadedData(
-			        parent, status);
+					parent, status);
 		} else if (selectedCount == parent.getChildCount()) {
 			final CheckBoxStatus status = CheckBoxStatus.SELECTED;
 			parent.setUserObject(new CheckBoxNode(label, status));
 			OmegaDataBrowserLoadedDataBrowserPanel.this.updateLoadedData(
-			        parent, status);
+					parent, status);
 		} else {
 			parent.setUserObject(new CheckBoxNode(label));
 		}
 	}
 	
 	private void updateAllChildrenUserObject(final DefaultMutableTreeNode root,
-	        final CheckBoxStatus status) {
+			final CheckBoxStatus status) {
 		final Enumeration breadth = root.breadthFirstEnumeration();
 		while (breadth.hasMoreElements()) {
 			final DefaultMutableTreeNode node = (DefaultMutableTreeNode) breadth
-			        .nextElement();
+					.nextElement();
 			if (root == node) {
 				continue;
 			}
@@ -305,22 +318,23 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			node.setUserObject(new CheckBoxNode(check.getLabel(), status));
 			
 			OmegaDataBrowserLoadedDataBrowserPanel.this.updateLoadedData(node,
-			        status);
+					status);
 		}
 	}
 	
 	private void updateLoadedData(final DefaultMutableTreeNode node,
-	        final CheckBoxStatus status) {
+			final CheckBoxStatus status) {
 		final String s = node.toString();
 		final OmegaElement element = this.nodeMap.get(s);
 		if (status == CheckBoxStatus.SELECTED) {
 			this.loadedData.addElement(element);
 		} else if (status == CheckBoxStatus.DESELECTED) {
 			this.loadedData.removeElement(element);
-			if (element instanceof OmegaAnalysisRunContainer) {
+			if (element instanceof OmegaAnalysisRunContainerInterface) {
 				this.browserPanel
-				        .deselectAllChildren((OmegaAnalysisRunContainer) element);
+						.deselectAllChildren((OmegaAnalysisRunContainerInterface) element);
 			}
+			this.browserPanel.fireEventImageDeselection();
 		}
 		this.browserPanel.fireDataChangedEvent();
 	}
@@ -369,7 +383,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 			s = "[" + project.getElementID() + "] " + project.getName();
 			this.nodeMap.put(s, project);
 			status = this.loadedData.containsProject(project)
-			        ? CheckBoxStatus.SELECTED : CheckBoxStatus.DESELECTED;
+					? CheckBoxStatus.SELECTED : CheckBoxStatus.DESELECTED;
 			projectNode.setUserObject(new CheckBoxNode(s, status));
 			for (final OmegaDataset dataset : project.getDatasets()) {
 				final DefaultMutableTreeNode datasetNode = new DefaultMutableTreeNode();
@@ -377,7 +391,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 				s = "[" + dataset.getElementID() + "] " + dataset.getName();
 				this.nodeMap.put(s, dataset);
 				status = this.loadedData.containsDataset(dataset)
-				        ? CheckBoxStatus.SELECTED : CheckBoxStatus.DESELECTED;
+						? CheckBoxStatus.SELECTED : CheckBoxStatus.DESELECTED;
 				datasetNode.setUserObject(new CheckBoxNode(s, status));
 				for (final OmegaImage image : dataset.getImages()) {
 					final DefaultMutableTreeNode imageNode = new DefaultMutableTreeNode();
@@ -385,8 +399,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 					s = "[" + image.getElementID() + "] " + image.getName();
 					this.nodeMap.put(s, image);
 					status = this.loadedData.containsImage(image)
-					        ? CheckBoxStatus.SELECTED
-					        : CheckBoxStatus.DESELECTED;
+							? CheckBoxStatus.SELECTED
+							: CheckBoxStatus.DESELECTED;
 					imageNode.setUserObject(new CheckBoxNode(s, status));
 					datasetNode.add(imageNode);
 				}

@@ -1,7 +1,5 @@
-/.apt_generated
 /bin
-/target/
 /target/
 /logs/
 /exported/
-/target/
+/.*

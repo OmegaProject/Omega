@@ -32,13 +32,12 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
-import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -105,7 +104,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 	}
 
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainer image) {
+	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
 			specificPanel.selectImage(image);
@@ -182,13 +181,13 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 	}
 
 	@Override
-	public OmegaPerson getAlgorithmAuthor() {
+	public String getAlgorithmAuthors() {
 		return OmegaAlgorithmsUtilities.getDefaultDeveloper();
 	}
 
 	@Override
-	public Double getAlgorithmVersion() {
-		return 1.0;
+	public String getAlgorithmVersion() {
+		return TMVConstants.PLUGIN_VERSION;
 	}
 
 	@Override

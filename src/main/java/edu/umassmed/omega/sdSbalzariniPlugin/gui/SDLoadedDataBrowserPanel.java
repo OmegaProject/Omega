@@ -112,7 +112,7 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 	private void addListeners() {
 		this.dataTree.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(final MouseEvent event) {
+			public void mouseReleased(final MouseEvent event) {
 				SDLoadedDataBrowserPanel.this.handleMouseClick(event.getPoint());
 			}
 		});
@@ -177,6 +177,8 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 	}
 	
 	public void selectTreeElement(final OmegaNamedElement element) {
+		if (this.dataTree.getRowCount() == 0)
+			return;
 		final String name = element.getName();
 		final String string = "[" + element.getElementID() + "] " + name;
 		final TreePath path = this.dataTree.getNextMatch(string, 0,
@@ -239,24 +241,23 @@ public class SDLoadedDataBrowserPanel extends GenericPanel {
 				
 				for (final OmegaAnalysisRun analysisRun : image
 						.getAnalysisRuns()) {
-					if (analysisRun instanceof OmegaParticleDetectionRun) {
-						if (!loadedAnalysisRuns.contains(analysisRun)) {
-							continue;
-						}
-						final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
-						// TODO pensare se questo e' il sistema migliore per
-						// verificare il corretto funzionamento!
-						if (!this.sdPanel
-								.checkIfThisAlgorithm(particleDetectionRun)) {
-							continue;
-						}
-						final DefaultMutableTreeNode analysisNode = new DefaultMutableTreeNode();
-						s = "[" + particleDetectionRun.getElementID() + "] "
-								+ particleDetectionRun.getName();
-						this.nodeMap.put(s, particleDetectionRun);
-						analysisNode.setUserObject(new CheckBoxNode(s, status));
-						imageNode.add(analysisNode);
+					if (!(analysisRun instanceof OmegaParticleDetectionRun)
+							|| !loadedAnalysisRuns.contains(analysisRun)) {
+						continue;
 					}
+					final OmegaParticleDetectionRun particleDetectionRun = (OmegaParticleDetectionRun) analysisRun;
+					// TODO pensare se questo e' il sistema migliore per
+					// verificare il corretto funzionamento!
+					if (!this.sdPanel
+							.checkIfThisAlgorithm(particleDetectionRun)) {
+						continue;
+					}
+					final DefaultMutableTreeNode analysisNode = new DefaultMutableTreeNode();
+					s = "[" + particleDetectionRun.getElementID() + "] "
+							+ particleDetectionRun.getName();
+					this.nodeMap.put(s, particleDetectionRun);
+					analysisNode.setUserObject(new CheckBoxNode(s, status));
+					imageNode.add(analysisNode);
 				}
 				
 				this.root.add(imageNode);

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmInformation;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
@@ -128,7 +128,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 				this.updateMessage(dataset,
 						"Saving dataset " + dataset.getName() + "...");
 				this.updateMaxProgress(dataset,
-				        this.elementSizeToSave.get(dataset));
+						this.elementSizeToSave.get(dataset));
 				long datasetID = dataset.getElementID();
 				if (datasetID == -1) {
 					datasetID = writer.saveDataset(dataset, projectID);
@@ -239,16 +239,16 @@ public class OmegaDBSaver extends OmegaDBWriter {
 											this.counter);
 									this.saveElements(frame,
 											OmegaMySqlCostants.FRAME_ID_FIELD,
-									        parents);
+											parents);
 								}
 							}
 						}
 						this.saveElements(pixels,
 								OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD,
-						        parents);
+								parents);
 					}
 					this.saveElements(image, OmegaMySqlCostants.IMAGE_ID_FIELD,
-					        parents);
+							parents);
 					parents.remove(image);
 				}
 				// this.updateMessage(dataset,
@@ -256,7 +256,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 				// this.updateMaxProgress(dataset,
 				// this.elementSizeToSave.get(dataset));
 				this.saveElements(dataset, OmegaMySqlCostants.DATASET_ID_FIELD,
-				        parents);
+						parents);
 				parents.remove(dataset);
 			}
 			// this.updateMessage(project, "Saving project " + project.getName()
@@ -264,19 +264,19 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			// this.updateMaxProgress(project,
 			// this.elementSizeToSave.get(project));
 			this.saveElements(project, OmegaMySqlCostants.PROJECT_ID_FIELD,
-			        parents);
+					parents);
 			parents.remove(project);
 		}
 	}
 
-	private void saveElements(final OmegaAnalysisRunContainer container,
-	        final String parentElementField, final List<OmegaElement> parents)
-	        throws SQLException, ParseException {
+	private void saveElements(final OmegaAnalysisRunContainerInterface container,
+			final String parentElementField, final List<OmegaElement> parents)
+			throws SQLException, ParseException {
 		final OmegaMySqlWriter writer = (OmegaMySqlWriter) this.getGateway();
 		final long parentElementID = ((OmegaElement) container).getElementID();
 		for (final OmegaAnalysisRun analysisRun : container.getAnalysisRuns()) {
 			this.updateMessage(analysisRun,
-			        "Saving analysis " + analysisRun.getName() + "...");
+					"Saving analysis " + analysisRun.getName() + "...");
 			final int elements = this.elementSizeToSave.get(analysisRun);
 			this.updateMaxProgress(analysisRun, elements);
 			int analysisCounter = 0;
@@ -285,9 +285,9 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			long experimenterID = analysisRun.getExperimenter().getElementID();
 			if (experimenterID == -1) {
 				final long personID = writer.savePerson(analysisRun
-				        .getExperimenter());
+						.getExperimenter());
 				experimenterID = writer.saveExperimenter(
-				        analysisRun.getExperimenter(), personID);
+						analysisRun.getExperimenter(), personID);
 				analysisRun.getExperimenter().setElementID(experimenterID);
 				for (final OmegaElement element : parents) {
 					int c = this.counters.get(element);
@@ -303,27 +303,26 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			}
 			final OmegaRunDefinition algoSpec = analysisRun.getAlgorithmSpec();
 			final OmegaAlgorithmInformation algoInfo = algoSpec
-			        .getAlgorithmInfo();
-			long authorID = algoInfo.getAuthor().getElementID();
-			if (authorID == -1) {
-				authorID = writer.savePerson(algoInfo.getAuthor());
-				algoInfo.getAuthor().setElementID(authorID);
-				for (final OmegaElement element : parents) {
-					int c = this.counters.get(element);
-					c++;
-					this.counters.put(element, c);
-					this.updateCurrentProgress(element, c);
-				}
-				analysisCounter++;
-				this.updateCurrentProgress(analysisRun, analysisCounter);
-				this.counters.put(analysisRun, analysisCounter);
-				this.counter++;
-				this.updateCurrentProgress(null, this.counter);
-			}
+					.getAlgorithmInfo();
+			// long authorID = algoInfo.getAuthor().getElementID();
+			// if (authorID == -1) {
+			// authorID = writer.savePerson(algoInfo.getAuthor());
+			// algoInfo.getAuthor().setElementID(authorID);
+			// for (final OmegaElement element : parents) {
+			// int c = this.counters.get(element);
+			// c++;
+			// this.counters.put(element, c);
+			// this.updateCurrentProgress(element, c);
+			// }
+			// analysisCounter++;
+			// this.updateCurrentProgress(analysisRun, analysisCounter);
+			// this.counters.put(analysisRun, analysisCounter);
+			// this.counter++;
+			// this.updateCurrentProgress(null, this.counter);
+			// }
 			long algoInfoID = algoInfo.getElementID();
 			if (algoInfoID == -1) {
-				algoInfoID = writer
-				        .saveAlgorithmInformation(algoInfo, authorID);
+				algoInfoID = writer.saveAlgorithmInformation(algoInfo);
 				algoInfo.setElementID(algoInfoID);
 				for (final OmegaElement element : parents) {
 					int c = this.counters.get(element);
@@ -340,7 +339,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			long algoSpecID = algoSpec.getElementID();
 			if (algoSpec.getElementID() == -1) {
 				algoSpecID = writer.saveAlgorithmSpecification(algoSpec,
-				        algoInfoID);
+						algoInfoID);
 				algoSpec.setElementID(algoSpecID);
 				for (final OmegaElement element : parents) {
 					int c = this.counters.get(element);
@@ -375,76 +374,76 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			long analysisID = analysisRun.getElementID();
 			if (analysisID == -1) {
 				analysisID = writer.saveAnalysisRun(analysisRun,
-				        experimenterID, algoSpecID);
+						experimenterID, algoSpecID);
 				analysisRun.setElementID(analysisID);
 				writer.saveAnalysisRunElementLink(analysisID,
-				        parentElementField, parentElementID);
+						parentElementField, parentElementID);
 				if (analysisRun instanceof OmegaParticleDetectionRun) {
 					final OmegaParticleDetectionRun detRun = (OmegaParticleDetectionRun) analysisRun;
 					this.saveParticles(writer, detRun.getResultingParticles(),
-					        detRun.getResultingParticlesValues(), analysisID);
+							detRun.getResultingParticlesValues(), analysisID);
 				} else if (analysisRun instanceof OmegaParticleLinkingRun) {
 					final OmegaParticleLinkingRun linkRun = (OmegaParticleLinkingRun) analysisRun;
 					this.saveTrajectories(writer,
-					        linkRun.getResultingTrajectories(), analysisID);
+							linkRun.getResultingTrajectories(), analysisID);
 				} else if (analysisRun instanceof OmegaTrajectoriesRelinkingRun) {
 					final OmegaTrajectoriesRelinkingRun relinkRun = (OmegaTrajectoriesRelinkingRun) analysisRun;
 					this.saveTrajectories(writer,
-					        relinkRun.getResultingTrajectories(), analysisID);
+							relinkRun.getResultingTrajectories(), analysisID);
 				} else if (analysisRun instanceof OmegaTrajectoriesSegmentationRun) {
 					final OmegaTrajectoriesSegmentationRun segmRun = (OmegaTrajectoriesSegmentationRun) analysisRun;
 					long segmTypesID = segmRun.getSegmentationTypes()
-					        .getElementID();
+							.getElementID();
 					if (segmTypesID == -1) {
 						segmTypesID = writer.saveSegmentationTypes(segmRun
-						        .getSegmentationTypes());
+								.getSegmentationTypes());
 						writer.saveAnalysisSegmentationTypesLink(analysisID,
 								segmTypesID);
 					}
 					this.saveSegmentationTypes(writer, segmRun
-					        .getSegmentationTypes().getTypes(), segmTypesID);
+							.getSegmentationTypes().getTypes(), segmTypesID);
 					this.saveSegments(writer, segmRun.getResultingSegments(),
-					        segmTypesID, analysisID);
+							segmTypesID, analysisID);
 				} else if (analysisRun instanceof OmegaTrackingMeasuresIntensityRun) {
 					final OmegaTrackingMeasuresIntensityRun measureIntensityRun = (OmegaTrackingMeasuresIntensityRun) analysisRun;
 					final long trackingMeasuresID = writer
-					        .saveTrackingMeasuresRun(measureIntensityRun,
-					                analysisID);
+							.saveTrackingMeasuresRun(measureIntensityRun,
+									analysisID);
 					this.saveTrackingMeasuresSegmentLink(writer,
-					        measureIntensityRun.getSegments(),
-					        trackingMeasuresID);
+							measureIntensityRun.getSegments(),
+							trackingMeasuresID);
 					writer.saveIntensityTrackingMeasuresRun(
-					        measureIntensityRun, trackingMeasuresID);
+							measureIntensityRun, trackingMeasuresID);
 				} else if (analysisRun instanceof OmegaTrackingMeasuresVelocityRun) {
 					final OmegaTrackingMeasuresVelocityRun measureVelocityRun = (OmegaTrackingMeasuresVelocityRun) analysisRun;
 					final long trackingMeasuresID = writer
-					        .saveTrackingMeasuresRun(measureVelocityRun,
-					                analysisID);
+							.saveTrackingMeasuresRun(measureVelocityRun,
+									analysisID);
 					this.saveTrackingMeasuresSegmentLink(writer,
-					        measureVelocityRun.getSegments(),
-					        trackingMeasuresID);
+							measureVelocityRun.getSegments(),
+							trackingMeasuresID);
 					writer.saveVelocityTrackingMeasuresRun(measureVelocityRun,
-					        trackingMeasuresID);
+							trackingMeasuresID);
 				} else if (analysisRun instanceof OmegaTrackingMeasuresMobilityRun) {
 					final OmegaTrackingMeasuresMobilityRun measureMobilityRun = (OmegaTrackingMeasuresMobilityRun) analysisRun;
 					final long trackingMeasuresID = writer
-					        .saveTrackingMeasuresRun(measureMobilityRun,
-					                analysisID);
+							.saveTrackingMeasuresRun(measureMobilityRun,
+									analysisID);
 					this.saveTrackingMeasuresSegmentLink(writer,
-					        measureMobilityRun.getSegments(),
-					        trackingMeasuresID);
+							measureMobilityRun.getSegments(),
+							trackingMeasuresID);
 					writer.saveMobilityTrackingMeasuresRun(measureMobilityRun,
-					        trackingMeasuresID);
+							trackingMeasuresID);
 				} else if (analysisRun instanceof OmegaTrackingMeasuresDiffusivityRun) {
 					final OmegaTrackingMeasuresDiffusivityRun measureDiffusivityRun = (OmegaTrackingMeasuresDiffusivityRun) analysisRun;
 					final long trackingMeasuresID = writer
-					        .saveTrackingMeasuresRun(measureDiffusivityRun,
-					                analysisID);
+							.saveTrackingMeasuresRun(measureDiffusivityRun,
+									analysisID);
 					this.saveTrackingMeasuresSegmentLink(writer,
-					        measureDiffusivityRun.getSegments(),
-					        trackingMeasuresID);
+							measureDiffusivityRun.getSegments(),
+							trackingMeasuresID);
 					writer.saveDiffusivityTrackingMeasuresRun(
-					        measureDiffusivityRun, trackingMeasuresID);
+							measureDiffusivityRun, trackingMeasuresID);
 				} else if (analysisRun instanceof OmegaSNRRun) {
 					final OmegaSNRRun snrRun = (OmegaSNRRun) analysisRun;
 					writer.saveSNRRun(snrRun);
@@ -465,7 +464,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			}
 			// parents.add(analysisRun);
 			this.saveElements(analysisRun,
-			        OmegaMySqlCostants.ANALYSIS_PARENT_ID_FIELD, parents);
+					OmegaMySqlCostants.ANALYSIS_PARENT_ID_FIELD, parents);
 			// parents.remove(analysisRun);
 		}
 	}
@@ -491,8 +490,8 @@ public class OmegaDBSaver extends OmegaDBWriter {
 	}
 
 	private void saveTrajectories(final OmegaMySqlWriter writer,
-	        final List<OmegaTrajectory> tracks, final long analysisRunID)
-	        throws SQLException {
+			final List<OmegaTrajectory> tracks, final long analysisRunID)
+			throws SQLException {
 		for (final OmegaTrajectory trajectory : tracks) {
 			long trajectoryID = trajectory.getElementID();
 			// System.out.println(trajectory.getName() + " " + trajectoryID);
@@ -512,7 +511,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 
 	private void saveSegmentationTypes(final OmegaMySqlWriter writer,
 			final List<OmegaSegmentationType> segmTypes, final long segmTypesID)
-	        throws SQLException {
+			throws SQLException {
 		for (final OmegaSegmentationType segmType : segmTypes) {
 			long segmTypeID = segmType.getElementID();
 			if (segmTypeID == -1) {
@@ -524,15 +523,15 @@ public class OmegaDBSaver extends OmegaDBWriter {
 	}
 
 	private void saveSegments(final OmegaMySqlWriter writer,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        final long segmTypesID, final long analysisID) throws SQLException {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
+			final long segmTypesID, final long analysisID) throws SQLException {
 		for (final OmegaTrajectory trajectory : segments.keySet()) {
 			final List<OmegaSegment> trackSegments = segments.get(trajectory);
 			for (final OmegaSegment segment : trackSegments) {
 				long segmentID = segment.getElementID();
 				if (segmentID == -1) {
 					long startingROIID = segment.getStartingROI()
-					        .getElementID();
+							.getElementID();
 					// System.out.print(startingROIID + " - ");
 					if (segment.getStartingROI() instanceof OmegaParticle) {
 						startingROIID = this.particleROIMap.get(startingROIID);
@@ -547,8 +546,8 @@ public class OmegaDBSaver extends OmegaDBWriter {
 					}
 					// System.out.println();
 					segmentID = writer.saveSegment(segment,
-					        trajectory.getElementID(), analysisID,
-					        startingROIID, endingROIID);
+							trajectory.getElementID(), analysisID,
+							startingROIID, endingROIID);
 					segment.setElementID(segmentID);
 				}
 			}
@@ -571,7 +570,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 	private void prepareElementsToSave() throws SQLException {
 		for (final OmegaProject project : this.projectsToSave) {
 			this.updateMessage(project,
-			        "Preparing project " + project.getName() + "...");
+					"Preparing project " + project.getName() + "...");
 			int projectElements = 0;
 			long projectID = project.getElementID();
 			final long projectOMEID = project.getOmeroId();
@@ -587,7 +586,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 			}
 			for (final OmegaDataset dataset : project.getDatasets()) {
 				this.updateMessage(dataset,
-				        "Preparing dataset " + dataset.getName() + "...");
+						"Preparing dataset " + dataset.getName() + "...");
 				int datasetElements = 0;
 				long datasetID = dataset.getElementID();
 				final long datasetOMEID = dataset.getOmeroId();
@@ -603,7 +602,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 				}
 				for (final OmegaImage image : dataset.getImages()) {
 					this.updateMessage(image,
-					        "Preparing image " + image.getName() + "...");
+							"Preparing image " + image.getName() + "...");
 					int imageElements = 0;
 					long experimenterID = image.getExperimenter()
 							.getElementID();
@@ -637,7 +636,7 @@ public class OmegaDBSaver extends OmegaDBWriter {
 						final long imagePixelsOMEID = pixels.getOmeroId();
 						if ((imagePixelsID == -1) && (imagePixelsOMEID != -1)) {
 							imagePixelsID = this.reader
-							        .getImagePixelsID(imagePixelsOMEID);
+									.getImagePixelsID(imagePixelsOMEID);
 							pixels.setElementID(imageID);
 						}
 						if (imagePixelsID == -1) {
@@ -677,12 +676,12 @@ public class OmegaDBSaver extends OmegaDBWriter {
 		// this.totalNum = this.toBeSaved.size();
 	}
 
-	private int prepareElementsToSave(final OmegaAnalysisRunContainer container)
+	private int prepareElementsToSave(final OmegaAnalysisRunContainerInterface container)
 			throws SQLException {
 		int containerElements = 0;
 		for (final OmegaAnalysisRun analysisRun : container.getAnalysisRuns()) {
 			this.updateMessage(analysisRun,
-			        "Preparing analysis " + analysisRun.getName() + "...");
+					"Preparing analysis " + analysisRun.getName() + "...");
 			int analysisElements = 0;
 			if (analysisRun.getElementID() == -1) {
 				if (!this.toBeSaved.contains(analysisRun)) {
@@ -717,13 +716,13 @@ public class OmegaDBSaver extends OmegaDBWriter {
 					analysisElements++;
 				}
 			}
-			if (algoInfo.getAuthor().getElementID() == -1) {
-				// this.personNum++;
-				if (!this.toBeSaved.contains(algoInfo.getAuthor())) {
-					this.toBeSaved.add(algoInfo.getAuthor());
-					analysisElements++;
-				}
-			}
+			// if (algoInfo.getAuthor().getElementID() == -1) {
+			// // this.personNum++;
+			// if (!this.toBeSaved.contains(algoInfo.getAuthor())) {
+			// this.toBeSaved.add(algoInfo.getAuthor());
+			// analysisElements++;
+			// }
+			// }
 			for (final OmegaParameter param : algoSpec.getParameters()) {
 				// this.paramNum++;
 				if (!this.toBeSaved.contains(param)) {

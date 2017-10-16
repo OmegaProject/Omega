@@ -10,7 +10,7 @@ import java.util.Map;
 import edu.umassmed.omega.commons.data.analysisRunElements.AnalysisRunType;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmInformation;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
@@ -27,7 +27,6 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaExperimenter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
-import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaParticle;
@@ -42,9 +41,9 @@ import edu.umassmed.omega.core.mysql.OmegaMySqlCostants;
 import edu.umassmed.omega.core.mysql.OmegaMySqlReader;
 
 public class OmegaDBLoader extends OmegaDBRunnable {
-	
+
 	private final List<OmegaProject> projectsToLoad;
-	
+
 	private int counter;
 	private final Map<Object, Integer> counters;
 	private final List<Long> projectsToBeLoaded, datasetsToBeLoaded,
@@ -55,7 +54,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			datasetElementSizeToLoad, imageElementSizeToLoad,
 			analysisElementSizeToLoad;
 	private final int loadType;
-	
+
 	private final Map<Long, OmegaPlane> loadedPlanes;
 	private final Map<Long, OmegaROI> loadedROIs;
 	private final Map<Long, OmegaTrajectory> loadedTracks;
@@ -63,15 +62,15 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 	private final Map<Long, OmegaSegmentationTypes> loadedSegmentationTypes;
 	private final Map<Long, OmegaSegmentationType> loadedSegmentationType;
 	private final Map<Long, OmegaAnalysisRun> loadedAnalysisRun;
-	
+
 	public OmegaDBLoader(final OmegaApplication omegaApp,
 			final OmegaMySqlReader reader, final GenericProgressDialog dialog,
 			final List<OmegaProject> projects, final int loadType) {
 		super(omegaApp, reader, dialog);
 		this.projectsToLoad = projects;
-		
+
 		this.loadType = loadType;
-		
+
 		this.projectsToBeLoaded = new ArrayList<Long>();
 		this.datasetsToBeLoaded = new ArrayList<Long>();
 		this.imagesToBeLoaded = new ArrayList<Long>();
@@ -83,12 +82,12 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.framesToBeLoaded = new ArrayList<Long>();
 		this.algoSpecsToBeLoaded = new ArrayList<Long>();
 		this.counters = new LinkedHashMap<Object, Integer>();
-		
+
 		this.projectElementSizeToLoad = new LinkedHashMap<Long, Integer>();
 		this.datasetElementSizeToLoad = new LinkedHashMap<Long, Integer>();
 		this.imageElementSizeToLoad = new LinkedHashMap<Long, Integer>();
 		this.analysisElementSizeToLoad = new LinkedHashMap<Long, Integer>();
-		
+
 		this.loadedPlanes = new LinkedHashMap<Long, OmegaPlane>();
 		this.loadedROIs = new LinkedHashMap<Long, OmegaROI>();
 		this.loadedTracks = new LinkedHashMap<Long, OmegaTrajectory>();
@@ -97,7 +96,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadedSegmentationType = new LinkedHashMap<Long, OmegaSegmentationType>();
 		this.loadedAnalysisRun = new LinkedHashMap<Long, OmegaAnalysisRun>();
 	}
-	
+
 	@Override
 	public void run() {
 		this.counter = 0;
@@ -131,12 +130,12 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				// this.setDialogClosable();
 			}
 		} else {
-			
+
 		}
 		this.setDialogClosable();
 		this.notifyProcessEndToApplication();
 	}
-	
+
 	private void loadElements() throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
 		final List<OmegaElement> parents = new ArrayList<OmegaElement>();
@@ -315,7 +314,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 								}
 							}
 						}
-						
+
 						this.loadImagePixelsElements(pixels.getElementID(),
 								pixels,
 								OmegaMySqlCostants.IMAGEPIXELS_ID_FIELD,
@@ -342,9 +341,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			parents.remove(project);
 		}
 	}
-	
+
 	private void loadProjectElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -353,9 +352,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadDatasetElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -364,9 +363,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadImageElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -375,9 +374,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadImagePixelsElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -386,9 +385,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadFrameElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -397,9 +396,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadAnalysisElements(final Long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final String parentElementField, final List<OmegaElement> parents)
 			throws SQLException, ParseException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -408,9 +407,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		this.loadElements(containerID, container, analysisIDs,
 				parentElementField, parents);
 	}
-	
+
 	private void loadElements(final long containerID,
-			final OmegaAnalysisRunContainer container,
+			final OmegaAnalysisRunContainerInterface container,
 			final List<Long> analysisIDs, final String parentElementField,
 			final List<OmegaElement> parents) throws SQLException,
 			ParseException {
@@ -462,34 +461,35 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				// TODO error
 			}
 			final long algoInfoID = algoInfoIDs.get(0);
-			final List<Long> authorIDs = reader
-					.getAlgorithmInformationAuthorID(algoInfoID);
-			if (authorIDs.size() > 1) {
-				// TODO error
-			}
-			final long authorID = authorIDs.get(0);
-			OmegaPerson author = null;
-			if ((authorID != -1) && this.personsToBeLoaded.contains(authorID)) {
-				author = reader.loadPerson(authorID);
-				for (final OmegaElement element : parents) {
-					int c = this.counters.get(element);
-					c++;
-					this.counters.put(element, c);
-					this.updateCurrentProgress(element, c);
-				}
-				analysisCounter++;
-				this.updateCurrentProgress(1, analysisCounter);
-				this.counters.put(analysisID, analysisCounter);
-				this.counter++;
-				this.updateCurrentProgress(null, this.counter);
-			}
-			if (author == null) {
-				// TODO ERROR THROW EXCEPTION
-			}
+			// final List<Long> authorIDs = reader
+			// .getAlgorithmInformationAuthorID(algoInfoID);
+			// if (authorIDs.size() > 1) {
+			// // TODO error
+			// }
+			// final long authorID = authorIDs.get(0);
+			// OmegaPerson author = null;
+			// if ((authorID != -1) &&
+			// this.personsToBeLoaded.contains(authorID)) {
+			// author = reader.loadPerson(authorID);
+			// for (final OmegaElement element : parents) {
+			// int c = this.counters.get(element);
+			// c++;
+			// this.counters.put(element, c);
+			// this.updateCurrentProgress(element, c);
+			// }
+			// analysisCounter++;
+			// this.updateCurrentProgress(1, analysisCounter);
+			// this.counters.put(analysisID, analysisCounter);
+			// this.counter++;
+			// this.updateCurrentProgress(null, this.counter);
+			// }
+			// if (author == null) {
+			// // TODO ERROR THROW EXCEPTION
+			// }
 			OmegaAlgorithmInformation algoInfo = null;
 			if ((algoInfoID != -1)
 					&& this.algoInfosToBeLoaded.contains(algoInfoID)) {
-				algoInfo = reader.loadAlgorithmInformation(algoInfoID, author);
+				algoInfo = reader.loadAlgorithmInformation(algoInfoID);
 				for (final OmegaElement element : parents) {
 					int c = this.counters.get(element);
 					c++;
@@ -554,13 +554,13 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				} else if (type == AnalysisRunType.OmegaParticleLinkingRun) {
 					analysisRun = this.loadParticleLinkingRun(reader,
 							container, analysisID, exp, algoSpec);
-					
+
 				} else if (type == AnalysisRunType.OmegaParticleDetectionRun) {
 					analysisRun = this.loadParticleDetectionRun(reader,
 							container, analysisID, exp, algoSpec);
-					
+
 				} else {
-					
+
 				}
 				this.loadedAnalysisRun.put(analysisID, analysisRun);
 			}
@@ -582,19 +582,31 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			// parents.remove(analysisRun);
 		}
 	}
-	
+
 	private OmegaSNRRun loadSNRRun(final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
-		final Map<Long, Double> resultingImageNoise = reader
-				.loadSNRPlaneNoises(analysisID);
-		final Map<OmegaPlane, Double> resultingImageNoiseMap = this
-				.transformPlaneDoubleValuesMap(resultingImageNoise);
+		final Map<Long, Double> resultingImageAvgCenterSignal = reader
+				.loadSNRPlaneAvgCenterSignal(analysisID);
+		final Map<OmegaPlane, Double> resultingImageAvgCenterSignalMap = this
+				.transformPlaneDoubleValuesMap(resultingImageAvgCenterSignal);
+		final Map<Long, Double> resultingImageAvgPeakSignal = reader
+				.loadSNRPlaneAvgPeakSignal(analysisID);
+		final Map<OmegaPlane, Double> resultingImageAvgPeakSignalMap = this
+				.transformPlaneDoubleValuesMap(resultingImageAvgPeakSignal);
+		final Map<Long, Double> resultingImageAvgMeanSignal = reader
+				.loadSNRPlaneAvgMeanSignal(analysisID);
+		final Map<OmegaPlane, Double> resultingImageAvgMeanSignalMap = this
+				.transformPlaneDoubleValuesMap(resultingImageAvgMeanSignal);
 		final Map<Long, Double> resultingImageBGR = reader
 				.loadSNRPlaneBGR(analysisID);
 		final Map<OmegaPlane, Double> resultingImageBGRMap = this
 				.transformPlaneDoubleValuesMap(resultingImageBGR);
+		final Map<Long, Double> resultingImageNoise = reader
+				.loadSNRPlaneNoises(analysisID);
+		final Map<OmegaPlane, Double> resultingImageNoiseMap = this
+				.transformPlaneDoubleValuesMap(resultingImageNoise);
 		final Map<Long, Double> resultingImageAverageSNR = reader
 				.loadSNRPlaneAverageSNR(analysisID);
 		final Map<OmegaPlane, Double> resultingImageAverageSNRMap = this
@@ -652,7 +664,9 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		final Map<OmegaROI, Double> resultingLocalErrorIndexSNRMap = this
 				.transformROIDoubleValuesMap(resultingLocalErrorIndexSNR);
 		return reader.loadSNRAnalysis(analysisID, exp, algoSpec,
-				resultingImageNoiseMap, resultingImageBGRMap,
+				resultingImageAvgCenterSignalMap,
+				resultingImageAvgPeakSignalMap, resultingImageAvgMeanSignalMap,
+				resultingImageBGRMap, resultingImageNoiseMap,
 				resultingImageAverageSNRMap, resultingImageMinimumSNRMap,
 				resultingImageMaximumSNRMap,
 				resultingImageAverageErrorIndexSNRMap,
@@ -663,7 +677,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				resultingLocalBackgroundMap, resultingLocalNoiseMap,
 				resultingLocalSNRMap, resultingLocalErrorIndexSNRMap);
 	}
-	
+
 	private Map<OmegaROI, Integer> transformROIIntegerValuesMap(
 			final Map<Long, Integer> loadedValuesMap) {
 		final Map<OmegaROI, Integer> valuesMap = new LinkedHashMap<OmegaROI, Integer>();
@@ -678,7 +692,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return valuesMap;
 	}
-	
+
 	private Map<OmegaROI, Double> transformROIDoubleValuesMap(
 			final Map<Long, Double> loadedValuesMap) {
 		final Map<OmegaROI, Double> valuesMap = new LinkedHashMap<OmegaROI, Double>();
@@ -693,7 +707,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return valuesMap;
 	}
-	
+
 	private Map<OmegaPlane, Double> transformPlaneDoubleValuesMap(
 			final Map<Long, Double> loadedValuesMap) {
 		final Map<OmegaPlane, Double> valuesMap = new LinkedHashMap<OmegaPlane, Double>();
@@ -708,10 +722,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return valuesMap;
 	}
-	
+
 	private OmegaTrackingMeasuresDiffusivityRun loadTrackingMeasuresDiffusivityRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackingMeasuresIDs = reader
@@ -837,10 +851,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				smssLogSegmentMap, errorLogSegmentMap, minDetectableODC,
 				snrRun, diffusivityRun);
 	}
-	
+
 	private OmegaTrackingMeasuresMobilityRun loadTrackingMeasuresMobilityRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackingMeasuresIDs = reader
@@ -922,10 +936,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				confinementRatioSegmentMap,
 				anglesAndDirectionalChangesSegmentMap);
 	}
-	
+
 	private OmegaTrackingMeasuresVelocityRun loadTrackingMeasuresVelocityRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackingMeasuresIDs = reader
@@ -999,10 +1013,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				averageStraightLineVelocitySegmentMap,
 				forwardProgressionLinearitySegmentMap);
 	}
-	
+
 	private OmegaTrackingMeasuresIntensityRun loadTrackingMeasuresIntensityRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackingMeasuresIDs = reader
@@ -1072,7 +1086,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 					.getResultingLocalNoises();
 			final Map<OmegaROI, Double> snrsMap = snrRun
 					.getResultingLocalSNRs();
-
+			
 			for (final OmegaTrajectory track : segmentsMap.keySet()) {
 				for (final OmegaROI roi : track.getROIs()) {
 					peakSignalsLocalMap.put(roi,
@@ -1141,7 +1155,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				backgroundsLocalMap, noisesLocalMap, areasLocalMap,
 				snrsLocalMap, snrRun);
 	}
-	
+
 	private Map<OmegaSegment, Integer> transformSingleIntegerValuesMapToSegmentValuesMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Integer> loadedValuesMap) {
@@ -1158,7 +1172,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private Map<OmegaSegment, Double> transformSingleDoubleValuesMapToSegmentValuesMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Double> loadedValuesMap) {
@@ -1175,7 +1189,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private Map<OmegaSegment, List<Double[]>> transformIndexedDoubleValuesArrayMapToSegmentValuesListMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Map<Integer, Double[]>> loadedValuesMap) {
@@ -1198,7 +1212,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private Map<OmegaSegment, List<Double>> transformIndexedDoubleValuesMapToSegmentValuesListMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Map<Integer, Double>> loadedValuesMap) {
@@ -1221,7 +1235,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private Map<OmegaSegment, Double[][]> transformDoubleIndexedValuesMapToSegmentValuesArrayMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Map<Integer, Map<Integer, Double>>> loadedValuesMap) {
@@ -1249,7 +1263,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-
+	
 	private Map<OmegaSegment, Double[]> transformValuesMapToSegmentValuesArrayMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Double[]> loadedValuesMap) {
@@ -1267,7 +1281,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private Map<OmegaSegment, Double[]> transformIndexedValuesMapToSegmentValuesArrayMap(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final Map<Long, Map<Integer, Double>> loadedValuesMap) {
@@ -1289,10 +1303,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return segmentValuesMap;
 	}
-	
+
 	private OmegaTrajectoriesSegmentationRun loadTrajectoriesSegmentationRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> segmentsID = reader.getSegmentIDs(analysisID);
@@ -1361,10 +1375,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		return reader.loadSegmentationAnalysis(analysisID, exp, algoSpec,
 				resultingSegments, segmentationTypes);
 	}
-	
+
 	private OmegaTrajectoriesRelinkingRun loadTrajectoriesRelinkingRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackIDs = reader.getTrajectoriesIDs(analysisID);
@@ -1389,10 +1403,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		return reader.loadRelinkingAnalysis(analysisID, exp, algoSpec,
 				resultingTrajectories);
 	}
-	
+
 	private OmegaParticleLinkingRun loadParticleLinkingRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		final List<Long> trackIDs = reader.getTrajectoriesIDs(analysisID);
@@ -1417,10 +1431,10 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		return reader.loadLinkingAnalysis(analysisID, exp, algoSpec,
 				resultingTrajectories);
 	}
-	
+
 	private OmegaParticleDetectionRun loadParticleDetectionRun(
 			final OmegaMySqlReader reader,
-			final OmegaAnalysisRunContainer container, final long analysisID,
+			final OmegaAnalysisRunContainerInterface container, final long analysisID,
 			final OmegaExperimenter exp, final OmegaRunDefinition algoSpec)
 			throws SQLException, ParseException {
 		// TODO NEED TO LOAD FRAMES HERE
@@ -1457,7 +1471,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		return reader.loadDetectionAnalysis(analysisID, exp, algoSpec,
 				resultingParticles, resultingParticlesValues);
 	}
-	
+
 	private Map<OmegaPlane, List<OmegaROI>> loadParticles(
 			final OmegaMySqlReader reader, final long analysisRunID,
 			final Map<Long, OmegaPlane> frames) throws SQLException {
@@ -1503,7 +1517,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return particleMap;
 	}
-	
+
 	private Map<OmegaROI, Map<String, Object>> loadParticleValues(
 			final OmegaMySqlReader reader, final Long analysisID,
 			final Map<OmegaPlane, List<OmegaROI>> particles)
@@ -1534,7 +1548,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 		}
 		return particleValues;
 	}
-	
+
 	private void prepareElementsToLoad() throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
 		for (final OmegaProject project : this.projectsToLoad) {
@@ -1648,7 +1662,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			this.projectElementSizeToLoad.put(projectID, projectElements);
 		}
 	}
-	
+
 	private int prepareProjectElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1656,7 +1670,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getProjectContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareDatasetElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1664,7 +1678,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getDatasetContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareImageElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1672,7 +1686,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getImageContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareImagePixelsElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1680,7 +1694,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getImagePixelsContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareFrameElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1688,7 +1702,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getFrameContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareAnalysisElementsToLoad(final Long containerID)
 			throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1696,7 +1710,7 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 				.getAnalysisContainerAnalysisIDs(containerID);
 		return this.prepareElementsToLoad(containerID, analysisIDs);
 	}
-	
+
 	private int prepareElementsToLoad(final Long containerID,
 			final List<Long> analysisIDs) throws SQLException {
 		final OmegaMySqlReader reader = (OmegaMySqlReader) this.getGateway();
@@ -1738,23 +1752,23 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			if (!this.algoInfosToBeLoaded.contains(algoInfoID)) {
 				this.algoInfosToBeLoaded.add(algoInfoID);
 			}
-			final List<Long> authorIDs = reader
-					.getAlgorithmInformationAuthorID(algoInfoID);
-			if (authorIDs.size() > 1) {
-				// TODO error
-			}
-			final long authorID = authorIDs.get(0);
-			analysisElements++;
-			if (!this.personsToBeLoaded.contains(authorID)) {
-				this.personsToBeLoaded.add(authorID);
-			}
+			// final List<Long> authorIDs = reader
+			// .getAlgorithmInformationAuthorID(algoInfoID);
+			// if (authorIDs.size() > 1) {
+			// // TODO error
+			// }
+			// final long authorID = authorIDs.get(0);
+			// analysisElements++;
+			// if (!this.personsToBeLoaded.contains(authorID)) {
+			// this.personsToBeLoaded.add(authorID);
+			// }
 			this.analysisElementSizeToLoad.put(analysisID, analysisElements);
 			analysisElements += this.prepareAnalysisElementsToLoad(analysisID);
 			containerElements += analysisElements;
 		}
 		return containerElements;
 	}
-	
+
 	// Old system
 	private void oldRun() {
 		final int projectsSize = this.projectsToLoad.size();
@@ -1800,6 +1814,6 @@ public class OmegaDBLoader extends OmegaDBRunnable {
 			}
 		}
 		this.notifyProcessEndToApplication();
-		
+
 	}
 }

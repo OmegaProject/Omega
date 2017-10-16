@@ -29,6 +29,8 @@ package edu.umassmed.omega.snrSbalzariniPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+
 public class SNRConstants {
 	public static String PARAM_SNR_METHOD = "SNR Model";
 	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum";
@@ -37,15 +39,15 @@ public class SNRConstants {
 
 	public static final String EXECUTE_BUTTON = "Execute queue";
 
-	public static final String PLUGIN_AUTHOR_FIRSTNAME = "I. F.";
-	public static final String PLUGIN_AUTHOR_LASTNAME = "Sbalzarini";
+	public static final String PLUGIN_AUTHORS = "I.F. Sbalzarini";
 	public static final String PLUGIN_SHORTNAME = "MOSAIC SE";
 	public static final String PLUGIN_NAME = "MOSAIC SNR Estimation";
+	public static final String PLUGIN_VERSION = "1.0";
 	public static final String PLUGIN_DESC = "This plugin control the execution of a simple local Signal to Noise ratio (SNR) estimation routine developed by Ivo Sbalzarini.The plugin allows to launch multiple sequential runs on either the same and different images. This facilitates parameter optimization and trouble shooting by allowing the user to easily associate the parameters used for each run with the analysis results.";
-	public static final String PLUGIN_ALGO_DESC = "This algorithm estimates the local signal to noise ratio associated with previously detected individual bright spots. It works by [MISSING INFO] ";
+	public static final String PLUGIN_ALGO_DESC = "This algorithm estimates the local signal to noise ratio (SNR) associated with each bright spot identified and localized during particle detection. It utilizes particle coordinates estimated by the spot detection algorithm and intensities from associated image-planes to extract intensity values and estimate background, noise and SNR associated with the area immediately surrounding each bright spot. Specifically, the algorithm first determines the global background and noise associated with the entire image plane where each particle is localized. It then utilizes the particle size as defined by the user to draw a square area around each particle’s centroid and identify the brightest pixel within the particle area. Finally it estimates local noise, background and SNR based on the Bhattacharya Poisson, the Bhattacharya Gaussian and the Cheezum SNR models. After calculating local SNR values, the algorithm returns aggregate SNR values at the trajectory, plane and image level.";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 			.getTime();
-	public static final String PLUGIN_REFERENCE = "";
+	public static final String PLUGIN_REFERENCE = OmegaGUIConstants.NOT_ASSIGNED;;
 
 	public static final String TAB_ROI = "ROI results";
 	public static final String TAB_PLANE = "Plane results";

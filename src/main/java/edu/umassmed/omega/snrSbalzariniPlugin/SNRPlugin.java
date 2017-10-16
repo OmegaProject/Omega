@@ -30,10 +30,9 @@ import java.util.Date;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.commons.data.coreElements.OmegaPerson;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -45,52 +44,51 @@ import edu.umassmed.omega.snrSbalzariniPlugin.gui.SNRPluginPanel;
 public class SNRPlugin extends OmegaSNRPlugin implements
 		OmegaDataDisplayerPluginInterface,
 		OmegaSelectParticleDetectionRunPluginInterface {
-	
+
 	public SNRPlugin() {
 		super(1);
 	}
-	
+
 	public SNRPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-	
+
 	@Override
 	public String getAlgorithmDescription() {
 		return SNRConstants.PLUGIN_ALGO_DESC;
 	}
-	
+
 	@Override
-	public OmegaPerson getAlgorithmAuthor() {
-		return new OmegaPerson(SNRConstants.PLUGIN_AUTHOR_FIRSTNAME,
-				SNRConstants.PLUGIN_AUTHOR_LASTNAME);
+	public String getAlgorithmAuthors() {
+		return SNRConstants.PLUGIN_AUTHORS;
 	}
-	
+
 	@Override
-	public Double getAlgorithmVersion() {
-		return 1.0;
+	public String getAlgorithmVersion() {
+		return SNRConstants.PLUGIN_VERSION;
 	}
-	
+
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return SNRConstants.PLUGIN_PUBL;
 	}
-	
+
 	@Override
 	public String getName() {
 		return SNRConstants.PLUGIN_NAME;
 	}
-	
+
 	@Override
 	public String getShortName() {
 		return SNRConstants.PLUGIN_SHORTNAME;
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
@@ -99,7 +97,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
-	
+
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -108,7 +106,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-	
+
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -117,20 +115,20 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return SNRConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainer image) {
+	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SNRPluginPanel specificPanel = (SNRPluginPanel) panel;
 			specificPanel.selectImage(image);
 		}
 	}
-	
+
 	@Override
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
@@ -139,7 +137,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectSNRRun(final OmegaSNRRun analysisRun) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -147,7 +145,7 @@ public class SNRPlugin extends OmegaSNRPlugin implements
 			specificPanel.selectSNRRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public String getReference() {
 		return SNRConstants.PLUGIN_REFERENCE;
