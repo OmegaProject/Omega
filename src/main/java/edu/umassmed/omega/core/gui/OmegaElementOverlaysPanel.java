@@ -557,6 +557,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayPL_cmb.setSelectedIndex(-1);
 		this.overlayTR_cmb.setEnabled(false);
 		this.overlayTR_cmb.setSelectedIndex(-1);
+		this.overlayTS_cmb.setEnabled(false);
+		this.overlayTS_cmb.setSelectedIndex(-1);
 		this.sidePanel.setParticles(null);
 		this.sidePanel.setTrajectories(null);
 		this.sidePanel.setSegments(null);
@@ -644,6 +646,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayPD_cmb.removeAllItems();
 		this.overlayPL_cmb.removeAllItems();
 		this.overlayTR_cmb.removeAllItems();
+		this.overlayTS_cmb.removeAllItems();
 	}
 	
 	public void setOverlayControl(final boolean enabled) {
