@@ -30,16 +30,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class PLConstants {
-	
+
 	public static final String PARAM_MOVTYPE_BROWNIAN = "Brownian";
 	public static final String PARAM_MOVTYPE_STRAIGHT = "Straight lines";
 	public static final String PARAM_MOVTYPE_COSVEL = "Costant velocity";
-	
+
 	public static final String PARAM_OPTIMIZER_GREEDY = "Greedy";
 	public static final String PARAM_OPTIMIZER_HUNGARIAN = "Hungarian";
-	
+
 	public static final String EXECUTE_BUTTON = "Execute Queue";
-	
+
+	public static final String RESULTS_TABNAME = "Linking results";
+
 	public static final String PLUGIN_NAME = "MOSAIC feature point tracker";
 	public static final String PLUGIN_SNAME = "MOSAIC FPT";
 	public static final String PLUGIN_VERSION = "1.0.7";
