@@ -6,47 +6,48 @@ import java.util.GregorianCalendar;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TRConstants {
-
+	
 	public static final String SELECT_IMAGE = OmegaGUIConstants.SELECT_IMAGE;
 	public static final String SELECT_TRACKS_SPOT = OmegaGUIConstants.SELECT_TRACKS_SPOT;
 	public static final String SELECT_TRACKS_LINKING = OmegaGUIConstants.SELECT_TRACKS_LINKING;
 	public static final String SELECT_TRACKS_ADJ = OmegaGUIConstants.SELECT_TRACKS_ADJ;
 	public static final String SELECT_TRACKS_SEGM = OmegaGUIConstants.SELECT_TRACKS_SEGM;
 	public static final String SELECT_TRACK_MEASURES = OmegaGUIConstants.SELECT_TRACK_MEASURES;
-
+	
 	public static final String SPLIT_APPENDIX_1 = ".1";
 	public static final String SPLIT_APPENDIX_2 = ".2";
 	public static final String MERGE_APPENDIX = "_";
-
+	
 	public static final String SAVE_CONFIRM = "Save Current Changes";
 	public static final String SAVE_CONFIRM_MSG = "Do you want to save all current changes in a new analysis?";
-
+	
 	public static final String CANCEL_CONFIRM = "Cancel All Current Changes";
 	public static final String CANCEL_CONFIRM_MSG = "Do you want to cancel all current changes?";
-
+	
 	public static final String BROWSER_TABNAME = "Browser";
 	public static final String EDITOR_TABNAME = "Editing";
-
+	public static final String RESULTS_TABNAME = "Editing results";
+	
 	public static final String SPLIT_ACTION = "Split Track";
 	public static final String MERGE_ACTION = "Merge Tracks";
-
+	
 	public static final String MERGE_ACTION_START = "Merge Tracks Start";
 	public static final String MERGE_ACTION_END = "Merge Tracks End";
-
+	
 	public static final String MERGE_CONFIRM = "Merge Tracks Confirmation";
 	public static final String MERGE_CONFIRM_MSG1 = "<html>Tracks ";
 	public static final String MERGE_CONFIRM_MSG2 = " will be merged.<br>";
 	public static final String MERGE_CONFIRM_MSG3 = "Resulting track will contain ";
 	public static final String MERGE_CONFIRM_MSG4 = " spots</html>";
-
+	
 	public static final String SPLIT_CONFIRM = "";
 	public static final String SPLIT_CONFIRM_MSG1 = "<html>Track ";
 	public static final String SPLIT_CONFIRM_MSG2 = " will be split at timepoint ";
 	public static final String SPLIT_CONFIRM_MSG3 = ".<br>Resulting tracks will contain ";
 	public static final String SPLIT_CONFIRM_MSG4 = " spots respectively</html>";
-
+	
 	public static final String CONFIRM_MSG_AND = " and ";
-
+	
 	public static final String PLUGIN_NAME = "OMEGA Trajectory Editing";
 	public static final String PLUGIN_SNAME = "OMEGA TE";
 	public static final String PLUGIN_VERSION = "1.0";
@@ -55,5 +56,5 @@ public class TRConstants {
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2016, 12, 1)
 			.getTime();
 	public static final String PLUGIN_REFERENCE = OmegaGUIConstants.NOT_ASSIGNED;;
-
+	
 }
