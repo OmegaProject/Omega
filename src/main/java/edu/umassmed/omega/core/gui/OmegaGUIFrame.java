@@ -567,6 +567,10 @@ public class OmegaGUIFrame extends JFrame {
 	public void sendCoreEvent(final OmegaCoreEvent event) {
 		this.omegaApp.handleCoreEvent(event);
 	}
+	
+	public void clearSelections() {
+		this.sidePanel.clearSelections();
+	}
 
 	public void updateSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
