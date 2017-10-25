@@ -30,10 +30,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class SDConstants {
-	
+
 	public static final String PREVIEW_BUTTON = "Show Preview";
 	public static final String EXECUTE_BUTTON = "Execute Queue";
-	
+
+	public static final String RESULTS_TABNAME = "Detection results";
+
 	public static final String PLUGIN_NAME = "MOSAIC feature point detection";
 	public static final String PLUGIN_SNAME = "MOSAIC FPD";
 	public static final String PLUGIN_AUTHORS = "I. F. Sbalzarini and P. Koumoutsakos";
