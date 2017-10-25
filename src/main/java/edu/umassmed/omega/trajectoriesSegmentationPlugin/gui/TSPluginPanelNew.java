@@ -311,7 +311,7 @@ public class TSPluginPanelNew extends GenericPluginPanel implements
 		
 		this.resPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
-		this.tabbedPane.add("Segmentation results", this.resPanel);
+		this.tabbedPane.add(TSConstants.RESULTS_TABNAME, this.resPanel);
 		
 		this.add(this.tabbedPane, BorderLayout.CENTER);
 		
@@ -1527,7 +1527,7 @@ public class TSPluginPanelNew extends GenericPluginPanel implements
 	private void fireEventSelectionCurrentTrajectoriesSegmentationRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionTrajectoriesSegmentationRun(
 				this.getPlugin(), this.startingPointTrajSegmentationRun,
-				this.getSegmentsMap());
+				this.getSegmentsMap(), true);
 		this.getPlugin().fireEvent(event);
 	}
 	

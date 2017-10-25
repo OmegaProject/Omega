@@ -1268,6 +1268,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 	private void updateSegmentTrajectories(
 			final List<OmegaTrajectory> trajectories) {
 		if (trajectories == null) {
+			this.updateSelectedInformation(null);
 			this.tsPanel.resetSegmentation();
 			return;
 		}
@@ -1527,7 +1528,7 @@ public class TSPluginPanel extends GenericPluginPanel implements
 	private void fireEventSelectionCurrentTrajectoriesSegmentationRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionTrajectoriesSegmentationRun(
 				this.getPlugin(), this.startingPointTrajSegmentationRun,
-				this.getSegmentsMap());
+				this.getSegmentsMap(), true);
 		this.getPlugin().fireEvent(event);
 	}
 
@@ -1680,5 +1681,10 @@ public class TSPluginPanel extends GenericPluginPanel implements
 		final int index = this.trajSegmentationRuns
 				.indexOf(this.startingPointTrajSegmentationRun);
 		this.trajectoriesSegmentation_cmb.setSelectedIndex(index);
+	}
+	
+	public void clearTrajectoriesSelection() {
+		this.tbPanel.clearTrajectoriesSelection();
+		this.updateSegmentTrajectories(null);
 	}
 }
