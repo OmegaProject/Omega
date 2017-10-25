@@ -17,9 +17,9 @@ public class TMDConstants {
 			.getTime();
 	public static final String PLUGIN_REFERENCE = "";
 
-	public static final String LOCAL_RESULTS = "Moments of Displacement vs. "
+	public static final String LOCAL_RESULTS_TABNAME = "Moments of Displacement vs. "
 			+ StatsConstants.DELTA_SYMBOL + "t plots results";
-	public static final String GLOBAL_INTERVAL_RESULTS = "Moment Scaling Spectrum results";
-	public static final String GLOBAL_RESULTS = "Phase space results";
+	public static final String GLOBAL_INTERVAL_RESULTS_TABNAME = "Moment Scaling Spectrum results";
+	public static final String GLOBAL_RESULTS_TABNAME = "Phase space results";
 
 }
