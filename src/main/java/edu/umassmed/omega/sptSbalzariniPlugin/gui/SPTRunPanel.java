@@ -333,7 +333,7 @@ public class SPTRunPanel extends GenericPanel implements
 	}
 	
 	public void updateImageFields(final OmegaImage image) {
-		this.infoPanel.update(image);
+		this.infoPanel.updateContent(image);
 		
 		final int selZ = image.getDefaultPixels().getSelectedZ();
 		this.zSection_txtField.setText(String.valueOf(selZ));
