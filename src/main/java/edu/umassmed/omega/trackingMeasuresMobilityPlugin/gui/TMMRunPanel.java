@@ -26,40 +26,40 @@ import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
 import edu.umassmed.omega.commons.runnable.OmegaMobilityAnalyzer;
 
 public class TMMRunPanel extends GenericPanel implements
-OmegaMessageDisplayerPanelInterface {
-
+		OmegaMessageDisplayerPanelInterface {
+	
 	private static final long serialVersionUID = -1925743064869248360L;
-
+	
 	private JButton run_btt;
 	private final TMMPluginPanel pluginPanel;
-
+	
 	private OmegaMobilityAnalyzer analyzer;
-
+	
 	public TMMRunPanel(final RootPaneContainer parent,
 			final TMMPluginPanel pluginPanel) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		this.setLayout(new BorderLayout());
-
+		
 		this.createAndAddWidgets();
-
+		
 		this.addListeners();
 	}
-
+	
 	private void createAndAddWidgets() {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		final JLabel lbl = new JLabel("");
 		mainPanel.add(lbl, BorderLayout.CENTER);
 		this.add(mainPanel, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout());
 		this.run_btt = new JButton("Run");
 		bottomPanel.add(this.run_btt);
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void addListeners() {
 		this.run_btt.addActionListener(new ActionListener() {
 			@Override
@@ -68,7 +68,7 @@ OmegaMessageDisplayerPanelInterface {
 			}
 		});
 	}
-
+	
 	private void startMobilityAnalyzer() {
 		if (this.pluginPanel == null)
 			return;
@@ -101,11 +101,11 @@ OmegaMessageDisplayerPanelInterface {
 		selection.add(this.pluginPanel.getSelectedSegmentationRun());
 		this.analyzer = new OmegaMobilityAnalyzer(this, physicalT, maxT,
 				this.pluginPanel.getSelectedSegmentationRun(),
-				this.pluginPanel.getSegments(), selection);
+				this.pluginPanel.getSegments(), null, selection);
 		this.run_btt.setEnabled(false);
 		this.analyzer.run();
 	}
-
+	
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final AnalyzerEvent siEvt = (AnalyzerEvent) evt;
