@@ -30,7 +30,6 @@ import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.runnable.AnalyzerEvent;
 import edu.umassmed.omega.commons.runnable.OmegaIntensityAnalyzer;
-import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIConstants;
 
 public class TMIRunPanel extends GenericPanel implements
 		OmegaMessageDisplayerPanelInterface {
@@ -77,8 +76,8 @@ public class TMIRunPanel extends GenericPanel implements
 		mainPanel.setLayout(new GridLayout(2, 1));
 		final JPanel snrEnablePanel = new JPanel();
 		snrEnablePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		this.snrEnable_ckb = new JCheckBox(TMIConstants.PARAMETER_ERROR_SNR_USE);
-		this.snrEnable_ckb.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.snrEnable_ckb = new JCheckBox(OmegaConstants.PARAMETER_SNR_USE);
+		this.snrEnable_ckb.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrEnablePanel.add(this.snrEnable_ckb);
 		mainPanel.add(snrEnablePanel);
 		
@@ -86,7 +85,7 @@ public class TMIRunPanel extends GenericPanel implements
 		snrRunPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel snrRun_lbl = new JLabel(OmegaConstants.PARAMETER_ERROR_SNR
 				+ ":");
-		snrRun_lbl.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		snrRun_lbl.setPreferredSize(OmegaConstants.LARGE_TEXT_SIZE);
 		snrRunPanel.add(snrRun_lbl);
 		this.snrAnalysis_cmb = new GenericComboBox<String>(
 				this.getParentContainer());
@@ -156,12 +155,53 @@ public class TMIRunPanel extends GenericPanel implements
 		selection.add(this.pluginPanel.getSelectedSegmentationRun());
 		this.analyzer = new OmegaIntensityAnalyzer(this,
 				this.pluginPanel.getSelectedSegmentationRun(),
-				this.pluginPanel.getSegments(), selection);
+				this.pluginPanel.getSegments(), this.getParameters(), selection);
 		if (this.snrEnable_ckb.isEnabled()) {
 			this.analyzer.setSNRRun(this.selectedSNRRun);
 		}
 		this.run_btt.setEnabled(false);
 		this.analyzer.run();
+	}
+	
+	public boolean areParametersValidated() {
+		return true;
+	}
+
+	public String[] getParametersError() {
+		return null;
+	}
+
+	public void updateAnalysisFields(final OmegaAnalysisRun analysisRun) {
+
+	}
+
+	public void updateRunFields(final List<OmegaParameter> parameters) {
+		for (final OmegaParameter param : parameters) {
+			if (param.getName().equals(OmegaConstants.PARAMETER_SNR_USE)) {
+				this.snrEnable_ckb.setSelected(Boolean.valueOf(param
+						.getStringValue()));
+			} else if (param.getName().equals(
+					OmegaConstants.PARAMETER_ERROR_SNR)) {
+				this.snrAnalysis_cmb.setSelectedItem(param.getStringValue());
+			} else {
+				// TODO gestire errore
+			}
+		}
+	}
+
+	public void updateRunFieldsDefault() {
+		this.snrEnable_ckb.setSelected(false);
+	}
+	
+	public List<OmegaParameter> getParameters() {
+		if (!this.areParametersValidated())
+			return null;
+		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
+		params.add(new OmegaParameter(OmegaConstants.PARAMETER_SNR_USE, String
+				.valueOf(this.snrEnable_ckb.isSelected())));
+		params.add(new OmegaParameter(OmegaConstants.PARAMETER_ERROR_SNR,
+				this.selectedSNRRun.getName()));
+		return params;
 	}
 	
 	@Override
@@ -179,8 +219,7 @@ public class TMIRunPanel extends GenericPanel implements
 					this.pluginPanel.getPlugin(),
 					this.analyzer.getSelections(),
 					this.analyzer.getTrajectorySegmentationRun(),
-					new ArrayList<OmegaParameter>(),
-					this.analyzer.getSegments(),
+					this.analyzer.getParameters(), this.analyzer.getSegments(),
 					this.analyzer.getPeakSignalsResults(),
 					this.analyzer.getCentroidSignalsResults(),
 					this.analyzer.getPeakSignalsLocalResults(),
