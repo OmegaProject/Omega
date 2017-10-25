@@ -261,7 +261,7 @@ public class PLPluginPanel extends GenericPluginPanel implements
 		
 		this.resPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
-		this.tabbedPane.add("Linker results", this.resPanel);
+		this.tabbedPane.add(PLConstants.RESULTS_TABNAME, this.resPanel);
 		
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
