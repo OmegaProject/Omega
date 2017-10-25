@@ -51,31 +51,31 @@ import edu.umassmed.omega.trackingMeasuresVelocityPlugin.gui.TMVPluginPanel;
 
 public class TMVPlugin extends OmegaStatsPlugin implements
 		OmegaDataDisplayerPluginInterface {
-
+	
 	public TMVPlugin() {
 		super(1);
 	}
-
+	
 	public TMVPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-
+	
 	@Override
 	public String getName() {
 		return TMVConstants.PLUGIN_NAME;
 	}
-
+	
 	@Override
 	public String getShortName() {
 		return TMVConstants.PLUGIN_SNAME;
 	}
-
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
@@ -84,7 +84,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
-
+	
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -93,7 +93,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-
+	
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -102,7 +102,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-
+	
 	@Override
 	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -110,7 +110,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectImage(image);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
@@ -119,7 +119,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
@@ -128,7 +128,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectParticleLinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesRelinkingRun(
 			final OmegaTrajectoriesRelinkingRun analysisRun) {
@@ -137,7 +137,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesSegmentationRun(
 			final OmegaTrajectoriesSegmentationRun analysisRun) {
@@ -146,7 +146,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrajectoriesSegmentationRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectTrackingMeasuresRun(
 			final OmegaTrackingMeasuresRun analysisRun) {
@@ -155,7 +155,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrackingMeasuresRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
@@ -164,7 +164,7 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 			specificPanel.updateTrajectories(trajectories, selection);
 		}
 	}
-
+	
 	@Override
 	public void updateSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
@@ -176,30 +176,46 @@ public class TMVPlugin extends OmegaStatsPlugin implements
 	}
 
 	@Override
+	public void clearSegmentsSelection() {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
+			specificPanel.clearSegmentsSelection();
+		}
+	}
+	
+	@Override
+	public void clearTrajectoriesSelection() {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMVPluginPanel specificPanel = (TMVPluginPanel) panel;
+			specificPanel.clearTrajectoriesSelection();
+		}
+	}
+	
+	@Override
 	public String getAlgorithmDescription() {
 		return TMVConstants.PLUGIN_ALGO_DESC;
 	}
-
+	
 	@Override
 	public String getAlgorithmAuthors() {
 		return OmegaAlgorithmsUtilities.getDefaultDeveloper();
 	}
-
+	
 	@Override
 	public String getAlgorithmVersion() {
 		return TMVConstants.PLUGIN_VERSION;
 	}
-
+	
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return TMVConstants.PLUGIN_PUBL;
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return TMVConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
 	public String getReference() {
 		return TMVConstants.PLUGIN_REFERENCE;
