@@ -202,6 +202,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 				Position.Bias.Forward);
 		this.dataTree.expandPath(path);
 		this.dataTree.setSelectionPath(path);
+		this.infoPanel.updateContent(element);
 	}
 	
 	private void handleMouseClick(final int x, final int y) {
@@ -217,7 +218,7 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 		if (element instanceof OmegaAnalysisRunContainerInterface) {
 			OmegaDataBrowserLoadedDataBrowserPanel.this.browserPanel
 					.setSelectedAnalysisContainer((OmegaAnalysisRunContainerInterface) element);
-			this.infoPanel.update(element);
+			this.infoPanel.updateContent(element);
 		}
 	}
 	
