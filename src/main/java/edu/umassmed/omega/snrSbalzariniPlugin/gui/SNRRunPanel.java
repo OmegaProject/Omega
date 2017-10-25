@@ -284,7 +284,7 @@ public class SNRRunPanel extends GenericPanel implements
 	}
 	
 	public void updateImageFields(final OmegaImage image) {
-		this.elementInfoPanel.update(image);
+		this.elementInfoPanel.updateContent(image);
 
 		if (image == null)
 			return;
