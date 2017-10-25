@@ -7,29 +7,30 @@ import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TSConstants {
-
+	
 	public static final String ROI_SELECT_DIALOG = "Select ROI";
 	public static final String ROI_SELECT_DIALOG_MSG = "Multiple ROI at that position, select the one you want to use:";
 	public static final String ROI_SELECT_OK = "Ok";
 	public static final String ROI_SELECT_FRAMEINDEX = "FrameIndex: ";
 	public static final String ROI_SELECT_X = " X: ";
 	public static final String ROI_SELECT_Y = " Y: ";
-
+	
 	public static final String PIXELS_UM = "<html><div align=\"center\">Pixels<br/>("
 			+ OmegaConstantsMathSymbols.MU + "m)</div></html>";
-
+	
 	public static final String ZOOM_IN = OmegaGUIConstants.ZOOM_IN;
 	public static final String ZOOM_OUT = OmegaGUIConstants.ZOOM_OUT;
-
+	
 	public static final String SAVE_CONFIRM = "Save Current Changes";
 	public static final String SAVE_CONFIRM_MSG = "Do you want to save all current changes in a new analysis?";
-
+	
 	public static final String CANCEL_CONFIRM = "Cancel All Current Changes";
 	public static final String CANCEL_CONFIRM_MSG = "Do you want to cancel all current changes?";
-
+	
 	public static final String BROWSER_TABNAME = "Browser";
 	public static final String SEGMENTATION_TABNAME = "Segmentation";
-
+	public static final String RESULTS_TABNAME = "Segmentation results";
+	
 	public static final String SELECT = "Select: ";
 	public static final String SELECT_RESET = "Reset";
 	public static final String SELECT_RESET_MS = "Reset Selection";
@@ -50,9 +51,9 @@ public class TSConstants {
 	public static final String SEGMENT_CONFIRM = "Segment Track ";
 	public static final String SELECT_PUNCT = ".";
 	public static final String SELECT_TO_LOWER_SPACE = " to ";
-
+	
 	public static final String ACTUAL_SEGM = "Current selection: ";
-
+	
 	public static final String PLUGIN_NAME = "OMEGA Trajectory Segmentation";
 	public static final String PLUGIN_SNAME = "OMEGA TS";
 	public static final String PLUGIN_VERSION = "1.0";
