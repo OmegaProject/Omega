@@ -6,9 +6,7 @@ import java.util.GregorianCalendar;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 
 public class TMIConstants {
-
-	public static final String PARAMETER_ERROR_SNR_USE = "Enable SNR Estimation";
-
+	
 	// TODO TO FIX
 	public static final String PLUGIN_NAME = "OMEGA Intensity Measures";
 	public static final String PLUGIN_SNAME = "OMEGA IM";
@@ -18,5 +16,5 @@ public class TMIConstants {
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2016, 12, 1)
 			.getTime();
 	public static final String PLUGIN_REFERENCE = OmegaGUIConstants.NOT_ASSIGNED;
-
+	
 }
