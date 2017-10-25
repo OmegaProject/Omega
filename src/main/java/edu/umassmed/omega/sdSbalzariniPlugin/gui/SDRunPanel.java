@@ -302,7 +302,7 @@ public class SDRunPanel extends GenericPanel implements
 	}
 
 	public void updateImageFields(final OmegaImage image) {
-		this.infoPanel.update(image);
+		this.infoPanel.updateContent(image);
 
 		if (image == null)
 			return;
