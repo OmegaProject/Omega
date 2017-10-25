@@ -36,9 +36,9 @@ public class SNRConstants {
 	public static String PARAM_SNR_METHOD_SBALZARINI = "Cheezum";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_POISSON = "Bhattacharyya Poisson";
 	public static String PARAM_SNR_METHOD_BHATTACHARYYA_GAUSSIAN = "Bhattacharyya Gaussian";
-
+	
 	public static final String EXECUTE_BUTTON = "Execute queue";
-
+	
 	public static final String PLUGIN_AUTHORS = "I.F. Sbalzarini";
 	public static final String PLUGIN_SHORTNAME = "MOSAIC SE";
 	public static final String PLUGIN_NAME = "MOSAIC SNR Estimation";
@@ -48,9 +48,9 @@ public class SNRConstants {
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 			.getTime();
 	public static final String PLUGIN_REFERENCE = OmegaGUIConstants.NOT_ASSIGNED;;
-
-	public static final String TAB_ROI = "ROI results";
-	public static final String TAB_PLANE = "Plane results";
-	public static final String TAB_IMAGE = "Image results";
-
+	
+	public static final String ROI_RESULTS_TABNAME = "ROI results";
+	public static final String PLANE_RESULTS_TABNAME = "Plane results";
+	public static final String IMAGE_RESULTS_TABNAME = "Image results";
+	
 }
