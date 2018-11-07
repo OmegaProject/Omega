@@ -50,7 +50,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
@@ -461,10 +461,10 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			for (final OmegaParameter param : this.selectedAnalysisRun
 					.getAlgorithmSpec().getParameters()) {
 				if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+						OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 					c = param.getStringValue();
 				} else if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+						OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 					z = param.getStringValue();
 				}
 			}
@@ -500,10 +500,10 @@ public class SPTPluginPanel extends GenericPluginPanel implements
 			for (final OmegaParameter param : this.selectedAnalysisRun
 					.getAlgorithmSpec().getParameters()) {
 				if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+						OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 					c = param.getStringValue();
 				} else if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+						OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 					z = param.getStringValue();
 				}
 			}

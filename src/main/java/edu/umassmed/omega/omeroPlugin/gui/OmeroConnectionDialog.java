@@ -54,8 +54,8 @@ import Glacier2.PermissionDeniedException;
 import Ice.ConnectionRefusedException;
 import Ice.DNSException;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
+import edu.umassmed.omega.commons.constants.OmegaEventConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaServerInformation;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -111,8 +111,8 @@ public class OmeroConnectionDialog extends GenericDialog {
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 		this.connectButt = new JButton("Connect");
-		this.connectButt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.connectButt.setSize(OmegaConstants.BUTTON_SIZE);
+		this.connectButt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE);
+		this.connectButt.setSize(OmegaGUIConstants.BUTTON_SIZE);
 		buttonPanel.add(this.connectButt);
 		bottomPanel.add(buttonPanel, BorderLayout.CENTER);
 		this.connectionStatusLbl = new JLabel("Status: not connected.");
@@ -128,14 +128,14 @@ public class OmeroConnectionDialog extends GenericDialog {
 		final JLabel hostnameLbl = new JLabel("Insert server hostname:");
 		serverPanel.add(hostnameLbl);
 		this.hostnameTxtFie = new JTextField();
-		this.hostnameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.hostnameTxtFie.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
 		serverPanel.add(this.hostnameTxtFie);
 		final JLabel portLbl = new JLabel(
 				"Insert server port (empty for default "
 						+ OmeroServerInformation.DEFAULT_PORT + "):");
 		serverPanel.add(portLbl);
 		this.portTxtFie = new JTextField();
-		this.portTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.portTxtFie.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
 		serverPanel.add(this.portTxtFie);
 		this.saveServerInfo = new JCheckBox("Remember server information?");
 		serverPanel.add(this.saveServerInfo);
@@ -149,13 +149,13 @@ public class OmeroConnectionDialog extends GenericDialog {
 		final JLabel usernameLbl = new JLabel("Insert your username:");
 		loginPanel.add(usernameLbl);
 		this.usernameTxtFie = new JTextField();
-		this.usernameTxtFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.usernameTxtFie.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
 		loginPanel.add(this.usernameTxtFie);
 		final JLabel passwordLbl = new JLabel("Insert your password:");
 		loginPanel.add(passwordLbl);
 		this.passwordPswFie = new JPasswordField();
 		loginPanel.add(this.passwordPswFie);
-		this.passwordPswFie.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		this.passwordPswFie.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
 		this.saveLoginInfo = new JCheckBox("Remember login information?");
 		loginPanel.add(this.saveLoginInfo);
 		this.mainPanel.add(loginPanel);
@@ -257,7 +257,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 				OmeroConnectionDialog.this.connectionStatusLbl
 						.setText("Status: not connected.");
 				OmeroConnectionDialog.this.parent.firePropertyChange(
-						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+						OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 			} else {
 				OmeroConnectionDialog.this.usernameTxtFie.setEditable(false);
 				OmeroConnectionDialog.this.passwordPswFie.setEditable(false);
@@ -267,7 +267,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 				OmeroConnectionDialog.this.connectionStatusLbl
 						.setText("Status: connected.");
 				OmeroConnectionDialog.this.parent.firePropertyChange(
-						OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+						OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 				OmeroConnectionDialog.this.setVisible(false);
 			}
 			
@@ -287,7 +287,7 @@ public class OmeroConnectionDialog extends GenericDialog {
 			OmeroConnectionDialog.this.portTxtFie.setEditable(true);
 			OmeroConnectionDialog.this.connectButt.setText("Connect");
 			OmeroConnectionDialog.this.parent.firePropertyChange(
-					OmegaConstantsEvent.PROPERTY_CONNECTION, 0, 1);
+					OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 			
 		}
 	}

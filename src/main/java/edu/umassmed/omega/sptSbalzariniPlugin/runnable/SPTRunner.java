@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -175,21 +175,21 @@ public class SPTRunner implements SPTRunnable {
 			String radius = null, cutoff = null, percentile = null, displacement = null, linkrange = null;
 			for (int i = 0; i < parameters.size(); i++) {
 				final OmegaParameter param = parameters.get(i);
-				if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS) {
+				if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_MINPOINTS) {
 					minPoints = (Integer) param.getValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_RADIUS) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_RADIUS) {
 					radius = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_CUTOFF) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_CUTOFF) {
 					cutoff = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_PERCENTILE) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_PERCENTILE) {
 					percentile = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT) {
 					displacement = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_LINKRANGE) {
 					linkrange = param.getStringValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_ZSECTION) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_ZSECTION) {
 					z = (int) param.getValue();
-				} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_CHANNEL) {
+				} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_CHANNEL) {
 					c = (int) param.getValue();
 				} else
 					return;
@@ -250,7 +250,7 @@ public class SPTRunner implements SPTRunnable {
 			// TODO update panel with running image name and other available
 			// infos
 			// JPanelSPT.this.jLabelStatus.setText(String.format(
-			// OmegaConstants.INFO_SPT_RUNNING,
+			// OmegaGenericConstants.INFO_SPT_RUNNING,
 			// imageDataHandler.getImageName()));
 
 			this.updateStatusSync(SPTRunner.RUNNER + " process.", false);
@@ -343,7 +343,7 @@ public class SPTRunner implements SPTRunnable {
 
 			// final String infoFile = outputDir
 			// + System.getProperty("file.separator")
-			// + OmegaConstants.SPT_INFORMATION_FILE;
+			// + OmegaGenericConstants.SPT_INFORMATION_FILE;
 			// final SPTInformationWriter trackingInfoWriter = new
 			// SPTInformationFileWriter(
 			// infoFile);

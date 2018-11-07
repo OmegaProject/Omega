@@ -27,7 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationType;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
@@ -44,7 +44,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 	
 	private JPanel mainPanel;
 	private List<OmegaSegmentationTypes> segmTypesList;
-	private OmegaSegmentationTypes actualSegmTypes, oldSegmTypes;
+	private OmegaSegmentationTypes currentSegmTypes, oldSegmTypes;
 	
 	private final List<OmegaSegmentationType> types;
 	
@@ -83,7 +83,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		
 		this.isSegmTypesChanged = false;
 		this.oldSegmTypes = null;
-		this.actualSegmTypes = null;
+		this.currentSegmTypes = null;
 		
 		this.removeButt_al = null;
 		this.changeName_dl = null;
@@ -242,19 +242,19 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
 		this.cancel_btt = new JButton("Cancel");
-		this.cancel_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.cancel_btt.setSize(OmegaConstants.BUTTON_SIZE);
+		this.cancel_btt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE);
+		this.cancel_btt.setSize(OmegaGUIConstants.BUTTON_SIZE);
 		bottomPanel.add(this.cancel_btt);
 		
 		this.apply_btt = new JButton("Apply");
-		this.apply_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.apply_btt.setSize(OmegaConstants.BUTTON_SIZE);
+		this.apply_btt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE);
+		this.apply_btt.setSize(OmegaGUIConstants.BUTTON_SIZE);
 		bottomPanel.add(this.apply_btt);
 		this.apply_btt.setEnabled(false);
 		
 		this.close_btt = new JButton("Close");
-		this.close_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.close_btt.setSize(OmegaConstants.BUTTON_SIZE);
+		this.close_btt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE);
+		this.close_btt.setSize(OmegaGUIConstants.BUTTON_SIZE);
 		bottomPanel.add(this.close_btt);
 		
 		this.add(bottomPanel, BorderLayout.SOUTH);
@@ -397,13 +397,13 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		final String s = (String) this.segmTypesList_cmb.getSelectedItem();
 		if (s.equals(TSSegmentPreferencesDialog.CREATE_NEW)) {
 			this.resetSegmentationTypes();
-			this.oldSegmTypes = this.actualSegmTypes;
-			this.actualSegmTypes = null;
+			this.oldSegmTypes = this.currentSegmTypes;
+			this.currentSegmTypes = null;
 		} else {
 			final OmegaSegmentationTypes segmTypes = this.segmTypesComboMap
 					.get(s);
-			this.oldSegmTypes = this.actualSegmTypes;
-			this.actualSegmTypes = segmTypes;
+			this.oldSegmTypes = this.currentSegmTypes;
+			this.currentSegmTypes = segmTypes;
 			this.selectSegmentationTypes(segmTypes);
 		}
 		this.apply_btt.setEnabled(true);
@@ -616,8 +616,8 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 	
 	private void cancel() {
 		final Color color = UIManager.getColor("Panel.background");
-		if (this.actualSegmTypes != null) {
-			this.segmTypesName_txt.setText(this.actualSegmTypes.getName());
+		if (this.currentSegmTypes != null) {
+			this.segmTypesName_txt.setText(this.currentSegmTypes.getName());
 		}
 		
 		for (final JPanel panel : this.panelsToRemove.keySet()) {
@@ -647,7 +647,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		this.newNames.clear();
 		
 		if (this.oldSegmTypes != null) {
-			this.actualSegmTypes = this.oldSegmTypes;
+			this.currentSegmTypes = this.oldSegmTypes;
 		}
 		
 		this.isSegmTypesChanged = false;
@@ -686,7 +686,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		final String name = this.segmTypesName_txt.getText();
 		String error = null;
 		
-		if (this.actualSegmTypes == null) {
+		if (this.currentSegmTypes == null) {
 			if (name.isEmpty()) {
 				error = "Cannot create a new segmentation types without a name";
 			} else if (name.equals(OmegaSegmentationTypes.DEFAULT_NAME)) {
@@ -694,7 +694,7 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 			}
 		} else {
 			for (final OmegaSegmentationTypes segmTypes : this.segmTypesList) {
-				if (!segmTypes.equals(this.actualSegmTypes)
+				if (!segmTypes.equals(this.currentSegmTypes)
 						&& name.equals(segmTypes.getName())) {
 					error = "The choosen name is already present for another segmentation";
 					break;
@@ -731,9 +731,9 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 	}
 	
 	private boolean areSegmentationColorsOrValuesChanged() {
-		if (this.actualSegmTypes.getTypes().size() != this.types.size())
+		if (this.currentSegmTypes.getTypes().size() != this.types.size())
 			return true;
-		for (final OmegaSegmentationType segmType : this.actualSegmTypes
+		for (final OmegaSegmentationType segmType : this.currentSegmTypes
 				.getTypes()) {
 			final String name = segmType.getName();
 			final Integer val = segmType.getValue();
@@ -794,30 +794,30 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		}
 		this.newNames.clear();
 		
-		if (this.actualSegmTypes != null) {
-			final String segmTypesOldName = this.actualSegmTypes.getName();
+		if (this.currentSegmTypes != null) {
+			final String segmTypesOldName = this.currentSegmTypes.getName();
 			if (!segmTypesOldName.equals(segmTypesName)) {
-				this.actualSegmTypes.setName(segmTypesName);
+				this.currentSegmTypes.setName(segmTypesName);
 				this.isPopulating = true;
 				final int index = this.segmTypesList_cmb.getSelectedIndex();
 				this.segmTypesList_cmb.removeItemAt(index);
 				this.segmTypesComboMap.remove(this.oldSegmTypes);
 				this.segmTypesList_cmb.insertItemAt(segmTypesName, index);
-				this.segmTypesComboMap.put(segmTypesName, this.actualSegmTypes);
+				this.segmTypesComboMap.put(segmTypesName, this.currentSegmTypes);
 				this.segmTypesList_cmb.setSelectedIndex(index);
 				this.isPopulating = false;
 			}
 			if (this.areSegmentationColorsOrValuesChanged()) {
-				this.actualSegmTypes.setNewTypes(this.types);
+				this.currentSegmTypes.setNewTypes(this.types);
 			}
 		} else {
-			this.actualSegmTypes = new OmegaSegmentationTypes(segmTypesName,
+			this.currentSegmTypes = new OmegaSegmentationTypes(segmTypesName,
 					this.types);
-			this.segmTypesList.add(this.actualSegmTypes);
+			this.segmTypesList.add(this.currentSegmTypes);
 			this.isPopulating = true;
 			final int index = this.segmTypesList_cmb.getItemCount() - 1;
 			this.segmTypesList_cmb.insertItemAt(segmTypesName, index);
-			this.segmTypesComboMap.put(segmTypesName, this.actualSegmTypes);
+			this.segmTypesComboMap.put(segmTypesName, this.currentSegmTypes);
 			this.segmTypesList_cmb.setSelectedIndex(index);
 			this.isPopulating = false;
 		}
@@ -908,8 +908,8 @@ public class TSSegmentPreferencesDialog extends GenericDialog {
 		return this.segmTypesList;
 	}
 	
-	public OmegaSegmentationTypes getActualSegmentationTypes() {
-		return this.actualSegmTypes;
+	public OmegaSegmentationTypes getCurrentSegmentationTypes() {
+		return this.currentSegmTypes;
 	}
 	
 	public void setSegmentationTypesList(

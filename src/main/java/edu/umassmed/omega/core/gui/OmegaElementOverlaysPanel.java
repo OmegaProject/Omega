@@ -16,7 +16,6 @@ import javax.swing.RootPaneContainer;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
@@ -95,20 +94,20 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		
 		this.trajOnlyStartingAtT_chk = new JCheckBox(
 				OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWATT);
-		this.trajOnlyStartingAtT_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.trajOnlyStartingAtT_chk.setSize(OmegaConstants.TEXT_SIZE);
+		this.trajOnlyStartingAtT_chk.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.trajOnlyStartingAtT_chk.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyStartingAtT_chk);
 		
 		this.trajOnlyUpToT_chk = new JCheckBox(
 				OmegaGUIConstants.SIDEPANEL_TRACKS_SHOWUPT);
-		this.trajOnlyUpToT_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.trajOnlyUpToT_chk.setSize(OmegaConstants.TEXT_SIZE);
+		this.trajOnlyUpToT_chk.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.trajOnlyUpToT_chk.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyUpToT_chk);
 		
 		this.trajOnlyActive_chk = new JCheckBox(
 				OmegaGUIConstants.SIDEPANEL_TRACKS_ACTIVEONLY);
-		this.trajOnlyActive_chk.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.trajOnlyActive_chk.setSize(OmegaConstants.TEXT_SIZE);
+		this.trajOnlyActive_chk.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.trajOnlyActive_chk.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.trajOnlyActive_chk);
 		
 		final JLabel lbl1 = new JLabel(
@@ -127,8 +126,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 				.addItem(OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_SEGM);
 		this.overlayKind_cmb.setSelectedIndex(0);
 		this.overlayKind_cmb.setEnabled(false);
-		this.overlayKind_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.overlayKind_cmb.setSize(OmegaConstants.TEXT_SIZE);
+		this.overlayKind_cmb.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.overlayKind_cmb.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayKind_cmb);
 		
 		final JLabel lbl2 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_SPOT);
@@ -136,8 +135,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayPD_cmb = new GenericComboBox<String>(
 				this.getParentContainer());
 		this.overlayPD_cmb.setEnabled(false);
-		this.overlayPD_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.overlayPD_cmb.setSize(OmegaConstants.TEXT_SIZE);
+		this.overlayPD_cmb.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.overlayPD_cmb.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayPD_cmb);
 		
 		final JLabel lbl3 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_LINKING);
@@ -145,8 +144,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayPL_cmb = new GenericComboBox<String>(
 				this.getParentContainer());
 		this.overlayPL_cmb.setEnabled(false);
-		this.overlayPL_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.overlayPL_cmb.setSize(OmegaConstants.TEXT_SIZE);
+		this.overlayPL_cmb.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.overlayPL_cmb.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayPL_cmb);
 		
 		final JLabel lbl4 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_ADJ);
@@ -154,8 +153,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayTR_cmb = new GenericComboBox<String>(
 				this.getParentContainer());
 		this.overlayTR_cmb.setEnabled(false);
-		this.overlayTR_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.overlayTR_cmb.setSize(OmegaConstants.TEXT_SIZE);
+		this.overlayTR_cmb.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.overlayTR_cmb.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayTR_cmb);
 		
 		final JLabel lbl5 = new JLabel(OmegaGUIConstants.SELECT_TRACKS_SEGM);
@@ -163,8 +162,8 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		this.overlayTS_cmb = new GenericComboBox<String>(
 				this.getParentContainer());
 		this.overlayTS_cmb.setEnabled(false);
-		this.overlayTS_cmb.setPreferredSize(OmegaConstants.TEXT_SIZE);
-		this.overlayTS_cmb.setSize(OmegaConstants.TEXT_SIZE);
+		this.overlayTS_cmb.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
+		this.overlayTS_cmb.setSize(OmegaGUIConstants.TEXT_SIZE);
 		mainPanel.add(this.overlayTS_cmb);
 		
 		this.setViewportView(mainPanel);
@@ -269,19 +268,19 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		// this.isPopulatingOverlay = true;
 		// final String selection = (String)
 		// this.overlayTR_cmb.getSelectedItem();
-		// this.overlayTR_cmb.removeItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		// this.overlayTR_cmb.removeItem(OmegaGenericConstants.OMEGA_RELINKING_CURRENT);
 		// this.prevSelectedTR = selection;
 		// this.isPopulatingOverlay = false;
 	}
 	
 	private void handleTRPopupMenuCanceled() {
-		// if (this.prevSelectedTR == OmegaConstants.OMEGA_RELINKING_CURRENT) {
+		// if (this.prevSelectedTR == OmegaGenericConstants.OMEGA_RELINKING_CURRENT) {
 		// this.isPopulatingOverlay = true;
 		// this.overlayTR_cmb
-		// .removeItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
-		// this.overlayTR_cmb.addItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		// .removeItem(OmegaGenericConstants.OMEGA_RELINKING_CURRENT);
+		// this.overlayTR_cmb.addItem(OmegaGenericConstants.OMEGA_RELINKING_CURRENT);
 		// this.overlayTR_cmb
-		// .setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		// .setSelectedItem(OmegaGenericConstants.OMEGA_RELINKING_CURRENT);
 		// this.isPopulatingOverlay = false;
 		// }
 	}
@@ -291,21 +290,21 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		// final String selection = (String)
 		// this.overlayTS_cmb.getSelectedItem();
 		// this.overlayTS_cmb
-		// .removeItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		// .removeItem(OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT);
 		// this.prevSelectedTS = selection;
 		// this.isPopulatingOverlay = false;
 	}
 	
 	private void handleTSPopupMenuCanceled() {
-		// if (this.prevSelectedTS == OmegaConstants.OMEGA_SEGMENTATION_CURRENT)
+		// if (this.prevSelectedTS == OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT)
 		// {
 		// this.isPopulatingOverlay = true;
 		// this.overlayTR_cmb
-		// .removeItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		// .removeItem(OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT);
 		// this.overlayTS_cmb
-		// .addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		// .addItem(OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT);
 		// this.overlayTS_cmb
-		// .setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+		// .setSelectedItem(OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT);
 		// this.isPopulatingOverlay = false;
 		// }
 	}
@@ -364,11 +363,11 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final Map<OmegaTrajectory, List<OmegaSegment>> segments = this
 				.selectTrajectoriesSegmentationOverlay();
 		final String selection = (String) this.overlayTS_cmb.getSelectedItem();
-		if ((selection != OmegaConstants.OMEGA_SEGMENTATION_CURRENT)
-				&& (this.prevSelectedTS == OmegaConstants.OMEGA_SEGMENTATION_CURRENT)) {
+		if ((selection != OmegaGUIConstants.SEGMENTATION_CURRENT)
+				&& (this.prevSelectedTS == OmegaGUIConstants.SEGMENTATION_CURRENT)) {
 			this.isPopulatingOverlay = true;
 			this.overlayTS_cmb
-					.removeItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+					.removeItem(OmegaGUIConstants.SEGMENTATION_CURRENT);
 			this.isPopulatingOverlay = false;
 		}
 		this.prevSelectedTS = selection;
@@ -377,7 +376,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 				.selectTrajectoriesSegmentationTypes();
 		this.sidePanel.setParticles(particles);
 		this.sidePanel.setTrajectories(modifiedTrajectories);
-		if (selection != OmegaConstants.OMEGA_SEGMENTATION_CURRENT) {
+		if (selection != OmegaGUIConstants.SEGMENTATION_CURRENT) {
 			this.sidePanel.updateSegments(segments, segmTypes, false);
 		}
 		if (!this.isHandlingEvent) {
@@ -400,11 +399,11 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		final List<OmegaTrajectory> modifiedTrajectories = this
 				.selectTrajectoriesRelinkingOverlay();
 		final String selection = (String) this.overlayTR_cmb.getSelectedItem();
-		if ((selection != OmegaConstants.OMEGA_RELINKING_CURRENT)
-				&& (this.prevSelectedTR == OmegaConstants.OMEGA_RELINKING_CURRENT)) {
+		if ((selection != OmegaGUIConstants.RELINKING_CURRENT)
+				&& (this.prevSelectedTR == OmegaGUIConstants.RELINKING_CURRENT)) {
 			this.isPopulatingOverlay = true;
 			this.overlayTR_cmb
-					.removeItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+					.removeItem(OmegaGUIConstants.RELINKING_CURRENT);
 			this.isPopulatingOverlay = false;
 		}
 		this.prevSelectedTR = selection;
@@ -420,7 +419,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 		if (this.overlayKind_cmb.getSelectedItem().equals(
 				OmegaGUIConstants.SIDEPANEL_TRACKS_OVERLAY_ADJ)) {
 			this.sidePanel.setParticles(particles);
-			if (selection != OmegaConstants.OMEGA_RELINKING_CURRENT) {
+			if (selection != OmegaGUIConstants.RELINKING_CURRENT) {
 				this.sidePanel.setTrajectories(modifiedTrajectories);
 			}
 		} else {
@@ -475,7 +474,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 				this.overlayTS_cmb.addItem(trajSegmentationRun.getName());
 			}
 			// this.overlayTS_cmb
-			// .addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+			// .addItem(OmegaGenericConstants.OMEGA_SEGMENTATION_CURRENT);
 		}
 		this.isPopulatingOverlay = false;
 		if (this.overlayTS_cmb.getItemCount() > 0) {
@@ -496,7 +495,7 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			for (final OmegaAnalysisRun trajRelinkingRun : trajRelinkingRuns) {
 				this.overlayTR_cmb.addItem(trajRelinkingRun.getName());
 			}
-			// this.overlayTR_cmb.addItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+			// this.overlayTR_cmb.addItem(OmegaGenericConstants.OMEGA_RELINKING_CURRENT);
 		}
 		this.isPopulatingOverlay = false;
 		if (this.overlayTR_cmb.getItemCount() > 0) {
@@ -876,11 +875,11 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			this.activateTrajectoriesOverlay();
 			this.activateTrajectoriesRelinkingOverlay();
 		}
-		this.overlayTR_cmb.removeItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
-		this.overlayTR_cmb.addItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+		this.overlayTR_cmb.removeItem(OmegaGUIConstants.RELINKING_CURRENT);
+		this.overlayTR_cmb.addItem(OmegaGUIConstants.RELINKING_CURRENT);
 		this.isPopulatingOverlay = false;
 		this.overlayTR_cmb
-				.setSelectedItem(OmegaConstants.OMEGA_RELINKING_CURRENT);
+				.setSelectedItem(OmegaGUIConstants.RELINKING_CURRENT);
 		this.isHandlingEvent = false;
 	}
 	
@@ -926,11 +925,11 @@ public class OmegaElementOverlaysPanel extends GenericScrollPane {
 			this.activateTrajectoriesSegmentationOverlay();
 		}
 		this.overlayTS_cmb
-				.removeItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
-		this.overlayTS_cmb.addItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.removeItem(OmegaGUIConstants.SEGMENTATION_CURRENT);
+		this.overlayTS_cmb.addItem(OmegaGUIConstants.SEGMENTATION_CURRENT);
 		this.isPopulatingOverlay = false;
 		this.overlayTS_cmb
-				.setSelectedItem(OmegaConstants.OMEGA_SEGMENTATION_CURRENT);
+				.setSelectedItem(OmegaGUIConstants.SEGMENTATION_CURRENT);
 		this.isHandlingEvent = false;
 	}
 	

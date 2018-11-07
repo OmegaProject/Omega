@@ -40,7 +40,7 @@ import mosaic.core.particleLinking.LinkerOptions;
 import mosaic.core.particleLinking.ParticleLinker;
 import mosaic.core.particleLinking.ParticleLinkerGreedy;
 import mosaic.core.particleLinking.ParticleLinkerHungarian;
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -53,50 +53,50 @@ import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 public class PLRunner implements PLRunnable {
 	private static final String RUNNER = "Runner service: ";
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
-	
+
 	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess;
 	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaTrajectory>>> resultingTrajectories;
-	
+
 	private final boolean isDebugMode;
 	private boolean isJobCompleted, isTerminated;
-	
+
 	public PLRunner(
 			final OmegaMessageDisplayerPanelInterface displayerPanel,
 			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.displayerPanel = displayerPanel;
-		
+
 		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
 		this.isDebugMode = false;
-		
+
 		this.isJobCompleted = false;
-		
+
 		this.resultingTrajectories = new LinkedHashMap<>();
 	}
-	
+
 	public PLRunner(
 			final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess) {
 		this.displayerPanel = null;
-		
+
 		this.particlesToProcess = new LinkedHashMap<>(particlesToProcess);
 		this.isDebugMode = false;
-		
+
 		this.isJobCompleted = false;
-		
+
 		this.resultingTrajectories = new LinkedHashMap<>();
 	}
-	
+
 	@Override
 	public boolean isJobCompleted() {
 		return this.isJobCompleted;
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO move the call in the panel action listeners that setup the
 		// thread
 		// JPanelSPT.this.switchControlsStatus();
 		// JPanelSPT.this.jButtonDisplayTracks.setEnabled(false);
-		
+
 		// ==============================
 		// for each image to be processed
 		// ==============================
@@ -105,7 +105,7 @@ public class PLRunner implements PLRunnable {
 		// .getImages();
 		// final Iterator<ImageDataHandler> it = images.iterator();
 		this.updateStatusSync(PLRunner.RUNNER + " started.", false);
-		
+
 		if (this.isDebugMode) {
 			this.debugModeRun();
 			this.isJobCompleted = true;
@@ -118,22 +118,22 @@ public class PLRunner implements PLRunnable {
 				this.isJobCompleted = false;
 			}
 		}
-		
+
 		this.updateStatusAsync(PLRunner.RUNNER + " ended.", true);
 	}
-	
+
 	private void normalModeRun() throws Exception {
 		for (final Integer index : this.particlesToProcess.keySet()) {
 			for (final OmegaParticleDetectionRun spotDetRun : this.particlesToProcess
 					.get(index).keySet()) {
 				final List<OmegaParameter> parameters = this.particlesToProcess
 						.get(index).get(spotDetRun);
-
+				
 				final Map<OmegaPlane, List<OmegaROI>> resultingParticles = spotDetRun
 						.getResultingParticles();
 				final Map<OmegaROI, Map<String, Object>> resultingParticlesValues = spotDetRun
 						.getResultingParticlesValues();
-
+				
 				OmegaImagePixels pixels = null;
 				for (final OmegaPlane frame : resultingParticles.keySet()) {
 					if (frame.getParentPixels() == null) {
@@ -142,7 +142,7 @@ public class PLRunner implements PLRunnable {
 					pixels = frame.getParentPixels();
 					break;
 				}
-
+				
 				Integer sizeT = null;
 				if (pixels == null) {
 					int max = -1;
@@ -155,13 +155,13 @@ public class PLRunner implements PLRunnable {
 				} else {
 					sizeT = pixels.getSizeT();
 				}
-
+				
 				if (sizeT < 2) {
 					// TODO throw error and skip image or stop thread?
 				}
-
+				
 				// this.gateway.getTotalT(pixelsID, z, sizeT, c);
-
+				
 				Float displacement = null;
 				Integer linkrange = null;
 				String movType = null;
@@ -171,26 +171,26 @@ public class PLRunner implements PLRunnable {
 				Integer minLength = null;
 				for (int i = 0; i < parameters.size(); i++) {
 					final OmegaParameter param = parameters.get(i);
-					if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT) {
+					if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT) {
 						displacement = Float.valueOf(param.getStringValue());
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_LINKRANGE) {
 						linkrange = Integer.valueOf(param.getStringValue());
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_MOVTYPE) {
 						movType = param.getStringValue();
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_OBJFEATURE) {
 						objectFeature = Float.valueOf(param.getStringValue());
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_DYNAMICS) {
 						dynamics = Float.valueOf(param.getStringValue());
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_OPTIMIZER) {
 						optimizer = param.getStringValue();
-					} else if (param.getName() == OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS) {
+					} else if (param.getName() == OmegaAlgorithmParameterConstants.PARAM_MINPOINTS) {
 						minLength = Integer.valueOf(param.getStringValue());
 					}
 				}
-
+				
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " rebuilding MOSAIC structures.", false);
-
+				
 				final Map<Particle, OmegaROI> particlesMap = new LinkedHashMap<Particle, OmegaROI>();
 				// final MyFrame[] mosaicFrames = new MyFrame[sizeT];
 				final List<Vector<Particle>> mosaicParticlesList = new ArrayList<Vector<Particle>>();
@@ -204,7 +204,7 @@ public class PLRunner implements PLRunnable {
 					// final Integer radius = (Integer) spotDetRun
 					// .getAlgorithmSpec()
 					// .getParameter(
-					// OmegaConstantsAlgorithmParameters.PARAM_RADIUS)
+					// OmegaAlgorithmParameterConstants.PARAM_RADIUS)
 					// .getValue();
 					// mosaicFrame.setParticleRadius(radius);
 					final Vector<Particle> mosaicParticles = new Vector<Particle>();
@@ -215,13 +215,15 @@ public class PLRunner implements PLRunnable {
 								.getY()));
 						final Particle p = new Particle(x, y, 0,
 								frame.getIndex());
-						p.m0 = (Float) resultingParticlesValues.get(particle)
-								.get("m0");
+						final Map<String, Object> values = resultingParticlesValues
+								.get(particle);
+						p.m0 = Float.valueOf(String.valueOf(values
+								.get(PLConstants.REQUIRED_VALUE_M0)));
 						// p.m1 = (Float)
 						// resultingParticlesValues.get(particle).get(
 						// "m1");
-						p.m2 = (Float) resultingParticlesValues.get(particle)
-								.get("m2");
+						p.m2 = Float.valueOf(String.valueOf(values
+								.get(PLConstants.REQUIRED_VALUE_M2)));
 						// p.m3 = (Float)
 						// resultingParticlesValues.get(particle).get(
 						// "m3");
@@ -235,13 +237,13 @@ public class PLRunner implements PLRunnable {
 					// mosaicFrames[index] = mosaicFrame;
 					mosaicParticlesMap.put(i, mosaicParticles);
 				}
-
+				
 				for (int i = 0; i < sizeT; i++) {
 					final Vector<Particle> mosaicParticles = mosaicParticlesMap
 							.get(i);
 					mosaicParticlesList.add(mosaicParticles);
 				}
-
+				
 				ParticleLinker linker = null;
 				if (optimizer == PLConstants.PARAM_OPTIMIZER_GREEDY) {
 					linker = new ParticleLinkerGreedy();
@@ -266,15 +268,15 @@ public class PLRunner implements PLRunnable {
 				options.lSpace = 1f;
 				options.lFeature = objectFeature;
 				options.lDynamic = dynamics;
-
+				
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " launching MOSAIC linker.", false);
-
+				
 				linker.linkParticles(mosaicParticlesList, options);
-
+				
 				this.updateStatusSync(PLRunner.RUNNER
 						+ " generating trajectories.", false);
-
+				
 				final List<List<Particle>> mosaicTracks = this
 						.generateTrajectories(mosaicParticlesList, sizeT,
 								linkrange);
@@ -282,7 +284,7 @@ public class PLRunner implements PLRunnable {
 				int counter = 0;
 				for (final List<Particle> mosaicTrack : mosaicTracks) {
 					final String trajName = OmegaTrajectory.DEFAULT_TRAJ_NAME
-							+ "_" + counter;
+							+ counter;
 					final OmegaTrajectory track = new OmegaTrajectory(
 							mosaicTrack.size(), trajName, (double) counter);
 					// track.setName(track.getName() + "_" + counter);
@@ -291,7 +293,8 @@ public class PLRunner implements PLRunnable {
 						final OmegaROI particle = particlesMap.get(p);
 						track.addROI(particle);
 					}
-					if (track.getLength() > minLength) {
+					track.recalculateLength();
+					if (track.getLength() >= minLength) {
 						tracks.add(track);
 					}
 				}
@@ -301,7 +304,7 @@ public class PLRunner implements PLRunnable {
 			}
 		}
 	}
-	
+
 	private List<List<Particle>> generateTrajectories(
 			final List<Vector<Particle>> mosaicParticlesList,
 			final int frames_number, final int linkrange) {
@@ -329,7 +332,7 @@ public class PLRunner implements PLRunnable {
 					if (found == -1) {
 						continue;
 					}
-					
+
 					// Added by Guy Levy, 18.08.06 - A change form original
 					// implementation if this particle is linkd to a "real"
 					// paritcle that was already linked break the trajectory and
@@ -338,7 +341,7 @@ public class PLRunner implements PLRunnable {
 							mosaicParticlesList.get(i).elementAt(j).next[n]).special) {
 						continue;
 					}
-					
+
 					curr_track_particles.add(mosaicParticlesList.get(i)
 							.elementAt(j));
 					k = i;
@@ -377,7 +380,7 @@ public class PLRunner implements PLRunnable {
 						}
 						mosaicParticlesList.get(k).elementAt(m).special = true;
 					} while (m != -1);
-					
+
 					tracks.add(new ArrayList<Particle>(curr_track_particles));
 					curr_track_particles.clear();
 				}
@@ -385,23 +388,23 @@ public class PLRunner implements PLRunnable {
 		}
 		return tracks;
 	}
-	
+
 	private void debugModeRun() {
-		
+
 	}
-	
+
 	public void terminate() {
 		this.isTerminated = true;
 	}
-	
+
 	public Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> getParticleToProcess() {
 		return this.particlesToProcess;
 	}
-	
+
 	public Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaTrajectory>>> getResultingTrajectories() {
 		return this.resultingTrajectories;
 	}
-	
+
 	private void updateStatusSync(final String msg, final boolean ended) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
@@ -420,7 +423,7 @@ public class PLRunner implements PLRunnable {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private void updateStatusAsync(final String msg, final boolean ended) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

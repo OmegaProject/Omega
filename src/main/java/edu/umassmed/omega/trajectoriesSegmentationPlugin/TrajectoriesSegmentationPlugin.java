@@ -31,11 +31,11 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
@@ -49,31 +49,31 @@ import edu.umassmed.omega.trajectoriesSegmentationPlugin.gui.TSPluginPanel;
 public class TrajectoriesSegmentationPlugin extends
 		OmegaTrajectoriesSegmentationPlugin implements
 		OmegaDataDisplayerPluginInterface {
-
+	
 	public TrajectoriesSegmentationPlugin() {
 		super(1);
 	}
-
+	
 	public TrajectoriesSegmentationPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-
+	
 	@Override
 	public String getName() {
 		return TSConstants.PLUGIN_NAME;
 	}
-
+	
 	@Override
 	public String getShortName() {
 		return TSConstants.PLUGIN_SNAME;
 	}
-
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
 	public void updateSegmentationTypesList(
 			final List<OmegaSegmentationTypes> segmTypesList) {
@@ -83,17 +83,17 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.setSegmentationTypesList(segmTypesList);
 		}
 	}
-
+	
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TSPluginPanel panel = new TSPluginPanel(parent, this,
 				this.getGateway(), this.getLoadedImages(),
 				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(),
-				this.getSegmentationTypesList(), index);
+				this.getSegmentationTypesList(), index, this.getPluginOptions());
 		return panel;
 	}
-
+	
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -102,7 +102,7 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.setGateway(gateway);
 		}
 	}
-
+	
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -111,7 +111,7 @@ public class TrajectoriesSegmentationPlugin extends
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-
+	
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
@@ -120,7 +120,7 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.updateTrajectories(trajectories, selection);
 		}
 	}
-	
+
 	@Override
 	public void clearTrajectoriesSelection() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -128,15 +128,15 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.clearTrajectoriesSelection();
 		}
 	}
-
+	
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
 			specificPanel.selectImage(image);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
@@ -145,7 +145,7 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
@@ -154,7 +154,7 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.selectParticleLinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesRelinkingRun(
 			final OmegaTrajectoriesRelinkingRun analysisRun) {
@@ -163,7 +163,7 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesSegmentationRun(
 			final OmegaTrajectoriesSegmentationRun analysisRun) {
@@ -172,34 +172,42 @@ public class TrajectoriesSegmentationPlugin extends
 			specificPanel.selectTrajectoriesSegmentationRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public String getAlgorithmDescription() {
 		return TSConstants.PLUGIN_ALGO_DESC;
 	}
-
+	
 	@Override
 	public String getAlgorithmAuthors() {
 		return OmegaAlgorithmsUtilities.getDefaultDeveloper();
 	}
-
+	
 	@Override
 	public String getAlgorithmVersion() {
 		return TSConstants.PLUGIN_VERSION;
 	}
-
+	
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return TSConstants.PLUGIN_PUBL;
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return TSConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
 	public String getReference() {
 		return TSConstants.PLUGIN_REFERENCE;
+	}
+	
+	@Override
+	public void setLineWidth(final int lineWidth) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TSPluginPanel specificPanel = (TSPluginPanel) panel;
+			specificPanel.setLineWidth(lineWidth);
+		}
 	}
 }

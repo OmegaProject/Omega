@@ -43,7 +43,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsEvent;
+import ome.model.units.BigResult;
+import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.data.OmegaData;
 import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
@@ -63,47 +64,47 @@ import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
 
 public class OmeroPluginPanel extends OmeroPanel implements
 		OmeroAbstractBrowserInterface {
-	
+
 	public static final String LOADING_WARNING_OMEGA = "You are trying to load more than 5 images, this could slow down the application, are you sure?";
 	private static final long serialVersionUID = -5740459087763362607L;
-	
+
 	private JMenu connectionMenu;
 	private JMenuItem connectMItem;
-	
+
 	private final OmeroConnectionDialog connectionDialog;
 	private final GenericConfirmationDialog confirmDialog;
-	
+
 	private final OmegaData omegaData;
-	
+
 	public OmeroPluginPanel(final RootPaneContainer parent,
 			final OmeroPlugin plugin, final OmeroGateway gateway,
 			final OmegaData omegaData, final int index) {
 		super(parent, plugin, index, gateway);
-		
+
 		this.omegaData = omegaData;
 		this.connectionDialog = new OmeroConnectionDialog(
 				this.getParentContainer(), this, gateway);
 		this.confirmDialog = new GenericConfirmationDialog(
 				this.getParentContainer(), "Image loading warning",
 				OmeroPluginPanel.LOADING_WARNING_OMEGA, true);
-		
+
 		this.setPreferredSize(new Dimension(750, 500));
 		// this.setLayout(new BorderLayout());
 		this.createMenu();
 		this.addListeners();
 	}
-	
+
 	private void createMenu() {
 		final JMenuBar menu = super.getMenu();
-		
+
 		this.connectionMenu = new JMenu(OmeroPluginGUIConstants.MENU_CONNECTION);
 		this.connectMItem = new JMenuItem(
 				OmeroPluginGUIConstants.MENU_CONNECTION_MANAGER);
 		this.connectionMenu.add(this.connectMItem);
-		
+
 		menu.add(this.connectionMenu);
 	}
-	
+
 	private void addListeners() {
 		this.connectMItem.addActionListener(new ActionListener() {
 			@Override
@@ -115,13 +116,13 @@ public class OmeroPluginPanel extends OmeroPanel implements
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
-						OmegaConstantsEvent.PROPERTY_CONNECTION)) {
+						OmegaEventConstants.PROPERTY_CONNECTION)) {
 					OmeroPluginPanel.this.handlePropertyConnection();
 				}
 			}
 		});
 	}
-	
+
 	private void handlePropertyConnection() {
 		if (this.getGateway().isConnected()) {
 			final OmegaExperimenter experimenter = OmeroImporterUtilities
@@ -137,16 +138,16 @@ public class OmeroPluginPanel extends OmeroPanel implements
 		}
 		this.updateVisualizationMenu();
 	}
-	
+
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.connectionDialog.updateParentContainer(parent);
 	}
-	
+
 	public void showConnectionPanel() {
 		final RootPaneContainer parent = this.getParentContainer();
-		
+
 		Point parentLocOnScren = null;
 		Dimension parentSize = null;
 		if (parent instanceof JInternalFrame) {
@@ -170,16 +171,17 @@ public class OmeroPluginPanel extends OmeroPanel implements
 		this.connectionDialog.repaint();
 		this.connectionDialog.setVisible(true);
 	}
-	
+
 	@Override
 	public void onCloseOperation() {
 		this.connectionDialog.setVisible(false);
 	}
-	
+
 	@Override
-	protected void loadData(final boolean hasToSelect) throws ServerError {
+	protected void loadData(final boolean hasToSelect) throws ServerError,
+			BigResult {
 		boolean dataChanged = false;
-		
+
 		final List<OmeroImageWrapper> imgWrappers = this
 				.getImageWrapperToBeLoadedList();
 		if (imgWrappers.size() > 5) {
@@ -189,7 +191,7 @@ public class OmeroPluginPanel extends OmeroPanel implements
 				return;
 			}
 		}
-		
+
 		final List<OmegaElement> loadedElements = new ArrayList<OmegaElement>();
 		// TODO add all checks and sub checks
 		OmegaExperimenter exp = OmeroImporterUtilities.loadAndAddExperimenter(
@@ -210,7 +212,7 @@ public class OmeroPluginPanel extends OmeroPanel implements
 					this.getGateway(), this.omegaData, hasToSelect,
 					loadedElements, dataChanged);
 		}
-		
+
 		if (dataChanged) {
 			this.getPlugin().fireEvent(
 					new OmegaPluginEventDataChanged(this.getPlugin(),
@@ -221,7 +223,7 @@ public class OmeroPluginPanel extends OmeroPanel implements
 		this.getBrowserPanel().updateLoadedElements(loadedImages);
 		this.getImageWrapperToBeLoadedList().clear();
 	}
-	
+
 	private List<OmegaImage> getLoadedImages() {
 		final List<OmegaImage> loadedImages = new ArrayList<OmegaImage>();
 		for (final OmegaProject proj : this.omegaData.getProjects()) {

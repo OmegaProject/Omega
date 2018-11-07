@@ -32,10 +32,10 @@ import java.util.List;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -53,57 +53,57 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 		OmegaSelectParticleLinkingRunPluginInterface,
 		OmegaOrphanedAnalysisConsumerPluginInterface,
 		OmegaLoadedAnalysisConsumerPluginInterface {
-	
+
 	private OrphanedAnalysisContainer orphanedAnalysis;
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
-	
+
 	public PLPlugin() {
 		super(1);
 	}
-	
+
 	public PLPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
-		
+
 		this.orphanedAnalysis = null;
 		this.loadedAnalysisRuns = null;
 	}
-	
+
 	@Override
 	public String getAlgorithmDescription() {
 		return PLConstants.PLUGIN_ALGO_DESC;
 	}
-	
+
 	@Override
 	public String getAlgorithmAuthors() {
 		return PLConstants.PLUGIN_AUTHORS;
 	}
-	
+
 	@Override
 	public String getAlgorithmVersion() {
 		return PLConstants.PLUGIN_VERSION;
 	}
-	
+
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return PLConstants.PLUGIN_PUBL;
 	}
-	
+
 	@Override
 	public String getName() {
 		return PLConstants.PLUGIN_NAME;
 	}
-	
+
 	@Override
 	public String getShortName() {
 		return PLConstants.PLUGIN_SNAME;
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
@@ -112,7 +112,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
 		return panel;
 	}
-	
+
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -121,7 +121,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-	
+
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -130,20 +130,20 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return PLConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final PLPluginPanel specificPanel = (PLPluginPanel) panel;
 			specificPanel.selectImage(image);
 		}
 	}
-	
+
 	@Override
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
@@ -152,7 +152,7 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
@@ -161,29 +161,29 @@ public class PLPlugin extends OmegaParticleTrackingPlugin implements
 			specificPanel.selectParticleLinkingRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void setLoadedAnalysisRun(
 			final List<OmegaAnalysisRun> loadedAnalysisRuns) {
 		this.loadedAnalysisRuns = loadedAnalysisRuns;
 	}
-	
+
 	@Override
 	public List<OmegaAnalysisRun> getLoadedAnalysisRuns() {
 		return this.loadedAnalysisRuns;
 	}
-	
+
 	@Override
 	public void setOrphanedAnalysis(
 			final OrphanedAnalysisContainer orphanedAnalysis) {
 		this.orphanedAnalysis = orphanedAnalysis;
 	}
-	
+
 	@Override
 	public OrphanedAnalysisContainer getOrphanedAnalysis() {
 		return this.orphanedAnalysis;
 	}
-	
+
 	@Override
 	public String getReference() {
 		return PLConstants.PLUGIN_REFERENCE;

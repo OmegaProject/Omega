@@ -73,11 +73,13 @@ public class TSTrackPanel extends GenericPanel {
 	
 	private boolean segmOnROISelection, rescaling;
 	
+	private int lineWidth;
+	
 	public TSTrackPanel(final RootPaneContainer parent,
 			final TSPluginPanel pluginPanel, final int sizeX, final int sizeY,
 			final double pixelSizeX, final double pixelSizeY,
 			final OmegaTrajectory traj,
-			final List<OmegaSegment> segmentationsResults) {
+			final List<OmegaSegment> segmentationsResults, final int lineWidth) {
 		super(parent);
 		this.pluginPanel = pluginPanel;
 		
@@ -90,6 +92,8 @@ public class TSTrackPanel extends GenericPanel {
 		this.points = new LinkedHashMap<>();
 		
 		this.scale = 1;
+		
+		this.lineWidth = lineWidth;
 		
 		this.radius = 4;
 		this.imgWidth = sizeX;
@@ -159,7 +163,7 @@ public class TSTrackPanel extends GenericPanel {
 		
 		this.trackDisplayPanel = new TSTrackDisplayPanel(
 				this.getParentContainer(), this, this.radius, this.imgWidth,
-				this.imgHeight);
+				this.imgHeight, this.lineWidth);
 		this.trackDisplayScrollPane = new JScrollPane(this.trackDisplayPanel);
 		
 		this.add(this.trackDisplayScrollPane, BorderLayout.CENTER);
@@ -649,5 +653,10 @@ public class TSTrackPanel extends GenericPanel {
 	
 	public Double getScale() {
 		return this.scale;
+	}
+	
+	public void setLineWidth(final int lineWidth) {
+		this.lineWidth = lineWidth;
+		this.trackDisplayPanel.setLineWidth(lineWidth);
 	}
 }

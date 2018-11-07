@@ -32,12 +32,12 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -81,7 +81,8 @@ public class TMMPlugin extends OmegaStatsPlugin implements
 			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TMMPluginPanel panel = new TMMPluginPanel(parent, this,
 				this.getGateway(), this.getLoadedImages(),
-				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(),
+				index, this.getPluginOptions());
 		return panel;
 	}
 
@@ -104,7 +105,7 @@ public class TMMPlugin extends OmegaStatsPlugin implements
 	}
 
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMMPluginPanel specificPanel = (TMMPluginPanel) panel;
 			specificPanel.selectImage(image);
@@ -219,5 +220,21 @@ public class TMMPlugin extends OmegaStatsPlugin implements
 	@Override
 	public String getReference() {
 		return TMMConstants.PLUGIN_REFERENCE;
+	}
+
+	@Override
+	public void setGraphLineSize(final int lineSize) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMMPluginPanel specificPanel = (TMMPluginPanel) panel;
+			specificPanel.setLineSize(lineSize);
+		}
+	}
+
+	@Override
+	public void setGraphShapeSize(final int shapeSize) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMMPluginPanel specificPanel = (TMMPluginPanel) panel;
+			specificPanel.setShapeSize(shapeSize);
+		}
 	}
 }

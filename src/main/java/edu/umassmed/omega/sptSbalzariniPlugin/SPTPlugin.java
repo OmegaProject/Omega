@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
@@ -43,58 +43,58 @@ import edu.umassmed.omega.sptSbalzariniPlugin.gui.SPTPluginPanel;
 
 public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 		OmegaDataDisplayerPluginInterface {
-
+	
 	public SPTPlugin() {
 		super(1);
 	}
-
+	
 	public SPTPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-
+	
 	@Override
 	public String getAlgorithmDescription() {
 		return SPTConstants.PLUGIN_ALGO_DESC;
 	}
-
+	
 	@Override
 	public String getAlgorithmAuthors() {
 		return SPTConstants.PLUGIN_AUTHORS;
 	}
-
+	
 	@Override
 	public String getAlgorithmVersion() {
 		return SPTConstants.PLUGIN_VERSION;
 	}
-
+	
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return SPTConstants.PLUGIN_PUBL;
 	}
-
+	
 	@Override
 	public String getName() {
 		return SPTConstants.PLUGIN_NAME;
 	}
-
+	
 	@Override
 	public String getShortName() {
 		return SPTConstants.PLUGIN_SNAME;
 	}
-
+	
 	@Override
 	public List<OperatingSystemEnum> getSupportedPlatforms() {
 		final List<OperatingSystemEnum> supportedPlatforms = new ArrayList<OperatingSystemEnum>();
 		supportedPlatforms.add(OperatingSystemEnum.WIN);
 		return supportedPlatforms;
 	}
-
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
@@ -104,7 +104,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 		// need to be fixed
 		return panel;
 	}
-
+	
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -113,7 +113,7 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-
+	
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -121,20 +121,20 @@ public class SPTPlugin extends OmegaParticleTrackingPlugin implements
 			specificPanel.updateTrees(this.getLoadedImages());
 		}
 	}
-
+	
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final SPTPluginPanel specificPanel = (SPTPluginPanel) panel;
 			specificPanel.selectImage(image);
 		}
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return SPTConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
 	public String getReference() {
 		return "TBD";

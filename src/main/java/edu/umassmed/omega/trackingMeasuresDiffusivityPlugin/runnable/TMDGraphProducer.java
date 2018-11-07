@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.constants.GraphLabelConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -29,7 +29,7 @@ public class TMDGraphProducer extends StatsGraphProducer {
 	private final Map<OmegaSegment, Double[][]> deltaTMap;
 	private final Map<OmegaSegment, Double[][]> gammaDFromLogMap;
 	private final Map<OmegaSegment, Double[][]> gammaDMap;
-	private final Map<OmegaSegment, Double[]> gammaFromLogMap;
+	// private final Map<OmegaSegment, Double[]> gammaFromLogMap;
 	// private final Map<OmegaSegment, Double[]> gammaMap;
 	private final Map<OmegaSegment, Double[]> smssFromLogMap;
 	// private final Map<OmegaSegment, Double[]> smssMap;
@@ -38,8 +38,11 @@ public class TMDGraphProducer extends StatsGraphProducer {
 	private JPanel graphPanel;
 	private boolean itsLocal;
 	
-	public TMDGraphProducer(final TMDGraphPanel diffusivityPanel,
-			final int graphType, final int diffusivityOption, final int tMax,
+	public TMDGraphProducer(
+			final TMDGraphPanel diffusivityPanel,
+			final int graphType,
+			final int diffusivityOption,
+			final int tMax,
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
 			final OmegaSegmentationTypes segmTypes,
 			final Map<OmegaSegment, Double[]> nyMap,
@@ -50,11 +53,12 @@ public class TMDGraphProducer extends StatsGraphProducer {
 			final Map<OmegaSegment, Double[][]> gammaDMap,
 			final Map<OmegaSegment, Double[][]> gammaDLogMap,
 			// final Map<OmegaSegment, Double[]> gammaMap,
-			final Map<OmegaSegment, Double[]> gammaLogMap,
+			// final Map<OmegaSegment, Double[]> gammaLogMap,
 			// final Map<OmegaSegment, Double[]> smssMap,
 			final Map<OmegaSegment, Double[]> smssLogMap,
-			final Map<OmegaSegment, Double[]> errors) {
-		super(graphType, segmentsMap, segmTypes);
+			final Map<OmegaSegment, Double[]> errors, final int lineSize,
+			final int shapeSize) {
+		super(graphType, segmentsMap, segmTypes, lineSize, shapeSize);
 		this.diffusivityPanel = diffusivityPanel;
 		this.diffusivityOption = diffusivityOption;
 		this.maxT = tMax;
@@ -65,7 +69,7 @@ public class TMDGraphProducer extends StatsGraphProducer {
 		this.deltaTMap = deltaTMap;
 		this.gammaDFromLogMap = gammaDLogMap;
 		this.gammaDMap = gammaDMap;
-		this.gammaFromLogMap = gammaLogMap;
+		// this.gammaFromLogMap = gammaLogMap;
 		// this.gammaMap = gammaMap;
 		this.smssFromLogMap = smssLogMap;
 		// this.smssMap = smssMap;
@@ -111,19 +115,19 @@ public class TMDGraphProducer extends StatsGraphProducer {
 		String title = "";
 		switch (this.diffusivityOption) {
 			case TMDGraphPanel.OPTION_TRACK_SLOPE_MSS:
-				title = StatsConstants.GRAPH_NAME_MSS;
+				title = GraphLabelConstants.GRAPH_NAME_MSS;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_D:
-				title = StatsConstants.GRAPH_NAME_DIFF;
+				title = GraphLabelConstants.GRAPH_NAME_DIFF;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_D:
-				title = StatsConstants.GRAPH_NAME_UNCERT_D;
+				title = GraphLabelConstants.GRAPH_NAME_UNCERT_D;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_SMSS:
-				title = StatsConstants.GRAPH_NAME_UNCERT_SMSS;
+				title = GraphLabelConstants.GRAPH_NAME_UNCERT_SMSS;
 				break;
 			default:
-				title = StatsConstants.GRAPH_NAME_MSD;
+				title = GraphLabelConstants.GRAPH_NAME_MSD;
 		}
 		return title;
 	}
@@ -133,19 +137,19 @@ public class TMDGraphProducer extends StatsGraphProducer {
 		String yAxisTitle;
 		switch (this.diffusivityOption) {
 			case TMDGraphPanel.OPTION_TRACK_SLOPE_MSS:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_MSS;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_MSS;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_D:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DIFF;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_DIFF;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_D:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_UNCERT_D;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_UNCERT_D;
 				break;
 			case TMDGraphPanel.OPTION_TRACK_ERROR_SMSS:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_UNCERT_SMSS;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_UNCERT_SMSS;
 				break;
 			default:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_MSD;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_MSD;
 		}
 		return yAxisTitle;
 	}
@@ -160,10 +164,16 @@ public class TMDGraphProducer extends StatsGraphProducer {
 			return value;
 		switch (this.diffusivityOption) {
 			case TMDGraphPanel.OPTION_TRACK_SLOPE_MSS:
+				if (this.smssFromLogMap == null) {
+					break;
+				}
 				values = this.smssFromLogMap.get(segment);
 				value[0] = values[0];
 				break;
 			case TMDGraphPanel.OPTION_TRACK_D:
+				if (this.gammaDFromLogMap == null) {
+					break;
+				}
 				array = this.gammaDFromLogMap.get(segment);
 				values = array[2];
 				value[0] = values[3];
@@ -183,6 +193,9 @@ public class TMDGraphProducer extends StatsGraphProducer {
 				value[0] = values[0];
 				break;
 			default:
+				if (this.gammaDFromLogMap == null) {
+					break;
+				}
 				array = this.gammaDFromLogMap.get(segment);
 				values = array[2];
 				value[0] = values[0];

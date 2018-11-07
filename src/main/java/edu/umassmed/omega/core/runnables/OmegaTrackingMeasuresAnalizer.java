@@ -15,15 +15,15 @@ import edu.umassmed.omega.commons.runnable.OmegaVelocityAnalyzer;
 import edu.umassmed.omega.core.OmegaApplication;
 
 public class OmegaTrackingMeasuresAnalizer implements Runnable {
-
+	
 	private final OmegaApplication omegaApp;
 	private final OmegaTrajectoriesSegmentationRun segmentationRun;
-
+	
 	private final OmegaIntensityAnalyzer intensityAnalizer;
 	private final OmegaMobilityAnalyzer mobilityAnalizer;
 	private final OmegaVelocityAnalyzer velocityAnalizer;
 	private final OmegaDiffusivityAnalyzer diffusivityAnalizer;
-
+	
 	public OmegaTrackingMeasuresAnalizer(final OmegaApplication omegaApp,
 			final OmegaTrajectoriesSegmentationRun segmentationRun,
 			final double physicalT, final int tMax,
@@ -42,15 +42,15 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 		this.diffusivityAnalizer = new OmegaDiffusivityAnalyzer(physicalT,
 				segmentationRun, segments, diffParams);
 	}
-	
+
 	public List<OmegaParameter> getIntensityParameters() {
 		return this.intensityAnalizer.getParameters();
 	}
-	
+
 	public List<OmegaParameter> getDiffusivityParameters() {
 		return this.diffusivityAnalizer.getParameters();
 	}
-
+	
 	@Override
 	public void run() {
 		Thread t1 = null;
@@ -59,19 +59,19 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 			t1.setName("IntensityAnalizer");
 			t1.start();
 		}
-
+		
 		final Thread t2 = new Thread(this.mobilityAnalizer);
 		t2.setName("MobilityAnalizer");
 		t2.start();
-
+		
 		final Thread t3 = new Thread(this.velocityAnalizer);
 		t3.setName("VelocityAnalizer");
 		t3.start();
-
+		
 		final Thread t4 = new Thread(this.diffusivityAnalizer);
 		t4.setName("DiffusivityAnalizer");
 		t4.start();
-
+		
 		try {
 			if (this.intensityAnalizer != null) {
 				t1.join();
@@ -82,7 +82,7 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 		} catch (final InterruptedException ex) {
 			OmegaLogFileManager.handleCoreException(ex, true);
 		}
-
+		
 		// TODO to be changed somehow
 		this.omegaApp.updateTrackingMeasuresAnalizerResults(
 				this.segmentationRun,
@@ -124,7 +124,7 @@ public class OmegaTrackingMeasuresAnalizer implements Runnable {
 				this.diffusivityAnalizer.getGammaDResults(),
 				this.diffusivityAnalizer.getGammaDFromLogResults(),
 				// this.diffusivityAnalizer.getGammaResults(),
-				this.diffusivityAnalizer.getGammaFromLogResults(),
+				// this.diffusivityAnalizer.getGammaFromLogResults(),
 				// this.diffusivityAnalizer.getSmssResults(),
 				this.diffusivityAnalizer.getSmssFromLogResults(),
 				// this.diffusivityAnalizer.getErrors(),

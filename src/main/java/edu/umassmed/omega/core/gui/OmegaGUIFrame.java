@@ -51,14 +51,17 @@ import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
+import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
 import edu.umassmed.omega.commons.data.OmegaLoadedData;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
+import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
+import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaDBServerInformation;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaLoginCredentials;
@@ -85,8 +88,9 @@ public class OmegaGUIFrame extends JFrame {
 	private OmegaWorkspacePanel workspacePanel;
 	private OmegaSidePanel sidePanel;
 
-	private final OmegaDBPreferencesFrame omegaDbPrefFrame;
-
+	private final OmegaDBPreferencesDialog omegaDbPrefDialog;
+	private final OmegaPreferencesDialog omegaPrefDialog;
+	
 	private JMenuBar menu;
 	private JMenu fileMenu, viewMenu, editMenu;
 	private JMenuItem omegaDbSaveMItem, omegaDbLoadMItem,
@@ -94,7 +98,8 @@ public class OmegaGUIFrame extends JFrame {
 	// private JMenuItem tracksImporterMItem, tracksExporterMItem,
 	// diffExporterMItem, dataExporterMItem;
 	private JMenuItem sepUnifyInterfaceMItem;
-	private JMenuItem omegaDbOptionsMItem, omegaDbUpdateTrajectoriesMItem;
+	private JMenuItem omegaDbOptionsMItem, omegaOptionsMItem,
+			omegaDbUpdateTrajectoriesMItem;
 
 	private JSplitPane mainSplitPane;
 
@@ -109,26 +114,27 @@ public class OmegaGUIFrame extends JFrame {
 
 	public OmegaGUIFrame(final OmegaApplication omegaApp) {
 		this.omegaApp = omegaApp;
-
+		
 		this.setTitle("OMEGA - Open Microscopy Environment inteGrated Analysis");
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.getContentPane().setLayout(new BorderLayout());
-
+		
 		this.separatedFrames = new ArrayList<JFrame>();
 		this.isAttached = true;
-
-		// this.omegaDbPrefFrame = new OmegaDBPreferencesFrame(this,
+		
+		// this.omegaDbPrefFrame = new OmegaDBPreferencesDialog(this,
 		// omegaApp.getMySqlGateway());
-		this.omegaDbPrefFrame = new OmegaDBPreferencesFrame(this);
-
+		this.omegaDbPrefDialog = new OmegaDBPreferencesDialog(this);
+		this.omegaPrefDialog = new OmegaPreferencesDialog(this);
+		
 		this.previousLoc = -1;
 		this.oldSplitPaneDimension = null;
 		this.dividerLocation = 0.75;
-
+		
 		this.createAndAddWidgets();
 		this.createMenu();
 		this.setJMenuBar(this.menu);
-
+		
 		this.addListeners();
 	}
 
@@ -155,7 +161,18 @@ public class OmegaGUIFrame extends JFrame {
 		this.leftScrollPane = new JScrollPane(this.workspacePanel);
 		this.mainSplitPane.setLeftComponent(this.leftScrollPane);
 
-		this.sidePanel = new OmegaSidePanel(this);
+		Integer drawLineWidth = OmegaGenericConstants.PREF_TRACK_LINE_SIZE_VAL;
+		final Map<String, String> options = this.omegaApp
+				.getGeneralOptions(OmegaPreferencesDialog.CATEGORY);
+		if (!options.isEmpty()
+				&& options
+						.containsKey(OmegaGenericConstants.PREF_TRACK_LINE_SIZE)) {
+			final String value = options
+					.get(OmegaGenericConstants.PREF_TRACK_LINE_SIZE);
+			drawLineWidth = Integer.valueOf(value);
+		}
+
+		this.sidePanel = new OmegaSidePanel(this, drawLineWidth);
 		this.rightScrollPane = new JScrollPane(this.sidePanel);
 		this.mainSplitPane.setRightComponent(this.rightScrollPane);
 
@@ -209,12 +226,14 @@ public class OmegaGUIFrame extends JFrame {
 		this.fileMenu.add(this.quitMItem);
 
 		this.editMenu = new JMenu(OmegaGUIConstants.MENU_EDIT);
+		this.omegaOptionsMItem = new JMenuItem(OmegaGUIConstants.MENU_EDIT_PREF);
+		this.editMenu.add(this.omegaOptionsMItem);
 		this.omegaDbOptionsMItem = new JMenuItem(
 				OmegaGUIConstants.MENU_EDIT_DB_PREF);
+		this.editMenu.add(this.omegaDbOptionsMItem);
 		this.omegaDbUpdateTrajectoriesMItem = new JMenuItem(
 				"Update Trajectories");
-		this.editMenu.add(this.omegaDbOptionsMItem);
-		this.editMenu.add(this.omegaDbUpdateTrajectoriesMItem);
+		// this.editMenu.add(this.omegaDbUpdateTrajectoriesMItem);
 
 		this.viewMenu = new JMenu(OmegaGUIConstants.MENU_VIEW);
 		this.sepUnifyInterfaceMItem = new JMenuItem(
@@ -336,7 +355,13 @@ public class OmegaGUIFrame extends JFrame {
 		this.omegaDbOptionsMItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				OmegaGUIFrame.this.showOmegaDBPreferencesPanel();
+				OmegaGUIFrame.this.showOmegaDBPreferencesDialog();
+			}
+		});
+		this.omegaOptionsMItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				OmegaGUIFrame.this.showOmegaPreferencesDialog();
 			}
 		});
 		this.omegaDbUpdateTrajectoriesMItem
@@ -378,7 +403,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.oldSplitPaneDimension = dimension;
 	}
 
-	public void showOmegaDBPreferencesPanel() {
+	public void showOmegaDBPreferencesDialog() {
 		Point parentLocOnScren = null;
 		Dimension parentSize = null;
 		parentLocOnScren = this.getLocationOnScreen();
@@ -386,14 +411,32 @@ public class OmegaGUIFrame extends JFrame {
 		final int x = parentLocOnScren.x;
 		final int y = parentLocOnScren.y;
 		final int xOffset = (parentSize.width / 2)
-				- (this.omegaDbPrefFrame.getSize().width / 2);
+				- (this.omegaDbPrefDialog.getSize().width / 2);
 		final int yOffset = (parentSize.height / 2)
-				- (this.omegaDbPrefFrame.getSize().height / 2);
+				- (this.omegaDbPrefDialog.getSize().height / 2);
 		final Point dialogPos = new Point(x + xOffset, y + yOffset);
-		this.omegaDbPrefFrame.setLocation(dialogPos);
-		this.omegaDbPrefFrame.validate();
-		this.omegaDbPrefFrame.repaint();
-		this.omegaDbPrefFrame.setVisible(true);
+		this.omegaDbPrefDialog.setLocation(dialogPos);
+		this.omegaDbPrefDialog.validate();
+		this.omegaDbPrefDialog.repaint();
+		this.omegaDbPrefDialog.setVisible(true);
+	}
+
+	public void showOmegaPreferencesDialog() {
+		Point parentLocOnScren = null;
+		Dimension parentSize = null;
+		parentLocOnScren = this.getLocationOnScreen();
+		parentSize = this.getSize();
+		final int x = parentLocOnScren.x;
+		final int y = parentLocOnScren.y;
+		final int xOffset = (parentSize.width / 2)
+				- (this.omegaPrefDialog.getSize().width / 2);
+		final int yOffset = (parentSize.height / 2)
+				- (this.omegaPrefDialog.getSize().height / 2);
+		final Point dialogPos = new Point(x + xOffset, y + yOffset);
+		this.omegaPrefDialog.setLocation(dialogPos);
+		this.omegaPrefDialog.validate();
+		this.omegaPrefDialog.repaint();
+		this.omegaPrefDialog.setVisible(true);
 	}
 
 	protected void setSplitPanelDividerLocation(final Double percentage) {
@@ -541,7 +584,8 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public void handleQuit() {
-		this.omegaDbPrefFrame.setVisible(false);
+		this.omegaDbPrefDialog.setVisible(false);
+		this.omegaPrefDialog.setVisible(false);
 		this.omegaApp.saveOptions();
 		this.omegaApp.dispose();
 		this.dispose();
@@ -557,11 +601,11 @@ public class OmegaGUIFrame extends JFrame {
 	}
 
 	public OmegaDBServerInformation getOmegaDBServerInformation() {
-		return this.omegaDbPrefFrame.getOmegaDBServerInformation();
+		return this.omegaDbPrefDialog.getOmegaDBServerInformation();
 	}
 
 	public OmegaLoginCredentials getOmegaLoginCredentials() {
-		return this.omegaDbPrefFrame.getOmegaDBLoginCredentials();
+		return this.omegaDbPrefDialog.getOmegaDBLoginCredentials();
 	}
 
 	public void sendCoreEvent(final OmegaCoreEvent event) {
@@ -586,8 +630,21 @@ public class OmegaGUIFrame extends JFrame {
 	public void updateParticles(final List<OmegaROI> particles) {
 		this.sidePanel.updateParticles(particles);
 	}
+	
+	public void selectOrphanedContainer(
+			final OrphanedAnalysisContainer container) {
+		this.sidePanel.selectOrphanedContainer(container);
+	}
+	
+	public void selectProject(final OmegaProject project) {
+		this.sidePanel.selectProject(project);
+	}
+	
+	public void selectDataset(final OmegaDataset dataset) {
+		this.sidePanel.selectDataset(dataset);
+	}
 
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		this.sidePanel.selectImage(image);
 	}
 
@@ -619,5 +676,20 @@ public class OmegaGUIFrame extends JFrame {
 	public void selectCurrentTrajectoriesSegmentationRun(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap) {
 		this.sidePanel.selectCurrentTrajectoriesSegmentationRun(segmentsMap);
+	}
+
+	public void setTrackLineSize(final int trackLineSize) {
+		this.sidePanel.setTrackLineSize(trackLineSize);
+		this.omegaApp.setTrackLineSize(trackLineSize);
+	}
+
+	public void setGraphLineSize(final int graphLineSize) {
+		// this.sidePanel.setLineWidth(graphLineSize);
+		this.omegaApp.setGraphLineSize(graphLineSize);
+	}
+
+	public void setGraphShapeSize(final int graphShapeSize) {
+		// this.sidePanel.setLineWidth(graphShapeSize);
+		this.omegaApp.setGraphShapeSize(graphShapeSize);
 	}
 }

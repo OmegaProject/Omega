@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.constants.GraphLabelConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -16,35 +16,35 @@ import edu.umassmed.omega.commons.runnable.StatsGraphProducer;
 import edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIGraphPanel;
 
 public class TMIGraphProducer extends StatsGraphProducer {
-	
+
 	private final TMIGraphPanel intensityGraphPanel;
-	
+
 	private final int peakMeanBgSnrOption, minMeanMaxOption;
 	private final boolean isTimepointsGraph;
 	private final int maxT;
-	
+
 	private final Map<OmegaSegment, Double[]> peakSignalsMap;
 	private final Map<OmegaSegment, Double[]> centroidSignalsMap;
-	
+
 	private final Map<OmegaROI, Double> peakSignalsLocMap;
 	private final Map<OmegaROI, Double> centroidSignalsLocMap;
-
+	
 	// SNR related START
 	private final Map<OmegaSegment, Double[]> meanSignalsMap;
 	private final Map<OmegaSegment, Double[]> backgroundsMap;
 	private final Map<OmegaSegment, Double[]> noisesMap;
 	private final Map<OmegaSegment, Double[]> areasMap;
 	private final Map<OmegaSegment, Double[]> snrsMap;
-	
+
 	private final Map<OmegaROI, Double> meanSignalsLocMap;
 	private final Map<OmegaROI, Double> backgroundsLocMap;
 	private final Map<OmegaROI, Double> noisesLocMap;
 	private final Map<OmegaROI, Double> areasLocMap;
 	private final Map<OmegaROI, Double> snrsLocMap;
 	// SNR related END
-	
+
 	private boolean itsLocal;
-	
+
 	public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
 			final int graphType, final int peakMeanBgSnrOption,
 			final int minMeanMaxOption, final boolean isTimepointsGraph,
@@ -64,8 +64,9 @@ public class TMIGraphProducer extends StatsGraphProducer {
 			final Map<OmegaROI, Double> backgroundsLocMap,
 			final Map<OmegaROI, Double> noisesLocMap,
 			final Map<OmegaROI, Double> areasLocMap,
-			final Map<OmegaROI, Double> snrsLocMap) {
-		super(graphType, segmentsMap, segmTypes);
+			final Map<OmegaROI, Double> snrsLocMap, final int lineSize,
+			final int shapeSize) {
+		super(graphType, segmentsMap, segmTypes, lineSize, shapeSize);
 		this.intensityGraphPanel = intensityGraphPanel;
 		this.peakMeanBgSnrOption = peakMeanBgSnrOption;
 		this.minMeanMaxOption = minMeanMaxOption;
@@ -85,10 +86,10 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		this.noisesLocMap = noisesLocMap;
 		this.areasLocMap = areasLocMap;
 		this.snrsLocMap = snrsLocMap;
-		
+
 		this.itsLocal = true;
 	}
-	
+
 	// public TMIGraphProducer(final TMIGraphPanel intensityGraphPanel,
 	// final int graphType, final int peakMeanBgSnrOption, final int maxT,
 	// final Map<OmegaTrajectory, List<OmegaSegment>> segmentsMap,
@@ -106,13 +107,13 @@ public class TMIGraphProducer extends StatsGraphProducer {
 	// this.areasMap = null;
 	// this.snrsMap = null;
 	// }
-	
+
 	@Override
 	public void run() {
 		this.itsLocal = false;
 		this.doRun();
 	}
-	
+
 	@Override
 	public void doRun() {
 		super.doRun();
@@ -123,7 +124,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		}
 		this.updateStatus(true);
 	}
-	
+
 	@Override
 	public String getTitle() {
 		String title = "";
@@ -142,34 +143,39 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		}
 		switch (this.peakMeanBgSnrOption) {
 			case TMIGraphPanel.OPTION_BACKGROUND:
-				title += StatsConstants.GRAPH_NAME_BACKGROUND;
+				title += GraphLabelConstants.GRAPH_NAME_BACKGROUND;
 				break;
 			case TMIGraphPanel.OPTION_SNR:
-				title += StatsConstants.GRAPH_NAME_SNR;
+				title += GraphLabelConstants.GRAPH_NAME_SNR;
 				break;
 			case TMIGraphPanel.OPTION_AREA:
-				title += StatsConstants.GRAPH_NAME_AREA;
+				title += GraphLabelConstants.GRAPH_NAME_AREA;
 				break;
 			case TMIGraphPanel.OPTION_NOISE:
-				title += StatsConstants.GRAPH_NAME_NOISE;
+				title += GraphLabelConstants.GRAPH_NAME_NOISE;
 				break;
 			case TMIGraphPanel.OPTION_MEAN_SIGNAL:
-				title += StatsConstants.GRAPH_NAME_INT_MEAN;
+				title += GraphLabelConstants.GRAPH_NAME_INT_MEAN;
 				break;
 			case TMIGraphPanel.OPTION_CENTROID_SIGNAL:
-				title += StatsConstants.GRAPH_NAME_INT_CENT;
+				title += GraphLabelConstants.GRAPH_NAME_INT_CENT;
 				break;
 			default:
-				title += StatsConstants.GRAPH_NAME_INT_PEAK;
+				title += GraphLabelConstants.GRAPH_NAME_INT_PEAK;
 		}
 		return title;
 	}
-	
+
 	@Override
 	public String getYAxisTitle() {
-		return StatsConstants.GRAPH_LAB_Y_INT;
+		switch (this.peakMeanBgSnrOption) {
+			case TMIGraphPanel.OPTION_AREA:
+				return GraphLabelConstants.GRAPH_LAB_Y_PIX;
+			default:
+				return GraphLabelConstants.GRAPH_LAB_Y_INT;
+		}
 	}
-	
+
 	@Override
 	protected Double[] getValue(final OmegaSegment segment, final OmegaROI roi) {
 		Double[] values = null;
@@ -227,7 +233,7 @@ public class TMIGraphProducer extends StatsGraphProducer {
 		}
 		return value;
 	}
-	
+
 	@Override
 	public void updateStatus(final boolean ended) {
 		if (this.itsLocal) {

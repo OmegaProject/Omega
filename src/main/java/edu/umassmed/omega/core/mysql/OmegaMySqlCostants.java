@@ -28,6 +28,7 @@ public class OmegaMySqlCostants {
 	public static String CHANNEL_ID_FIELD = "Channel_Seq_Id";
 
 	public static String NAME_FIELD = "Name";
+	public static String SNAME_FIELD = "Short_Name";
 
 	public static String AQUISITION_DATE_FIELD = "Aquisition_Date";
 	public static String IMPORT_DATE_FIELD = "Import_Date";

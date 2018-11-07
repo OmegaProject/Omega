@@ -36,7 +36,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 	private final Map<OmegaSegment, Double[][]> deltaTMap;
 	private final Map<OmegaSegment, Double[][]> gammaDFromLogMap;
 	private final Map<OmegaSegment, Double[][]> gammaDMap;
-	private final Map<OmegaSegment, Double[]> gammaFromLogMap;
+	// private final Map<OmegaSegment, Double[]> gammaFromLogMap;
 	// private final Map<OmegaSegment, Double[]> gammaMap;
 	private final Map<OmegaSegment, Double[]> smssFromLogMap;
 	// private final Map<OmegaSegment, Double[]> smssMap;
@@ -51,7 +51,8 @@ public class TMDMotionTypeClassificationGraphProducer extends
 	
 	public TMDMotionTypeClassificationGraphProducer(
 			final TMDMotionTypeClassificationGraphPanel motionTypeClassificationPanel,
-			final int motionTypeOption, final int showOption,
+			final int motionTypeOption,
+			final int showOption,
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
 			final OmegaSegmentationTypes segmTypes,
 			final Map<OmegaSegment, Double[]> nyMap,
@@ -62,13 +63,15 @@ public class TMDMotionTypeClassificationGraphProducer extends
 			final Map<OmegaSegment, Double[][]> gammaDMap,
 			final Map<OmegaSegment, Double[][]> gammaDLogMap,
 			// final Map<OmegaSegment, Double[]> gammaMap,
-			final Map<OmegaSegment, Double[]> gammaLogMap,
+			// final Map<OmegaSegment, Double[]> gammaLogMap,
 			// final Map<OmegaSegment, Double[]> smssMap,
 			final Map<OmegaSegment, Double[]> smssLogMap,
 			// final Map<OmegaSegment, Double[]> errorMap,
 			final Map<OmegaSegment, Double[]> errorLogMap,
-			final Double minDetectableODC) {
-		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes);
+			final Double minDetectableODC, final int lineSize,
+			final int shapeSize) {
+		super(StatsGraphProducer.LINE_GRAPH, segments, segmTypes, lineSize,
+				shapeSize);
 		this.motionTypeClassificationPanel = motionTypeClassificationPanel;
 		this.motionTypeOption = motionTypeOption;
 		this.showOption = showOption;
@@ -82,7 +85,7 @@ public class TMDMotionTypeClassificationGraphProducer extends
 		this.deltaTMap = deltaTMap;
 		this.gammaDFromLogMap = gammaDLogMap;
 		this.gammaDMap = gammaDMap;
-		this.gammaFromLogMap = gammaLogMap;
+		// this.gammaFromLogMap = gammaLogMap;
 		// this.gammaMap = gammaMap;
 		this.smssFromLogMap = smssLogMap;
 		// this.smssMap = smssMap;
@@ -269,20 +272,23 @@ public class TMDMotionTypeClassificationGraphProducer extends
 				}
 				break;
 			case MSS:
-				final Map<OmegaSegment, Double[]> gammaMap;
+				final Map<OmegaSegment, Double[][]> gammaMap;
 				switch (this.motionTypeOption) {
 					case TMDMotionTypeClassificationGraphPanel.OPTION_LOG:
-						gammaMap = this.gammaFromLogMap;
+						gammaMap = this.gammaDFromLogMap;
 						break;
 					default:
-						gammaMap = null;
+						gammaMap = this.gammaDMap;
 				}
 				if ((gammaMap != null) && gammaMap.containsKey(segment)
 						&& (this.nyMap != null)
 						&& this.nyMap.containsKey(segment)) {
 					if (this.countCurrentGraph == 0) {
-						final Double[] gamma = gammaMap.get(segment);
-						value = gamma;
+						final Double[][] gamma = gammaMap.get(segment);
+						value = new Double[gamma.length];
+						for (int ny = 0; ny < gamma.length; ny++) {
+							value[ny] = gamma[ny][0];
+						}
 					} else {
 						final Double[] ny = this.nyMap.get(segment);
 						value = ny;

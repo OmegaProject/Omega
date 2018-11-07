@@ -33,8 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
+import edu.umassmed.omega.commons.constants.OmegaErrorConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.coreElements.OmegaPlane;
@@ -153,8 +153,8 @@ public class SPTLoader implements SPTRunnable {
 		
 		if (error) {
 			JOptionPane.showMessageDialog(null,
-					OmegaConstantsError.ERROR_DURING_SPT_RUN,
-					OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+					OmegaErrorConstants.ERROR_DURING_SPT_RUN,
+					OmegaGenericConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 		
 		this.updateStatusAsync(SPTLoader.RUNNER + " ended.", true);

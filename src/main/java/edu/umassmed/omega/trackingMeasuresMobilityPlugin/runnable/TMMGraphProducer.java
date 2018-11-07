@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.constants.GraphLabelConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -49,8 +49,9 @@ public class TMMGraphProducer extends StatsGraphProducer {
 			final Map<OmegaSegment, Double> maxDisplacementFromOriginMap,
 			final Map<OmegaSegment, List<Double>> timeTraveledMap,
 			final Map<OmegaSegment, List<Double>> confinementRatioMap,
-			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap) {
-		super(graphType, segmentsMap, segmTypes);
+			final Map<OmegaSegment, List<Double[]>> anglesAndDirectionalChangesMap,
+			final int lineSize, final int shapeSize) {
+		super(graphType, segmentsMap, segmTypes, lineSize, shapeSize);
 		this.mobilityPanel = mobilityPanel;
 		this.mobilityOption = mobilityOption;
 		this.isTimepointsGraph = isTimepointsGraph;
@@ -89,40 +90,40 @@ public class TMMGraphProducer extends StatsGraphProducer {
 		String title;
 		switch (this.mobilityOption) {
 			case TMMGraphPanel.OPTION_MAX_DISP_GLO:
-				title = StatsConstants.GRAPH_NAME_MAX_DISP_GLO;
+				title = GraphLabelConstants.GRAPH_NAME_MAX_DISP_GLO;
 				break;
 			case TMMGraphPanel.OPTION_TOT_DISP_GLO:
-				title = StatsConstants.GRAPH_NAME_DISP_GLO;
+				title = GraphLabelConstants.GRAPH_NAME_DISP_GLO;
 				break;
 			case TMMGraphPanel.OPTION_TOT_TIME_GLO:
-				title = StatsConstants.GRAPH_NAME_TIME_GLO;
+				title = GraphLabelConstants.GRAPH_NAME_TIME_GLO;
 				break;
 			case TMMGraphPanel.OPTION_CONFRATIO_GLO:
-				title = StatsConstants.GRAPH_NAME_CONFRATIO_GLO;
+				title = GraphLabelConstants.GRAPH_NAME_CONFRATIO_GLO;
 				break;
 			case TMMGraphPanel.OPTION_DIST_P2P_LOC:
-				title = StatsConstants.GRAPH_NAME_DIST_P2P_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_DIST_P2P_LOC;
 				break;
 			case TMMGraphPanel.OPTION_DIST_LOC:
-				title = StatsConstants.GRAPH_NAME_DIST_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_DIST_LOC;
 				break;
 			case TMMGraphPanel.OPTION_DISP_LOC:
-				title = StatsConstants.GRAPH_NAME_DISP_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_DISP_LOC;
 				break;
 			case TMMGraphPanel.OPTION_CONFRATIO_LOC:
-				title = StatsConstants.GRAPH_NAME_CONFRATIO_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_CONFRATIO_LOC;
 				break;
 			case TMMGraphPanel.OPTION_ANGLES_LOC:
-				title = StatsConstants.GRAPH_NAME_ANGLES_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_ANGLES_LOC;
 				break;
 			case TMMGraphPanel.OPTION_DIRCHANGE_LOC:
-				title = StatsConstants.GRAPH_NAME_DIRCHANGE_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_DIRCHANGE_LOC;
 				break;
 			case TMMGraphPanel.OPTION_TIME_LOC:
-				title = StatsConstants.GRAPH_NAME_TIME_LOC;
+				title = GraphLabelConstants.GRAPH_NAME_TIME_LOC;
 				break;
 			default:
-				title = StatsConstants.GRAPH_NAME_DIST_GLO;
+				title = GraphLabelConstants.GRAPH_NAME_DIST_GLO;
 		}
 		return title;
 	}
@@ -134,26 +135,26 @@ public class TMMGraphProducer extends StatsGraphProducer {
 			case TMMGraphPanel.OPTION_TOT_DISP_GLO:
 			case TMMGraphPanel.OPTION_MAX_DISP_GLO:
 			case TMMGraphPanel.OPTION_DISP_LOC:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DISP;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_DISP;
 				break;
 			case TMMGraphPanel.OPTION_TOT_TIME_GLO:
 			case TMMGraphPanel.OPTION_TIME_LOC:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_TOT_TIME;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_TOT_TIME;
 				break;
 			case TMMGraphPanel.OPTION_CONFRATIO_GLO:
 			case TMMGraphPanel.OPTION_CONFRATIO_LOC:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_CONFRATIO;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_CONFRATIO;
 				break;
 			case TMMGraphPanel.OPTION_TOT_DIST_GLO:
 			case TMMGraphPanel.OPTION_DIST_P2P_LOC:
 			case TMMGraphPanel.OPTION_DIST_LOC:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DIST;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_DIST;
 				break;
 			case TMMGraphPanel.OPTION_DIRCHANGE_LOC:
-				yAxisTitle = StatsConstants.GRAPH_LAB_Y_DIRCHANGE;
+				yAxisTitle = GraphLabelConstants.GRAPH_LAB_Y_DIRCHANGE;
 				break;
 			default:
-				yAxisTitle = StatsConstants.GRAPH_NAME_ANGLES_LOC;
+				yAxisTitle = GraphLabelConstants.GRAPH_NAME_ANGLES_LOC;
 		}
 		return yAxisTitle;
 	}

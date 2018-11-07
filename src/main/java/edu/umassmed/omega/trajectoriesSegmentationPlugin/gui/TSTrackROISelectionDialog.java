@@ -22,7 +22,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
@@ -80,8 +80,8 @@ public class TSTrackROISelectionDialog extends GenericDialog {
 		final JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		this.ok_btt = new JButton(TSConstants.ROI_SELECT_OK);
-		this.ok_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE);
-		this.ok_btt.setSize(OmegaConstants.BUTTON_SIZE);
+		this.ok_btt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE);
+		this.ok_btt.setSize(OmegaGUIConstants.BUTTON_SIZE);
 		buttonPanel.add(this.ok_btt);
 		
 		this.add(buttonPanel, BorderLayout.SOUTH);

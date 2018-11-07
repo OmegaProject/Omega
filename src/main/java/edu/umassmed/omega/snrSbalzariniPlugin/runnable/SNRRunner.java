@@ -38,7 +38,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.SwingUtilities;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -246,19 +246,19 @@ public class SNRRunner implements SNRRunnable {
 				for (int i = 0; i < parameters.size(); i++) {
 					final OmegaParameter param = parameters.get(i);
 					if (param.getName().equals(
-							OmegaConstantsAlgorithmParameters.PARAM_RADIUS)) {
+							OmegaAlgorithmParameterConstants.PARAM_RADIUS)) {
 						radius = (Integer) param.getValue();
 					} else if (param.getName().equals(
-							OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD)) {
+							OmegaAlgorithmParameterConstants.PARAM_THRESHOLD)) {
 						threshold = (Double) param.getValue();
 					} else if (param.getName().equals(
 							SNRConstants.PARAM_SNR_METHOD)) {
 						method = (String) param.getValue();
 					} else if (param.getName().equals(
-							OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+							OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 						z = (Integer) param.getValue();
 					} else if (param.getName().equals(
-							OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+							OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 						c = (Integer) param.getValue();
 					} else
 						return;

@@ -57,6 +57,8 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaNamedElement;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.eventSystem.OmegaFilterEventListener;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaFilterEvent;
 import edu.umassmed.omega.commons.gui.GenericElementInformationPanel;
 import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.checkboxTree.CheckBoxNode;
@@ -67,7 +69,8 @@ import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContai
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
 
 public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
-		implements GenericElementInformationContainerInterface {
+		implements GenericElementInformationContainerInterface,
+		OmegaFilterEventListener {
 	
 	private static final long serialVersionUID = -7554854467725521545L;
 	
@@ -78,6 +81,8 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 	private final OmegaLoadedData loadedData;
 	
 	private OmegaDataBrowserLoadedDataOptionsPanel optionsPanel;
+	
+	// private GenericFilterPanel searchPanel;
 	
 	private JTree dataTree;
 	
@@ -112,6 +117,15 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 	}
 	
 	private void createAndAddWidgets() {
+		// final List<String> columNames = new ArrayList<String>();
+		// columNames.add("ID");
+		// columNames.add("Name");
+		// columNames.add("Length");
+		// this.searchPanel = new GenericFilterPanel(this.getParentContainer());
+		// this.searchPanel.updateCombo(columNames);
+		// this.searchPanel.addOmegaFilterListener(this);
+		// this.add(this.searchPanel, BorderLayout.NORTH);
+		
 		this.optionsPanel = new OmegaDataBrowserLoadedDataOptionsPanel(
 				this.getParentContainer());
 		
@@ -424,5 +438,11 @@ public class OmegaDataBrowserLoadedDataBrowserPanel extends GenericPanel
 	@Override
 	public void fireElementChanged() {
 		this.infoContainer.fireElementChanged();
+	}
+
+	@Override
+	public void handleFilterEvent(final OmegaFilterEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

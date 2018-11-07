@@ -21,7 +21,6 @@ import javax.swing.RootPaneContainer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
@@ -65,9 +64,11 @@ public class TSPanel extends GenericPanel {
 	
 	private boolean newPanels;
 	
+	private int lineWidth;
+	
 	public TSPanel(final RootPaneContainer parent,
 			final TSPluginPanel pluginPanel,
-			final OmegaSegmentationTypes segmTypes) {
+			final OmegaSegmentationTypes segmTypes, final int lineWidth) {
 		super(parent);
 		this.segmTypes = segmTypes;
 		this.pluginPanel = pluginPanel;
@@ -76,6 +77,8 @@ public class TSPanel extends GenericPanel {
 		this.pixelSizeY = -1;
 		this.sizeX = -1;
 		this.sizeY = -1;
+		
+		this.lineWidth = lineWidth;
 		
 		this.segm_btt = new ArrayList<JRadioButton>();
 		this.segmentTrajectoryPanels = new ArrayList<>();
@@ -96,7 +99,7 @@ public class TSPanel extends GenericPanel {
 	}
 	
 	private void createAndAddWidgets() {
-		final Dimension btt_dim = OmegaConstants.BUTTON_SIZE;
+		final Dimension btt_dim = OmegaGUIConstants.BUTTON_SIZE;
 		final JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
 		
@@ -391,7 +394,7 @@ public class TSPanel extends GenericPanel {
 			final TSTrackPanel panel = new TSTrackPanel(
 					this.getParentContainer(), this.pluginPanel, sizeX, sizeY,
 					this.pixelSizeX, this.pixelSizeY, traj,
-					segmentationResults.get(traj));
+					segmentationResults.get(traj), this.lineWidth);
 			this.newPanels = true;
 			// final JScrollPane scrollPane = new JScrollPane(panel);
 			this.segmentTrajectoryPanels.add(panel);
@@ -548,5 +551,12 @@ public class TSPanel extends GenericPanel {
 
 	protected List<TSTrackPanel> getTrackPanels() {
 		return this.segmentTrajectoryPanels;
+	}
+
+	public void setLineWidth(final int lineWidth) {
+		this.lineWidth = lineWidth;
+		for (final TSTrackPanel panel : this.getTrackPanels()) {
+			panel.setLineWidth(lineWidth);
+		}
 	}
 }

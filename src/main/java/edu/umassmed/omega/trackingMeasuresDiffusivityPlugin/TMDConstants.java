@@ -3,10 +3,10 @@ package edu.umassmed.omega.trackingMeasuresDiffusivityPlugin;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import edu.umassmed.omega.commons.constants.StatsConstants;
+import edu.umassmed.omega.commons.constants.OmegaMathSymbolConstants;
 
 public class TMDConstants {
-
+	
 	// TODO TO FIX
 	public static final String PLUGIN_NAME = "OMEGA Diffusivity Measures";
 	public static final String PLUGIN_SNAME = "OMEGA DM";
@@ -16,10 +16,10 @@ public class TMDConstants {
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2016, 12, 1)
 			.getTime();
 	public static final String PLUGIN_REFERENCE = "";
-
+	
 	public static final String LOCAL_RESULTS_TABNAME = "Moments of Displacement vs. "
-			+ StatsConstants.DELTA_SYMBOL + "t plots results";
+			+ OmegaMathSymbolConstants.DELTA + "t plots results";
 	public static final String GLOBAL_INTERVAL_RESULTS_TABNAME = "Moment Scaling Spectrum results";
 	public static final String GLOBAL_RESULTS_TABNAME = "Phase space results";
-
+	
 }

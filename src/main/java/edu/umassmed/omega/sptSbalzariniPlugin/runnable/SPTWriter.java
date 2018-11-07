@@ -33,8 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.constants.OmegaConstantsError;
+import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
+import edu.umassmed.omega.commons.constants.OmegaErrorConstants;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 
 public class SPTWriter implements SPTRunnable {
@@ -67,8 +67,8 @@ public class SPTWriter implements SPTRunnable {
 			this.trackList = SPTDLLInvoker.callWriteResults();
 		} catch (final Exception ex) {
 			JOptionPane.showMessageDialog(null,
-					OmegaConstantsError.ERROR_SPT_SAVE_RESULTS,
-					OmegaConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
+					OmegaErrorConstants.ERROR_SPT_SAVE_RESULTS,
+					OmegaGenericConstants.OMEGA_TITLE, JOptionPane.ERROR_MESSAGE);
 			OmegaLogFileManager.handleUncaughtException(ex, true);
 		}
 

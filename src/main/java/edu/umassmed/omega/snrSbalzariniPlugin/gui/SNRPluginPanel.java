@@ -58,8 +58,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstants;
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
@@ -95,88 +94,88 @@ import edu.umassmed.omega.trajectoriesRelinkingPlugin.TRConstants;
 public class SNRPluginPanel extends GenericPluginPanel implements
 		OmegaMessageDisplayerPanelInterface,
 		GenericElementInformationContainerInterface {
-
+	
 	private static final long serialVersionUID = -5740459087763362607L;
-
+	
 	private final OmegaGateway gateway;
-
+	
 	private JComboBox<String> images_cmb;
-
+	
 	// private OmeroListPanel projectListPanel;
 	private SNRLoadedDataBrowserPanel loadedDataBrowserPanel;
 	private SNRQueueRunBrowserPanel queueRunBrowserPanel;
-
+	
 	private JButton addToProcess_butt, removeFromProcess_butt;
 	private JButton processBatch_butt, processRealTime_butt;
-
+	
 	private boolean popImages;
-
+	
 	private final boolean popParticles;
-
+	
 	private boolean isHandlingEvent;
-
+	
 	private JSplitPane mainSplitPane, browserSplitPane;
 	private JTabbedPane tabbedPane;
 	private GenericStatusPanel statusPanel;
 	private SNRRunPanel runPanel;
 	private GenericTrackingResultsPanel localResultsPanel,
 			globalFrameResultsPanel, globalImageResultsPanel;
-
+	
 	private List<OmegaImage> images;
 	private OrphanedAnalysisContainer orphanedAnalysis;
-
+	
 	private OmegaAnalysisRunContainerInterface selectedImage;
 	private OmegaParticleDetectionRun selectedParticleDetectionRun;
 	private OmegaSNRRun selectedSNRRun;
-
+	
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
-
+	
 	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaElement>>> selections;
 	private final Map<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>> particlesToProcess;
-
+	
 	private Thread snrThread;
 	private SNRRunner snrRunner;
-
+	
 	private boolean isRunningBatch;
-
+	
 	private JPanel topPanel;
 	private JMenuItem hideDataSelection_mItm;
-
+	
 	public SNRPluginPanel(final RootPaneContainer parent,
 			final OmegaPlugin plugin, final OmegaGateway gateway,
 			final List<OmegaImage> images,
 			final OrphanedAnalysisContainer orphanedAnalysis,
 			final List<OmegaAnalysisRun> analysisRuns, final int index) {
 		super(parent, plugin, index);
-
+		
 		this.gateway = gateway;
-
+		
 		this.particlesToProcess = new LinkedHashMap<Integer, Map<OmegaParticleDetectionRun, List<OmegaParameter>>>();
 		this.selections = new LinkedHashMap<Integer, Map<OmegaParticleDetectionRun, List<OmegaElement>>>();
-
+		
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
-
+		
 		this.popImages = false;
 		this.popParticles = false;
 		this.isHandlingEvent = false;
-
+		
 		this.selectedImage = null;
 		this.selectedParticleDetectionRun = null;
-
+		
 		this.setPreferredSize(new Dimension(750, 500));
 		this.setLayout(new BorderLayout());
 		// this.createMenu();
 		this.createAndAddWidgets();
 		// this.loadedDataBrowserPanel.updateTree(images);
 		this.createMenu();
-
+		
 		this.addListeners();
-
+		
 		this.populateImagesCombo();
 	}
-
+	
 	private void createMenu() {
 		final JMenuBar menuBar = this.getMenu();
 		for (int i = 0; i < menuBar.getMenuCount(); i++) {
@@ -189,39 +188,40 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			menu.add(this.hideDataSelection_mItm);
 		}
 	}
-
+	
 	private void createAndAddWidgets() {
 		this.topPanel = new JPanel();
 		this.topPanel.setLayout(new GridLayout(1, 1));
-
+		
 		final JPanel p1 = new JPanel();
 		p1.setLayout(new BorderLayout());
 		final JLabel lbl1 = new JLabel(TRConstants.SELECT_IMAGE);
-		lbl1.setPreferredSize(OmegaConstants.TEXT_SIZE);
+		lbl1.setPreferredSize(OmegaGUIConstants.TEXT_SIZE);
 		p1.add(lbl1, BorderLayout.WEST);
 		this.images_cmb = new JComboBox<String>();
-		this.images_cmb.setMaximumRowCount(OmegaConstants.COMBOBOX_MAX_OPTIONS);
+		this.images_cmb
+				.setMaximumRowCount(OmegaGUIConstants.COMBOBOX_MAX_OPTIONS);
 		this.images_cmb.setEnabled(false);
 		p1.add(this.images_cmb, BorderLayout.CENTER);
 		this.topPanel.add(p1);
-
+		
 		this.add(this.topPanel, BorderLayout.NORTH);
-
+		
 		this.loadedDataBrowserPanel = new SNRLoadedDataBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		this.queueRunBrowserPanel = new SNRQueueRunBrowserPanel(
 				this.getParentContainer(), this);
-
+		
 		final JPanel browserPanel = new JPanel();
 		browserPanel.setLayout(new BorderLayout());
-
+		
 		this.browserSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		this.browserSplitPane.setLeftComponent(this.loadedDataBrowserPanel);
 		this.browserSplitPane.setRightComponent(this.queueRunBrowserPanel);
-
+		
 		browserPanel.add(this.browserSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel browserButtonPanel = new JPanel();
 		browserButtonPanel.setLayout(new FlowLayout());
 		final InputStream s1 = OmegaFileUtilities
@@ -246,73 +246,73 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		}
 		this.removeFromProcess_butt = new JButton(removeIcon);
 		this.removeFromProcess_butt.setPreferredSize(new Dimension(30, 30));
-
+		
 		this.setAddAndRemoveButtonsEnabled(false);
-
+		
 		browserButtonPanel.add(this.addToProcess_butt);
 		browserButtonPanel.add(this.removeFromProcess_butt);
-
+		
 		browserPanel.add(browserButtonPanel, BorderLayout.SOUTH);
-
+		
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP,
 				JTabbedPane.WRAP_TAB_LAYOUT);
-
+		
 		// TODO create panel for parameters
 		this.runPanel = new SNRRunPanel(this.getParentContainer(),
 				this.gateway, this);
 		// final JScrollPane scrollPaneRun = new JScrollPane(this.runPanel);
 		this.tabbedPane.add(OmegaGUIConstants.PLUGIN_RUN_DEFINITION,
 				this.runPanel);
-
+		
 		this.localResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.ROI_RESULTS_TABNAME,
 				this.localResultsPanel);
-
+		
 		this.globalFrameResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.PLANE_RESULTS_TABNAME,
 				this.globalFrameResultsPanel);
-
+		
 		this.globalImageResultsPanel = new GenericTrackingResultsPanel(
 				this.getParentContainer());
 		this.tabbedPane.add(SNRConstants.IMAGE_RESULTS_TABNAME,
 				this.globalImageResultsPanel);
-
+		
 		this.mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainSplitPane.setLeftComponent(browserPanel);
 		this.mainSplitPane.setRightComponent(this.tabbedPane);
-
+		
 		this.add(this.mainSplitPane, BorderLayout.CENTER);
-
+		
 		final JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-
+		
 		this.statusPanel = new GenericStatusPanel(2);
-
+		
 		final JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new FlowLayout());
-
+		
 		this.processRealTime_butt = new JButton("Process in real time");
 		this.processRealTime_butt.setEnabled(false);
 		// buttonsPanel.add(this.processRealTime_butt);
-
+		
 		this.processBatch_butt = new JButton(SNRConstants.EXECUTE_BUTTON);
 		buttonsPanel.add(this.processBatch_butt);
-
+		
 		this.setProcessButtonsEnabled(false);
-
+		
 		bottomPanel.add(buttonsPanel, BorderLayout.NORTH);
 		bottomPanel.add(this.statusPanel, BorderLayout.SOUTH);
-
+		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
+	
 	private void addListeners() {
 		this.tabbedPane.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
-
+				
 			}
 		});
 		this.addComponentListener(new ComponentAdapter() {
@@ -340,7 +340,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			}
 		});
 		this.processBatch_butt.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				SNRPluginPanel.this.processBatch();
@@ -353,7 +353,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			}
 		});
 	}
-
+	
 	private void handleHideDataSelection() {
 		if (this.hideDataSelection_mItm.getText().equals(
 				OmegaGUIConstants.MENU_VIEW_HIDE_DATA_SELECTION)) {
@@ -368,25 +368,25 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.revalidate();
 		this.repaint();
 	}
-
+	
 	private void handleResize() {
 		this.browserSplitPane.setDividerLocation(0.5);
 		this.mainSplitPane.setDividerLocation(0.25);
 	}
-
+	
 	private void addToProcessList() {
 		this.updateImagesToProcess(0);
 		this.loadedDataBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void removeFromProcessList() {
 		this.updateImagesToProcess(1);
 		this.loadedDataBrowserPanel.deselect();
 		this.queueRunBrowserPanel.deselect();
 		this.setAddAndRemoveButtonsEnabled(false);
 	}
-
+	
 	private void processBatch() {
 		this.isRunningBatch = true;
 		this.setAddAndRemoveButtonsEnabled(false);
@@ -399,7 +399,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		OmegaLogFileManager.registerAsExceptionHandlerOnThread(this.snrThread);
 		this.snrThread.start();
 	}
-
+	
 	private void updateImagesToProcess(final int action) {
 		switch (action) {
 			case 1:
@@ -465,17 +465,17 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.setProcessButtonsEnabled(true);
 		}
 	}
-
+	
 	private void updateRunnerEnded() {
 		final List<OmegaPluginEvent> events = new ArrayList<OmegaPluginEvent>();
 		if (!this.snrRunner.isJobCompleted())
 			return;
-
+		
 		for (final Integer index : this.snrRunner.getParticleToProcess()
 				.keySet()) {
 			final Map<OmegaParticleDetectionRun, List<OmegaParameter>> processedParticles = this.snrRunner
 					.getParticleToProcess().get(index);
-
+			
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgCenterSignal = this.snrRunner
 					.getResultingImageAverageCenterSignal().get(index);
 			final Map<OmegaParticleDetectionRun, Map<OmegaPlane, Double>> imageAvgPeakSignal = this.snrRunner
@@ -536,7 +536,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					.getResultingMinErrorIndexSNR().get(index);
 			final Map<OmegaParticleDetectionRun, Double> maxErrorIndexSNR = this.snrRunner
 					.getResultingMaxErrorIndexSNR().get(index);
-
+			
 			for (final OmegaParticleDetectionRun spotDetectionRun : processedParticles
 					.keySet()) {
 				final List<OmegaParameter> params = processedParticles
@@ -598,7 +598,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 						.get(spotDetectionRun);
 				final Double lmaxErrorIndeXSNR = maxErrorIndexSNR
 						.get(spotDetectionRun);
-
+				
 				final OmegaPluginEventResultsSNR snrResultsEvt = new OmegaPluginEventResultsSNR(
 						this.getPlugin(), selection, spotDetectionRun, params,
 						avgCenterSignals, avgPeakSignals, avgMeanSignals,
@@ -614,7 +614,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 				this.particlesToProcess.remove(index);
 				this.selections.remove(index);
 				this.queueRunBrowserPanel.updateTree(this.particlesToProcess);
-
+				
 				// this.getPlugin().fireEvent(snrResultsEvt);
 			}
 		}
@@ -627,12 +627,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			}
 		}
 		this.setEnabled(true);
-
+		
 		this.setProcessButtonsEnabled(true);
 		this.runPanel.setFieldsEnalbed(true);
 		this.resetStatusMessages();
 		this.isRunningBatch = false;
-		
+
 		for (final OmegaPluginEvent event : events) {
 			this.getPlugin().fireEvent(event);
 			try {
@@ -644,7 +644,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			}
 		}
 	}
-
+	
 	private void resetStatusMessages() {
 		try {
 			this.statusPanel.updateStatus(0, "Plugin ready");
@@ -653,7 +653,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					true);
 		}
 	}
-
+	
 	private void selectImage() {
 		this.runPanel.updateImageFields(null);
 		this.runPanel.updateAnalysisFields(null);
@@ -675,7 +675,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.fireEventSelectionImage();
 		}
 		this.runPanel.updateImageFields((OmegaImage) this.selectedImage);
-
+		
 		// final List<OmegaAnalysisRun> analysisRuns = new ArrayList<>();
 		// for (final OmegaAnalysisRun analysisRun : this.selectedImage
 		// .getAnalysisRuns()) {
@@ -686,7 +686,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		// analysisRuns.add(analysisRun);
 		// }
 		// }
-
+		
 		this.loadedDataBrowserPanel.updateTree(
 				this.selectedImage.getAnalysisRuns(), this.loadedAnalysisRuns);
 		this.particlesToProcess.clear();
@@ -697,7 +697,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		// .getPixelSizeX(), this.selectedImage.getDefaultPixels()
 		// .getPixelSizeY());
 	}
-
+	
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
@@ -708,12 +708,12 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.globalFrameResultsPanel.updateParentContainer(parent);
 		this.globalImageResultsPanel.updateParentContainer(parent);
 	}
-
+	
 	@Override
 	public void onCloseOperation() {
-
+		
 	}
-
+	
 	public void updateCombos(final List<OmegaImage> images,
 			final OrphanedAnalysisContainer orphanedAnalysis,
 			final List<OmegaAnalysisRun> analysisRuns) {
@@ -721,11 +721,11 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.images = images;
 		this.orphanedAnalysis = orphanedAnalysis;
 		this.loadedAnalysisRuns = analysisRuns;
-
+		
 		this.populateImagesCombo();
 		this.isHandlingEvent = false;
 	}
-
+	
 	private void populateImagesCombo() {
 		this.popImages = true;
 		this.images_cmb.removeAllItems();
@@ -740,9 +740,9 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.popImages = false;
 			return;
 		}
-
+		
 		this.images_cmb.setEnabled(true);
-
+		
 		if (this.images != null) {
 			for (final OmegaImage image : this.images) {
 				this.images_cmb.addItem(image.getName());
@@ -750,32 +750,32 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		}
 		// this.images_cmb.addItem(OmegaGUIConstants.PLUGIN_ORPHANED_ANALYSES);
 		this.popImages = false;
-
+		
 		if (this.images_cmb.getItemCount() > 0) {
 			this.images_cmb.setSelectedIndex(0);
 		} else {
 			this.images_cmb.setSelectedIndex(-1);
 		}
 	}
-
+	
 	private void fireEventSelectionImage() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionImage(
-				this.getPlugin(), this.selectedImage);
+				this.getPlugin(), (OmegaImage) this.selectedImage);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	private void fireEventSelectionParticleDetectionRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.getPlugin(), this.selectedParticleDetectionRun);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	private void fireEventSelectionSNRRun() {
 		final OmegaPluginEvent event = new OmegaPluginEventSelectionAnalysisRun(
 				this.getPlugin(), this.selectedSNRRun);
 		this.getPlugin().fireEvent(event);
 	}
-
+	
 	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
 		this.isHandlingEvent = true;
 		int index = -1;
@@ -792,7 +792,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.setAddAndRemoveButtonsEnabled(false);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
 		this.isHandlingEvent = true;
@@ -800,18 +800,18 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 		this.updateSelectedParticleDetectionRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void selectSNRRun(final OmegaSNRRun analysisRun) {
 		this.isHandlingEvent = true;
 		this.loadedDataBrowserPanel.selectTreeElement(analysisRun);
 		this.updateSelectedSNRRun(analysisRun);
 		this.isHandlingEvent = false;
 	}
-
+	
 	public void setGateway(final OmegaGateway gateway) {
-
+		
 	}
-
+	
 	public void updateStatus(final String s) {
 		try {
 			this.statusPanel.updateStatus(0, s);
@@ -820,17 +820,17 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					true);
 		}
 	}
-
+	
 	public void updateSelectedSNRRun(final OmegaSNRRun snrRun) {
 		String c = null, z = null;
 		if (this.selectedParticleDetectionRun != null) {
 			for (final OmegaParameter param : ((OmegaAnalysisRun) this.selectedParticleDetectionRun)
 					.getAlgorithmSpec().getParameters()) {
 				if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+						OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 					c = param.getStringValue();
 				} else if (param.getName().equals(
-						OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+						OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 					z = param.getStringValue();
 				}
 			}
@@ -852,7 +852,7 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 					.getParameters());
 		}
 	}
-
+	
 	public void updateSelectedParticleDetectionRun(
 			final OmegaParticleDetectionRun particleDetectionRun) {
 		this.selectedParticleDetectionRun = particleDetectionRun;
@@ -876,31 +876,31 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.runPanel.updateRunFieldsDefault();
 		}
 	}
-
+	
 	protected void setAddAndRemoveButtonsEnabled(final boolean enabled) {
 		this.addToProcess_butt.setEnabled(enabled);
 		this.removeFromProcess_butt.setEnabled(enabled);
 	}
-	
+
 	protected void setAddButtonEnabled(final boolean enabled) {
 		this.addToProcess_butt.setEnabled(enabled);
 	}
-	
+
 	protected void setRemoveButtonEnabled(final boolean enabled) {
 		this.removeFromProcess_butt.setEnabled(enabled);
 	}
-
+	
 	private void setProcessButtonsEnabled(final boolean enabled) {
 		// this.processRealTime_butt.setEnabled(enabled);
 		this.processBatch_butt.setEnabled(enabled);
 	}
-
+	
 	public boolean checkIfThisAlgorithm(final OmegaSNRRun snrRun) {
 		final OmegaAlgorithmPlugin plugin = (OmegaAlgorithmPlugin) this
 				.getPlugin();
 		return plugin.checkIfThisAlgorithm(snrRun);
 	}
-
+	
 	private void updateSNRRunnerMessageStatus(final String msg,
 			final boolean ended) {
 		try {
@@ -913,19 +913,19 @@ public class SNRPluginPanel extends GenericPluginPanel implements
 			this.updateRunnerEnded();
 		}
 	}
-
+	
 	@Override
 	public void updateMessageStatus(final OmegaMessageEvent evt) {
 		final SNRMessageEvent specificEvent = (SNRMessageEvent) evt;
 		this.updateSNRRunnerMessageStatus(specificEvent.getMessage(),
 				specificEvent.isEnded());
 	}
-
+	
 	@Override
 	public void fireElementChanged() {
 		this.fireEventSelectionImage();
 	}
-	
+
 	public void deselectNotListener(final GenericPanel panel) {
 		if (panel instanceof SNRLoadedDataBrowserPanel) {
 			this.queueRunBrowserPanel.deselect();

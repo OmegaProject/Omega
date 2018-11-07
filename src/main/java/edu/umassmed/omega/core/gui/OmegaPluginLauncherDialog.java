@@ -23,7 +23,6 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.GenericAlgorithmDetailsDialog;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
@@ -146,8 +145,8 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 				buttPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 				final JButton detail_btt = new JButton(
 				        OmegaGUIConstants.ALGORITHM_INFORMATION);
-				detail_btt.setPreferredSize(OmegaConstants.BUTTON_SIZE_LARGE);
-				detail_btt.setSize(OmegaConstants.BUTTON_SIZE_LARGE);
+				detail_btt.setPreferredSize(OmegaGUIConstants.BUTTON_SIZE_LARGE);
+				detail_btt.setSize(OmegaGUIConstants.BUTTON_SIZE_LARGE);
 				buttPanel.add(detail_btt);
 				this.detailsButtons.put(id, detail_btt);
 				descPanel.add(buttPanel, BorderLayout.SOUTH);

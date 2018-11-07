@@ -39,7 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -51,62 +51,62 @@ import edu.umassmed.omega.commons.gui.GenericTextFieldValidable;
 import edu.umassmed.omega.plSbalzariniPlugin.PLConstants;
 
 public class PLRunPanel extends GenericPanel {
-	
+
 	private static final long serialVersionUID = -2109646064541873817L;
-	
+
 	private static final Dimension VALUE_FIELDS_DIM = new Dimension(45, 20);
 	private static final Dimension LBL_FIELDS_DIM = new Dimension(120, 20);
-	
+
 	private GenericTextFieldValidable displacement_txtField,
 			linkrange_txtField, objectFeature_txtField, minPoints_txtField,
 			dynamics_txtField;
-	
+
 	private GenericAnalysisInformationPanel infoPanel;
 	private GenericComboBox<String> dynamics_combo, optimizer_combo;
-	
+
 	private OmegaGateway gateway;
-	
+
 	public PLRunPanel(final RootPaneContainer parent, final OmegaGateway gateway) {
 		super(parent);
-		
+
 		this.gateway = gateway;
-		
+
 		this.setLayout(new GridLayout(2, 2));
-		
+
 		this.createAndAddWidgets();
 	}
-	
+
 	private void createAndAddWidgets() {
 		this.infoPanel = new GenericAnalysisInformationPanel(
 				this.getParentContainer());
 		this.infoPanel.setBorder(new TitledBorder(
 				OmegaGUIConstants.PLUGIN_INPUT_INFORMATION));
 		this.add(this.infoPanel);
-		
+
 		final JPanel placeholderPanel = new JPanel();
 		this.add(placeholderPanel);
-		
+
 		final JScrollPane createSelectionParamPanel = this
 				.createSelectionParamPanel();
 		this.add(createSelectionParamPanel);
-		
+
 		final JScrollPane linkParamPanel = this.createLinkingParamPanel();
 		this.add(linkParamPanel);
 	}
-	
+
 	public JScrollPane createLinkingParamPanel() {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		
+
 		// Linking panel
 		final JPanel paramLinkingPanel = new JPanel();
 		paramLinkingPanel.setLayout(new GridLayout(7, 1));
-		
+
 		// Linkrange
 		final JPanel linkrangePanel = new JPanel();
 		linkrangePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel linkrange_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE + ":");
+				OmegaAlgorithmParameterConstants.PARAM_LINKRANGE + ":");
 		linkrange_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		linkrangePanel.add(linkrange_lbl);
 		this.linkrange_txtField = new GenericTextFieldValidable(
@@ -114,12 +114,12 @@ public class PLRunPanel extends GenericPanel {
 		this.linkrange_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		linkrangePanel.add(this.linkrange_txtField);
 		paramLinkingPanel.add(linkrangePanel);
-		
+
 		// Displacement
 		final JPanel displacementPanel = new JPanel();
 		displacementPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel displacement_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT + ":");
+				OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT + ":");
 		displacement_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		displacementPanel.add(displacement_lbl);
 		this.displacement_txtField = new GenericTextFieldValidable(
@@ -128,12 +128,12 @@ public class PLRunPanel extends GenericPanel {
 				.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		displacementPanel.add(this.displacement_txtField);
 		paramLinkingPanel.add(displacementPanel);
-		
+
 		// Mov type
 		final JPanel movTypePanel = new JPanel();
 		movTypePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel dynamics_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE + ":");
+				OmegaAlgorithmParameterConstants.PARAM_MOVTYPE + ":");
 		dynamics_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		movTypePanel.add(dynamics_lbl);
 		this.dynamics_combo = new GenericComboBox<String>(
@@ -144,12 +144,12 @@ public class PLRunPanel extends GenericPanel {
 		this.dynamics_combo.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		movTypePanel.add(this.dynamics_combo);
 		paramLinkingPanel.add(movTypePanel);
-
+		
 		// Feature
 		final JPanel objectFeaturePanel = new JPanel();
 		objectFeaturePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel objectFeature_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE + ":");
+				OmegaAlgorithmParameterConstants.PARAM_OBJFEATURE + ":");
 		objectFeature_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		objectFeaturePanel.add(objectFeature_lbl);
 		this.objectFeature_txtField = new GenericTextFieldValidable(
@@ -158,12 +158,12 @@ public class PLRunPanel extends GenericPanel {
 				.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		objectFeaturePanel.add(this.objectFeature_txtField);
 		paramLinkingPanel.add(objectFeaturePanel);
-		
+
 		// Dynamics
 		final JPanel dynamicsPanel = new JPanel();
 		dynamicsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel radius_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS + ":");
+				OmegaAlgorithmParameterConstants.PARAM_DYNAMICS + ":");
 		radius_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		dynamicsPanel.add(radius_lbl);
 		this.dynamics_txtField = new GenericTextFieldValidable(
@@ -171,12 +171,12 @@ public class PLRunPanel extends GenericPanel {
 		this.dynamics_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		dynamicsPanel.add(this.dynamics_txtField);
 		paramLinkingPanel.add(dynamicsPanel);
-		
+
 		// Optimizer
 		final JPanel optimizerPanel = new JPanel();
 		optimizerPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel optimizer_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER + ":");
+				OmegaAlgorithmParameterConstants.PARAM_OPTIMIZER + ":");
 		optimizer_lbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		optimizerPanel.add(optimizer_lbl);
 		this.optimizer_combo = new GenericComboBox<String>(
@@ -186,12 +186,12 @@ public class PLRunPanel extends GenericPanel {
 		this.optimizer_combo.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		optimizerPanel.add(this.optimizer_combo);
 		paramLinkingPanel.add(optimizerPanel);
-		
+
 		// Min points
 		final JPanel minPointsPanel = new JPanel();
 		minPointsPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel minPointsLbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS + ":");
+				OmegaAlgorithmParameterConstants.PARAM_MINPOINTS + ":");
 		minPointsLbl.setPreferredSize(PLRunPanel.LBL_FIELDS_DIM);
 		minPointsPanel.add(minPointsLbl);
 		this.minPoints_txtField = new GenericTextFieldValidable(
@@ -199,45 +199,45 @@ public class PLRunPanel extends GenericPanel {
 		this.minPoints_txtField.setPreferredSize(PLRunPanel.VALUE_FIELDS_DIM);
 		minPointsPanel.add(this.minPoints_txtField);
 		paramLinkingPanel.add(minPointsPanel);
-		
+
 		mainPanel.add(paramLinkingPanel, BorderLayout.NORTH);
 		mainPanel.add(new JLabel(), BorderLayout.CENTER);
-		
+
 		final JScrollPane sp = new JScrollPane(mainPanel);
 		sp.setBorder(new TitledBorder(
 				OmegaGUIConstants.PLUGIN_PARAMETERS_LINKING));
-		
+
 		return sp;
 	}
-	
+
 	public JScrollPane createLinkingAdvParamPanel() {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		
+
 		final JPanel parametersPanel = new JPanel();
 		parametersPanel.setLayout(new GridLayout(3, 1));
-		
+
 		mainPanel.add(parametersPanel, BorderLayout.NORTH);
 		mainPanel.add(new JLabel(), BorderLayout.CENTER);
-
+		
 		final JScrollPane sp = new JScrollPane(mainPanel);
 		sp.setBorder(new TitledBorder(
 				OmegaGUIConstants.PLUGIN_PARAMETERS_LINKING_ADVANCED));
-		
+
 		return sp;
 	}
-	
+
 	private JScrollPane createSelectionParamPanel() {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-
+		
 		final JScrollPane sp = new JScrollPane(mainPanel);
 		sp.setBorder(new TitledBorder(
 				OmegaGUIConstants.PLUGIN_PARAMETERS_SELECTION));
-
+		
 		return sp;
 	}
-	
+
 	public boolean areParametersValidated() {
 		return this.displacement_txtField.isContentValidated()
 				&& this.linkrange_txtField.isContentValidated()
@@ -245,71 +245,71 @@ public class PLRunPanel extends GenericPanel {
 				&& this.dynamics_txtField.isContentValidated()
 				&& this.minPoints_txtField.isContentValidated();
 	}
-	
+
 	public String[] getParametersError() {
 		final String[] errors = new String[5];
 		for (int i = 0; i < 5; i++) {
 			errors[i] = null;
 		}
 		if (!this.displacement_txtField.isContentValidated()) {
-			errors[0] = OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT
+			errors[0] = OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT
 					+ ": " + this.displacement_txtField.getError();
 		}
 		if (!this.linkrange_txtField.isContentValidated()) {
-			errors[1] = OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE
+			errors[1] = OmegaAlgorithmParameterConstants.PARAM_LINKRANGE
 					+ ": " + this.linkrange_txtField.getError();
 		}
 		if (!this.objectFeature_txtField.isContentValidated()) {
-			errors[2] = OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE
+			errors[2] = OmegaAlgorithmParameterConstants.PARAM_OBJFEATURE
 					+ ": " + this.linkrange_txtField.getError();
 		}
 		if (!this.dynamics_txtField.isContentValidated()) {
-			errors[3] = OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS + ": "
+			errors[3] = OmegaAlgorithmParameterConstants.PARAM_DYNAMICS + ": "
 					+ this.linkrange_txtField.getError();
 		}
 		if (!this.minPoints_txtField.isContentValidated()) {
-			errors[4] = OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS
+			errors[4] = OmegaAlgorithmParameterConstants.PARAM_MINPOINTS
 					+ ": " + this.minPoints_txtField.getError();
 		}
-		
+
 		return errors;
 	}
-	
+
 	public void updateAnalysisFields(final OmegaAnalysisRun analysisRun) {
 		this.infoPanel.updateContent(analysisRun);
-		
+
 		// TODO UPDATE CHANNEL / TIMEPOINTS
 	}
-	
+
 	public void updateRunFields(final List<OmegaParameter> parameters) {
 		for (final OmegaParameter param : parameters) {
 			if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT)) {
+					OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT)) {
 				this.displacement_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE)) {
+					OmegaAlgorithmParameterConstants.PARAM_LINKRANGE)) {
 				this.linkrange_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE)) {
+					OmegaAlgorithmParameterConstants.PARAM_MOVTYPE)) {
 				this.dynamics_combo.setSelectedItem(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE)) {
+					OmegaAlgorithmParameterConstants.PARAM_OBJFEATURE)) {
 				this.objectFeature_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS)) {
+					OmegaAlgorithmParameterConstants.PARAM_DYNAMICS)) {
 				this.dynamics_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER)) {
+					OmegaAlgorithmParameterConstants.PARAM_OPTIMIZER)) {
 				this.optimizer_combo.setSelectedItem(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS)) {
+					OmegaAlgorithmParameterConstants.PARAM_MINPOINTS)) {
 				this.minPoints_txtField.setText(param.getStringValue());
 			} else {
 				// TODO gestire errore
 			}
 		}
 	}
-	
+
 	public void updateRunFieldsDefault() {
 		this.displacement_txtField.setText("10");
 		this.linkrange_txtField.setText("5");
@@ -320,11 +320,11 @@ public class PLRunPanel extends GenericPanel {
 		this.optimizer_combo
 				.setSelectedItem(PLConstants.PARAM_OPTIMIZER_GREEDY);
 	}
-	
+
 	public void setGateway(final OmegaGateway gateway) {
 		this.gateway = gateway;
 	}
-	
+
 	public List<OmegaParameter> getParameters() {
 		if (!this.areParametersValidated())
 			return null;
@@ -332,35 +332,35 @@ public class PLRunPanel extends GenericPanel {
 		final float displacement = Float.valueOf(this.displacement_txtField
 				.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_DISPLACEMENT,
+				OmegaAlgorithmParameterConstants.PARAM_DISPLACEMENT,
 				displacement));
 		final int linkrange = Integer
 				.valueOf(this.linkrange_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_LINKRANGE, linkrange));
+				OmegaAlgorithmParameterConstants.PARAM_LINKRANGE, linkrange));
 		final String movType = (String) this.dynamics_combo.getSelectedItem();
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_MOVTYPE, movType));
-		
+				OmegaAlgorithmParameterConstants.PARAM_MOVTYPE, movType));
+
 		final float objectFeature = Float.valueOf(this.objectFeature_txtField
 				.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_OBJFEATURE,
+				OmegaAlgorithmParameterConstants.PARAM_OBJFEATURE,
 				objectFeature));
 		final float dynamics = Float.valueOf(this.dynamics_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_DYNAMICS, dynamics));
+				OmegaAlgorithmParameterConstants.PARAM_DYNAMICS, dynamics));
 		final String optimizer = (String) this.optimizer_combo
 				.getSelectedItem();
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_OPTIMIZER, optimizer));
+				OmegaAlgorithmParameterConstants.PARAM_OPTIMIZER, optimizer));
 		final int minPoints = Integer
 				.valueOf(this.minPoints_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_MINPOINTS, minPoints));
+				OmegaAlgorithmParameterConstants.PARAM_MINPOINTS, minPoints));
 		return params;
 	}
-	
+
 	public void setFieldsEnalbed(final boolean enabled) {
 		this.displacement_txtField.setEnabled(enabled);
 		this.linkrange_txtField.setEnabled(enabled);
@@ -370,10 +370,12 @@ public class PLRunPanel extends GenericPanel {
 		this.optimizer_combo.setEnabled(enabled);
 		this.minPoints_txtField.setEnabled(enabled);
 	}
-	
+
 	@Override
 	public void updateParentContainer(final RootPaneContainer parent) {
 		super.updateParentContainer(parent);
 		this.infoPanel.updateParentContainer(parent);
+		this.dynamics_combo.updateParentContainer(parent);
+		this.optimizer_combo.updateParentContainer(parent);
 	}
 }

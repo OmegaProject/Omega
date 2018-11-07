@@ -18,7 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaConstantsMathSymbols;
+import edu.umassmed.omega.commons.constants.OmegaMathSymbolConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
@@ -537,7 +537,7 @@ public class OmegaElementRenderingPanel extends GenericScrollPane {
 			buf.append(String.format("%.2f", this.physicalSizeZ
 					* this.currentMaximumZValue));
 			buf.append(" ");
-			buf.append(OmegaConstantsMathSymbols.MU);
+			buf.append(OmegaMathSymbolConstants.MU);
 			buf.append("m)");
 		}
 		sizes[0] = buf.toString();

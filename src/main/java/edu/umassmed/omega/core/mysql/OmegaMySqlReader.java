@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.umassmed.omega.commons.constants.OmegaConstants;
+import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.AnalysisRunType;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAlgorithmInformation;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -353,7 +353,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -434,7 +434,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -442,9 +442,8 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		results1.close();
 		final OmegaTrackingMeasuresDiffusivityRun diffRun = new OmegaTrackingMeasuresDiffusivityRun(
 				experimenter, algorithmSpecification, timeStamps, name,
-				segments, ny, mu, logMu, deltaT, logDeltaT, gammaD, gammaDLog,
-				gammaLog, smssLog, errorsLog, minDetectableODC, snrRun,
-				diffusivityRun);
+				segments, ny, mu, logMu, deltaT, logDeltaT, gammaD, gammaDLog, // gammaLog,
+				smssLog, errorsLog, minDetectableODC, snrRun, diffusivityRun);
 		diffRun.setElementID(id);
 		return diffRun;
 	}
@@ -469,7 +468,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -503,7 +502,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -544,7 +543,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -574,7 +573,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -599,7 +598,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -624,7 +623,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -650,7 +649,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 			return null;
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		results1.getString(OmegaMySqlCostants.NAME_FIELD);
 		final String dateS = results1.getString(OmegaMySqlCostants.DATE_FIELD);
 		final Date timeStamps = format.parse(dateS);
@@ -1713,6 +1712,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final String authors = results1
 				.getString(OmegaMySqlCostants.AUTHORS_FIELD);
 		final String name = results1.getString(OmegaMySqlCostants.NAME_FIELD);
+		final String sname = results1.getString(OmegaMySqlCostants.SNAME_FIELD);
 		final String version = results1
 				.getString(OmegaMySqlCostants.VERSION_FIELD);
 		final String description = results1
@@ -1720,14 +1720,15 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		final String publication_date = results1
 				.getString(OmegaMySqlCostants.PUBLICATION_DATE_FIELD);
 		final SimpleDateFormat formatter = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		final String reference = results1
 				.getString(OmegaMySqlCostants.REFERENCE_FIELD);
 		final Date publicationDate = formatter.parse(publication_date);
 		results1.getStatement().close();
 		results1.close();
 		final OmegaAlgorithmInformation algoInfo = new OmegaAlgorithmInformation(
-				name, version, description, authors, publicationDate, reference);
+				name, sname, version, description, authors, publicationDate,
+				reference);
 		algoInfo.setElementID(id);
 		return algoInfo;
 	}
@@ -1827,7 +1828,7 @@ public class OmegaMySqlReader extends OmegaMySqlGateway {
 		if (results1 == null)
 			return null;
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+				OmegaGenericConstants.OMEGA_DATE_FORMAT);
 		final int omeroID = results1.getInt(OmegaMySqlCostants.OMERO_ID_FIELD);
 		final long omeID = OmegaMySqlUtilities.getID(omeroID);
 		// final int experimenterID = results1.getInt("Experimenter_Seq_Id");

@@ -44,7 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.border.TitledBorder;
 
-import edu.umassmed.omega.commons.constants.OmegaConstantsAlgorithmParameters;
+import edu.umassmed.omega.commons.constants.OmegaAlgorithmParameterConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
@@ -127,7 +127,7 @@ public class SNRRunPanel extends GenericPanel implements
 		final JPanel radiusPanel = new JPanel();
 		radiusPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel radius_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_RADIUS + ":");
+				OmegaAlgorithmParameterConstants.PARAM_RADIUS + ":");
 		radius_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		radiusPanel.add(radius_lbl);
 		this.radius_txtField = new GenericTextFieldValidable(
@@ -139,7 +139,7 @@ public class SNRRunPanel extends GenericPanel implements
 		final JPanel threshPanel = new JPanel();
 		threshPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel thresh_lbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD + ":");
+				OmegaAlgorithmParameterConstants.PARAM_THRESHOLD + ":");
 		thresh_lbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		threshPanel.add(thresh_lbl);
 		this.threshold_txtField = new GenericTextFieldValidable(
@@ -185,7 +185,7 @@ public class SNRRunPanel extends GenericPanel implements
 		final JPanel zSectionPanel = new JPanel();
 		zSectionPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		final JLabel zSectionLbl = new JLabel(
-				OmegaConstantsAlgorithmParameters.PARAM_ZSECTION
+				OmegaAlgorithmParameterConstants.PARAM_ZSECTION
 						+ " to analyze:");
 		zSectionLbl.setPreferredSize(SNRRunPanel.LBL_FIELDS_DIM);
 		zSectionPanel.add(zSectionLbl);
@@ -203,7 +203,7 @@ public class SNRRunPanel extends GenericPanel implements
 		this.channelsPanel.setLayout(new GridLayout(1, 1));
 		this.channelsPanel
 				.setBorder(BorderFactory
-						.createTitledBorder(OmegaConstantsAlgorithmParameters.PARAM_CHANNEL
+						.createTitledBorder(OmegaAlgorithmParameterConstants.PARAM_CHANNEL
 								+ " to analyze:"));
 		
 		this.selectionParamPanel.add(this.channelsPanel);
@@ -220,7 +220,7 @@ public class SNRRunPanel extends GenericPanel implements
 	}
 	
 	private void createChannelsPane(final int n,
-			final Map<Integer, String> channelNames, final boolean[] selC) {
+			final Map<Integer, String> channelNames, final Boolean[] selC) {
 		this.selectionParamPanel.remove(this.channelsPanel);
 		this.channelsPanel.removeAll();
 		if (this.channels != null) {
@@ -232,7 +232,7 @@ public class SNRRunPanel extends GenericPanel implements
 		// this.channelsPanel.repaint();
 		this.channelsPanel
 				.setBorder(BorderFactory
-						.createTitledBorder(OmegaConstantsAlgorithmParameters.PARAM_CHANNEL
+						.createTitledBorder(OmegaAlgorithmParameterConstants.PARAM_CHANNEL
 								+ " to analyze:"));
 		this.channelsPanel.setLayout(new GridLayout(n, 1));
 		this.channels = new JCheckBox[n];
@@ -273,12 +273,12 @@ public class SNRRunPanel extends GenericPanel implements
 			errors[i] = null;
 		}
 		if (!this.radius_txtField.isContentValidated()) {
-			errors[0] = OmegaConstantsAlgorithmParameters.PARAM_RADIUS + ": "
+			errors[0] = OmegaAlgorithmParameterConstants.PARAM_RADIUS + ": "
 					+ this.radius_txtField.getError();
 		}
 		if (!this.threshold_txtField.isContentValidated()) {
-			errors[1] = OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD
-					+ ": " + this.threshold_txtField.getError();
+			errors[1] = OmegaAlgorithmParameterConstants.PARAM_THRESHOLD + ": "
+					+ this.threshold_txtField.getError();
 		}
 		return errors;
 	}
@@ -294,7 +294,7 @@ public class SNRRunPanel extends GenericPanel implements
 		final int z = image.getDefaultPixels().getSizeZ() - 1;
 		this.maxSection_lbl.setText("/ " + z);
 		
-		final boolean[] selC = image.getDefaultPixels().getSelectedC();
+		final Boolean[] selC = image.getDefaultPixels().getSelectedC();
 		final int c = image.getDefaultPixels().getSizeC();
 		this.createChannelsPane(c, image.getDefaultPixels().getChannelNames(),
 				selC);
@@ -309,20 +309,21 @@ public class SNRRunPanel extends GenericPanel implements
 		for (final OmegaParameter param : analysisRun.getAlgorithmSpec()
 				.getParameters()) {
 			if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+					OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 				z = param.getStringValue();
 			}
 			if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+					OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 				c = (int) param.getValue();
 			}
 		}
 		
-		final int counter = 0;
+		int counter = 0;
 		for (final JCheckBox channel : this.channels) {
 			if (counter == c) {
 				channel.setSelected(true);
 			}
+			counter++;
 		}
 		
 		this.zSection_txtField.setText(z);
@@ -331,18 +332,18 @@ public class SNRRunPanel extends GenericPanel implements
 	public void updateRunFields(final List<OmegaParameter> parameters) {
 		for (final OmegaParameter param : parameters) {
 			if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_RADIUS)) {
+					OmegaAlgorithmParameterConstants.PARAM_RADIUS)) {
 				this.radius_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD)) {
+					OmegaAlgorithmParameterConstants.PARAM_THRESHOLD)) {
 				this.threshold_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(SNRConstants.PARAM_SNR_METHOD)) {
 				this.snrMethod_cmb.setSelectedItem(param.getValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_ZSECTION)) {
+					OmegaAlgorithmParameterConstants.PARAM_ZSECTION)) {
 				this.zSection_txtField.setText(param.getStringValue());
 			} else if (param.getName().equals(
-					OmegaConstantsAlgorithmParameters.PARAM_CHANNEL)) {
+					OmegaAlgorithmParameterConstants.PARAM_CHANNEL)) {
 				final int channel = (int) param.getValue();
 				this.channels[channel].setSelected(true);
 			} else {
@@ -366,15 +367,15 @@ public class SNRRunPanel extends GenericPanel implements
 		final List<OmegaParameter> params = new ArrayList<OmegaParameter>();
 		final int radius = Integer.valueOf(this.radius_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_RADIUS, radius));
+				OmegaAlgorithmParameterConstants.PARAM_RADIUS, radius));
 		final double thresh = Double.valueOf(this.threshold_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_THRESHOLD, thresh));
+				OmegaAlgorithmParameterConstants.PARAM_THRESHOLD, thresh));
 		final String snrMethod = (String) this.snrMethod_cmb.getSelectedItem();
 		params.add(new OmegaParameter(SNRConstants.PARAM_SNR_METHOD, snrMethod));
 		final int section = Integer.valueOf(this.zSection_txtField.getText());
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_ZSECTION, section));
+				OmegaAlgorithmParameterConstants.PARAM_ZSECTION, section));
 		int channel = 0;
 		for (final JCheckBox checkbox : this.channels) {
 			if (!checkbox.isSelected()) {
@@ -384,7 +385,7 @@ public class SNRRunPanel extends GenericPanel implements
 			}
 		}
 		params.add(new OmegaParameter(
-				OmegaConstantsAlgorithmParameters.PARAM_CHANNEL, channel));
+				OmegaAlgorithmParameterConstants.PARAM_CHANNEL, channel));
 		return params;
 	}
 	

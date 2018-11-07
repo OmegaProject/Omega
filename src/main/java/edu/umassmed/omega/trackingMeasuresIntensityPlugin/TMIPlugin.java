@@ -32,12 +32,12 @@ import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainerInterface;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
+import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
@@ -51,40 +51,41 @@ import edu.umassmed.omega.trackingMeasuresIntensityPlugin.gui.TMIPluginPanel;
 
 public class TMIPlugin extends OmegaStatsPlugin implements
 		OmegaDataDisplayerPluginInterface {
-
+	
 	public TMIPlugin() {
 		super(1);
 	}
-
+	
 	public TMIPlugin(final int maxNumOfPanels) {
 		super(maxNumOfPanels);
 	}
-
+	
 	@Override
 	public String getName() {
 		return TMIConstants.PLUGIN_NAME;
 	}
-
+	
 	@Override
 	public String getShortName() {
 		return TMIConstants.PLUGIN_SNAME;
 	}
-
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
 	public GenericPluginPanel createNewPanel(final RootPaneContainer parent,
 			final int index) throws OmegaCoreExceptionPluginMissingData {
 		final TMIPluginPanel panel = new TMIPluginPanel(parent, this,
 				this.getGateway(), this.getLoadedImages(),
-				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(), index);
+				this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns(),
+				index, this.getPluginOptions());
 		return panel;
 	}
-
+	
 	@Override
 	public void setGateway(final OmegaGateway gateway) {
 		super.setGateway(gateway);
@@ -93,7 +94,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.setGateway(gateway);
 		}
 	}
-
+	
 	@Override
 	public void updateDisplayedData() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -102,15 +103,15 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 					this.getOrphanedAnalysis(), this.getLoadedAnalysisRuns());
 		}
 	}
-
+	
 	@Override
-	public void selectImage(final OmegaAnalysisRunContainerInterface image) {
+	public void selectImage(final OmegaImage image) {
 		for (final GenericPluginPanel panel : this.getPanels()) {
 			final TMIPluginPanel specificPanel = (TMIPluginPanel) panel;
 			specificPanel.selectImage(image);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleDetectionRun(
 			final OmegaParticleDetectionRun analysisRun) {
@@ -119,7 +120,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectParticleDetectionRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectParticleLinkingRun(
 			final OmegaParticleLinkingRun analysisRun) {
@@ -128,7 +129,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectParticleLinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesRelinkingRun(
 			final OmegaTrajectoriesRelinkingRun analysisRun) {
@@ -137,7 +138,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrajectoriesRelinkingRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void selectTrajectoriesSegmentationRun(
 			final OmegaTrajectoriesSegmentationRun analysisRun) {
@@ -146,7 +147,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrajectoriesSegmentationRun(analysisRun);
 		}
 	}
-	
+
 	@Override
 	public void selectTrackingMeasuresRun(
 			final OmegaTrackingMeasuresRun analysisRun) {
@@ -155,7 +156,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.selectTrackingMeasuresRun(analysisRun);
 		}
 	}
-
+	
 	@Override
 	public void updateTrajectories(final List<OmegaTrajectory> trajectories,
 			final boolean selection) {
@@ -164,7 +165,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.updateTrajectories(trajectories, selection);
 		}
 	}
-
+	
 	@Override
 	public void updateSegments(
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments,
@@ -174,7 +175,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.updateSegments(segments, segmTypes, selection);
 		}
 	}
-
+	
 	@Override
 	public void clearSegmentsSelection() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -182,7 +183,7 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.clearSegmentsSelection();
 		}
 	}
-	
+
 	@Override
 	public void clearTrajectoriesSelection() {
 		for (final GenericPluginPanel panel : this.getPanels()) {
@@ -190,34 +191,50 @@ public class TMIPlugin extends OmegaStatsPlugin implements
 			specificPanel.clearTrajectoriesSelection();
 		}
 	}
-
+	
 	@Override
 	public String getAlgorithmDescription() {
 		return TMIConstants.PLUGIN_ALGO_DESC;
 	}
-
+	
 	@Override
 	public String getAlgorithmAuthors() {
 		return OmegaAlgorithmsUtilities.getDefaultDeveloper();
 	}
-
+	
 	@Override
 	public String getAlgorithmVersion() {
 		return TMIConstants.PLUGIN_VERSION;
 	}
-
+	
 	@Override
 	public Date getAlgorithmPublicationDate() {
 		return TMIConstants.PLUGIN_PUBL;
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return TMIConstants.PLUGIN_DESC;
 	}
-
+	
 	@Override
 	public String getReference() {
 		return TMIConstants.PLUGIN_REFERENCE;
+	}
+
+	@Override
+	public void setGraphLineSize(final int lineSize) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMIPluginPanel specificPanel = (TMIPluginPanel) panel;
+			specificPanel.setLineSize(lineSize);
+		}
+	}
+	
+	@Override
+	public void setGraphShapeSize(final int shapeSize) {
+		for (final GenericPluginPanel panel : this.getPanels()) {
+			final TMIPluginPanel specificPanel = (TMIPluginPanel) panel;
+			specificPanel.setShapeSize(shapeSize);
+		}
 	}
 }

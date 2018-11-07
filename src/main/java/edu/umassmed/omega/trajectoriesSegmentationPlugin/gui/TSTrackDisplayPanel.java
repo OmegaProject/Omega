@@ -1,5 +1,6 @@
 package edu.umassmed.omega.trajectoriesSegmentationPlugin.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -41,12 +42,16 @@ public class TSTrackDisplayPanel extends GenericPanel {
 	
 	private boolean isMouseIn;
 	private Point mousePosition;
+
+	private int lineWidth;
 	
 	public TSTrackDisplayPanel(final RootPaneContainer parent,
 			final TSTrackPanel tsTrackPanel, final int radius,
-			final int borderX, final int borderY) {
+			final int borderX, final int borderY, final int lineWidth) {
 		super(parent);
 		
+		this.lineWidth = lineWidth;
+
 		this.trackPanel = tsTrackPanel;
 		
 		this.points = null;
@@ -205,6 +210,8 @@ public class TSTrackDisplayPanel extends GenericPanel {
 		
 		final Graphics2D g2D = (Graphics2D) g;
 		
+		g2D.setStroke(new BasicStroke(this.lineWidth));
+		
 		g2D.setBackground(Color.white);
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
@@ -260,7 +267,7 @@ public class TSTrackDisplayPanel extends GenericPanel {
 				toBeDraw = true;
 			}
 			if (this.drawLabels(g2D, String.valueOf(roi1.getFrameIndex()), p1,
-			        labeledPoints, toBeDraw)) {
+					labeledPoints, toBeDraw)) {
 				labeledPoints.add(p1);
 			}
 			
@@ -326,9 +333,9 @@ public class TSTrackDisplayPanel extends GenericPanel {
 					final double x2D = endingPoint.getX();
 					final double y2D = endingPoint.getY();
 					final int x2 = new BigDecimal(String.valueOf(x2D))
-					.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+							.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 					final int y2 = new BigDecimal(String.valueOf(y2D))
-					.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+							.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 					g2D.drawLine(x1, y1, x2, y2);
 				}
 			}
@@ -390,5 +397,10 @@ public class TSTrackDisplayPanel extends GenericPanel {
 	public void resetSegmentation() {
 		this.startingROI = null;
 		this.endingROI = null;
+	}
+	
+	public void setLineWidth(final int lineWidth) {
+		this.lineWidth = lineWidth;
+		this.repaint();
 	}
 }

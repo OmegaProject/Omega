@@ -13,7 +13,7 @@
 
 	<groupId>edu.umassmed.omega</groupId>
 	<artifactId>omega</artifactId>
-	<version>0.37-beta</version>
+	<version>0.45-beta</version>
 	<packaging>jar</packaging>
 
 	<name>omega</name>
@@ -222,7 +222,7 @@
 		<dependency>
 			<groupId>mosaic</groupId>
 			<artifactId>MosaicSuite</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>mines-jtk</artifactId>
