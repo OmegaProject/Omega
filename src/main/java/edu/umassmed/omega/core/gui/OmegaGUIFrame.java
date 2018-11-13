@@ -71,7 +71,7 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaCoreEvent;
 import edu.umassmed.omega.commons.gui.GenericFrame;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
 import edu.umassmed.omega.core.OmegaApplication;
 
 public class OmegaGUIFrame extends JFrame {
@@ -138,7 +138,7 @@ public class OmegaGUIFrame extends JFrame {
 		this.addListeners();
 	}
 
-	public void initialize(final Map<Long, OmegaPlugin> registeredPlugin) {
+	public void initialize(final Map<Long, OmegaPluginArchetype> registeredPlugin) {
 		this.topPanel.initializePanel(registeredPlugin);
 		this.workspacePanel.initializePanel();
 		this.sidePanel.initializePanel();
@@ -343,7 +343,7 @@ public class OmegaGUIFrame extends JFrame {
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
 						OmegaGUIConstants.EVENT_PROPERTY_PLUGIN)) {
-					final OmegaPlugin plugin = OmegaGUIFrame.this.omegaApp
+					final OmegaPluginArchetype plugin = OmegaGUIFrame.this.omegaApp
 							.getPlugin((long) evt.getNewValue());
 					OmegaGUIFrame.this.pluginSelected = (long) evt
 							.getNewValue();

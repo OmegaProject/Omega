@@ -44,20 +44,20 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
 import edu.umassmed.omega.commons.exceptions.OmegaCoreExceptionPluginMissingData;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectDatasetPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectProjectPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSNRRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrackingMeasuresRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaBrowserPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectDatasetPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectImagePluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectProjectPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectSNRRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrackingMeasuresRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
 import edu.umassmed.omega.omegaDataBrowserPlugin.gui.OmegaDataBrowserPluginPanel;
 
-public class OmegaDataBrowserPlugin extends OmegaBrowserPlugin implements
+public class OmegaDataBrowserPlugin extends OmegaBrowserPluginArchetype implements
 		OmegaDataDisplayerPluginInterface, OmegaSelectImagePluginInterface,
 		OmegaSelectDatasetPluginInterface, OmegaSelectProjectPluginInterface,
 		OmegaSelectParticleDetectionRunPluginInterface,

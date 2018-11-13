@@ -41,14 +41,14 @@ import javax.swing.SwingConstants;
 
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.GenericPanel;
-import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaParticleTrackingPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaSNRPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesRelinkingPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaBrowserPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaLoaderPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaParticleTrackingPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaSNRPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaTrackingMeasuresPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaTrajectoryEditingPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaTrajectorySegmentationPluginArchetype;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class OmegaTopPanel extends GenericPanel {
@@ -57,7 +57,7 @@ public class OmegaTopPanel extends GenericPanel {
 	private static Dimension button_dim = new Dimension(120, 60);
 
 	// private final Map<Long, JButton> buttons;
-	private final Map<String, Map<Long, OmegaPlugin>> pluginsCategories;
+	private final Map<String, Map<Long, OmegaPluginArchetype>> pluginsCategories;
 	private final Map<String, JButton> buttons;
 	private final Map<String, OmegaPluginLauncherDialog> pluginsLauncher;
 
@@ -71,8 +71,8 @@ public class OmegaTopPanel extends GenericPanel {
 	}
 
 	private void addPluginToCategoryMap(final String s, final long id,
-	        final OmegaPlugin plugin) {
-		Map<Long, OmegaPlugin> pluginsMap = null;
+	        final OmegaPluginArchetype plugin) {
+		Map<Long, OmegaPluginArchetype> pluginsMap = null;
 		if (this.pluginsCategories.keySet().contains(s)) {
 			pluginsMap = this.pluginsCategories.get(s);
 		} else {
@@ -82,31 +82,31 @@ public class OmegaTopPanel extends GenericPanel {
 		this.pluginsCategories.put(s, pluginsMap);
 	}
 
-	protected void initializePanel(final Map<Long, OmegaPlugin> registeredPlugin) {
+	protected void initializePanel(final Map<Long, OmegaPluginArchetype> registeredPlugin) {
 		for (final Long id : registeredPlugin.keySet()) {
-			final OmegaPlugin plugin = registeredPlugin.get(id);
-			if (plugin instanceof OmegaSNRPlugin) {
+			final OmegaPluginArchetype plugin = registeredPlugin.get(id);
+			if (plugin instanceof OmegaSNRPluginArchetype) {
 				this.addPluginToCategoryMap(
 						OmegaGUIConstants.TOPPANEL_PLUGINMENU_SNR_ESTIMATOR,
 				        id, plugin);
-			} else if (plugin instanceof OmegaStatsPlugin) {
+			} else if (plugin instanceof OmegaTrackingMeasuresPluginArchetype) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_TRACK_MEASURES,
 				        id, plugin);
-			} else if ((plugin instanceof OmegaTrajectoriesRelinkingPlugin)
-			        || (plugin instanceof OmegaTrajectoriesSegmentationPlugin)) {
+			} else if ((plugin instanceof OmegaTrajectoryEditingPluginArchetype)
+			        || (plugin instanceof OmegaTrajectorySegmentationPluginArchetype)) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_TRACK_MANAGER,
 				        id, plugin);
-			} else if (plugin instanceof OmegaParticleTrackingPlugin) {
+			} else if (plugin instanceof OmegaParticleTrackingPluginArchetype) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_PARTICLE_TRACKER,
 				        id, plugin);
-			} else if (plugin instanceof OmegaBrowserPlugin) {
+			} else if (plugin instanceof OmegaBrowserPluginArchetype) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_DATA_BROWSER, id,
 						plugin);
-			} else if (plugin instanceof OmegaLoaderPlugin) {
+			} else if (plugin instanceof OmegaLoaderPluginArchetype) {
 				this.addPluginToCategoryMap(
 				        OmegaGUIConstants.TOPPANEL_PLUGINMENU_IMAGE_BROWSER,
 				        id, plugin);
@@ -146,7 +146,7 @@ public class OmegaTopPanel extends GenericPanel {
 		}
 
 		// for (final Long id : registeredPlugin.keySet()) {
-		// final OmegaPlugin plugin = registeredPlugin.get(id);
+		// final OmegaPluginArchetype plugin = registeredPlugin.get(id);
 		//
 		// final JButton butt = new JButton(plugin.getShortName());
 		//

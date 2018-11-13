@@ -87,7 +87,7 @@ import edu.umassmed.omega.commons.gui.GenericPanel;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericResultsDialog;
 import edu.umassmed.omega.commons.gui.interfaces.GenericElementInformationContainerInterface;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksExporter;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksImporter;
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserConstants;
@@ -129,7 +129,7 @@ public class OmegaDataBrowserPluginPanel extends GenericPluginPanel implements
 	private ComponentListener resize_cl;
 
 	public OmegaDataBrowserPluginPanel(final RootPaneContainer parent,
-			final OmegaPlugin plugin, final OmegaData omegaData,
+			final OmegaPluginArchetype plugin, final OmegaData omegaData,
 			final OmegaLoadedData loadedData,
 			final List<OmegaAnalysisRun> loadedAnalysisRuns, final int index) {
 		super(parent, plugin, index);

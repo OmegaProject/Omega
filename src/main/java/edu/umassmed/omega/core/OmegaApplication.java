@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.umassmed.omega.MosaicSNREstimationPlugin.MosaicSNREstimationPlugin;
 import edu.umassmed.omega.commons.OmegaGenericApplication;
 import edu.umassmed.omega.commons.OmegaImageManager;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
@@ -126,31 +127,31 @@ import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventSelectionTr
 import edu.umassmed.omega.commons.eventSystem.events.OmegaPluginEventTrajectories;
 import edu.umassmed.omega.commons.eventSystem.events.OmegaTrajectoryIOEvent;
 import edu.umassmed.omega.commons.gui.dialogs.GenericProgressDialog;
-import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaBrowserPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaLoaderPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaStatsPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaTrajectoriesSegmentationPlugin;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaDataDisplayerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedDataConsumerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaMainDataConsumerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectDatasetPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectOrphanedContainerPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectProjectPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSNRRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSegmentsInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrackingMeasuresRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
-import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaAlgorithmPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaBrowserPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaLoaderPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaTrackingMeasuresPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaTrajectorySegmentationPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaDataDisplayerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaImageConsumerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaLoadedDataConsumerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaLoaderPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaMainDataConsumerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaOrphanedAnalysisConsumerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectDatasetPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectImagePluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectOrphanedContainerPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectProjectPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectSNRRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectSegmentsInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrackingMeasuresRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrajectoriesInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
+import edu.umassmed.omega.commons.pluginArchetypes.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaDataToolConstants;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksExporter;
 import edu.umassmed.omega.commons.trajectoryTool.OmegaTracksImporter;
@@ -167,17 +168,16 @@ import edu.umassmed.omega.core.runnables.OmegaDBSaver;
 import edu.umassmed.omega.core.runnables.OmegaDBUpdater;
 import edu.umassmed.omega.core.runnables.OmegaDBWriter;
 import edu.umassmed.omega.core.runnables.OmegaTrackingMeasuresAnalizer;
+import edu.umassmed.omega.mosaicFeaturePointDetectionPlugin.MosaicFeaturePointDetectionPlugin;
+import edu.umassmed.omega.mosaicFeaturePointLinkerPlugin.MosaicFeaturePointLinkerPlugin;
 import edu.umassmed.omega.omegaDataBrowserPlugin.OmegaDataBrowserPlugin;
-import edu.umassmed.omega.omeroPlugin.OmeroPlugin;
-import edu.umassmed.omega.plSbalzariniPlugin.PLPlugin;
-import edu.umassmed.omega.sdSbalzariniPlugin.SDPlugin;
-import edu.umassmed.omega.snrSbalzariniPlugin.SNRPlugin;
-import edu.umassmed.omega.trackingMeasuresDiffusivityPlugin.TMDPlugin;
-import edu.umassmed.omega.trackingMeasuresIntensityPlugin.TMIPlugin;
-import edu.umassmed.omega.trackingMeasuresMobilityPlugin.TMMPlugin;
-import edu.umassmed.omega.trackingMeasuresVelocityPlugin.TMVPlugin;
-import edu.umassmed.omega.trajectoriesRelinkingPlugin.TrajectoriesRelinkingPlugin;
-import edu.umassmed.omega.trajectoriesSegmentationPlugin.TrajectoriesSegmentationPlugin;
+import edu.umassmed.omega.omegaTrackingMeasuresDiffusivityPlugin.OmegaTrackingMeasuresDiffusivityPlugin;
+import edu.umassmed.omega.omegaTrackingMeasuresIntensityPlugin.OmegaTrackingMeasuresIntensityPlugin;
+import edu.umassmed.omega.omegaTrackingMeasuresMobilityPlugin.OmegaTrackingMeasuresMobilityPlugin;
+import edu.umassmed.omega.omegaTrackingMeasuresVelocityPlugin.OmegaTrackingMeasuresVelocityPlugin;
+import edu.umassmed.omega.omegaTrajectoryEditingPlugin.OmegaTrajectoryEditingPlugin;
+import edu.umassmed.omega.omegaTrajectorySegmentationPlugin.OmegaTrajectorySegmentationPlugin;
+import edu.umassmed.omega.omeroImageBrowser.OmeroImageBrowserPlugin;
 
 public class OmegaApplication extends OmegaGenericApplication implements
 		OmegaPluginEventListener, OmegaTrajectoryIOEventListener {
@@ -195,8 +195,8 @@ public class OmegaApplication extends OmegaGenericApplication implements
 
 	private short pluginIndex;
 	private final Map<String, Long> pluginIndexes;
-	private final List<OmegaPlugin> registeredPlugin;
-	private final Map<Long, OmegaPlugin> pluginIndexMap;
+	private final List<OmegaPluginArchetype> registeredPlugin;
+	private final Map<Long, OmegaPluginArchetype> pluginIndexMap;
 
 	private final List<OmegaIOUtility> registeredImporter;
 	private final List<OmegaIOUtility> registeredExporter;
@@ -272,21 +272,21 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	}
 
 	private void registerCorePlugins() {
-		this.registerPlugin(new OmeroPlugin());
-		// this.registerPlugin(new SPTPlugin());
-		this.registerPlugin(new SDPlugin());
-		this.registerPlugin(new PLPlugin());
-		this.registerPlugin(new SNRPlugin());
-		this.registerPlugin(new TrajectoriesRelinkingPlugin());
-		this.registerPlugin(new TrajectoriesSegmentationPlugin());
+		this.registerPlugin(new OmeroImageBrowserPlugin());
+		// this.registerPlugin(new MosaicOmegaFeaturePointTrackerPlugin());
+		this.registerPlugin(new MosaicFeaturePointDetectionPlugin());
+		this.registerPlugin(new MosaicFeaturePointLinkerPlugin());
+		this.registerPlugin(new MosaicSNREstimationPlugin());
+		this.registerPlugin(new OmegaTrajectoryEditingPlugin());
+		this.registerPlugin(new OmegaTrajectorySegmentationPlugin());
 		// this.registerPlugin(new TrackingMeasuresPlugin());
-		this.registerPlugin(new TMIPlugin());
-		this.registerPlugin(new TMMPlugin());
-		this.registerPlugin(new TMVPlugin());
-		this.registerPlugin(new TMDPlugin());
+		this.registerPlugin(new OmegaTrackingMeasuresIntensityPlugin());
+		this.registerPlugin(new OmegaTrackingMeasuresMobilityPlugin());
+		this.registerPlugin(new OmegaTrackingMeasuresVelocityPlugin());
+		this.registerPlugin(new OmegaTrackingMeasuresDiffusivityPlugin());
 		this.registerPlugin(new OmegaDataBrowserPlugin());
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			final String optionsCategory = plugin.getOptionsCategory();
 			final Map<String, String> pluginOptions = this.optionsFileManager
 					.getOptions(optionsCategory);
@@ -308,8 +308,8 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				((OmegaLoadedAnalysisConsumerPluginInterface) plugin)
 						.setLoadedAnalysisRun(this.loadedAnalysisRuns);
 			}
-			if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-				((OmegaTrajectoriesSegmentationPlugin) plugin)
+			if (plugin instanceof OmegaTrajectorySegmentationPluginArchetype) {
+				((OmegaTrajectorySegmentationPluginArchetype) plugin)
 						.setSegmentationTypesList(this.omegaData
 								.getSegmentationTypesList());
 				
@@ -332,7 +332,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				}
 			}
 			
-			if (plugin instanceof OmegaStatsPlugin) {
+			if (plugin instanceof OmegaTrackingMeasuresPluginArchetype) {
 				final Map<String, String> options = this.generalOptions
 						.get(OmegaPreferencesDialog.CATEGORY);
 				if (!options.isEmpty()
@@ -368,11 +368,11 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				}
 			}
 
-			if (plugin instanceof OmegaBrowserPlugin) {
-				((OmegaBrowserPlugin) plugin)
+			if (plugin instanceof OmegaBrowserPluginArchetype) {
+				((OmegaBrowserPluginArchetype) plugin)
 						.setTracksImporter((OmegaTracksImporter) this.registeredImporter
 								.get(this.defaultImporterIndex));
-				((OmegaBrowserPlugin) plugin)
+				((OmegaBrowserPluginArchetype) plugin)
 						.setTracksExporter((OmegaTracksExporter) this.registeredExporter
 								.get(this.defaultExporterIndex));
 			}
@@ -380,26 +380,26 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	}
 	
 	public void setTrackLineSize(final int lineSize) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-				((OmegaTrajectoriesSegmentationPlugin) plugin)
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+			if (plugin instanceof OmegaTrajectorySegmentationPluginArchetype) {
+				((OmegaTrajectorySegmentationPluginArchetype) plugin)
 						.setLineWidth(lineSize);
 			}
 		}
 	}
 	
 	public void setGraphLineSize(final int lineSize) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			if (plugin instanceof OmegaStatsPlugin) {
-				((OmegaStatsPlugin) plugin).setGraphLineSize(lineSize);
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+			if (plugin instanceof OmegaTrackingMeasuresPluginArchetype) {
+				((OmegaTrackingMeasuresPluginArchetype) plugin).setGraphLineSize(lineSize);
 			}
 		}
 	}
 	
 	public void setGraphShapeSize(final int shapeSize) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			if (plugin instanceof OmegaStatsPlugin) {
-				((OmegaStatsPlugin) plugin).setGraphShapeSize(shapeSize);
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+			if (plugin instanceof OmegaTrackingMeasuresPluginArchetype) {
+				((OmegaTrackingMeasuresPluginArchetype) plugin).setGraphShapeSize(shapeSize);
 			}
 		}
 	}
@@ -424,7 +424,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		this.registeredExporter.add(tracksIOUtility);
 	}
 
-	private void registerPlugin(final OmegaPlugin plugin) {
+	private void registerPlugin(final OmegaPluginArchetype plugin) {
 		plugin.addOmegaPluginListener(this);
 		final String name = plugin.getName();
 		final long index = this.pluginIndex;
@@ -454,7 +454,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 	}
 
-	public OmegaPlugin getPlugin(final long pluginIndex) {
+	public OmegaPluginArchetype getPlugin(final long pluginIndex) {
 		return this.pluginIndexMap.get(pluginIndex);
 	}
 
@@ -476,7 +476,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 					this.generalOptions.get(category));
 		}
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			plugin.getPluginOptions();
 			// options.remove(OmegaGenericConstants.PREF_GRAPH_LINE_SIZE);
 			// options.remove(OmegaGenericConstants.PREF_TRACK_LINE_SIZE);
@@ -509,7 +509,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	}
 
 	private void clearSelections() {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectSegmentsInterface) {
 				((OmegaSelectSegmentsInterface) plugin)
 						.clearSegmentsSelection();
@@ -541,7 +541,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handleCoreEventSelectionProject(
 			final OmegaCoreEventSelectionProject event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectProjectPluginInterface) {
 				((OmegaSelectProjectPluginInterface) plugin)
 						.selectProject(event.getProject());
@@ -552,7 +552,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handleCoreEventSelectionDataset(
 			final OmegaCoreEventSelectionDataset event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectDatasetPluginInterface) {
 				((OmegaSelectDatasetPluginInterface) plugin)
 						.selectDataset(event.getDataset());
@@ -563,7 +563,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handleCoreEventSelectionImage(
 			final OmegaCoreEventSelectionImage event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectImagePluginInterface) {
 				((OmegaSelectImagePluginInterface) plugin).selectImage(event
 						.getImage());
@@ -575,7 +575,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			final OmegaCoreEventSelectionAnalysisRun event) {
 		this.clearSelections();
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((analysisRun instanceof OmegaTrajectoriesSegmentationRun)
 					&& (plugin instanceof OmegaSelectTrajectoriesSegmentationRunPluginInterface)) {
 				((OmegaSelectTrajectoriesSegmentationRunPluginInterface) plugin)
@@ -602,7 +602,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 
 	private void handleCoreEventTrajectories(
 			final OmegaCoreEventTrajectories event) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectTrajectoriesInterface) {
 				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
 						event.getTrajectories(), event.isSelectionEvent());
@@ -611,7 +611,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	}
 
 	private void handleCoreEventSegments(final OmegaCoreEventSegments event) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaSelectSegmentsInterface) {
 				((OmegaSelectTrajectoriesInterface) plugin).updateTrajectories(
 						new ArrayList<OmegaTrajectory>(event.getSegments()
@@ -1216,7 +1216,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 		this.loadedAnalysisRuns.add(analysisRun);
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
@@ -1326,7 +1326,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 		this.loadedAnalysisRuns.add(detRun);
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
@@ -1437,7 +1437,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 			}
 		}
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((container instanceof OrphanedAnalysisContainer)
 					&& (plugin instanceof OmegaOrphanedAnalysisConsumerPluginInterface)) {
 				((OmegaOrphanedAnalysisConsumerPluginInterface) plugin)
@@ -1483,7 +1483,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventAlgorithm(
 			final OmegaPluginEventAlgorithm event) {
 		
-		final OmegaAlgorithmPlugin source = (OmegaAlgorithmPlugin) event
+		final OmegaAlgorithmPluginArchetype source = (OmegaAlgorithmPluginArchetype) event
 				.getSource();
 		if (source == null)
 			// TODO gestire errore
@@ -2019,7 +2019,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		// TODO to check why replicated in 2 places
 		switch (event.getStatus()) {
 			case OmegaPluginEventGateway.STATUS_CREATED:
-				this.gateway = ((OmegaLoaderPlugin) event.getSource())
+				this.gateway = ((OmegaLoaderPluginArchetype) event.getSource())
 						.getGateway();
 				this.experimenter = null;
 				break;
@@ -2028,7 +2028,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				this.experimenter = null;
 				break;
 			case OmegaPluginEventGateway.STATUS_CONNECTED:
-				this.gateway = ((OmegaLoaderPlugin) event.getSource())
+				this.gateway = ((OmegaLoaderPluginArchetype) event.getSource())
 						.getGateway();
 				final OmegaExperimenter exp = event.getExperimenter();
 				final OmegaExperimenter sameExperimenter = this.omegaData
@@ -2066,7 +2066,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 				break;
 		}
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin instanceof OmegaLoaderPluginInterface) {
 				((OmegaLoaderPluginInterface) plugin).setGateway(this.gateway);
 			}
@@ -2076,7 +2076,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventSelectionOrphanedContainer(
 			final OmegaPluginEventSelectionOrphaned event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((event.getSource() != null) && event.getSource().equals(plugin)) {
 				continue;
 			}
@@ -2091,7 +2091,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventSelectionProject(
 			final OmegaPluginEventSelectionProject event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((event.getSource() != null) && event.getSource().equals(plugin)) {
 				continue;
 			}
@@ -2106,7 +2106,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventSelectionDataset(
 			final OmegaPluginEventSelectionDataset event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((event.getSource() != null) && event.getSource().equals(plugin)) {
 				continue;
 			}
@@ -2121,7 +2121,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventSelectionImage(
 			final OmegaPluginEventSelectionImage event) {
 		this.clearSelections();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((event.getSource() != null) && event.getSource().equals(plugin)) {
 				continue;
 			}
@@ -2156,13 +2156,13 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventSelectionAnalysisRunPlugins(
 			final OmegaPluginEventSelectionAnalysisRun event) {
 		final OmegaAnalysisRun analysisRun = event.getAnalysisRun();
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if ((event.getSource() != null) && event.getSource().equals(plugin)) {
 				continue;
 			}
 			if (event instanceof OmegaPluginEventSelectionTrajectoriesRelinkingRun) {
-				if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-					((OmegaTrajectoriesSegmentationPlugin) plugin)
+				if (plugin instanceof OmegaTrajectorySegmentationPluginArchetype) {
+					((OmegaTrajectorySegmentationPluginArchetype) plugin)
 							.selectTrajectoriesRelinkingRun(null);
 				}
 			} else if ((analysisRun instanceof OmegaTrackingMeasuresRun)
@@ -2221,7 +2221,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 
 	private void handlePluginEventTrajectories(
 			final OmegaPluginEventTrajectories event) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin.equals(event.getSource())) {
 				continue;
 			}
@@ -2235,7 +2235,7 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	}
 
 	private void handlePluginEventSegments(final OmegaPluginEventSegments event) {
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
 			if (plugin.equals(event.getSource())) {
 				continue;
 			}
@@ -2255,9 +2255,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 	private void handlePluginEventDataChanged(
 			final OmegaPluginEventDataChanged event) {
 		this.omegaData.consolidateData();
-		if (event.getSource() instanceof OmegaBrowserPlugin) {
+		if (event.getSource() instanceof OmegaBrowserPluginArchetype) {
 			this.updateGUI(event.getSource(), true);
-		} else if (event.getSource() instanceof OmegaLoaderPlugin) {
+		} else if (event.getSource() instanceof OmegaLoaderPluginArchetype) {
 			this.loadSelectedData(event.getSelectedData());
 			final boolean hasLoaded = event.getSelectedData().size() > 0;
 			this.updateGUI(event.getSource(), hasLoaded);
@@ -2277,10 +2277,10 @@ public class OmegaApplication extends OmegaGenericApplication implements
 		}
 	}
 
-	private void updateGUI(final OmegaPlugin source, final boolean dataLoaded) {
+	private void updateGUI(final OmegaPluginArchetype source, final boolean dataLoaded) {
 		if (dataLoaded) {
-			for (final OmegaPlugin plugin : this.registeredPlugin) {
-				if ((plugin instanceof OmegaBrowserPlugin)
+			for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+				if ((plugin instanceof OmegaBrowserPluginArchetype)
 						&& plugin.equals(source)) {
 					continue;
 				}
@@ -2299,11 +2299,11 @@ public class OmegaApplication extends OmegaGenericApplication implements
 
 		}
 
-		for (final OmegaPlugin plugin : this.registeredPlugin) {
-			// if (dataLoaded && (plugin instanceof OmegaBrowserPlugin)) {
+		for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+			// if (dataLoaded && (plugin instanceof OmegaBrowserPluginArchetype)) {
 			// continue;
 			// }
-			if ((plugin instanceof OmegaBrowserPlugin) && plugin.equals(source)) {
+			if ((plugin instanceof OmegaBrowserPluginArchetype) && plugin.equals(source)) {
 				continue;
 			}
 			if (plugin instanceof OmegaDataDisplayerPluginInterface) {
@@ -2529,9 +2529,9 @@ public class OmegaApplication extends OmegaGenericApplication implements
 
 		if (runnable instanceof OmegaDBLoader) {
 			this.omegaData.updateSegmentationTypes();
-			for (final OmegaPlugin plugin : this.registeredPlugin) {
-				if (plugin instanceof OmegaTrajectoriesSegmentationPlugin) {
-					final OmegaTrajectoriesSegmentationPlugin tmPlugin = (OmegaTrajectoriesSegmentationPlugin) plugin;
+			for (final OmegaPluginArchetype plugin : this.registeredPlugin) {
+				if (plugin instanceof OmegaTrajectorySegmentationPluginArchetype) {
+					final OmegaTrajectorySegmentationPluginArchetype tmPlugin = (OmegaTrajectorySegmentationPluginArchetype) plugin;
 					tmPlugin.updateSegmentationTypesList(new ArrayList<OmegaSegmentationTypes>(
 							this.omegaData.getSegmentationTypesList()));
 				}

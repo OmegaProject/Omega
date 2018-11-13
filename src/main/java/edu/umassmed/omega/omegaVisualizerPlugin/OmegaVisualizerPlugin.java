@@ -30,9 +30,9 @@ package edu.umassmed.omega.omegaVisualizerPlugin;
 import javax.swing.RootPaneContainer;
 
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
 
-public class OmegaVisualizerPlugin extends OmegaPlugin {
+public class OmegaVisualizerPlugin extends OmegaPluginArchetype {
 
 	public OmegaVisualizerPlugin() {
 		super(25);

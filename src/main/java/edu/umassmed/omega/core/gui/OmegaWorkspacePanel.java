@@ -53,8 +53,8 @@ import edu.umassmed.omega.commons.gui.GenericDesktopPane;
 import edu.umassmed.omega.commons.gui.GenericPluginPanel;
 import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.gui.interfaces.GenericPanelInterface;
-import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaAlgorithmPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
 import edu.umassmed.omega.commons.utilities.OperatingSystemEnum;
 import edu.umassmed.omega.commons.utilities.OperatingSystemUtilities;
 
@@ -66,7 +66,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	
 	private int panelIndex;
 	
-	private final Map<OmegaPlugin, Integer> startingIndex;
+	private final Map<OmegaPluginArchetype, Integer> startingIndex;
 	private final Map<Integer, GenericPluginPanel> contents;
 	private final Map<Integer, Boolean> visibilities;
 	private final Map<Integer, JMenuBar> menus;
@@ -89,7 +89,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		
 		this.panelIndex = 0;
 		
-		this.startingIndex = new HashMap<OmegaPlugin, Integer>();
+		this.startingIndex = new HashMap<OmegaPluginArchetype, Integer>();
 		this.contents = new HashMap<Integer, GenericPluginPanel>();
 		this.visibilities = new HashMap<Integer, Boolean>();
 		this.menus = new HashMap<Integer, JMenuBar>();
@@ -215,7 +215,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.isAttached = tof;
 	}
 	
-	public void showPlugin(final OmegaPlugin plugin) {
+	public void showPlugin(final OmegaPluginArchetype plugin) {
 		
 		// TODO Controllo se ho max 1 panello,
 		// Nel caso lo mostro
@@ -229,7 +229,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		}
 	}
 	
-	public void showAllPanels(final OmegaPlugin plugin) {
+	public void showAllPanels(final OmegaPluginArchetype plugin) {
 		for (final Integer index : plugin.getIndexes()) {
 			if (this.internalFrames.containsKey(index)) {
 				final JInternalFrame intFrame = this.internalFrames.get(index);
@@ -245,7 +245,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 	}
 	
 	private void showUnsupportedPluginDialog(
-			final OmegaAlgorithmPlugin algoPlugin) {
+			final OmegaAlgorithmPluginArchetype algoPlugin) {
 		final String title = "Plugin incompatibility with operating system";
 		final StringBuffer msg = new StringBuffer();
 		msg.append("<html>The plugin ");
@@ -268,17 +268,17 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		gd.setVisible(true);
 	}
 	
-	private boolean isPluginSupported(final OmegaAlgorithmPlugin algoPlugin) {
+	private boolean isPluginSupported(final OmegaAlgorithmPluginArchetype algoPlugin) {
 		if (!OperatingSystemUtilities.isPluginSupported(algoPlugin))
 			return false;
 		return true;
 	}
 	
-	public void showNewPanel(final OmegaPlugin plugin) {
+	public void showNewPanel(final OmegaPluginArchetype plugin) {
 		int startingIndex = -1;
 		
-		if (plugin instanceof OmegaAlgorithmPlugin) {
-			final OmegaAlgorithmPlugin algoPlugin = (OmegaAlgorithmPlugin) plugin;
+		if (plugin instanceof OmegaAlgorithmPluginArchetype) {
+			final OmegaAlgorithmPluginArchetype algoPlugin = (OmegaAlgorithmPluginArchetype) plugin;
 			if (!this.isPluginSupported(algoPlugin)) {
 				this.showUnsupportedPluginDialog(algoPlugin);
 				return;
@@ -300,7 +300,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		}
 	}
 	
-	private void createNewInternalFrame(final OmegaPlugin plugin,
+	private void createNewInternalFrame(final OmegaPluginArchetype plugin,
 			final int startingIndex) {
 		final String name = "Workspace - " + plugin.getName();
 		final JInternalFrame intFrame = new JInternalFrame(name, true, true,
@@ -373,7 +373,7 @@ public class OmegaWorkspacePanel extends GenericDesktopPane implements
 		this.repaint();
 	}
 	
-	private void createNewFrame(final OmegaPlugin plugin,
+	private void createNewFrame(final OmegaPluginArchetype plugin,
 			final int startingIndex) {
 		final String name = "Workspace - " + plugin.getName();
 		final JFrame frame = new JFrame(name);

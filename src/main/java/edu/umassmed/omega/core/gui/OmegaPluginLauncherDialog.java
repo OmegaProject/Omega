@@ -26,8 +26,8 @@ import javax.swing.border.TitledBorder;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
 import edu.umassmed.omega.commons.gui.GenericAlgorithmDetailsDialog;
 import edu.umassmed.omega.commons.gui.dialogs.GenericDialog;
-import edu.umassmed.omega.commons.plugins.OmegaAlgorithmPlugin;
-import edu.umassmed.omega.commons.plugins.OmegaPlugin;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaAlgorithmPluginArchetype;
+import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class OmegaPluginLauncherDialog extends GenericDialog {
@@ -36,7 +36,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 
 	private static int DIALOG_WIDTH = 600;
 	private JPanel mainPanel;
-	private final Map<Long, ? extends OmegaPlugin> plugins;
+	private final Map<Long, ? extends OmegaPluginArchetype> plugins;
 	private final List<JButton> buttons;
 	private final List<JTextArea> descriptions;
 	private final Map<Long, JButton> pluginLauncherbuttons, detailsButtons;
@@ -46,7 +46,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 	private final GenericAlgorithmDetailsDialog algoInfoDialog;
 
 	public OmegaPluginLauncherDialog(final RootPaneContainer parent,
-	        final String title, final Map<Long, ? extends OmegaPlugin> plugins) {
+	        final String title, final Map<Long, ? extends OmegaPluginArchetype> plugins) {
 		super(parent, title, false);
 
 		this.plugins = plugins;
@@ -96,7 +96,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 			pluginPanel.setLayout(new BorderLayout());
 			pluginPanel.setPreferredSize(pluginDim);
 			pluginPanel.setSize(pluginDim);
-			final OmegaPlugin plugin = this.plugins.get(id);
+			final OmegaPluginArchetype plugin = this.plugins.get(id);
 
 			final JPanel launcherButtPanel = new JPanel();
 			final FlowLayout fl = new FlowLayout();
@@ -140,7 +140,7 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 			        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			descPanel.add(sp, BorderLayout.CENTER);
 
-			if (plugin instanceof OmegaAlgorithmPlugin) {
+			if (plugin instanceof OmegaAlgorithmPluginArchetype) {
 				final JPanel buttPanel = new JPanel();
 				buttPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 				final JButton detail_btt = new JButton(
@@ -168,8 +168,8 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 
 	private void addLauncherListeners() {
 		for (final Long id : this.pluginLauncherbuttons.keySet()) {
-			final OmegaPlugin plugin = this.plugins.get(id);
-			if (plugin instanceof OmegaAlgorithmPlugin) {
+			final OmegaPluginArchetype plugin = this.plugins.get(id);
+			if (plugin instanceof OmegaAlgorithmPluginArchetype) {
 				final JButton pluginDetails_btt = this.detailsButtons.get(id);
 				pluginDetails_btt.addActionListener(new ActionListener() {
 					@Override
@@ -202,9 +202,9 @@ public class OmegaPluginLauncherDialog extends GenericDialog {
 	}
 
 	private void handleShowAlgoDetails(final Long id) {
-		final OmegaPlugin plugin = this.plugins.get(id);
+		final OmegaPluginArchetype plugin = this.plugins.get(id);
 		this.algoInfoDialog
-		        .updateAlgorithmInformation(((OmegaAlgorithmPlugin) plugin)
+		        .updateAlgorithmInformation(((OmegaAlgorithmPluginArchetype) plugin)
 		                .getAlgorithmInformation());
 		this.algoInfoDialog.setVisible(true);
 	}
