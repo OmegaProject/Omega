@@ -26,13 +26,14 @@
  *******************************************************************************/
 package edu.umassmed.omega.mosaicOmegaFeaturePointTracker;
 
+import java.io.File;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class MosaicOmegaFeaturePointTrackerPluginConstants {
-	
+
 	public static final String EXECUTE_BUTTON = "Execute queue";
-	
+
 	public static final String PLUGIN_NAME = "MOSAIC 2D Particle Tracker";
 	public static final String PLUGIN_SNAME = "MOSAIC 2D PT";
 	public static final String PLUGIN_AUTHORS = "I.F. Sbalzarini and P. Koumoutsakos";
@@ -41,4 +42,10 @@ public class MosaicOmegaFeaturePointTrackerPluginConstants {
 	public static final String PLUGIN_ALGO_DESC = "This is a 2D single particle tracking tool that tracks bright spots over time. The method was designed for applications where large numbers of images of low Signal to Noise Ratio (SNR) need to be analyzed in the absence of prior knowledge about the motion type of the moving objects.";
 	public static final Date PLUGIN_PUBL = new GregorianCalendar(2005, 6, 2)
 			.getTime();
+
+	public final static String OMEGA_SPT_FOLDER_2 = "." + File.separator
+			+ "src" + File.separator + "main" + File.separator + "resources"
+			+ File.separator + "sptWinPlugin";
+	public final static String OMEGA_SPT_FOLDER = "sptWinDLLPlugin";
+	public final static String OMEGA_SPT_DLL = "omega-spt-stats";
 }

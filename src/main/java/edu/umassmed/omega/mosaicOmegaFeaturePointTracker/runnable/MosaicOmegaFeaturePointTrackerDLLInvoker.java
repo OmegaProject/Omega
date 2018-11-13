@@ -31,9 +31,10 @@ import java.io.File;
 import javax.swing.JOptionPane;
 
 import edu.umassmed.omega.commons.OmegaLogFileManager;
-import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
 import edu.umassmed.omega.commons.constants.OmegaErrorConstants;
+import edu.umassmed.omega.commons.constants.OmegaGenericConstants;
 import edu.umassmed.omega.commons.utilities.OmegaClassLoaderUtilities;
+import edu.umassmed.omega.mosaicOmegaFeaturePointTracker.MosaicOmegaFeaturePointTrackerPluginConstants;
 
 public class MosaicOmegaFeaturePointTrackerDLLInvoker {
 	// native methods
@@ -64,7 +65,8 @@ public class MosaicOmegaFeaturePointTrackerDLLInvoker {
 	
 	public static void callSetParameter(final String pNumber,
 			final String pValue) throws UnsatisfiedLinkError {
-		new MosaicOmegaFeaturePointTrackerDLLInvoker().setParameter(pNumber, pValue);
+		new MosaicOmegaFeaturePointTrackerDLLInvoker().setParameter(pNumber,
+				pValue);
 	}
 	
 	public static void callSetMinPoints(final int minPoints)
@@ -99,8 +101,10 @@ public class MosaicOmegaFeaturePointTrackerDLLInvoker {
 		// and deleting them at the end of execution
 		// in this way they can be packed in the jar by maven
 		try {
-			final String dir = System.getProperty("user.dir") + File.separator
-					+ OmegaGenericConstants.OMEGA_SPT_FOLDER + File.separator;
+			final String dir = System.getProperty("user.dir")
+					+ File.separator
+					+ MosaicOmegaFeaturePointTrackerPluginConstants.OMEGA_SPT_FOLDER
+					+ File.separator;
 			// final String dir2 = System.getProperty("user.dir") +
 			// File.separator
 			// + "target" + File.separator
@@ -120,8 +124,11 @@ public class MosaicOmegaFeaturePointTrackerDLLInvoker {
 			System.load(dir + "pthreadVC2" + ".dll");
 			System.load(dir + "ParticleTracker_Statistics_Dll_VC2008-Release"
 					+ ".dll");
-			System.load(dir + OmegaGenericConstants.OMEGA_SPT_DLL + ".dll");
-			// System.load(OmegaGenericConstants.OMEGA_SPT_FOLDER + "//pthreadVC2"
+			System.load(dir
+					+ MosaicOmegaFeaturePointTrackerPluginConstants.OMEGA_SPT_DLL
+					+ ".dll");
+			// System.load(OmegaGenericConstants.OMEGA_SPT_FOLDER +
+			// "//pthreadVC2"
 			// + ".dll");
 			// System.load(OmegaGenericConstants.OMEGA_SPT_FOLDER
 			// + "//ParticleTracker_Statistics_Dll_VC2008-Release"
