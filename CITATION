@@ -15,9 +15,9 @@ authors:
     email: caterina.strambio@umassmed.edu
     orcid: https://orcid.org/0000-0002-1069-1816
 title: Open Microscopy Environment inteGrated Analysis (OMEGA)
-version: v0.37
-doi:
-date-released: 2017-10-27
+version: v0.45.3-beta
+doi: https://zenodo.org/badge/latestdoi/93118057
+date-released: 2019-01-08
 repository: https://github.com/OmegaProject/Omega
 description: OMEGA is a cross-platform data management, analysis and visualization system, for particle tracking data with particular emphasis on results from viral and vesicular trafficking experiments. OMEGA provides easy to use graphical interfaces to implement integrated particle tracking and motion analysis workflows while keeping track of error propagation and data provenance. Specifically, OMEGA: 1) imports image data and metadata from data management tools such as Open Microscopy Environment Remote Objects (OMERO; Allan et al., 2012); 2) tracks intracellular particles moving across time series of image planes; 3) facilitates parameter optimization and trajectory results inspection and validation; 4) performs downstream trajectory analysis and motion type classification; 5) estimates the uncertainty associated with motion analysis; and, 6) stores and facilitates dissemination of analysis results and analysis definition metadata on the basis of our newly proposed Minimum Information About Particle Tracking Experiments (MIAPTE; Rigano & Strambio-De-Castillia, 2016; 2017) guidelines in combination with the OME-XML data model (Goldberg et al, 2005).
 keywords:
