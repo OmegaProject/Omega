@@ -53,7 +53,7 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.gui.interfaces.OmegaMessageDisplayerPanelInterface;
 import edu.umassmed.omega.commons.pluginArchetypes.OmegaPluginArchetype;
-import edu.umassmed.omega.omero.ij.testConvert.OmeroImageJTestConvert;
+import edu.umassmed.omega.omero.ij.imageConverter.OmeroImageJImageConverter;
 
 public class MosaicFeaturePointDetectionRunner implements MosaicFeaturePointDetectionRunnable {
 	private final OmegaPluginArchetype plugin;
@@ -214,7 +214,7 @@ public class MosaicFeaturePointDetectionRunner implements MosaicFeaturePointDete
 				final ExecutorService loaderExecutor = Executors
 						.newFixedThreadPool(5);
 
-				final OmeroImageJTestConvert oij = new OmeroImageJTestConvert();
+				final OmeroImageJImageConverter oij = new OmeroImageJImageConverter();
 				final ImagePlus imgPlus = oij.convert(image.getOmeroId(),
 						this.gateway);
 				imgPlus.setC(c + 1);
