@@ -89,15 +89,6 @@ references:
         given-names: Alessandro
         affiliation: University of Massachusetts Medical School
         email: alessandro.rigano@umassmed.edu
-      - family-names: Galli
-        given-names: Vanni
-        affiliation: Scuola Universitaria Superiore della Svizzera Italiana (SUPSI)
-      - family-names: Gonciarz
-        given-names: Krzysztof
-        affiliation: Max Planck Institute of Molecular Cell Biology and Genetics in Dresden
-      - family-names: Sbalzarini
-        given-names: Ivo F.
-        affiliation: Max Planck Institute of Molecular Cell Biology and Genetics in Dresden
       - family-names: Strambio-De-Castillia
         given-names: Caterina
         affiliation: University of Massachusetts Medical School
@@ -110,10 +101,20 @@ references:
     url: https://doi.org/10.1101/155036 
   - type: article
     scope: Cite this paper every time you discuss or utilize the error propagation aspects of the sofware
+    authors: 
       - family-names: Rigano
         given-names: Alessandro
         affiliation: University of Massachusetts Medical School
         email: alessandro.rigano@umassmed.edu
+      - family-names: Galli
+        given-names: Vanni
+        affiliation: Scuola Universitaria Superiore della Svizzera Italiana (SUPSI)
+      - family-names: Gonciarz
+        given-names: Krzysztof
+        affiliation: Max Planck Institute of Molecular Cell Biology and Genetics in Dresden
+      - family-names: Sbalzarini
+        given-names: Ivo F.
+        affiliation: Max Planck Institute of Molecular Cell Biology and Genetics in Dresden
       - family-names: Strambio-De-Castillia
         given-names: Caterina
         affiliation: University of Massachusetts Medical School
