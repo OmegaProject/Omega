@@ -83,7 +83,7 @@ references:
     doi: 10.1101/251850
     url: https://doi.org/10.1101/251850
   - type: article
-    scope: Cite this paper every time you discuss or utilize the error propagation aspects of the sofware
+    scope: Cite this paper every time you discuss or utilize the data provenance aspects of the sofware
     authors:
       - family-names: Rigano
         given-names: Alessandro
@@ -109,8 +109,7 @@ references:
     doi: 10.1101/155036
     url: https://doi.org/
   - type: article
-    scope: Cite this paper every time you discuss or utilize the data provenance aspects of the sofware
-    authors:
+    scope: Cite this paper every time you discuss or utilize the error propagation aspects of the sofware
       - family-names: Rigano
         given-names: Alessandro
         affiliation: University of Massachusetts Medical School
