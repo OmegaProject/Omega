@@ -13,7 +13,7 @@
 
 	<groupId>edu.umassmed.omega</groupId>
 	<artifactId>omega</artifactId>
-	<version>0.47-beta</version>
+	<version>0.49-beta</version>
 	<packaging>jar</packaging>
 
 	<name>omega</name>
@@ -183,6 +183,14 @@
 					<artifactId>commons-beanutils</artifactId>
 					<groupId>commons-beanutils</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>edu.umassmed.omega</groupId>
+					<artifactId>commons</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.openmicroscopy</groupId>
+					<artifactId>omero-gateway</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -216,6 +224,18 @@
 				<exclusion>
 					<artifactId>mines-jtk</artifactId>
 					<groupId>edu.mines</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>edu.umassmed.omega</groupId>
+					<artifactId>commons</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>edu.umassmed.omega</groupId>
+					<artifactId>omero.commons</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.imagej</groupId>
+					<artifactId>imagej</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

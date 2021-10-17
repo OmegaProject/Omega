@@ -82,7 +82,7 @@ public class OmeroImageBrowserPluginPanel extends OmeroPanel implements
 		super(parent, plugin, index, gateway);
 
 		this.omegaData = omegaData;
-		this.connectionDialog = new OmeroImageBrowserConnectionDialog(
+		this.connectionDialog = new OmeroImageBrowserConnectionDialog(plugin,
 				this.getParentContainer(), this, gateway);
 		this.confirmDialog = new GenericConfirmationDialog(
 				this.getParentContainer(), "Image loading warning",
@@ -117,7 +117,8 @@ public class OmeroImageBrowserPluginPanel extends OmeroPanel implements
 			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(
 						OmegaEventConstants.PROPERTY_CONNECTION)) {
-					OmeroImageBrowserPluginPanel.this.handlePropertyConnection();
+					OmeroImageBrowserPluginPanel.this
+							.handlePropertyConnection();
 				}
 			}
 		});

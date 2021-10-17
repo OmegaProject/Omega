@@ -48,11 +48,6 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 
-import omero.ServerError;
-import Glacier2.CannotCreateSessionException;
-import Glacier2.PermissionDeniedException;
-import Ice.ConnectionRefusedException;
-import Ice.DNSException;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaEventConstants;
 import edu.umassmed.omega.commons.constants.OmegaGUIConstants;
@@ -64,6 +59,7 @@ import edu.umassmed.omega.commons.gui.dialogs.GenericMessageDialog;
 import edu.umassmed.omega.commons.utilities.OmegaDataEncryptionUtilities;
 import edu.umassmed.omega.omero.commons.OmeroGateway;
 import edu.umassmed.omega.omero.commons.data.OmeroServerInformation;
+import edu.umassmed.omega.omeroImageBrowser.OmeroImageBrowserPlugin;
 
 public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 	
@@ -85,11 +81,15 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 	private JButton connectButt;
 	
 	private final OmeroGateway gateway;
+	private final OmeroImageBrowserPlugin plugin;
 	
-	public OmeroImageBrowserConnectionDialog(final RootPaneContainer parentContainer,
+	public OmeroImageBrowserConnectionDialog(
+			final OmeroImageBrowserPlugin plugin,
+			final RootPaneContainer parentContainer,
 			final GenericPluginPanel parent, final OmeroGateway gateway) {
 		super(parentContainer, "Omega server connection manager", false);
 		this.gateway = gateway;
+		this.plugin = plugin;
 		
 		this.parent = parent;
 		this.pluginOptions = parent.getPlugin().getPluginOptions();
@@ -225,23 +225,38 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 			
 			boolean connected = false;
 			String errorMsg = null;
+			Exception exe = null;
 			try {
 				this.gateway.connect(loginCred, serverInfo);
-			} catch (final CannotCreateSessionException ex) {
-				errorMsg = "Unable to create a session.";
-			} catch (final PermissionDeniedException ex) {
-				errorMsg = "<html>Access denied.<br>Verify username and/or password.</html>";
-			} catch (final ServerError ex) {
-				errorMsg = "Server error.";
-			} catch (final DNSException ex) {
-				errorMsg = "<html>Unable to find the server<br>Verify server address.</html>";
-			} catch (final ConnectionRefusedException ex) {
-				errorMsg = "<html>Server refused the connection.<br>Verify port.</html>";
+				
+				// } catch (final CannotCreateSessionException ex) {
+				// errorMsg = "Unable to create a session.";
+				// exe = ex;
+				// } catch (final PermissionDeniedException ex) {
+				// errorMsg =
+				// "<html>Access denied.<br>Verify username and/or password.</html>";
+				// exe = ex;
+				// } catch (final ServerError ex) {
+				// errorMsg = "Server error.";
+				// exe = ex;
+				// } catch (final DNSException ex) {
+				// errorMsg =
+				// "<html>Unable to find the server<br>Verify server address.</html>";
+				// exe = ex;
+				// } catch (final ConnectionRefusedException ex) {
+				// errorMsg =
+				// "<html>Server refused the connection.<br>Verify port.</html>";
+				// exe = ex;
+				
 			} catch (final Exception ex) {
-				errorMsg = "Unknown error.";
+				// errorMsg = "Unknown error.";
+				errorMsg = ex.getMessage();
+				exe = ex;
 				// OmegaLogFileManager.handleUncaughtException(ex, true);
 			}
 			if (errorMsg != null) {
+				OmegaLogFileManager.handlePluginException(this.plugin, exe,
+						true);
 				final GenericMessageDialog errorDialog = new GenericMessageDialog(
 						this.getParentContainer(),
 						"Omero server connection error", errorMsg, true);
@@ -249,30 +264,39 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 				errorDialog.setVisible(true);
 			}
 			
-			connected = OmeroImageBrowserConnectionDialog.this.gateway.isConnected();
+			connected = OmeroImageBrowserConnectionDialog.this.gateway
+					.isConnected();
 			// OmeroImporterUtilities.handleConnectionError(
-			// OmeroImageBrowserConnectionDialog.this.getParentContainer(), error);
+			// OmeroImageBrowserConnectionDialog.this.getParentContainer(),
+			// error);
 			
 			if (connected == false) {
 				OmeroImageBrowserConnectionDialog.this.connectionStatusLbl
 						.setText("Status: not connected.");
-				OmeroImageBrowserConnectionDialog.this.parent.firePropertyChange(
-						OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
+				OmeroImageBrowserConnectionDialog.this.parent
+						.firePropertyChange(
+								OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 			} else {
-				OmeroImageBrowserConnectionDialog.this.usernameTxtFie.setEditable(false);
-				OmeroImageBrowserConnectionDialog.this.passwordPswFie.setEditable(false);
-				OmeroImageBrowserConnectionDialog.this.hostnameTxtFie.setEditable(false);
-				OmeroImageBrowserConnectionDialog.this.portTxtFie.setEditable(false);
-				OmeroImageBrowserConnectionDialog.this.connectButt.setText("Disconnect");
+				OmeroImageBrowserConnectionDialog.this.usernameTxtFie
+						.setEditable(false);
+				OmeroImageBrowserConnectionDialog.this.passwordPswFie
+						.setEditable(false);
+				OmeroImageBrowserConnectionDialog.this.hostnameTxtFie
+						.setEditable(false);
+				OmeroImageBrowserConnectionDialog.this.portTxtFie
+						.setEditable(false);
+				OmeroImageBrowserConnectionDialog.this.connectButt
+						.setText("Disconnect");
 				OmeroImageBrowserConnectionDialog.this.connectionStatusLbl
 						.setText("Status: connected.");
-				OmeroImageBrowserConnectionDialog.this.parent.firePropertyChange(
-						OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
+				OmeroImageBrowserConnectionDialog.this.parent
+						.firePropertyChange(
+								OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 				OmeroImageBrowserConnectionDialog.this.setVisible(false);
 			}
 			
-			OmeroImageBrowserConnectionDialog.this.saveOptions(hostname, portS, username,
-					password);
+			OmeroImageBrowserConnectionDialog.this.saveOptions(hostname, portS,
+					username, password);
 		} else {
 			try {
 				OmeroImageBrowserConnectionDialog.this.gateway.disconnect();
@@ -281,11 +305,15 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 				OmegaLogFileManager.handlePluginException(opp.getPlugin(), ex,
 						false);
 			}
-			OmeroImageBrowserConnectionDialog.this.usernameTxtFie.setEditable(true);
-			OmeroImageBrowserConnectionDialog.this.passwordPswFie.setEditable(true);
-			OmeroImageBrowserConnectionDialog.this.hostnameTxtFie.setEditable(true);
+			OmeroImageBrowserConnectionDialog.this.usernameTxtFie
+					.setEditable(true);
+			OmeroImageBrowserConnectionDialog.this.passwordPswFie
+					.setEditable(true);
+			OmeroImageBrowserConnectionDialog.this.hostnameTxtFie
+					.setEditable(true);
 			OmeroImageBrowserConnectionDialog.this.portTxtFie.setEditable(true);
-			OmeroImageBrowserConnectionDialog.this.connectButt.setText("Connect");
+			OmeroImageBrowserConnectionDialog.this.connectButt
+					.setText("Connect");
 			OmeroImageBrowserConnectionDialog.this.parent.firePropertyChange(
 					OmegaEventConstants.PROPERTY_CONNECTION, 0, 1);
 			
@@ -301,15 +329,20 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 		
 		if (pluginPanel != null) {
 			final Map<String, String> options = new LinkedHashMap<String, String>();
-			if (OmeroImageBrowserConnectionDialog.this.saveServerInfo.isSelected()) {
-				options.put(OmeroImageBrowserConnectionDialog.this.OPTION_SERVER_ADRESS,
+			if (OmeroImageBrowserConnectionDialog.this.saveServerInfo
+					.isSelected()) {
+				options.put(
+						OmeroImageBrowserConnectionDialog.this.OPTION_SERVER_ADRESS,
 						hostname);
 				if (port.isEmpty()) {
-					options.put(OmeroImageBrowserConnectionDialog.this.OPTION_SERVER_PORT,
-							OmeroImageBrowserConnectionDialog.this.portTxtFie.getText());
+					options.put(
+							OmeroImageBrowserConnectionDialog.this.OPTION_SERVER_PORT,
+							OmeroImageBrowserConnectionDialog.this.portTxtFie
+									.getText());
 				}
 			}
-			if (OmeroImageBrowserConnectionDialog.this.saveLoginInfo.isSelected()) {
+			if (OmeroImageBrowserConnectionDialog.this.saveLoginInfo
+					.isSelected()) {
 				options.put(this.OPTION_LOGIN_USERNAME, username);
 				String loginPsw = null;
 				try {
