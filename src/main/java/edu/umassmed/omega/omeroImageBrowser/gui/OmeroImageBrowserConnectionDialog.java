@@ -163,23 +163,23 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 	
 	private void fillFields() {
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_ADRESS)) {
-			this.hostnameTxtFie.setText(this.pluginOptions
-					.get(this.OPTION_SERVER_ADRESS));
+			this.hostnameTxtFie
+					.setText(this.pluginOptions.get(this.OPTION_SERVER_ADRESS));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_SERVER_PORT)) {
-			this.portTxtFie.setText(this.pluginOptions
-					.get(this.OPTION_SERVER_PORT));
+			this.portTxtFie
+					.setText(this.pluginOptions.get(this.OPTION_SERVER_PORT));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_USERNAME)) {
-			this.usernameTxtFie.setText(this.pluginOptions
-					.get(this.OPTION_LOGIN_USERNAME));
+			this.usernameTxtFie.setText(
+					this.pluginOptions.get(this.OPTION_LOGIN_USERNAME));
 		}
 		if (this.pluginOptions.containsKey(this.OPTION_LOGIN_PASSWORD)) {
 			final String psw = this.pluginOptions
 					.get(this.OPTION_LOGIN_PASSWORD);
 			try {
-				this.passwordPswFie.setText(OmegaDataEncryptionUtilities
-						.decrypt(psw));
+				this.passwordPswFie
+						.setText(OmegaDataEncryptionUtilities.decrypt(psw));
 			} catch (final GeneralSecurityException e) {
 				e.printStackTrace();
 			} catch (final IOException e) {
@@ -214,8 +214,8 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 			}
 			final String username = OmeroImageBrowserConnectionDialog.this.usernameTxtFie
 					.getText();
-			final String password = String
-					.valueOf(OmeroImageBrowserConnectionDialog.this.passwordPswFie
+			final String password = String.valueOf(
+					OmeroImageBrowserConnectionDialog.this.passwordPswFie
 							.getPassword());
 			final OmegaLoginCredentials loginCred = new OmegaLoginCredentials(
 					username, password);
@@ -234,18 +234,21 @@ public class OmeroImageBrowserConnectionDialog extends GenericDialog {
 				// exe = ex;
 				// } catch (final PermissionDeniedException ex) {
 				// errorMsg =
-				// "<html>Access denied.<br>Verify username and/or password.</html>";
+				// "<html>Access denied.<br>Verify username and/or
+				// password.</html>";
 				// exe = ex;
 				// } catch (final ServerError ex) {
 				// errorMsg = "Server error.";
 				// exe = ex;
 				// } catch (final DNSException ex) {
 				// errorMsg =
-				// "<html>Unable to find the server<br>Verify server address.</html>";
+				// "<html>Unable to find the server<br>Verify server
+				// address.</html>";
 				// exe = ex;
 				// } catch (final ConnectionRefusedException ex) {
 				// errorMsg =
-				// "<html>Server refused the connection.<br>Verify port.</html>";
+				// "<html>Server refused the connection.<br>Verify
+				// port.</html>";
 				// exe = ex;
 				
 			} catch (final Exception ex) {
